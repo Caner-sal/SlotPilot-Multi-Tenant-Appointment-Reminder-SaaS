@@ -125,8 +125,9 @@ model Organization {
   auditLogs     AuditLog[]
   availability  AvailabilityRule[]
   staffInvites  StaffInvite[]
-  locations     Location[]
-  payments      Payment[]
+  locations            Location[]
+  payments             Payment[]
+  calendarConnections  CalendarConnection[]
 
   @@index([slug])
 }
@@ -305,6 +306,7 @@ model Appointment {
   status                  AppointmentStatus @default(PENDING)
   paymentStatus           PaymentStatus     @default(NOT_REQUIRED)
   stripeCheckoutSessionId String?
+  calendarEventId         String?
   notes                   String?
   createdAt               DateTime          @default(now())
   updatedAt               DateTime          @updatedAt
@@ -379,4 +381,24 @@ model AuditLog {
   @@index([organizationId])
   @@index([actorUserId])
   @@index([createdAt])
+}
+
+model CalendarConnection {
+  id                    String    @id @default(cuid())
+  organizationId        String
+  staffId               String?
+  provider              String    @default("GOOGLE")
+  accessTokenEncrypted  String
+  refreshTokenEncrypted String?
+  expiresAt             DateTime?
+  calendarId            String?
+  isActive              Boolean   @default(true)
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, provider])
+  @@index([organizationId])
+  @@index([staffId])
 }
