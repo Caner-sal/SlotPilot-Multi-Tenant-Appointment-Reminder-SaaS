@@ -115,6 +115,8 @@ model Organization {
   category            String?
   city                String?
   coverImageUrl       String?
+  aiChatbotEnabled    Boolean  @default(false)
+  faqText             String?
   logoUrl             String?
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
