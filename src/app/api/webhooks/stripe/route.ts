@@ -73,6 +73,39 @@ export async function POST(req: Request) {
         break;
       }
 
+      case "checkout.session.completed": {
+        const session = event.data.object as Stripe.Checkout.Session;
+        const appointmentId = session.metadata?.appointmentId;
+        const organizationId = session.metadata?.organizationId;
+        if (!appointmentId || !organizationId) break;
+
+        const amountCents = session.amount_total ?? 0;
+
+        // Idempotency: skip if this event was already processed
+        const existing = await db.payment.findUnique({ where: { stripeEventId: event.id } });
+        if (existing) break;
+
+        await db.$transaction(async (tx) => {
+          await tx.payment.create({
+            data: {
+              organizationId,
+              appointmentId,
+              stripeEventId: event.id,
+              sessionId: session.id,
+              amountCents,
+              currency: session.currency?.toUpperCase() ?? "TRY",
+              status: "paid",
+            },
+          });
+
+          await tx.appointment.update({
+            where: { id: appointmentId },
+            data: { paymentStatus: "PAID", status: "CONFIRMED" },
+          });
+        });
+        break;
+      }
+
       default:
         break;
     }
