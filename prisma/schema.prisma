@@ -117,7 +117,10 @@ model Organization {
   coverImageUrl       String?
   aiChatbotEnabled    Boolean  @default(false)
   faqText             String?
+  chatbotTone         String?
   logoUrl             String?
+  ratingAverage       Float?
+  reviewCount         Int      @default(0)
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
@@ -135,6 +138,9 @@ model Organization {
   payments             Payment[]
   calendarConnections  CalendarConnection[]
   revenueLedger        RevenueLedger[]
+  chatConversations    ChatConversation[]
+  invoiceRecords       InvoiceRecord[]
+  accountingConnection AccountingConnection?
 
   @@index([slug])
 }
@@ -398,12 +404,66 @@ model RevenueLedger {
   type           String
   amountCents    Int
   currency       String   @default("TRY")
+  status         String   @default("recorded")
+  metadata       String?
   recordedAt     DateTime @default(now())
 
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 
   @@index([organizationId])
   @@index([organizationId, recordedAt])
+}
+
+model ChatConversation {
+  id             String        @id @default(cuid())
+  organizationId String
+  sessionId      String        @unique
+  createdAt      DateTime      @default(now())
+
+  organization Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  messages     ChatMessage[]
+
+  @@index([organizationId])
+}
+
+model ChatMessage {
+  id             String          @id @default(cuid())
+  conversationId String
+  role           String
+  content        String
+  createdAt      DateTime        @default(now())
+
+  conversation ChatConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@index([conversationId])
+}
+
+model InvoiceRecord {
+  id             String   @id @default(cuid())
+  organizationId String
+  appointmentId  String?
+  paymentId      String?
+  amountCents    Int
+  currency       String   @default("TRY")
+  status         String   @default("draft")
+  issuedAt       DateTime @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+}
+
+model AccountingConnection {
+  id             String   @id @default(cuid())
+  organizationId String   @unique
+  provider       String
+  accessToken    String?
+  refreshToken   String?
+  isActive       Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 }
 
 model CalendarConnection {

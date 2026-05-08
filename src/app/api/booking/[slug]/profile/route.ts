@@ -20,6 +20,7 @@ export async function GET(
         timezone: true,
         bookingEnabled: true,
         suspended: true,
+        aiChatbotEnabled: true,
       },
     });
 

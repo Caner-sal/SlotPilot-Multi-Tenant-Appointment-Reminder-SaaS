@@ -10,6 +10,12 @@ interface BusinessProfile {
   email: string | null;
   address: string | null;
   timezone: string;
+  aiChatbotEnabled: boolean;
+}
+
+interface ChatMsg {
+  role: "user" | "assistant";
+  content: string;
 }
 
 interface Service {
@@ -96,6 +102,11 @@ export default function BookingPage() {
   const [submitError, setSubmitError] = useState<string | null>(null);
 
   const [confirmation, setConfirmation] = useState<BookingConfirmation | null>(null);
+
+  const [chatOpen, setChatOpen] = useState(false);
+  const [chatMessages, setChatMessages] = useState<ChatMsg[]>([]);
+  const [chatInput, setChatInput] = useState("");
+  const [chatLoading, setChatLoading] = useState(false);
 
   useEffect(() => {
     async function load() {
@@ -213,6 +224,33 @@ export default function BookingPage() {
       setStep(5);
     } finally {
       setSubmitting(false);
+    }
+  }
+
+  async function sendChatMessage(e: React.FormEvent) {
+    e.preventDefault();
+    const msg = chatInput.trim();
+    if (!msg || chatLoading) return;
+
+    const userMsg: ChatMsg = { role: "user", content: msg };
+    const updated = [...chatMessages, userMsg];
+    setChatMessages(updated);
+    setChatInput("");
+    setChatLoading(true);
+
+    try {
+      const res = await fetch(`/api/booking/${slug}/chat`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: msg, conversationHistory: chatMessages.slice(-10) }),
+      });
+      const json = await res.json() as { data?: { reply: string }; error?: string };
+      const reply = json.data?.reply ?? "Sorry, I could not process your request.";
+      setChatMessages([...updated, { role: "assistant", content: reply }]);
+    } catch {
+      setChatMessages([...updated, { role: "assistant", content: "Sorry, something went wrong. Please try again." }]);
+    } finally {
+      setChatLoading(false);
     }
   }
 
@@ -618,6 +656,100 @@ export default function BookingPage() {
               </button>
             </form>
           </div>
+        </div>
+      )}
+
+      {profile?.aiChatbotEnabled && (
+        <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3">
+          {chatOpen && (
+            <div className="w-80 bg-white rounded-2xl shadow-2xl border border-gray-200 flex flex-col overflow-hidden">
+              <div className="bg-blue-600 px-4 py-3 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
+                      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                    </svg>
+                  </div>
+                  <span className="text-white text-sm font-semibold">AI Assistant</span>
+                </div>
+                <button
+                  onClick={() => setChatOpen(false)}
+                  className="text-white/70 hover:text-white transition-colors"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+                  </svg>
+                </button>
+              </div>
+
+              <div className="flex-1 overflow-y-auto p-3 space-y-2 max-h-72 min-h-32">
+                {chatMessages.length === 0 && (
+                  <p className="text-xs text-gray-400 text-center py-4">
+                    Hi! Ask me anything about our services, pricing, or how to book.
+                  </p>
+                )}
+                {chatMessages.map((m, i) => (
+                  <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
+                    <div
+                      className={`max-w-[85%] rounded-xl px-3 py-2 text-xs leading-relaxed ${
+                        m.role === "user"
+                          ? "bg-blue-600 text-white"
+                          : "bg-gray-100 text-gray-800"
+                      }`}
+                    >
+                      {m.content}
+                    </div>
+                  </div>
+                ))}
+                {chatLoading && (
+                  <div className="flex justify-start">
+                    <div className="bg-gray-100 rounded-xl px-3 py-2">
+                      <span className="flex gap-1">
+                        <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                        <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                        <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                      </span>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <form onSubmit={sendChatMessage} className="border-t border-gray-100 p-2 flex gap-2">
+                <input
+                  value={chatInput}
+                  onChange={(e) => setChatInput(e.target.value)}
+                  placeholder="Ask a question..."
+                  className="flex-1 text-xs border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  disabled={chatLoading}
+                />
+                <button
+                  type="submit"
+                  disabled={chatLoading || !chatInput.trim()}
+                  className="bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-3 py-2 transition-colors disabled:opacity-50"
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <line x1="22" y1="2" x2="11" y2="13" /><polygon points="22 2 15 22 11 13 2 9 22 2" />
+                  </svg>
+                </button>
+              </form>
+            </div>
+          )}
+
+          <button
+            onClick={() => setChatOpen(!chatOpen)}
+            className="w-12 h-12 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg flex items-center justify-center transition-all hover:scale-105"
+            aria-label="Open AI assistant"
+          >
+            {chatOpen ? (
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            ) : (
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+              </svg>
+            )}
+          </button>
         </div>
       )}
 
