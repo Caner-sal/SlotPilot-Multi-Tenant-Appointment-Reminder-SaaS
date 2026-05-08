@@ -2,7 +2,7 @@
 
 **A full-stack multi-tenant appointment booking and reminder SaaS MVP for local businesses.**
 
-Built with Next.js 15, Prisma, PostgreSQL, Auth.js, Stripe (test mode), and TypeScript.
+Built with Next.js 15, Prisma, SQLite/PostgreSQL, Auth.js, Stripe (test mode), and TypeScript.
 
 ---
 
@@ -21,6 +21,17 @@ Built with Next.js 15, Prisma, PostgreSQL, Auth.js, Stripe (test mode), and Type
 - **Plan limit enforcement** — backend-enforced limits (not client-side)
 - **Audit logs** — immutable log of all important actions
 - **Auth** — credentials-based login, JWT sessions, protected routes
+- **SMS reminders** — Twilio integration (FAKE mode by default)
+- **WhatsApp reminders** — Meta Cloud API (FAKE mode by default)
+- **Google Calendar sync** — two-way sync via OAuth 2.0 (FAKE mode by default)
+- **Public marketplace** — searchable business directory with category/city filters
+- **AI booking assistant** — per-business chatbot powered by Claude (Anthropic API)
+- **Revenue accounting** — ledger tracking with CSV export
+- **Multi-location support** — multiple locations per organization
+- **Staff portal** — staff-specific login with appointment view
+- **Deposit payments** — Stripe checkout for service deposits
+- **Superadmin panel** — platform-level user and org management
+- **React Native mobile app** — Expo app for iOS/Android (staff dashboard)
 
 ---
 
@@ -85,20 +96,26 @@ src/
 
 ## Database Schema
 
-11 Prisma models:
+19 Prisma models:
 
 - **User** — platform accounts
 - **Organization** — business tenants with unique slug
 - **OrganizationMember** — user-org relationship with roles (OWNER, ADMIN, STAFF)
 - **Service** — bookable services with duration and price
 - **Staff** — employees with assigned services
+- **StaffInvite** — invite tokens for staff onboarding
 - **StaffService** — many-to-many service assignments
 - **AvailabilityRule** — weekly schedule per staff
 - **Customer** — booking customers (upserted on email)
 - **Appointment** — bookings with status tracking
-- **Reminder** — scheduled email notifications
+- **Location** — physical locations per organization
+- **Reminder** — scheduled email/SMS/WhatsApp notifications
 - **Subscription** — plan and billing info
 - **AuditLog** — immutable action history
+- **Payment** — Stripe payment records (idempotent)
+- **CalendarConnection** — Google Calendar OAuth tokens
+- **RevenueLedger** — accounting entries for payments
+
 
 ---
 
@@ -156,12 +173,17 @@ See [.env.example](.env.example) for all variables. Key ones:
 
 | Variable | Description |
 |----------|-------------|
-| `DATABASE_URL` | PostgreSQL connection string |
+| `DATABASE_URL` | SQLite (default: `file:./dev.db`) or PostgreSQL URL |
 | `AUTH_SECRET` | NextAuth secret (generate with `openssl rand -base64 32`) |
 | `STRIPE_SECRET_KEY` | Stripe test key (`sk_test_...`) |
 | `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | Stripe publishable key |
 | `STRIPE_WEBHOOK_SECRET` | Stripe webhook signature secret |
 | `RESEND_API_KEY` | Leave empty for fake email mode |
+| `SMS_PROVIDER` | `FAKE` (default) or `TWILIO` |
+| `WHATSAPP_PROVIDER` | `FAKE` (default) or `META` |
+| `CALENDAR_PROVIDER` | `FAKE` (default) or `GOOGLE` |
+| `AI_PROVIDER` | `DISABLED` (default) or `ANTHROPIC` |
+| `ANTHROPIC_API_KEY` | Required when `AI_PROVIDER=ANTHROPIC` |
 
 ---
 
@@ -185,11 +207,20 @@ npm test              # Run all tests
 npm run test:watch    # Watch mode
 ```
 
-Test coverage:
+Test coverage (95 tests across 14 suites):
 - Booking engine (slot generation, conflict prevention)
 - Tenant isolation (cross-org access blocked)
 - Plan limit enforcement (FREE/STARTER/PRO)
 - Reminder scheduling and processing
+- SMS/WhatsApp provider (fake + opt-in guard)
+- Google Calendar sync (fake provider + error isolation)
+- Marketplace filtering
+- Deposit payments (Stripe idempotency)
+- Multi-location support
+- Staff portal access
+- Superadmin operations
+- AI chatbot (disabled mode, missing message, disabled org)
+- Accounting / revenue ledger (idempotency guard)
 
 ---
 
@@ -216,19 +247,14 @@ Test coverage:
 
 ## Future Improvements
 
-- [ ] Real SMS reminders (Twilio/Vonage)
-- [ ] WhatsApp reminders
-- [ ] Google Calendar sync
-- [ ] Staff login portal
-- [ ] Customer cancellation self-service
-- [ ] Appointment deposit payments
+- [ ] Customer cancellation self-service link
 - [ ] Coupon/discount system
 - [ ] Email template editor
 - [ ] Calendar drag-and-drop UI
-- [ ] Multi-location support
-- [ ] Admin super panel
 - [ ] Custom domain per business
 - [ ] AI-powered no-show prediction
+- [ ] Push notifications in mobile app
+- [ ] Offline support in mobile app
 
 ---
 

@@ -59,6 +59,28 @@ Use a managed PostgreSQL provider:
 3. Create webhook endpoint pointing to your production URL
 4. Subscribe to: `customer.subscription.updated`, `customer.subscription.deleted`
 
+## Optional Provider Setup
+
+### SMS (Twilio)
+Set `SMS_PROVIDER=TWILIO` and fill in:
+- `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_PHONE_NUMBER`
+
+### WhatsApp (Meta Cloud API)
+Set `WHATSAPP_PROVIDER=META` and fill in:
+- `META_WHATSAPP_ACCESS_TOKEN`, `META_WHATSAPP_PHONE_NUMBER_ID`, `META_WHATSAPP_WEBHOOK_VERIFY_TOKEN`
+- Requires a Meta Business account with approved WhatsApp Business API and message templates.
+
+### Google Calendar Sync
+Set `CALENDAR_PROVIDER=GOOGLE` and fill in:
+- `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_REDIRECT_URI`
+- Create OAuth 2.0 credentials in [Google Cloud Console](https://console.cloud.google.com) with Calendar API enabled.
+- Add `{NEXT_PUBLIC_APP_URL}/api/calendar/callback` as an authorized redirect URI.
+
+### AI Booking Assistant (Anthropic)
+Set `AI_PROVIDER=ANTHROPIC` and fill in:
+- `ANTHROPIC_API_KEY` from [console.anthropic.com](https://console.anthropic.com)
+- Enable per-organization in dashboard → Settings → AI Chatbot.
+
 ## Production Checklist
 
 - [ ] AUTH_SECRET is a strong random secret (not dev placeholder)
@@ -71,6 +93,7 @@ Use a managed PostgreSQL provider:
 - [ ] PostgreSQL SSL is enabled (`?sslmode=require`)
 - [ ] Run `npm run build` successfully before deploying
 - [ ] Run database migrations before going live
+- [ ] SMS_PROVIDER, WHATSAPP_PROVIDER, CALENDAR_PROVIDER, AI_PROVIDER set appropriately
 
 ## Useful Commands
 
