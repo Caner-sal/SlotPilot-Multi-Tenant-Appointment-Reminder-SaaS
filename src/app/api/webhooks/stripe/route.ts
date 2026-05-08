@@ -86,7 +86,7 @@ export async function POST(req: Request) {
         if (existing) break;
 
         await db.$transaction(async (tx) => {
-          await tx.payment.create({
+          const payment = await tx.payment.create({
             data: {
               organizationId,
               appointmentId,
@@ -101,6 +101,17 @@ export async function POST(req: Request) {
           await tx.appointment.update({
             where: { id: appointmentId },
             data: { paymentStatus: "PAID", status: "CONFIRMED" },
+          });
+
+          await tx.revenueLedger.create({
+            data: {
+              organizationId,
+              appointmentId,
+              paymentId: payment.id,
+              type: "SERVICE_REVENUE",
+              amountCents,
+              currency: session.currency?.toUpperCase() ?? "TRY",
+            },
           });
         });
         break;

@@ -134,6 +134,7 @@ model Organization {
   locations            Location[]
   payments             Payment[]
   calendarConnections  CalendarConnection[]
+  revenueLedger        RevenueLedger[]
 
   @@index([slug])
 }
@@ -387,6 +388,22 @@ model AuditLog {
   @@index([organizationId])
   @@index([actorUserId])
   @@index([createdAt])
+}
+
+model RevenueLedger {
+  id             String   @id @default(cuid())
+  organizationId String
+  appointmentId  String?
+  paymentId      String?
+  type           String
+  amountCents    Int
+  currency       String   @default("TRY")
+  recordedAt     DateTime @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([organizationId, recordedAt])
 }
 
 model CalendarConnection {
