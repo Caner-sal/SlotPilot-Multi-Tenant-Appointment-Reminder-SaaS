@@ -2,7 +2,12 @@
   "name": "slotpilot",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=20 <27",
+    "npm": ">=10"
+  },
   "scripts": {
+    "check:node": "node scripts/check-node.js",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
