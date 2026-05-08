@@ -2,6 +2,24 @@
 
 All notable changes to SlotPilot are documented here.
 
+## [Unreleased] — v1.1.0-turkiye
+
+### Phase TR-0 — Türkiye Baseline ve Araştırma Notları
+- Added 13 Turkey localization agent files under `.claude/agents/`
+- Added `docs/turkiye-product-strategy.md` with Turkish market strategy, pricing, and requirements
+
+### Phase TR-1 — Türkçe UI ve i18n *(planned)*
+### Phase TR-2 — İl/İlçe, Adres ve Telefon *(planned)*
+### Phase TR-3 — TRY Fiyatlandırma *(planned)*
+### Phase TR-4 — Yerel Ödeme Sağlayıcıları *(planned)*
+### Phase TR-5 — KVKK Consent *(planned)*
+### Phase TR-6 — Türkçe Bildirimler *(planned)*
+### Phase TR-7 — Türkiye Marketplace *(planned)*
+### Phase TR-8 — e-Fatura Export *(planned)*
+### Phase TR-9 — Resmi Tatiller + Final QA *(planned)*
+
+---
+
 ## [1.0.0-post-mvp] — 2026-05-08
 
 ### Phase 33 — Final Hardening
