@@ -109,8 +109,9 @@ model Organization {
   timezone       String   @default("UTC")
   bookingEnabled Boolean  @default(true)
   suspended      Boolean  @default(false)
-  smsEnabled     Boolean  @default(false)
-  logoUrl        String?
+  smsEnabled        Boolean  @default(false)
+  whatsappEnabled   Boolean  @default(false)
+  logoUrl           String?
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
@@ -281,6 +282,7 @@ model Customer {
   email          String?
   phone          String?
   smsOptIn       Boolean  @default(true)
+  whatsappOptIn  Boolean  @default(true)
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
@@ -333,6 +335,7 @@ model Reminder {
   provider          String?
   providerMessageId String?
   retryCount        Int            @default(0)
+  channel           String?        @default("EMAIL")
   createdAt         DateTime       @default(now())
 
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
