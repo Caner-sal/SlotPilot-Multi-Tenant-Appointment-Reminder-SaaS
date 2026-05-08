@@ -109,6 +109,7 @@ model Organization {
   timezone       String   @default("UTC")
   bookingEnabled Boolean  @default(true)
   suspended      Boolean  @default(false)
+  smsEnabled     Boolean  @default(false)
   logoUrl        String?
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
@@ -279,6 +280,7 @@ model Customer {
   fullName       String
   email          String?
   phone          String?
+  smsOptIn       Boolean  @default(true)
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
@@ -320,15 +322,18 @@ model Appointment {
 }
 
 model Reminder {
-  id             String         @id @default(cuid())
-  organizationId String
-  appointmentId  String
-  type           ReminderType   @default(EMAIL)
-  scheduledAt    DateTime
-  status         ReminderStatus @default(PENDING)
-  sentAt         DateTime?
-  errorMessage   String?
-  createdAt      DateTime       @default(now())
+  id                String         @id @default(cuid())
+  organizationId    String
+  appointmentId     String
+  type              ReminderType   @default(EMAIL)
+  scheduledAt       DateTime
+  status            ReminderStatus @default(PENDING)
+  sentAt            DateTime?
+  errorMessage      String?
+  provider          String?
+  providerMessageId String?
+  retryCount        Int            @default(0)
+  createdAt         DateTime       @default(now())
 
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   appointment  Appointment  @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
