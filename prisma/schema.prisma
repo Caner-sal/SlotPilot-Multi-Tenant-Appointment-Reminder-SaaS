@@ -16,6 +16,11 @@ enum PlatformRole {
   SUPERADMIN
 }
 
+enum AppRole {
+  OWNER
+  STAFF_MEMBER
+}
+
 enum MemberRole {
   OWNER
   ADMIN
@@ -73,11 +78,13 @@ model User {
   email          String       @unique
   passwordHash   String
   platformRole   PlatformRole @default(USER)
+  appRole        AppRole      @default(OWNER)
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
 
-  memberships OrganizationMember[]
-  auditLogs   AuditLog[]
+  memberships  OrganizationMember[]
+  auditLogs    AuditLog[]
+  staffProfile Staff?
 
   @@index([email])
   @@index([platformRole])
@@ -107,6 +114,7 @@ model Organization {
   subscription  Subscription?
   auditLogs     AuditLog[]
   availability  AvailabilityRule[]
+  staffInvites  StaffInvite[]
 
   @@index([slug])
 }
@@ -149,6 +157,7 @@ model Service {
 model Staff {
   id             String   @id @default(cuid())
   organizationId String
+  userId         String?  @unique
   name           String
   email          String?
   phone          String?
@@ -157,12 +166,31 @@ model Staff {
   updatedAt      DateTime @updatedAt
 
   organization  Organization      @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user          User?             @relation(fields: [userId], references: [id], onDelete: SetNull)
   staffServices StaffService[]
   availability  AvailabilityRule[]
   appointments  Appointment[]
+  invites       StaffInvite[]
 
   @@index([organizationId])
   @@index([organizationId, isActive])
+}
+
+model StaffInvite {
+  id             String    @id @default(cuid())
+  organizationId String
+  staffId        String
+  token          String    @unique
+  email          String
+  expiresAt      DateTime
+  usedAt         DateTime?
+  createdAt      DateTime  @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  staff        Staff        @relation(fields: [staffId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@index([organizationId])
 }
 
 model StaffService {

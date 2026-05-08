@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 
 const protectedRoutes = ["/dashboard"];
 const adminRoutes = ["/admin"];
+const staffRoutes = ["/staff/dashboard", "/staff/appointments", "/staff/availability"];
 const authRoutes = ["/login", "/register"];
 
 export default auth((req) => {
@@ -12,11 +13,16 @@ export default auth((req) => {
 
   const isProtected = protectedRoutes.some((r) => pathname.startsWith(r));
   const isAdminRoute = adminRoutes.some((r) => pathname.startsWith(r));
+  const isStaffRoute = staffRoutes.some((r) => pathname.startsWith(r));
   const isAuthRoute = authRoutes.some((r) => pathname.startsWith(r));
 
   if (isAdminRoute) {
     if (!isLoggedIn) return NextResponse.redirect(new URL("/login", req.url));
     if (platformRole !== "SUPERADMIN") return NextResponse.redirect(new URL("/dashboard", req.url));
+  }
+
+  if (isStaffRoute) {
+    if (!isLoggedIn) return NextResponse.redirect(new URL("/login", req.url));
   }
 
   if (isProtected && !isLoggedIn) {
