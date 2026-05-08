@@ -47,6 +47,22 @@ async function main() {
     },
   });
 
+  // Default location for demo org
+  await prisma.location.upsert({
+    where: { id: "loc-barber-main" },
+    update: {},
+    create: {
+      id: "loc-barber-main",
+      organizationId: org.id,
+      name: "Main Branch",
+      address: "Istanbul, Turkey",
+      phone: "+90 555 000 0000",
+      timezone: "Europe/Istanbul",
+      isDefault: true,
+      isActive: true,
+    },
+  });
+
   // Organization member
   await prisma.organizationMember.upsert({
     where: { userId_organizationId: { userId: user.id, organizationId: org.id } },
