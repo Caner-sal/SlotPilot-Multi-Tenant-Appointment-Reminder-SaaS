@@ -4,34 +4,34 @@
 
 ### Prerequisites
 - Node.js 20+
-- Docker Desktop
 - npm
+
+> **No Docker needed!** The project uses SQLite for local development (zero setup).
 
 ### Steps
 
 ```bash
-# 1. Start PostgreSQL
-docker-compose up -d
+# 1. Clone and install
+npm install --legacy-peer-deps --ignore-scripts
 
-# 2. Verify it's running
-docker-compose ps
-
-# 3. Set up environment
+# 2. Set up environment
 cp .env.example .env
-# Edit .env as needed
+# DATABASE_URL is already set to file:./dev.db — no changes needed
 
-# 4. Generate Prisma client
-npm run db:generate
-
-# 5. Run migrations
+# 3. Run migrations (creates dev.db automatically)
 npm run db:migrate
 
-# 6. Seed demo data
+# 4. Seed demo data
 npm run db:seed
 
-# 7. Start dev server
+# 5. Start dev server
 npm run dev
 ```
+
+### Demo credentials (after seed)
+- Email: `demo@slotpilot.app`
+- Password: `demo1234`
+- Public booking: `http://localhost:3000/booking/barber-demo`
 
 ## Production Deployment (Vercel)
 

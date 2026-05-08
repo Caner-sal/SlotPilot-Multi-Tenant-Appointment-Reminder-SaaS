@@ -30,7 +30,8 @@ export async function GET(
       return NextResponse.json({ error: "Online booking is not available for this business" }, { status: 403 });
     }
 
-    const { bookingEnabled: _enabled, ...profile } = org;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { bookingEnabled, ...profile } = org;
 
     return NextResponse.json({ data: profile });
   } catch (err) {

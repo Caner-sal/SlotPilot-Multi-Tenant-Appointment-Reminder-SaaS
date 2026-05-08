@@ -49,7 +49,6 @@ export async function POST(req: Request) {
       if (serviceIds && serviceIds.length > 0) {
         await tx.staffService.createMany({
           data: serviceIds.map((serviceId) => ({ staffId: created.id, serviceId })),
-          skipDuplicates: true,
         });
       }
 

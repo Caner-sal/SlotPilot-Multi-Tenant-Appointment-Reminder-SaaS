@@ -32,7 +32,6 @@ export async function PATCH(
         if (serviceIds.length > 0) {
           await tx.staffService.createMany({
             data: serviceIds.map((serviceId) => ({ staffId: id, serviceId })),
-            skipDuplicates: true,
           });
         }
       }
