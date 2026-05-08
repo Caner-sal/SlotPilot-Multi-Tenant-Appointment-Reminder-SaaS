@@ -6,6 +6,19 @@ const prisma = new PrismaClient();
 async function main() {
   console.log("Seeding database...");
 
+  // Superadmin user
+  const superadminHash = await bcrypt.hash("superadmin1234", 12);
+  await prisma.user.upsert({
+    where: { email: "admin@slotpilot.app" },
+    update: {},
+    create: {
+      name: "Platform Admin",
+      email: "admin@slotpilot.app",
+      passwordHash: superadminHash,
+      platformRole: "SUPERADMIN",
+    },
+  });
+
   // Demo user
   const passwordHash = await bcrypt.hash("demo1234", 12);
   const user = await prisma.user.upsert({

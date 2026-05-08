@@ -19,6 +19,7 @@ export async function GET(
         address: true,
         timezone: true,
         bookingEnabled: true,
+        suspended: true,
       },
     });
 
@@ -26,12 +27,16 @@ export async function GET(
       return NextResponse.json({ error: "Business not found" }, { status: 404 });
     }
 
+    if (org.suspended) {
+      return NextResponse.json({ error: "This business is currently unavailable" }, { status: 403 });
+    }
+
     if (!org.bookingEnabled) {
       return NextResponse.json({ error: "Online booking is not available for this business" }, { status: 403 });
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { bookingEnabled, ...profile } = org;
+    const { bookingEnabled, suspended, ...profile } = org;
 
     return NextResponse.json({ data: profile });
   } catch (err) {

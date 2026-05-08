@@ -11,6 +11,11 @@ datasource db {
 
 // ─── Enums ───────────────────────────────────────────────────────────────────
 
+enum PlatformRole {
+  USER
+  SUPERADMIN
+}
+
 enum MemberRole {
   OWNER
   ADMIN
@@ -63,17 +68,19 @@ enum DayOfWeek {
 // ─── Models ──────────────────────────────────────────────────────────────────
 
 model User {
-  id           String   @id @default(cuid())
-  name         String
-  email        String   @unique
-  passwordHash String
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id             String       @id @default(cuid())
+  name           String
+  email          String       @unique
+  passwordHash   String
+  platformRole   PlatformRole @default(USER)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
 
   memberships OrganizationMember[]
   auditLogs   AuditLog[]
 
   @@index([email])
+  @@index([platformRole])
 }
 
 model Organization {
@@ -86,6 +93,7 @@ model Organization {
   address        String?
   timezone       String   @default("UTC")
   bookingEnabled Boolean  @default(true)
+  suspended      Boolean  @default(false)
   logoUrl        String?
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt

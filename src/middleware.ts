@@ -2,14 +2,22 @@ import { auth } from "@/lib/auth";
 import { NextResponse } from "next/server";
 
 const protectedRoutes = ["/dashboard"];
+const adminRoutes = ["/admin"];
 const authRoutes = ["/login", "/register"];
 
 export default auth((req) => {
   const { pathname } = req.nextUrl;
   const isLoggedIn = !!req.auth;
+  const platformRole = req.auth?.user?.platformRole;
 
   const isProtected = protectedRoutes.some((r) => pathname.startsWith(r));
+  const isAdminRoute = adminRoutes.some((r) => pathname.startsWith(r));
   const isAuthRoute = authRoutes.some((r) => pathname.startsWith(r));
+
+  if (isAdminRoute) {
+    if (!isLoggedIn) return NextResponse.redirect(new URL("/login", req.url));
+    if (platformRole !== "SUPERADMIN") return NextResponse.redirect(new URL("/dashboard", req.url));
+  }
 
   if (isProtected && !isLoggedIn) {
     return NextResponse.redirect(new URL("/login", req.url));
