@@ -110,8 +110,12 @@ model Organization {
   bookingEnabled Boolean  @default(true)
   suspended      Boolean  @default(false)
   smsEnabled        Boolean  @default(false)
-  whatsappEnabled   Boolean  @default(false)
-  logoUrl           String?
+  whatsappEnabled     Boolean  @default(false)
+  marketplaceEnabled  Boolean  @default(false)
+  category            String?
+  city                String?
+  coverImageUrl       String?
+  logoUrl             String?
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
