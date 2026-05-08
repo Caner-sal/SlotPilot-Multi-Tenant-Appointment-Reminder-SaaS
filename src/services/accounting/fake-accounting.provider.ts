@@ -26,7 +26,7 @@ export class XeroAccountingProvider implements AccountingProvider {
     return !!(process.env.XERO_CLIENT_ID && process.env.XERO_CLIENT_SECRET);
   }
 
-  async syncEntry(entry: LedgerEntry): Promise<{ externalId?: string; success: boolean }> {
+  async syncEntry(_entry: LedgerEntry): Promise<{ externalId?: string; success: boolean }> {
     if (!this.isConfigured()) return { success: false };
     // TODO: Implement Xero API sync
     console.log(`[Xero] syncEntry placeholder — implement Xero API integration`);
@@ -49,7 +49,7 @@ export class QuickBooksAccountingProvider implements AccountingProvider {
     return !!(process.env.QUICKBOOKS_CLIENT_ID && process.env.QUICKBOOKS_CLIENT_SECRET);
   }
 
-  async syncEntry(entry: LedgerEntry): Promise<{ externalId?: string; success: boolean }> {
+  async syncEntry(_entry: LedgerEntry): Promise<{ externalId?: string; success: boolean }> {
     if (!this.isConfigured()) return { success: false };
     // TODO: Implement QuickBooks API sync
     console.log(`[QuickBooks] syncEntry placeholder — implement QBO API integration`);
