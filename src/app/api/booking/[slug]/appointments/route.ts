@@ -50,6 +50,21 @@ export async function POST(
 
     await scheduleReminder(appointment.id, org.id, appointment.startTime);
 
+    // Record KVKK consent
+    await db.consentLog.create({
+      data: {
+        organizationId: org.id,
+        customerId: appointment.customerId,
+        privacyNoticeAcknowledged: parsed.privacyNoticeAcknowledged,
+        explicitConsentGiven: parsed.privacyNoticeAcknowledged,
+        appointmentNotificationConsent: parsed.appointmentNotificationConsent ?? true,
+        marketingConsent: parsed.marketingConsent ?? false,
+        consentVersion: process.env.KVKK_NOTICE_VERSION ?? "2026-01",
+        consentIp: req.headers.get("x-forwarded-for") ?? undefined,
+        consentUserAgent: req.headers.get("user-agent") ?? undefined,
+      },
+    });
+
     await createAuditLog({
       organizationId: org.id,
       action: "APPOINTMENT_BOOKED",

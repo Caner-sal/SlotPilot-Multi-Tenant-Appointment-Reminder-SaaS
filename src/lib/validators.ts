@@ -73,6 +73,11 @@ export const bookingSchema = z.object({
   customerProvince: z.string().optional(),
   customerDistrict: z.string().optional(),
   notes: z.string().optional(),
+  privacyNoticeAcknowledged: z.boolean().refine((v) => v === true, {
+    message: "KVKK Aydınlatma Metni kabul edilmelidir.",
+  }),
+  appointmentNotificationConsent: z.boolean().default(true),
+  marketingConsent: z.boolean().default(false),
 });
 
 export const appointmentStatusSchema = z.object({

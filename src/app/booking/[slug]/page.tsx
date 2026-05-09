@@ -100,6 +100,9 @@ export default function BookingPage() {
     province: "",
     district: "",
     notes: "",
+    privacyNoticeAcknowledged: false,
+    appointmentNotificationConsent: true,
+    marketingConsent: false,
   });
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -217,6 +220,9 @@ export default function BookingPage() {
           customerProvince: customerForm.province || undefined,
           customerDistrict: customerForm.district || undefined,
           notes: customerForm.notes || undefined,
+          privacyNoticeAcknowledged: customerForm.privacyNoticeAcknowledged,
+          appointmentNotificationConsent: customerForm.appointmentNotificationConsent,
+          marketingConsent: customerForm.marketingConsent,
         }),
       });
       if (!res.ok) {
@@ -265,7 +271,7 @@ export default function BookingPage() {
     setSelectedStaff(null);
     setSelectedDate(null);
     setSelectedSlot(null);
-    setCustomerForm({ name: "", email: "", phone: "", province: "", district: "", notes: "" });
+    setCustomerForm({ name: "", email: "", phone: "", province: "", district: "", notes: "", privacyNoticeAcknowledged: false, appointmentNotificationConsent: true, marketingConsent: false });
     setSubmitError(null);
     setConfirmation(null);
   }
@@ -689,9 +695,46 @@ export default function BookingPage() {
                   placeholder="Özel bir isteğiniz var mı?"
                 />
               </div>
+              <div className="space-y-3 border-t border-gray-100 pt-4">
+                <label className="flex items-start gap-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    required
+                    checked={customerForm.privacyNoticeAcknowledged}
+                    onChange={(e) => setCustomerForm({ ...customerForm, privacyNoticeAcknowledged: e.target.checked })}
+                    className="mt-0.5 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  />
+                  <span className="text-sm text-gray-700">
+                    <span className="text-red-500">*</span>{" "}
+                    KVKK Aydınlatma Metni&apos;ni okudum ve kişisel verilerimin işlenmesini kabul ediyorum.
+                  </span>
+                </label>
+                <label className="flex items-start gap-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={customerForm.appointmentNotificationConsent}
+                    onChange={(e) => setCustomerForm({ ...customerForm, appointmentNotificationConsent: e.target.checked })}
+                    className="mt-0.5 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  />
+                  <span className="text-sm text-gray-600">
+                    Randevu hatırlatmaları (SMS, e-posta) almak istiyorum.
+                  </span>
+                </label>
+                <label className="flex items-start gap-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={customerForm.marketingConsent}
+                    onChange={(e) => setCustomerForm({ ...customerForm, marketingConsent: e.target.checked })}
+                    className="mt-0.5 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  />
+                  <span className="text-sm text-gray-600">
+                    Kampanya ve duyuru mesajları almak istiyorum. (İYS kapsamında)
+                  </span>
+                </label>
+              </div>
               <button
                 type="submit"
-                disabled={submitting}
+                disabled={submitting || !customerForm.privacyNoticeAcknowledged}
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-semibold transition-colors disabled:opacity-60 text-sm"
               >
                 {submitting ? "Onaylanıyor..." : "Randevuyu Onayla"}

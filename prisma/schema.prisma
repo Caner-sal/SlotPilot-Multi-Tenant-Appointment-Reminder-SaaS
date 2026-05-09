@@ -144,6 +144,8 @@ model Organization {
   chatConversations    ChatConversation[]
   invoiceRecords       InvoiceRecord[]
   accountingConnection AccountingConnection?
+  consentLogs          ConsentLog[]
+  deletionRequests     DataDeletionRequest[]
 
   @@index([slug])
 }
@@ -459,6 +461,40 @@ model InvoiceRecord {
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 
   @@index([organizationId])
+}
+
+model ConsentLog {
+  id                             String   @id @default(cuid())
+  organizationId                 String
+  customerId                     String?
+  privacyNoticeAcknowledged      Boolean  @default(false)
+  explicitConsentGiven           Boolean  @default(false)
+  appointmentNotificationConsent Boolean  @default(true)
+  marketingConsent               Boolean  @default(false)
+  consentVersion                 String
+  consentIp                      String?
+  consentUserAgent               String?
+  createdAt                      DateTime @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([organizationId, customerId])
+}
+
+model DataDeletionRequest {
+  id             String   @id @default(cuid())
+  organizationId String
+  customerId     String?
+  email          String
+  reason         String?
+  status         String   @default("pending")
+  createdAt      DateTime @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([status])
 }
 
 model AccountingConnection {
