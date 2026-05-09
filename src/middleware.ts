@@ -29,7 +29,14 @@ export default auth((req) => {
     return NextResponse.redirect(new URL("/login", req.url));
   }
 
+  if (isProtected && isLoggedIn && platformRole === "SUPERADMIN") {
+    return NextResponse.redirect(new URL("/admin", req.url));
+  }
+
   if (isAuthRoute && isLoggedIn) {
+    if (platformRole === "SUPERADMIN") {
+      return NextResponse.redirect(new URL("/admin", req.url));
+    }
     return NextResponse.redirect(new URL("/dashboard", req.url));
   }
 

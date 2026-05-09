@@ -41,7 +41,14 @@ export default function LoginPage() {
       return;
     }
 
-    router.push("/dashboard");
+    // Fetch session to determine role-based redirect
+    const sessionRes = await fetch("/api/auth/session");
+    const session = await sessionRes.json();
+    if (session?.user?.platformRole === "SUPERADMIN") {
+      router.push("/admin");
+    } else {
+      router.push("/dashboard");
+    }
   }
 
   return (
