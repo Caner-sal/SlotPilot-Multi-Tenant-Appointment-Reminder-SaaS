@@ -28,10 +28,10 @@ describe("getPlanLimits", () => {
     expect(limits.emailReminders).toBe(true);
   });
 
-  it("returns unlimited for PRO plan", () => {
+  it("returns correct limits for PRO plan", () => {
     const limits = getPlanLimits(SubscriptionPlan.PRO);
     expect(limits.maxStaff).toBe(Infinity);
-    expect(limits.maxAppointmentsPerMonth).toBe(Infinity);
+    expect(limits.maxAppointmentsPerMonth).toBe(2000);
     expect(limits.emailReminders).toBe(true);
   });
 });

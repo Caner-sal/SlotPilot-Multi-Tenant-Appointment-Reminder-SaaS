@@ -1,5 +1,6 @@
 import { db } from "@/lib/db";
 import { SubscriptionPlan } from "@prisma/client";
+import { getPlanTR } from "@/config/pricing.tr";
 
 export interface PlanLimits {
   maxStaff: number;
@@ -9,29 +10,13 @@ export interface PlanLimits {
 }
 
 export function getPlanLimits(plan: SubscriptionPlan): PlanLimits {
-  switch (plan) {
-    case SubscriptionPlan.FREE:
-      return {
-        maxStaff: 1,
-        maxAppointmentsPerMonth: 20,
-        emailReminders: false,
-        advancedAnalytics: false,
-      };
-    case SubscriptionPlan.STARTER:
-      return {
-        maxStaff: 3,
-        maxAppointmentsPerMonth: 300,
-        emailReminders: true,
-        advancedAnalytics: false,
-      };
-    case SubscriptionPlan.PRO:
-      return {
-        maxStaff: Infinity,
-        maxAppointmentsPerMonth: Infinity,
-        emailReminders: true,
-        advancedAnalytics: true,
-      };
-  }
+  const trPlan = getPlanTR(plan);
+  return {
+    maxStaff: trPlan.maxStaff,
+    maxAppointmentsPerMonth: trPlan.maxApptsPerMonth,
+    emailReminders: plan !== SubscriptionPlan.FREE,
+    advancedAnalytics: plan === SubscriptionPlan.PRO,
+  };
 }
 
 async function getOrganizationPlan(organizationId: string): Promise<SubscriptionPlan> {
