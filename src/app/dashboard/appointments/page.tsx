@@ -119,8 +119,8 @@ export default function AppointmentsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Appointments</h1>
-          <p className="text-sm text-gray-500 mt-1">View and manage all bookings.</p>
+          <h1 className="text-2xl font-bold text-gray-900">Randevular</h1>
+          <p className="text-sm text-gray-500 mt-1">Tüm randevuları görüntüleyin ve yönetin.</p>
         </div>
         <button
           onClick={copyBookingLink}
@@ -130,7 +130,7 @@ export default function AppointmentsPage() {
             <rect x="9" y="9" width="13" height="13" rx="2" />
             <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
           </svg>
-          {copied ? "Copied!" : "Copy Booking Link"}
+          {copied ? "Kopyalandı!" : "Rezervasyon Bağlantısını Kopyala"}
         </button>
       </div>
 
@@ -147,7 +147,7 @@ export default function AppointmentsPage() {
             onChange={(e) => setFilter("status", e.target.value)}
             className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            <option value="">All Statuses</option>
+            <option value="">Tüm Durumlar</option>
             {STATUSES.map((s) => (
               <option key={s} value={s}>
                 {s.charAt(0) + s.slice(1).toLowerCase().replace("_", "-")}
@@ -159,7 +159,7 @@ export default function AppointmentsPage() {
             onChange={(e) => setFilter("staffId", e.target.value)}
             className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            <option value="">All Staff</option>
+            <option value="">Tüm Çalışanlar</option>
             {staffList.map((s) => (
               <option key={s.id} value={s.id}>
                 {s.name}
@@ -171,7 +171,7 @@ export default function AppointmentsPage() {
             onChange={(e) => setFilter("serviceId", e.target.value)}
             className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            <option value="">All Services</option>
+            <option value="">Tüm Hizmetler</option>
             {serviceList.map((s) => (
               <option key={s.id} value={s.id}>
                 {s.name}
@@ -183,7 +183,7 @@ export default function AppointmentsPage() {
               onClick={() => setFilters({ date: "", status: "", staffId: "", serviceId: "", page: 1 })}
               className="text-sm text-gray-500 hover:text-gray-700 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors"
             >
-              Clear filters
+              Filtreleri Temizle
             </button>
           )}
         </div>
@@ -191,20 +191,20 @@ export default function AppointmentsPage() {
 
       <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
         {loading ? (
-          <div className="p-10 text-center text-gray-400">Loading...</div>
+          <div className="p-10 text-center text-gray-400">Yükleniyor...</div>
         ) : appointments.length === 0 ? (
-          <div className="p-10 text-center text-gray-400">No appointments found.</div>
+          <div className="p-10 text-center text-gray-400">Randevu bulunamadı.</div>
         ) : (
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-gray-100 bg-gray-50">
-                <th className="px-5 py-3 text-left font-semibold text-gray-600">Customer</th>
-                <th className="px-5 py-3 text-left font-semibold text-gray-600">Service</th>
-                <th className="px-5 py-3 text-left font-semibold text-gray-600">Staff</th>
-                <th className="px-5 py-3 text-left font-semibold text-gray-600">Date & Time</th>
-                <th className="px-5 py-3 text-left font-semibold text-gray-600">Status</th>
-                <th className="px-5 py-3 text-left font-semibold text-gray-600">Notes</th>
-                <th className="px-5 py-3 text-right font-semibold text-gray-600">Update</th>
+                <th className="px-5 py-3 text-left font-semibold text-gray-600">Müşteri</th>
+                <th className="px-5 py-3 text-left font-semibold text-gray-600">Hizmet</th>
+                <th className="px-5 py-3 text-left font-semibold text-gray-600">Çalışan</th>
+                <th className="px-5 py-3 text-left font-semibold text-gray-600">Tarih & Saat</th>
+                <th className="px-5 py-3 text-left font-semibold text-gray-600">Durum</th>
+                <th className="px-5 py-3 text-left font-semibold text-gray-600">Notlar</th>
+                <th className="px-5 py-3 text-right font-semibold text-gray-600">Güncelle</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
@@ -216,7 +216,7 @@ export default function AppointmentsPage() {
                   </td>
                   <td className="px-5 py-3.5 text-gray-700">
                     <div>{appt.service.name}</div>
-                    <div className="text-xs text-gray-400">{appt.service.durationMinutes} min</div>
+                    <div className="text-xs text-gray-400">{appt.service.durationMinutes} dk</div>
                   </td>
                   <td className="px-5 py-3.5 text-gray-700">{appt.staff.name}</td>
                   <td className="px-5 py-3.5 text-gray-700">
@@ -263,8 +263,7 @@ export default function AppointmentsPage() {
       {meta && meta.totalPages > 1 && (
         <div className="flex items-center justify-between">
           <p className="text-sm text-gray-500">
-            Showing {(meta.page - 1) * meta.limit + 1}–
-            {Math.min(meta.page * meta.limit, meta.total)} of {meta.total}
+            {(meta.page - 1) * meta.limit + 1}–{Math.min(meta.page * meta.limit, meta.total)} / {meta.total} randevu
           </p>
           <div className="flex items-center gap-2">
             <button
@@ -272,7 +271,7 @@ export default function AppointmentsPage() {
               onClick={() => setFilters((p) => ({ ...p, page: p.page - 1 }))}
               className="px-3 py-1.5 border border-gray-300 rounded-lg text-sm disabled:opacity-40 hover:bg-gray-50 transition-colors"
             >
-              Previous
+              Önceki
             </button>
             <span className="text-sm text-gray-600">
               {meta.page} / {meta.totalPages}
@@ -282,7 +281,7 @@ export default function AppointmentsPage() {
               onClick={() => setFilters((p) => ({ ...p, page: p.page + 1 }))}
               className="px-3 py-1.5 border border-gray-300 rounded-lg text-sm disabled:opacity-40 hover:bg-gray-50 transition-colors"
             >
-              Next
+              Sonraki
             </button>
           </div>
         </div>

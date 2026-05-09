@@ -65,7 +65,7 @@ function getNext14Days() {
 }
 
 function formatDate(d: Date) {
-  return d.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
+  return d.toLocaleDateString("tr-TR", { weekday: "short", month: "short", day: "numeric" });
 }
 
 function toDateString(d: Date) {
@@ -119,7 +119,7 @@ export default function BookingPage() {
 
         if (!profileRes.ok) {
           const j = await profileRes.json();
-          setProfileError(j.error ?? "Business not found");
+          setProfileError(j.error ?? "İşletme bulunamadı");
           return;
         }
 
@@ -131,7 +131,7 @@ export default function BookingPage() {
           setServices(servicesJson.data ?? []);
         }
       } catch {
-        setProfileError("Failed to load business information.");
+        setProfileError("İşletme bilgileri yüklenemedi.");
       } finally {
         setLoadingProfile(false);
       }
@@ -154,16 +154,16 @@ export default function BookingPage() {
       const res = await fetch(`/api/booking/${slug}/slots?${params}`);
       if (!res.ok) {
         const j = await res.json();
-        setSlotsError(j.error ?? "Failed to load slots");
+        setSlotsError(j.error ?? "Saatler yüklenemedi");
         return;
       }
       const json = await res.json();
       setSlots(json.data ?? []);
       if ((json.data ?? []).length === 0) {
-        setSlotsError("No available slots for this date.");
+        setSlotsError("Bu tarih için müsait saat yok.");
       }
     } catch {
-      setSlotsError("Failed to load slots.");
+      setSlotsError("Saatler yüklenemedi.");
     } finally {
       setLoadingSlots(false);
     }
@@ -216,7 +216,7 @@ export default function BookingPage() {
       });
       if (!res.ok) {
         const j = await res.json();
-        setSubmitError(typeof j.error === "string" ? j.error : "Failed to create booking");
+        setSubmitError(typeof j.error === "string" ? j.error : "Rezervasyon oluşturulamadı");
         return;
       }
       const json = await res.json();
@@ -245,10 +245,10 @@ export default function BookingPage() {
         body: JSON.stringify({ message: msg, conversationHistory: chatMessages.slice(-10) }),
       });
       const json = await res.json() as { data?: { reply: string }; error?: string };
-      const reply = json.data?.reply ?? "Sorry, I could not process your request.";
+      const reply = json.data?.reply ?? "Üzgünüm, isteğinizi işleyemedim.";
       setChatMessages([...updated, { role: "assistant", content: reply }]);
     } catch {
-      setChatMessages([...updated, { role: "assistant", content: "Sorry, something went wrong. Please try again." }]);
+      setChatMessages([...updated, { role: "assistant", content: "Üzgünüm, bir şeyler yanlış gitti. Lütfen tekrar deneyin." }]);
     } finally {
       setChatLoading(false);
     }
@@ -270,7 +270,7 @@ export default function BookingPage() {
       <div className="flex items-center justify-center min-h-64 p-10">
         <div className="text-center">
           <div className="w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-          <p className="text-gray-500 text-sm">Loading...</p>
+          <p className="text-gray-500 text-sm">Yükleniyor...</p>
         </div>
       </div>
     );
@@ -281,7 +281,9 @@ export default function BookingPage() {
       <div className="max-w-lg mx-auto px-4 py-20 text-center">
         <div className="text-5xl mb-4">🚫</div>
         <h1 className="text-xl font-bold text-gray-900 mb-2">
-          {profileError.includes("not found") ? "Business Not Found" : "Booking Not Available"}
+          {profileError.includes("bulunamadı") || profileError.includes("not found")
+            ? "İşletme Bulunamadı"
+            : "Rezervasyon Mevcut Değil"}
         </h1>
         <p className="text-gray-500">{profileError}</p>
       </div>
@@ -336,9 +338,9 @@ export default function BookingPage() {
 
       {step === 1 && (
         <div>
-          <h2 className="text-xl font-semibold text-gray-900 mb-5">Select a Service</h2>
+          <h2 className="text-xl font-semibold text-gray-900 mb-5">Hizmet Seçin</h2>
           {services.length === 0 ? (
-            <div className="text-center py-12 text-gray-400">No services available at this time.</div>
+            <div className="text-center py-12 text-gray-400">Şu anda mevcut hizmet yok.</div>
           ) : (
             <div className="grid gap-3">
               {services.map((service) => (
@@ -361,16 +363,16 @@ export default function BookingPage() {
                             <circle cx="12" cy="12" r="10" />
                             <polyline points="12 6 12 12 16 14" />
                           </svg>
-                          {service.durationMinutes} min
+                          {service.durationMinutes} dk
                         </span>
                         {service.staffServices.length > 0 && (
                           <span className="text-sm text-gray-500">
-                            {service.staffServices.length} staff
+                            {service.staffServices.length} çalışan
                           </span>
                         )}
                       </div>
                     </div>
-                    <div className="text-right ml-4 flex-shrink-0">
+                    <div className="text-right ml-4 shrink-0">
                       <span className="font-bold text-blue-600 text-lg">
                         {formatPrice(service.priceCents, service.currency)}
                       </span>
@@ -392,19 +394,19 @@ export default function BookingPage() {
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <polyline points="15 18 9 12 15 6" />
             </svg>
-            Back to Services
+            Hizmetlere Dön
           </button>
 
           <div>
-            <h2 className="text-xl font-semibold text-gray-900 mb-1">Choose Staff & Date</h2>
+            <h2 className="text-xl font-semibold text-gray-900 mb-1">Çalışan ve Tarih Seçin</h2>
             <div className="text-sm text-gray-500">
-              {selectedService.name} · {selectedService.durationMinutes} min
+              {selectedService.name} · {selectedService.durationMinutes} dk
             </div>
           </div>
 
           {staffList.length > 1 && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-3">Select Staff</label>
+              <label className="block text-sm font-medium text-gray-700 mb-3">Çalışan Seçin</label>
               <div className="grid grid-cols-2 gap-3">
                 {staffList.map((staff) => (
                   <button
@@ -432,7 +434,7 @@ export default function BookingPage() {
                 {staffList[0].name.charAt(0).toUpperCase()}
               </div>
               <div>
-                <p className="text-sm text-gray-500">Your appointment will be with</p>
+                <p className="text-sm text-gray-500">Randevunuz şu kişiyle:</p>
                 <p className="font-medium text-gray-900">{staffList[0].name}</p>
               </div>
             </div>
@@ -440,13 +442,13 @@ export default function BookingPage() {
 
           {staffList.length === 0 && (
             <div className="text-center py-6 text-gray-400 text-sm">
-              No staff available for this service.
+              Bu hizmet için mevcut çalışan yok.
             </div>
           )}
 
           {selectedStaff && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-3">Select a Date</label>
+              <label className="block text-sm font-medium text-gray-700 mb-3">Tarih Seçin</label>
               <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
                 {days.map((day) => (
                   <button
@@ -459,13 +461,13 @@ export default function BookingPage() {
                     }`}
                   >
                     <div className="text-xs font-medium">
-                      {day.toLocaleDateString("en-US", { weekday: "short" })}
+                      {day.toLocaleDateString("tr-TR", { weekday: "short" })}
                     </div>
                     <div className="text-sm font-bold mt-0.5">
                       {day.getDate()}
                     </div>
                     <div className="text-xs opacity-70">
-                      {day.toLocaleDateString("en-US", { month: "short" })}
+                      {day.toLocaleDateString("tr-TR", { month: "short" })}
                     </div>
                   </button>
                 ))}
@@ -478,7 +480,7 @@ export default function BookingPage() {
               onClick={handleStaffAndDateComplete}
               className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-semibold transition-colors"
             >
-              View Available Times
+              Uygun Saatleri Görüntüle
             </button>
           )}
         </div>
@@ -493,11 +495,11 @@ export default function BookingPage() {
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <polyline points="15 18 9 12 15 6" />
             </svg>
-            Back
+            Geri
           </button>
 
           <div>
-            <h2 className="text-xl font-semibold text-gray-900 mb-1">Select a Time</h2>
+            <h2 className="text-xl font-semibold text-gray-900 mb-1">Saat Seçin</h2>
             <p className="text-sm text-gray-500">
               {selectedStaff.name} · {formatDate(selectedDate)}
             </p>
@@ -516,7 +518,7 @@ export default function BookingPage() {
                 onClick={() => setStep(2)}
                 className="mt-4 text-blue-600 hover:underline text-sm"
               >
-                Choose a different date
+                Farklı bir tarih seçin
               </button>
             </div>
           )}
@@ -524,7 +526,7 @@ export default function BookingPage() {
           {!loadingSlots && !slotsError && slots.length > 0 && (
             <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
               {slots.map((slot) => {
-                const time = new Date(slot.startTime).toLocaleTimeString([], {
+                const time = new Date(slot.startTime).toLocaleTimeString("tr-TR", {
                   hour: "2-digit",
                   minute: "2-digit",
                 });
@@ -552,24 +554,24 @@ export default function BookingPage() {
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <polyline points="15 18 9 12 15 6" />
             </svg>
-            Back
+            Geri
           </button>
 
           <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
-            <h3 className="font-semibold text-blue-900 mb-2">Booking Summary</h3>
+            <h3 className="font-semibold text-blue-900 mb-2">Rezervasyon Özeti</h3>
             <div className="space-y-1 text-sm text-blue-700">
               <div className="flex justify-between">
-                <span>Service</span>
+                <span>Hizmet</span>
                 <span className="font-medium">{selectedService.name}</span>
               </div>
               <div className="flex justify-between">
-                <span>Staff</span>
+                <span>Çalışan</span>
                 <span className="font-medium">{selectedStaff.name}</span>
               </div>
               <div className="flex justify-between">
-                <span>Date & Time</span>
+                <span>Tarih & Saat</span>
                 <span className="font-medium">
-                  {new Date(selectedSlot.startTime).toLocaleString([], {
+                  {new Date(selectedSlot.startTime).toLocaleString("tr-TR", {
                     weekday: "short",
                     month: "short",
                     day: "numeric",
@@ -579,7 +581,7 @@ export default function BookingPage() {
                 </span>
               </div>
               <div className="flex justify-between">
-                <span>Price</span>
+                <span>Fiyat</span>
                 <span className="font-bold text-blue-800">
                   {formatPrice(selectedService.priceCents, selectedService.currency)}
                 </span>
@@ -588,7 +590,7 @@ export default function BookingPage() {
           </div>
 
           <div>
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">Your Information</h2>
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">Bilgileriniz</h2>
             <form onSubmit={handleConfirm} className="space-y-4">
               {submitError && (
                 <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg px-4 py-3">
@@ -597,7 +599,7 @@ export default function BookingPage() {
               )}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Full Name *
+                  Ad Soyad *
                 </label>
                 <input
                   required
@@ -605,12 +607,12 @@ export default function BookingPage() {
                   value={customerForm.name}
                   onChange={(e) => setCustomerForm({ ...customerForm, name: e.target.value })}
                   className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Jane Smith"
+                  placeholder="Ayşe Yılmaz"
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Email *
+                  E-posta *
                 </label>
                 <input
                   required
@@ -618,13 +620,13 @@ export default function BookingPage() {
                   value={customerForm.email}
                   onChange={(e) => setCustomerForm({ ...customerForm, email: e.target.value })}
                   className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="jane@example.com"
+                  placeholder="siz@ornek.com"
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Phone{" "}
-                  <span className="text-gray-400 font-normal">(optional)</span>
+                  Telefon{" "}
+                  <span className="text-gray-400 font-normal">(opsiyonel)</span>
                 </label>
                 <input
                   type="tel"
@@ -636,15 +638,15 @@ export default function BookingPage() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Notes{" "}
-                  <span className="text-gray-400 font-normal">(optional)</span>
+                  Notlar{" "}
+                  <span className="text-gray-400 font-normal">(opsiyonel)</span>
                 </label>
                 <textarea
                   value={customerForm.notes}
                   onChange={(e) => setCustomerForm({ ...customerForm, notes: e.target.value })}
                   className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   rows={2}
-                  placeholder="Any special requests?"
+                  placeholder="Özel bir isteğiniz var mı?"
                 />
               </div>
               <button
@@ -652,7 +654,7 @@ export default function BookingPage() {
                 disabled={submitting}
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-semibold transition-colors disabled:opacity-60 text-sm"
               >
-                {submitting ? "Confirming..." : "Confirm Booking"}
+                {submitting ? "Onaylanıyor..." : "Randevuyu Onayla"}
               </button>
             </form>
           </div>
@@ -670,7 +672,7 @@ export default function BookingPage() {
                       <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
                     </svg>
                   </div>
-                  <span className="text-white text-sm font-semibold">AI Assistant</span>
+                  <span className="text-white text-sm font-semibold">AI Asistan</span>
                 </div>
                 <button
                   onClick={() => setChatOpen(false)}
@@ -685,7 +687,7 @@ export default function BookingPage() {
               <div className="flex-1 overflow-y-auto p-3 space-y-2 max-h-72 min-h-32">
                 {chatMessages.length === 0 && (
                   <p className="text-xs text-gray-400 text-center py-4">
-                    Hi! Ask me anything about our services, pricing, or how to book.
+                    Merhaba! Hizmetlerimiz, fiyatlarımız veya rezervasyon süreci hakkında soru sorabilirsiniz.
                   </p>
                 )}
                 {chatMessages.map((m, i) => (
@@ -718,7 +720,7 @@ export default function BookingPage() {
                 <input
                   value={chatInput}
                   onChange={(e) => setChatInput(e.target.value)}
-                  placeholder="Ask a question..."
+                  placeholder="Soru sorun..."
                   className="flex-1 text-xs border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   disabled={chatLoading}
                 />
@@ -738,7 +740,7 @@ export default function BookingPage() {
           <button
             onClick={() => setChatOpen(!chatOpen)}
             className="w-12 h-12 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg flex items-center justify-center transition-all hover:scale-105"
-            aria-label="Open AI assistant"
+            aria-label="AI asistanı aç"
           >
             {chatOpen ? (
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -762,9 +764,9 @@ export default function BookingPage() {
           </div>
 
           <div>
-            <h2 className="text-2xl font-bold text-gray-900">Booking Confirmed!</h2>
+            <h2 className="text-2xl font-bold text-gray-900">Randevu Onaylandı!</h2>
             <p className="text-gray-500 mt-1">
-              A confirmation will be sent to {confirmation.customer.email}.
+              Onay {confirmation.customer.email} adresine gönderilecektir.
             </p>
           </div>
 
@@ -772,17 +774,17 @@ export default function BookingPage() {
             <h3 className="font-semibold text-gray-900">{profile.name}</h3>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
-                <span className="text-gray-500">Service</span>
+                <span className="text-gray-500">Hizmet</span>
                 <span className="font-medium text-gray-900">{confirmation.service.name}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-500">Staff</span>
+                <span className="text-gray-500">Çalışan</span>
                 <span className="font-medium text-gray-900">{confirmation.staff.name}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-500">Date & Time</span>
+                <span className="text-gray-500">Tarih & Saat</span>
                 <span className="font-medium text-gray-900">
-                  {new Date(confirmation.startTime).toLocaleString([], {
+                  {new Date(confirmation.startTime).toLocaleString("tr-TR", {
                     weekday: "long",
                     month: "long",
                     day: "numeric",
@@ -793,18 +795,18 @@ export default function BookingPage() {
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-500">Name</span>
+                <span className="text-gray-500">İsim</span>
                 <span className="font-medium text-gray-900">{confirmation.customer.fullName}</span>
               </div>
               {profile.address && (
                 <div className="flex justify-between">
-                  <span className="text-gray-500">Address</span>
+                  <span className="text-gray-500">Adres</span>
                   <span className="font-medium text-gray-900">{profile.address}</span>
                 </div>
               )}
               {profile.phone && (
                 <div className="flex justify-between">
-                  <span className="text-gray-500">Phone</span>
+                  <span className="text-gray-500">Telefon</span>
                   <span className="font-medium text-gray-900">{profile.phone}</span>
                 </div>
               )}
@@ -815,7 +817,7 @@ export default function BookingPage() {
             onClick={reset}
             className="inline-flex items-center gap-2 border border-gray-300 hover:border-blue-400 hover:bg-blue-50 text-gray-700 px-6 py-2.5 rounded-xl text-sm font-medium transition-colors"
           >
-            Book Another Appointment
+            Yeni Randevu Al
           </button>
         </div>
       )}

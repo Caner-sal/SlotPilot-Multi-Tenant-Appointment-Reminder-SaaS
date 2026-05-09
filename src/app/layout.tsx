@@ -5,9 +5,9 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "SlotPilot — Appointment & Reminder SaaS",
+  title: "SlotPilot — Randevu ve Hatırlatma Platformu",
   description:
-    "Multi-tenant appointment booking and reminder platform for local businesses",
+    "Küçük işletmeler için Türkçe, uygun fiyatlı randevu yönetimi ve hatırlatma SaaS platformu",
 };
 
 export default function RootLayout({
@@ -16,7 +16,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="tr" suppressHydrationWarning>
       <body className={inter.className}>{children}</body>
     </html>
   );

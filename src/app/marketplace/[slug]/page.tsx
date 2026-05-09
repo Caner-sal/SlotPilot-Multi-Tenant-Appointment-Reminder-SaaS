@@ -45,7 +45,7 @@ export default async function MarketplaceBusinessPage({ params }: Props) {
       <header className="bg-white border-b">
         <div className="max-w-4xl mx-auto px-4 py-4">
           <Link href="/marketplace" className="text-blue-600 text-sm hover:underline">
-            ← Back to Marketplace
+            ← Marketplace&apos;e Dön
           </Link>
         </div>
         {org.coverImageUrl && (
@@ -68,14 +68,14 @@ export default async function MarketplaceBusinessPage({ params }: Props) {
       <main className="max-w-4xl mx-auto px-4 py-8 space-y-8">
         {org.description && (
           <section>
-            <h2 className="text-lg font-semibold mb-2">About</h2>
+            <h2 className="text-lg font-semibold mb-2">Hakkında</h2>
             <p className="text-gray-600">{org.description}</p>
           </section>
         )}
 
         {(org.phone || org.email || org.address) && (
           <section>
-            <h2 className="text-lg font-semibold mb-2">Contact</h2>
+            <h2 className="text-lg font-semibold mb-2">İletişim</h2>
             <div className="space-y-1 text-sm text-gray-600">
               {org.phone && <p>📞 {org.phone}</p>}
               {org.email && <p>✉️ {org.email}</p>}
@@ -85,19 +85,21 @@ export default async function MarketplaceBusinessPage({ params }: Props) {
         )}
 
         <section>
-          <h2 className="text-lg font-semibold mb-4">Services</h2>
+          <h2 className="text-lg font-semibold mb-4">Hizmetler</h2>
           {org.services.length === 0 ? (
-            <p className="text-gray-400">No services listed.</p>
+            <p className="text-gray-400">Henüz hizmet listelenmemiş.</p>
           ) : (
             <div className="grid gap-3">
               {(org.services as Service[]).map((svc) => (
                 <div key={svc.id} className="bg-white border rounded-lg p-4 flex justify-between items-center">
                   <div>
                     <p className="font-medium">{svc.name}</p>
-                    <p className="text-sm text-gray-500">{svc.durationMinutes} min</p>
+                    <p className="text-sm text-gray-500">{svc.durationMinutes} dk</p>
                   </div>
                   {svc.priceCents > 0 && (
-                    <span className="font-semibold text-gray-900">₺{(svc.priceCents / 100).toFixed(2)}</span>
+                    <span className="font-semibold text-gray-900">
+                      {new Intl.NumberFormat("tr-TR", { style: "currency", currency: "TRY" }).format(svc.priceCents / 100)}
+                    </span>
                   )}
                 </div>
               ))}
@@ -110,7 +112,7 @@ export default async function MarketplaceBusinessPage({ params }: Props) {
             href={`/booking/${org.slug}`}
             className="inline-block bg-blue-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors"
           >
-            Book an Appointment
+            Randevu Al
           </Link>
         </div>
       </main>

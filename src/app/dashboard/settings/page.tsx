@@ -14,8 +14,8 @@ interface OrgForm {
 }
 
 const TIMEZONES = [
-  "UTC",
   "Europe/Istanbul",
+  "UTC",
   "Europe/London",
   "Europe/Berlin",
   "Europe/Paris",
@@ -35,7 +35,7 @@ export default function SettingsPage() {
     phone: "",
     email: "",
     address: "",
-    timezone: "UTC",
+    timezone: "Europe/Istanbul",
     bookingEnabled: true,
   });
   const [loading, setLoading] = useState(true);
@@ -56,7 +56,7 @@ export default function SettingsPage() {
             phone: org.phone ?? "",
             email: org.email ?? "",
             address: org.address ?? "",
-            timezone: org.timezone ?? "UTC",
+            timezone: org.timezone ?? "Europe/Istanbul",
             bookingEnabled: org.bookingEnabled ?? true,
           });
         }
@@ -77,7 +77,7 @@ export default function SettingsPage() {
       });
       if (!res.ok) {
         const j = await res.json();
-        setError(typeof j.error === "string" ? j.error : "Failed to save settings");
+        setError(typeof j.error === "string" ? j.error : "Ayarlar kaydedilemedi.");
         return;
       }
       setSaved(true);
@@ -92,29 +92,29 @@ export default function SettingsPage() {
     : "";
 
   if (loading) {
-    return <div className="p-10 text-center text-gray-400">Loading settings...</div>;
+    return <div className="p-10 text-center text-gray-400">Ayarlar yükleniyor...</div>;
   }
 
   return (
     <div className="space-y-6 max-w-2xl">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Settings</h1>
-        <p className="text-sm text-gray-500 mt-1">Configure your business profile and preferences.</p>
+        <h1 className="text-2xl font-bold text-gray-900">Ayarlar</h1>
+        <p className="text-sm text-gray-500 mt-1">İşletme profilinizi ve tercihlerinizi yapılandırın.</p>
       </div>
 
       {bookingUrl && (
         <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
           <p className="text-xs text-blue-600 font-semibold uppercase tracking-wider mb-1">
-            Your Public Booking URL
+            Genel Rezervasyon URL&apos;niz
           </p>
           <div className="flex items-center gap-3">
             <code className="text-sm text-blue-800 break-all flex-1">{bookingUrl}</code>
             <button
               type="button"
               onClick={() => navigator.clipboard.writeText(bookingUrl)}
-              className="flex-shrink-0 text-blue-600 hover:text-blue-800 text-xs font-medium px-2 py-1 rounded hover:bg-blue-100 transition-colors"
+              className="shrink-0 text-blue-600 hover:text-blue-800 text-xs font-medium px-2 py-1 rounded hover:bg-blue-100 transition-colors"
             >
-              Copy
+              Kopyala
             </button>
           </div>
         </div>
@@ -122,7 +122,7 @@ export default function SettingsPage() {
 
       <form onSubmit={handleSubmit} className="bg-white rounded-xl border border-gray-200 shadow-sm">
         <div className="px-6 py-4 border-b border-gray-100">
-          <h2 className="font-semibold text-gray-900">Business Information</h2>
+          <h2 className="font-semibold text-gray-900">İşletme Bilgileri</h2>
         </div>
         <div className="p-6 space-y-5">
           {error && (
@@ -132,50 +132,50 @@ export default function SettingsPage() {
           )}
           {saved && (
             <div className="bg-green-50 border border-green-200 text-green-700 text-sm rounded-lg px-4 py-3">
-              Settings saved successfully.
+              Ayarlar başarıyla kaydedildi.
             </div>
           )}
 
           <div className="grid md:grid-cols-2 gap-5">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Business Name *</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">İşletme Adı *</label>
               <input
                 required
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="My Business"
+                placeholder="İşletmem"
               />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 URL Slug *
-                <span className="ml-1 text-gray-400 font-normal">(used in booking URL)</span>
+                <span className="ml-1 text-gray-400 font-normal">(rezervasyon URL&apos;sinde kullanılır)</span>
               </label>
               <input
                 required
                 value={form.slug}
                 onChange={(e) => setForm({ ...form, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "-") })}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono"
-                placeholder="my-business"
+                placeholder="isletmem"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Açıklama</label>
             <textarea
               value={form.description}
               onChange={(e) => setForm({ ...form, description: e.target.value })}
               rows={3}
               className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Tell customers about your business..."
+              placeholder="Müşterilerinize işletmeniz hakkında bilgi verin..."
             />
           </div>
 
           <div className="grid md:grid-cols-2 gap-5">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Telefon</label>
               <input
                 value={form.phone}
                 onChange={(e) => setForm({ ...form, phone: e.target.value })}
@@ -184,29 +184,29 @@ export default function SettingsPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">E-posta</label>
               <input
                 type="email"
                 value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="hello@mybusiness.com"
+                placeholder="merhaba@isletmem.com"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Adres</label>
             <input
               value={form.address}
               onChange={(e) => setForm({ ...form, address: e.target.value })}
               className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="123 Main St, City, Country"
+              placeholder="Atatürk Mah. No:1, İstanbul"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Timezone</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Saat Dilimi</label>
             <select
               value={form.timezone}
               onChange={(e) => setForm({ ...form, timezone: e.target.value })}
@@ -222,9 +222,9 @@ export default function SettingsPage() {
 
           <div className="flex items-center justify-between py-3 border border-gray-200 rounded-lg px-4">
             <div>
-              <p className="text-sm font-medium text-gray-900">Online Booking</p>
+              <p className="text-sm font-medium text-gray-900">Online Rezervasyon</p>
               <p className="text-xs text-gray-400 mt-0.5">
-                Allow customers to book appointments through your public booking page.
+                Müşterilerin genel rezervasyon sayfanızdan randevu almasına izin verin.
               </p>
             </div>
             <button
@@ -248,7 +248,7 @@ export default function SettingsPage() {
             disabled={saving}
             className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-60"
           >
-            {saving ? "Saving..." : "Save Settings"}
+            {saving ? "Kaydediliyor..." : "Ayarları Kaydet"}
           </button>
         </div>
       </form>

@@ -3,13 +3,13 @@
 import { useState, useEffect } from "react";
 
 const DAYS = [
-  { key: "MONDAY", label: "Monday" },
-  { key: "TUESDAY", label: "Tuesday" },
-  { key: "WEDNESDAY", label: "Wednesday" },
-  { key: "THURSDAY", label: "Thursday" },
-  { key: "FRIDAY", label: "Friday" },
-  { key: "SATURDAY", label: "Saturday" },
-  { key: "SUNDAY", label: "Sunday" },
+  { key: "MONDAY", label: "Pazartesi" },
+  { key: "TUESDAY", label: "Salı" },
+  { key: "WEDNESDAY", label: "Çarşamba" },
+  { key: "THURSDAY", label: "Perşembe" },
+  { key: "FRIDAY", label: "Cuma" },
+  { key: "SATURDAY", label: "Cumartesi" },
+  { key: "SUNDAY", label: "Pazar" },
 ] as const;
 
 type DayKey = (typeof DAYS)[number]["key"];
@@ -106,7 +106,7 @@ export default function AvailabilityPage() {
       const failed = results.find((r) => !r.ok);
       if (failed) {
         const j = await failed.json();
-        setError(typeof j.error === "string" ? j.error : "Failed to save some rules");
+        setError(typeof j.error === "string" ? j.error : "Bazı kurallar kaydedilemedi.");
         return;
       }
       setSaved(true);
@@ -118,25 +118,25 @@ export default function AvailabilityPage() {
 
   if (loading) {
     return (
-      <div className="p-10 text-center text-gray-400">Loading...</div>
+      <div className="p-10 text-center text-gray-400">Yükleniyor...</div>
     );
   }
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Availability</h1>
-        <p className="text-sm text-gray-500 mt-1">Set weekly working hours for each staff member.</p>
+        <h1 className="text-2xl font-bold text-gray-900">Müsaitlik</h1>
+        <p className="text-sm text-gray-500 mt-1">Her çalışan için haftalık çalışma saatlerini ayarlayın.</p>
       </div>
 
       {staff.length === 0 ? (
         <div className="bg-white rounded-xl border border-gray-200 p-10 text-center text-gray-400">
-          No staff members found. Add staff first to manage availability.
+          Çalışan bulunamadı. Müsaitliği yönetmek için önce çalışan ekleyin.
         </div>
       ) : (
         <>
           <div className="flex items-center gap-4">
-            <label className="text-sm font-medium text-gray-700">Staff Member:</label>
+            <label className="text-sm font-medium text-gray-700">Çalışan:</label>
             <select
               value={selectedStaffId}
               onChange={(e) => setSelectedStaffId(e.target.value)}
@@ -152,7 +152,7 @@ export default function AvailabilityPage() {
 
           <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
             <div className="px-5 py-4 border-b border-gray-100 bg-gray-50">
-              <p className="text-sm font-semibold text-gray-700">Weekly Schedule</p>
+              <p className="text-sm font-semibold text-gray-700">Haftalık Program</p>
             </div>
             <div className="divide-y divide-gray-100">
               {DAYS.map(({ key, label }) => (
@@ -182,7 +182,7 @@ export default function AvailabilityPage() {
                         onChange={(e) => updateDay(key, "startTime", e.target.value)}
                         className="border border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
-                      <span className="text-gray-400 text-sm">to</span>
+                      <span className="text-gray-400 text-sm">—</span>
                       <input
                         type="time"
                         value={schedule[key].endTime}
@@ -191,7 +191,7 @@ export default function AvailabilityPage() {
                       />
                     </div>
                   ) : (
-                    <span className="text-sm text-gray-400">Closed</span>
+                    <span className="text-sm text-gray-400">Kapalı</span>
                   )}
                 </div>
               ))}
@@ -206,7 +206,7 @@ export default function AvailabilityPage() {
 
           {saved && (
             <div className="bg-green-50 border border-green-200 text-green-700 text-sm rounded-lg px-4 py-3">
-              Availability saved successfully.
+              Müsaitlik başarıyla kaydedildi.
             </div>
           )}
 
@@ -216,7 +216,7 @@ export default function AvailabilityPage() {
               disabled={saving}
               className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-60"
             >
-              {saving ? "Saving..." : "Save Schedule"}
+              {saving ? "Kaydediliyor..." : "Programı Kaydet"}
             </button>
           </div>
         </>

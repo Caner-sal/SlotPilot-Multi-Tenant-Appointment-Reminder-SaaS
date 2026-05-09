@@ -38,7 +38,7 @@ export default function RegisterPage() {
     const data = await res.json();
 
     if (!res.ok) {
-      setError(data.message ?? "Registration failed. Please try again.");
+      setError(data.message ?? "Kayıt başarısız. Lütfen tekrar deneyin.");
       setLoading(false);
       return;
     }
@@ -69,17 +69,17 @@ export default function RegisterPage() {
           </span>
         </div>
         <p className="text-blue-300 text-sm">
-          Appointment & Reminder Platform
+          Randevu ve Hatırlatma Platformu
         </p>
       </div>
 
       <Card className="border-0 shadow-2xl">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold text-center">
-            Create your account
+            Hesap Oluştur
           </CardTitle>
           <CardDescription className="text-center">
-            Start managing appointments for your business
+            İşletmeniz için randevu yönetimine başlayın
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -90,11 +90,11 @@ export default function RegisterPage() {
               </div>
             )}
             <div className="space-y-2">
-              <Label htmlFor="name">Full name</Label>
+              <Label htmlFor="name">Ad Soyad</Label>
               <Input
                 id="name"
                 type="text"
-                placeholder="Jane Smith"
+                placeholder="Ayşe Yılmaz"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
@@ -102,11 +102,11 @@ export default function RegisterPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">E-posta</Label>
               <Input
                 id="email"
                 type="email"
-                placeholder="you@example.com"
+                placeholder="siz@ornek.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -114,7 +114,7 @@ export default function RegisterPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password">Şifre</Label>
               <Input
                 id="password"
                 type="password"
@@ -127,18 +127,18 @@ export default function RegisterPage() {
               />
             </div>
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Creating account…" : "Create account"}
+              {loading ? "Hesap oluşturuluyor..." : "Hesap Oluştur"}
             </Button>
           </form>
         </CardContent>
         <CardFooter className="justify-center">
           <p className="text-sm text-muted-foreground">
-            Already have an account?{" "}
+            Zaten hesabınız var mı?{" "}
             <Link
               href="/login"
               className="text-primary font-medium hover:underline"
             >
-              Sign in
+              Giriş yapın
             </Link>
           </p>
         </CardFooter>

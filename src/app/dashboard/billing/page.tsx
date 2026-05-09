@@ -19,33 +19,33 @@ interface SubscriptionData {
 
 const PLAN_FEATURES: Record<string, { label: string; features: string[]; price: string; highlight: boolean }> = {
   FREE: {
-    label: "Free",
-    price: "$0/mo",
+    label: "Ücretsiz",
+    price: "₺0/ay",
     highlight: false,
-    features: ["1 Staff member", "20 appointments/month", "Public booking page", "Basic dashboard"],
+    features: ["1 Çalışan", "Ayda 20 randevu", "Genel rezervasyon sayfası", "Temel kontrol paneli"],
   },
   STARTER: {
-    label: "Starter",
-    price: "$9/mo",
+    label: "Başlangıç",
+    price: "₺40/ay",
     highlight: true,
     features: [
-      "3 Staff members",
-      "300 appointments/month",
-      "Email reminders",
-      "Analytics dashboard",
-      "All Free features",
+      "3 Çalışan",
+      "Ayda 300 randevu",
+      "E-posta hatırlatmaları",
+      "Analitik kontrol paneli",
+      "Ücretsiz plan özellikleri",
     ],
   },
   PRO: {
     label: "Pro",
-    price: "$19/mo",
+    price: "₺249/ay",
     highlight: false,
     features: [
-      "Unlimited staff",
-      "Unlimited appointments",
-      "Advanced analytics",
-      "Priority support",
-      "All Starter features",
+      "Sınırsız çalışan",
+      "Sınırsız randevu",
+      "Gelişmiş analitik",
+      "Öncelikli destek",
+      "Başlangıç plan özellikleri",
     ],
   },
 };
@@ -86,7 +86,7 @@ function BillingContent() {
       if (json.data?.url) {
         window.location.href = json.data.url;
       } else if (json.data?.mode === "test") {
-        setDemoMessage(json.data.message ?? "Demo mode — Stripe not configured.");
+        setDemoMessage(json.data.message ?? "Demo modu — Stripe yapılandırılmamış.");
       }
     } finally {
       setUpgrading(null);
@@ -94,7 +94,7 @@ function BillingContent() {
   }
 
   if (loading) {
-    return <div className="p-10 text-center text-gray-400">Loading billing information...</div>;
+    return <div className="p-10 text-center text-gray-400">Abonelik bilgileri yükleniyor...</div>;
   }
 
   const currentPlan = data?.plan ?? "FREE";
@@ -103,25 +103,25 @@ function BillingContent() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Billing</h1>
-        <p className="text-sm text-gray-500 mt-1">Manage your subscription plan.</p>
+        <h1 className="text-2xl font-bold text-gray-900">Abonelik</h1>
+        <p className="text-sm text-gray-500 mt-1">Abonelik planınızı yönetin.</p>
       </div>
 
       {success && (
         <div className="bg-green-50 border border-green-200 text-green-700 text-sm rounded-lg px-4 py-3">
-          Your subscription has been updated successfully. Thank you!
+          Aboneliğiniz başarıyla güncellendi. Teşekkürler!
         </div>
       )}
 
       {cancelled && (
         <div className="bg-yellow-50 border border-yellow-200 text-yellow-700 text-sm rounded-lg px-4 py-3">
-          Checkout was cancelled. Your plan has not changed.
+          Ödeme iptal edildi. Planınız değişmedi.
         </div>
       )}
 
       {demoMessage && (
         <div className="bg-amber-50 border border-amber-200 text-amber-700 text-sm rounded-lg px-4 py-3">
-          <strong>Demo Mode:</strong> {demoMessage}
+          <strong>Demo Modu:</strong> {demoMessage}
         </div>
       )}
 
@@ -129,7 +129,7 @@ function BillingContent() {
         <div className="flex items-center justify-between mb-4">
           <div>
             <p className="text-xs text-gray-400 uppercase tracking-wider font-semibold mb-1">
-              Current Plan
+              Mevcut Plan
             </p>
             <div className="flex items-center gap-3">
               <h2 className="text-2xl font-bold text-gray-900">{PLAN_FEATURES[currentPlan]?.label}</h2>
@@ -144,31 +144,31 @@ function BillingContent() {
         {limits && (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
             <div className="bg-gray-50 rounded-lg p-3">
-              <p className="text-xs text-gray-400 mb-1">Max Staff</p>
+              <p className="text-xs text-gray-400 mb-1">Maks. Çalışan</p>
               <p className="font-semibold text-gray-900">
-                {limits.maxStaff === Infinity ? "Unlimited" : limits.maxStaff}
+                {limits.maxStaff === Infinity ? "Sınırsız" : limits.maxStaff}
               </p>
             </div>
             <div className="bg-gray-50 rounded-lg p-3">
-              <p className="text-xs text-gray-400 mb-1">Appointments/mo</p>
+              <p className="text-xs text-gray-400 mb-1">Randevu/ay</p>
               <p className="font-semibold text-gray-900">
-                {limits.maxAppointmentsPerMonth === Infinity ? "Unlimited" : limits.maxAppointmentsPerMonth}
+                {limits.maxAppointmentsPerMonth === Infinity ? "Sınırsız" : limits.maxAppointmentsPerMonth}
               </p>
             </div>
             <div className="bg-gray-50 rounded-lg p-3">
-              <p className="text-xs text-gray-400 mb-1">Email Reminders</p>
-              <p className="font-semibold text-gray-900">{limits.emailReminders ? "Yes" : "No"}</p>
+              <p className="text-xs text-gray-400 mb-1">E-posta Hatırlatma</p>
+              <p className="font-semibold text-gray-900">{limits.emailReminders ? "Evet" : "Hayır"}</p>
             </div>
             <div className="bg-gray-50 rounded-lg p-3">
-              <p className="text-xs text-gray-400 mb-1">Advanced Analytics</p>
-              <p className="font-semibold text-gray-900">{limits.advancedAnalytics ? "Yes" : "No"}</p>
+              <p className="text-xs text-gray-400 mb-1">Gelişmiş Analitik</p>
+              <p className="font-semibold text-gray-900">{limits.advancedAnalytics ? "Evet" : "Hayır"}</p>
             </div>
           </div>
         )}
       </div>
 
       <div>
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Available Plans</h2>
+        <h2 className="text-lg font-semibold text-gray-900 mb-4">Mevcut Planlar</h2>
         <div className="grid md:grid-cols-3 gap-4">
           {Object.entries(PLAN_FEATURES).map(([planKey, plan]) => {
             const isCurrent = planKey === currentPlan;
@@ -181,12 +181,12 @@ function BillingContent() {
               >
                 {plan.highlight && (
                   <div className="text-blue-600 text-xs font-semibold uppercase tracking-wider mb-2">
-                    Most Popular
+                    En Çok Tercih Edilen
                   </div>
                 )}
                 {isCurrent && (
                   <div className="text-green-600 text-xs font-semibold uppercase tracking-wider mb-2">
-                    Current Plan
+                    Mevcut Plan
                   </div>
                 )}
                 <h3 className="text-xl font-bold text-gray-900">{plan.label}</h3>
@@ -194,7 +194,7 @@ function BillingContent() {
                 <ul className="mt-4 space-y-2 flex-1">
                   {plan.features.map((f) => (
                     <li key={f} className="flex items-center gap-2 text-sm text-gray-600">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className="text-green-500 flex-shrink-0">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className="text-green-500 shrink-0">
                         <polyline points="20 6 9 17 4 12" />
                       </svg>
                       {f}
@@ -204,11 +204,11 @@ function BillingContent() {
                 <div className="mt-5">
                   {isCurrent ? (
                     <div className="text-center text-sm text-gray-500 py-2 border border-gray-200 rounded-lg">
-                      Active Plan
+                      Aktif Plan
                     </div>
                   ) : planKey === "FREE" ? (
                     <div className="text-center text-sm text-gray-400 py-2">
-                      Contact support to downgrade
+                      Düşürmek için destek ile iletişime geçin
                     </div>
                   ) : (
                     <button
@@ -220,7 +220,7 @@ function BillingContent() {
                           : "border border-gray-300 hover:border-gray-400 text-gray-700 hover:bg-gray-50"
                       }`}
                     >
-                      {upgrading === planKey ? "Redirecting..." : `Upgrade to ${plan.label}`}
+                      {upgrading === planKey ? "Yönlendiriliyor..." : `${plan.label} planına geç`}
                     </button>
                   )}
                 </div>
@@ -235,7 +235,7 @@ function BillingContent() {
 
 export default function BillingPage() {
   return (
-    <Suspense fallback={<div className="p-10 text-center text-gray-400">Loading...</div>}>
+    <Suspense fallback={<div className="p-10 text-center text-gray-400">Yükleniyor...</div>}>
       <BillingContent />
     </Suspense>
   );

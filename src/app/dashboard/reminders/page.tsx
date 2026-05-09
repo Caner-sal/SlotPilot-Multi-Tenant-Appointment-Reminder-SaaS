@@ -64,11 +64,11 @@ export default function RemindersPage() {
       if (res.ok && json.data) {
         const d = json.data;
         setProcessResult(
-          `Processed: ${d.processed ?? 0} sent, ${d.failed ?? 0} failed, ${d.skipped ?? 0} skipped.`
+          `İşlendi: ${d.processed ?? 0} gönderildi, ${d.failed ?? 0} başarısız, ${d.skipped ?? 0} atlandı.`
         );
         await fetchReminders();
       } else {
-        setProcessResult("Failed to process reminders.");
+        setProcessResult("Hatırlatmalar işlenemedi.");
       }
     } finally {
       setProcessing(false);
@@ -79,8 +79,8 @@ export default function RemindersPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Reminders</h1>
-          <p className="text-sm text-gray-500 mt-1">View reminder logs and manually trigger processing.</p>
+          <h1 className="text-2xl font-bold text-gray-900">Hatırlatmalar</h1>
+          <p className="text-sm text-gray-500 mt-1">Hatırlatma günlüklerini görüntüleyin ve manuel işlem başlatın.</p>
         </div>
         <button
           onClick={processReminders}
@@ -90,7 +90,7 @@ export default function RemindersPage() {
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M5 3l14 9-14 9V3z" />
           </svg>
-          {processing ? "Processing..." : "Process Reminders"}
+          {processing ? "İşleniyor..." : "Hatırlatmaları İşle"}
         </button>
       </div>
 
@@ -102,19 +102,19 @@ export default function RemindersPage() {
 
       <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
         {loading ? (
-          <div className="p-10 text-center text-gray-400">Loading...</div>
+          <div className="p-10 text-center text-gray-400">Yükleniyor...</div>
         ) : reminders.length === 0 ? (
-          <div className="p-10 text-center text-gray-400">No reminders found.</div>
+          <div className="p-10 text-center text-gray-400">Hatırlatma bulunamadı.</div>
         ) : (
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-gray-100 bg-gray-50">
-                <th className="px-5 py-3 text-left font-semibold text-gray-600">Appointment</th>
-                <th className="px-5 py-3 text-left font-semibold text-gray-600">Type</th>
-                <th className="px-5 py-3 text-left font-semibold text-gray-600">Scheduled</th>
-                <th className="px-5 py-3 text-left font-semibold text-gray-600">Status</th>
-                <th className="px-5 py-3 text-left font-semibold text-gray-600">Sent At</th>
-                <th className="px-5 py-3 text-left font-semibold text-gray-600">Error</th>
+                <th className="px-5 py-3 text-left font-semibold text-gray-600">Randevu</th>
+                <th className="px-5 py-3 text-left font-semibold text-gray-600">Tür</th>
+                <th className="px-5 py-3 text-left font-semibold text-gray-600">Planlandı</th>
+                <th className="px-5 py-3 text-left font-semibold text-gray-600">Durum</th>
+                <th className="px-5 py-3 text-left font-semibold text-gray-600">Gönderildi</th>
+                <th className="px-5 py-3 text-left font-semibold text-gray-600">Hata</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
@@ -124,12 +124,12 @@ export default function RemindersPage() {
                     <div className="font-medium text-gray-900">{reminder.appointment.customer.fullName}</div>
                     <div className="text-xs text-gray-400">
                       {reminder.appointment.service.name} ·{" "}
-                      {new Date(reminder.appointment.startTime).toLocaleString()}
+                      {new Date(reminder.appointment.startTime).toLocaleString("tr-TR")}
                     </div>
                   </td>
                   <td className="px-5 py-3.5 text-gray-600">{reminder.type}</td>
                   <td className="px-5 py-3.5 text-gray-600">
-                    {new Date(reminder.scheduledAt).toLocaleString()}
+                    {new Date(reminder.scheduledAt).toLocaleString("tr-TR")}
                   </td>
                   <td className="px-5 py-3.5">
                     <span
@@ -141,7 +141,7 @@ export default function RemindersPage() {
                     </span>
                   </td>
                   <td className="px-5 py-3.5 text-gray-600">
-                    {reminder.sentAt ? new Date(reminder.sentAt).toLocaleString() : "—"}
+                    {reminder.sentAt ? new Date(reminder.sentAt).toLocaleString("tr-TR") : "—"}
                   </td>
                   <td className="px-5 py-3.5 text-red-500 max-w-[200px]">
                     <span className="line-clamp-1 text-xs">{reminder.errorMessage ?? "—"}</span>
@@ -156,8 +156,7 @@ export default function RemindersPage() {
       {meta && meta.totalPages > 1 && (
         <div className="flex items-center justify-between">
           <p className="text-sm text-gray-500">
-            Showing {(meta.page - 1) * meta.limit + 1}–
-            {Math.min(meta.page * meta.limit, meta.total)} of {meta.total}
+            {(meta.page - 1) * meta.limit + 1}–{Math.min(meta.page * meta.limit, meta.total)} / {meta.total} hatırlatma
           </p>
           <div className="flex items-center gap-2">
             <button
@@ -165,7 +164,7 @@ export default function RemindersPage() {
               onClick={() => setPage((p) => p - 1)}
               className="px-3 py-1.5 border border-gray-300 rounded-lg text-sm disabled:opacity-40 hover:bg-gray-50 transition-colors"
             >
-              Previous
+              Önceki
             </button>
             <span className="text-sm text-gray-600">
               {meta.page} / {meta.totalPages}
@@ -175,7 +174,7 @@ export default function RemindersPage() {
               onClick={() => setPage((p) => p + 1)}
               className="px-3 py-1.5 border border-gray-300 rounded-lg text-sm disabled:opacity-40 hover:bg-gray-50 transition-colors"
             >
-              Next
+              Sonraki
             </button>
           </div>
         </div>

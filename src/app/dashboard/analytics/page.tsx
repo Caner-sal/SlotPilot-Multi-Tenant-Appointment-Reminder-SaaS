@@ -52,71 +52,71 @@ export default async function AnalyticsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Analytics</h1>
+        <h1 className="text-2xl font-bold text-gray-900">Analitik</h1>
         <p className="text-sm text-gray-500 mt-1">
-          Business performance overview for the current month.
+          Bu aya ait işletme performans özeti.
         </p>
       </div>
 
       {!analytics ? (
         <div className="bg-white rounded-xl border border-gray-200 p-10 text-center text-gray-400">
-          Could not load analytics data.
+          Analitik verileri yüklenemedi.
         </div>
       ) : (
         <>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             <BigStat
-              label="Today"
+              label="Bugün"
               value={analytics.todayAppointments}
-              sub="Appointments today"
+              sub="Bugünkü randevular"
               color="text-blue-600"
             />
             <BigStat
-              label="This Week"
+              label="Bu Hafta"
               value={analytics.weekAppointments}
-              sub="Appointments this week"
+              sub="Bu haftaki randevular"
               color="text-indigo-600"
             />
             <BigStat
-              label="This Month"
+              label="Bu Ay"
               value={analytics.monthAppointments}
-              sub="Total appointments"
+              sub="Toplam randevular"
               color="text-purple-600"
             />
             <BigStat
-              label="Completed"
+              label="Tamamlanan"
               value={analytics.completedCount}
-              sub={`${completionRate}% completion rate`}
+              sub={`%${completionRate} tamamlanma oranı`}
               color="text-green-600"
             />
             <BigStat
-              label="Cancelled"
+              label="İptal Edilen"
               value={analytics.cancelledCount}
-              sub={`${cancellationRate}% cancellation rate`}
+              sub={`%${cancellationRate} iptal oranı`}
               color="text-red-600"
             />
             <BigStat
-              label="No-Shows"
+              label="Gelmeyen"
               value={analytics.noShowCount}
-              sub="Missed appointments"
+              sub="Gelmeden iptal"
               color="text-orange-600"
             />
             <BigStat
-              label="Est. Revenue"
+              label="Tahmini Ciro"
               value={revenue}
-              sub="From completed appointments"
+              sub="Tamamlanan randevulardan"
               color="text-emerald-600"
             />
           </div>
 
           <div className="grid md:grid-cols-2 gap-6">
             <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-              <h2 className="font-semibold text-gray-900 mb-4">Appointment Status Breakdown</h2>
+              <h2 className="font-semibold text-gray-900 mb-4">Randevu Durum Dağılımı</h2>
               <div className="space-y-3">
                 {[
-                  { label: "Completed", value: analytics.completedCount, color: "bg-green-500" },
-                  { label: "Cancelled", value: analytics.cancelledCount, color: "bg-red-500" },
-                  { label: "No-Show", value: analytics.noShowCount, color: "bg-orange-500" },
+                  { label: "Tamamlanan", value: analytics.completedCount, color: "bg-green-500" },
+                  { label: "İptal Edilen", value: analytics.cancelledCount, color: "bg-red-500" },
+                  { label: "Gelmeyen", value: analytics.noShowCount, color: "bg-orange-500" },
                 ].map(({ label, value, color }) => {
                   const pct =
                     analytics.monthAppointments > 0
@@ -127,7 +127,7 @@ export default async function AnalyticsPage() {
                       <div className="flex items-center justify-between mb-1">
                         <span className="text-sm text-gray-600">{label}</span>
                         <span className="text-sm font-medium text-gray-900">
-                          {value} ({pct}%)
+                          {value} (%{pct})
                         </span>
                       </div>
                       <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
@@ -143,16 +143,16 @@ export default async function AnalyticsPage() {
             </div>
 
             <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-              <h2 className="font-semibold text-gray-900 mb-4">Top Performers</h2>
+              <h2 className="font-semibold text-gray-900 mb-4">Öne Çıkanlar</h2>
               <div className="space-y-4">
                 <div className="flex items-center gap-4 p-3 bg-blue-50 rounded-lg">
                   <div className="text-2xl">🏆</div>
                   <div>
                     <p className="text-xs text-gray-400 font-medium uppercase tracking-wider">
-                      Most Booked Service
+                      En Çok Tercih Edilen Hizmet
                     </p>
                     <p className="font-semibold text-gray-900 mt-0.5">
-                      {analytics.topServiceName ?? "No data yet"}
+                      {analytics.topServiceName ?? "Henüz veri yok"}
                     </p>
                   </div>
                 </div>
@@ -160,10 +160,10 @@ export default async function AnalyticsPage() {
                   <div className="text-2xl">⭐</div>
                   <div>
                     <p className="text-xs text-gray-400 font-medium uppercase tracking-wider">
-                      Busiest Staff Member
+                      En Yoğun Çalışan
                     </p>
                     <p className="font-semibold text-gray-900 mt-0.5">
-                      {analytics.busiestStaffName ?? "No data yet"}
+                      {analytics.busiestStaffName ?? "Henüz veri yok"}
                     </p>
                   </div>
                 </div>

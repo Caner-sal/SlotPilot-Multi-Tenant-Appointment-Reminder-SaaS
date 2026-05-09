@@ -42,7 +42,7 @@ export default function MarketplacePage() {
       <header className="bg-white border-b">
         <div className="max-w-6xl mx-auto px-4 py-6">
           <h1 className="text-3xl font-bold text-gray-900">SlotPilot Marketplace</h1>
-          <p className="text-gray-500 mt-1">Discover and book local businesses</p>
+          <p className="text-gray-500 mt-1">Yerel işletmeleri keşfedin ve randevu alın</p>
         </div>
       </header>
 
@@ -50,21 +50,21 @@ export default function MarketplacePage() {
         <div className="flex flex-wrap gap-3 mb-8">
           <input
             type="text"
-            placeholder="Search businesses..."
+            placeholder="İşletme ara..."
             value={q}
             onChange={(e) => setQ(e.target.value)}
             className="border rounded-lg px-3 py-2 text-sm flex-1 min-w-48"
           />
           <input
             type="text"
-            placeholder="Category (e.g. salon)"
+            placeholder="Kategori (ör. kuaför)"
             value={category}
             onChange={(e) => setCategory(e.target.value)}
             className="border rounded-lg px-3 py-2 text-sm w-48"
           />
           <input
             type="text"
-            placeholder="City"
+            placeholder="Şehir"
             value={city}
             onChange={(e) => setCity(e.target.value)}
             className="border rounded-lg px-3 py-2 text-sm w-36"
@@ -72,10 +72,10 @@ export default function MarketplacePage() {
         </div>
 
         {loading ? (
-          <p className="text-gray-500">Loading...</p>
+          <p className="text-gray-500">Yükleniyor...</p>
         ) : businesses.length === 0 ? (
           <div className="text-center py-16">
-            <p className="text-gray-400 text-lg">No businesses found.</p>
+            <p className="text-gray-400 text-lg">İşletme bulunamadı.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -102,7 +102,7 @@ export default function MarketplacePage() {
                       <span className="bg-gray-100 text-gray-600 px-2 py-1 rounded-full">{biz.city}</span>
                     )}
                     <span className="bg-green-50 text-green-700 px-2 py-1 rounded-full">
-                      {biz._count.services} service{biz._count.services !== 1 ? "s" : ""}
+                      {biz._count.services} hizmet
                     </span>
                   </div>
                 </div>

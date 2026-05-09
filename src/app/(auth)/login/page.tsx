@@ -37,7 +37,7 @@ export default function LoginPage() {
     setLoading(false);
 
     if (result?.error) {
-      setError("Invalid email or password.");
+      setError("E-posta veya şifre hatalı.");
       return;
     }
 
@@ -54,17 +54,17 @@ export default function LoginPage() {
           </span>
         </div>
         <p className="text-blue-300 text-sm">
-          Appointment & Reminder Platform
+          Randevu ve Hatırlatma Platformu
         </p>
       </div>
 
       <Card className="border-0 shadow-2xl">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold text-center">
-            Sign in
+            Giriş Yap
           </CardTitle>
           <CardDescription className="text-center">
-            Enter your credentials to access your dashboard
+            Kontrol panelinize erişmek için bilgilerinizi girin
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -75,11 +75,11 @@ export default function LoginPage() {
               </div>
             )}
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">E-posta</Label>
               <Input
                 id="email"
                 type="email"
-                placeholder="you@example.com"
+                placeholder="siz@ornek.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -87,7 +87,7 @@ export default function LoginPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password">Şifre</Label>
               <Input
                 id="password"
                 type="password"
@@ -99,18 +99,18 @@ export default function LoginPage() {
               />
             </div>
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Signing in…" : "Sign in"}
+              {loading ? "Giriş yapılıyor..." : "Giriş Yap"}
             </Button>
           </form>
         </CardContent>
         <CardFooter className="justify-center">
           <p className="text-sm text-muted-foreground">
-            Don&apos;t have an account?{" "}
+            Hesabınız yok mu?{" "}
             <Link
               href="/register"
               className="text-primary font-medium hover:underline"
             >
-              Create one
+              Hesap oluşturun
             </Link>
           </p>
         </CardFooter>

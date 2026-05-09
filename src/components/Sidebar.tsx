@@ -136,15 +136,15 @@ function IconLogOut() {
 }
 
 const navItems: NavItem[] = [
-  { href: "/dashboard", label: "Overview", icon: <IconOverview /> },
-  { href: "/dashboard/appointments", label: "Appointments", icon: <IconCalendar /> },
-  { href: "/dashboard/services", label: "Services", icon: <IconScissors /> },
-  { href: "/dashboard/staff", label: "Staff", icon: <IconUsers /> },
-  { href: "/dashboard/availability", label: "Availability", icon: <IconClock /> },
-  { href: "/dashboard/analytics", label: "Analytics", icon: <IconBarChart /> },
-  { href: "/dashboard/billing", label: "Billing", icon: <IconCreditCard /> },
-  { href: "/dashboard/reminders", label: "Reminders", icon: <IconBell /> },
-  { href: "/dashboard/audit-logs", label: "Audit Logs", icon: <IconList /> },
+  { href: "/dashboard", label: "Kontrol Paneli", icon: <IconOverview /> },
+  { href: "/dashboard/appointments", label: "Randevular", icon: <IconCalendar /> },
+  { href: "/dashboard/services", label: "Hizmetler", icon: <IconScissors /> },
+  { href: "/dashboard/staff", label: "Çalışanlar", icon: <IconUsers /> },
+  { href: "/dashboard/availability", label: "Müsaitlik", icon: <IconClock /> },
+  { href: "/dashboard/analytics", label: "Analitik", icon: <IconBarChart /> },
+  { href: "/dashboard/billing", label: "Abonelik", icon: <IconCreditCard /> },
+  { href: "/dashboard/reminders", label: "Hatırlatmalar", icon: <IconBell /> },
+  { href: "/dashboard/audit-logs", label: "İşlem Geçmişi", icon: <IconList /> },
 ];
 
 function NavLink({
@@ -206,7 +206,7 @@ export default function Sidebar() {
           className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
         >
           <IconLogOut />
-          Sign out
+          Çıkış Yap
         </button>
       </div>
     </div>

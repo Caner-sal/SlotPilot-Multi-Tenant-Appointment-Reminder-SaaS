@@ -112,7 +112,7 @@ export default function StaffPage() {
           });
       if (!res.ok) {
         const j = await res.json();
-        setError(typeof j.error === "string" ? j.error : "Something went wrong");
+        setError(typeof j.error === "string" ? j.error : "Bir hata oluştu.");
         return;
       }
       setDialogOpen(false);
@@ -132,7 +132,7 @@ export default function StaffPage() {
   }
 
   async function deleteStaff(member: StaffMember) {
-    if (!confirm(`Deactivate "${member.name}"?`)) return;
+    if (!confirm(`"${member.name}" çalışanını kaldırmak istediğinizden emin misiniz?`)) return;
     await fetch(`/api/staff/${member.id}`, { method: "DELETE" });
     await fetchData();
   }
@@ -145,8 +145,8 @@ export default function StaffPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Staff</h1>
-          <p className="text-sm text-gray-500 mt-1">Manage your team members.</p>
+          <h1 className="text-2xl font-bold text-gray-900">Çalışanlar</h1>
+          <p className="text-sm text-gray-500 mt-1">Ekip üyelerinizi yönetin.</p>
         </div>
         <button
           onClick={openAddDialog}
@@ -157,7 +157,7 @@ export default function StaffPage() {
             <line x1="12" y1="5" x2="12" y2="19" />
             <line x1="5" y1="12" x2="19" y2="12" />
           </svg>
-          Add Staff
+          Çalışan Ekle
         </button>
       </div>
 
@@ -169,28 +169,28 @@ export default function StaffPage() {
               : "bg-blue-50 border-blue-200 text-blue-700"
           }`}
         >
-          {subscription.plan} plan: {activeStaffCount}/{maxStaff === Infinity ? "∞" : maxStaff} staff slots used.
-          {atLimit && " Upgrade your plan to add more staff."}
+          {subscription.plan} planı: {activeStaffCount}/{maxStaff === Infinity ? "∞" : maxStaff} çalışan kullanılıyor.
+          {atLimit && " Daha fazla çalışan eklemek için planınızı yükseltin."}
         </div>
       )}
 
       <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
         {loading ? (
-          <div className="p-10 text-center text-gray-400">Loading...</div>
+          <div className="p-10 text-center text-gray-400">Yükleniyor...</div>
         ) : staff.length === 0 ? (
           <div className="p-10 text-center text-gray-400">
-            No staff members yet. Add your first team member to get started.
+            Henüz çalışan yok. Başlamak için ilk ekip üyenizi ekleyin.
           </div>
         ) : (
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-gray-100 bg-gray-50">
-                <th className="px-5 py-3 text-left font-semibold text-gray-600">Name</th>
-                <th className="px-5 py-3 text-left font-semibold text-gray-600">Email</th>
-                <th className="px-5 py-3 text-left font-semibold text-gray-600">Phone</th>
-                <th className="px-5 py-3 text-left font-semibold text-gray-600">Services</th>
-                <th className="px-5 py-3 text-left font-semibold text-gray-600">Status</th>
-                <th className="px-5 py-3 text-right font-semibold text-gray-600">Actions</th>
+                <th className="px-5 py-3 text-left font-semibold text-gray-600">Ad</th>
+                <th className="px-5 py-3 text-left font-semibold text-gray-600">E-posta</th>
+                <th className="px-5 py-3 text-left font-semibold text-gray-600">Telefon</th>
+                <th className="px-5 py-3 text-left font-semibold text-gray-600">Hizmetler</th>
+                <th className="px-5 py-3 text-left font-semibold text-gray-600">Durum</th>
+                <th className="px-5 py-3 text-right font-semibold text-gray-600">İşlemler</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
@@ -202,7 +202,7 @@ export default function StaffPage() {
                   <td className="px-5 py-3.5">
                     <div className="flex flex-wrap gap-1">
                       {member.staffServices.length === 0 ? (
-                        <span className="text-gray-400">None</span>
+                        <span className="text-gray-400">Yok</span>
                       ) : (
                         member.staffServices.map((ss) => (
                           <span
@@ -221,7 +221,7 @@ export default function StaffPage() {
                         member.isActive ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"
                       }`}
                     >
-                      {member.isActive ? "Active" : "Inactive"}
+                      {member.isActive ? "Aktif" : "Pasif"}
                     </span>
                   </td>
                   <td className="px-5 py-3.5">
@@ -230,19 +230,19 @@ export default function StaffPage() {
                         onClick={() => openEditDialog(member)}
                         className="text-blue-600 hover:text-blue-800 text-xs font-medium px-2 py-1 rounded hover:bg-blue-50 transition-colors"
                       >
-                        Edit
+                        Düzenle
                       </button>
                       <button
                         onClick={() => toggleActive(member)}
                         className="text-gray-500 hover:text-gray-700 text-xs font-medium px-2 py-1 rounded hover:bg-gray-100 transition-colors"
                       >
-                        {member.isActive ? "Deactivate" : "Activate"}
+                        {member.isActive ? "Pasifleştir" : "Aktifleştir"}
                       </button>
                       <button
                         onClick={() => deleteStaff(member)}
                         className="text-red-500 hover:text-red-700 text-xs font-medium px-2 py-1 rounded hover:bg-red-50 transition-colors"
                       >
-                        Delete
+                        Sil
                       </button>
                     </div>
                   </td>
@@ -258,7 +258,7 @@ export default function StaffPage() {
           <div className="bg-white rounded-xl shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto">
             <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between sticky top-0 bg-white">
               <h2 className="font-semibold text-gray-900">
-                {editingStaff ? "Edit Staff Member" : "Add Staff Member"}
+                {editingStaff ? "Çalışanı Düzenle" : "Çalışan Ekle"}
               </h2>
               <button onClick={() => setDialogOpen(false)} className="text-gray-400 hover:text-gray-600">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -274,27 +274,27 @@ export default function StaffPage() {
                 </div>
               )}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Name *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Ad Soyad *</label>
                 <input
                   required
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Full name"
+                  placeholder="Ad Soyad"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">E-posta</label>
                 <input
                   type="email"
                   value={form.email}
                   onChange={(e) => setForm({ ...form, email: e.target.value })}
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="staff@example.com"
+                  placeholder="calisan@ornek.com"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Telefon</label>
                 <input
                   value={form.phone}
                   onChange={(e) => setForm({ ...form, phone: e.target.value })}
@@ -304,7 +304,7 @@ export default function StaffPage() {
               </div>
               {services.length > 0 && (
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Assigned Services</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Atanan Hizmetler</label>
                   <div className="space-y-2 max-h-40 overflow-y-auto border border-gray-200 rounded-lg p-3">
                     {services.map((service) => (
                       <label key={service.id} className="flex items-center gap-2 cursor-pointer">
@@ -329,7 +329,7 @@ export default function StaffPage() {
                   className="rounded"
                 />
                 <label htmlFor="staffActive" className="text-sm text-gray-700">
-                  Active
+                  Aktif
                 </label>
               </div>
               <div className="flex gap-3 pt-2">
@@ -338,14 +338,14 @@ export default function StaffPage() {
                   onClick={() => setDialogOpen(false)}
                   className="flex-1 border border-gray-300 text-gray-700 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors"
                 >
-                  Cancel
+                  İptal
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
                   className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-60"
                 >
-                  {saving ? "Saving..." : editingStaff ? "Update" : "Create"}
+                  {saving ? "Kaydediliyor..." : editingStaff ? "Güncelle" : "Oluştur"}
                 </button>
               </div>
             </form>
