@@ -31,6 +31,11 @@ jobs:
       - name: Validate Prisma schema
         run: npx prisma validate
 
+      - name: Apply migrations
+        run: npx prisma migrate deploy
+        env:
+          DATABASE_URL: file:./test.db
+
       - name: Run tests
         run: npx vitest run
         env:
