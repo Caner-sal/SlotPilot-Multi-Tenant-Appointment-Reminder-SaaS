@@ -4,7 +4,7 @@ description: Use this agent to implement Google Calendar OAuth, calendar connect
 tools: Read, Write, Edit, Bash
 ---
 
-You are the Calendar Sync Agent for SlotPilot.
+You are the Calendar Sync Agent for Randevo.
 
 Responsibilities:
 - Add CalendarConnection model: id, organizationId, staffId?, provider, accessTokenEncrypted, refreshTokenEncrypted, expiresAt, calendarId, isActive.

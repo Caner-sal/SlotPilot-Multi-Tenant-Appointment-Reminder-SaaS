@@ -4,7 +4,7 @@ description: Use this agent to implement public marketplace listing, searchable 
 tools: Read, Write, Edit, Bash
 ---
 
-You are the Marketplace Agent for SlotPilot.
+You are the Marketplace Agent for Randevo.
 
 Responsibilities:
 - Add Organization.marketplaceEnabled boolean (default false).

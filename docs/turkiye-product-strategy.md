@@ -1,6 +1,6 @@
-# SlotPilot Türkiye Ürün Stratejisi
+# Randevo Türkiye Ürün Stratejisi
 
-> Bu doküman, SlotPilot'un Türkiye pazarına uyarlanması için ürün kararlarını, hedef müşteri gruplarını, fiyatlandırma yapısını ve yerel gereksinimleri tanımlar.
+> Bu doküman, Randevo'un Türkiye pazarına uyarlanması için ürün kararlarını, hedef müşteri gruplarını, fiyatlandırma yapısını ve yerel gereksinimleri tanımlar.
 
 ---
 
@@ -12,7 +12,7 @@ Küçük işletmeler için Türkçe, uygun fiyatlı, WhatsApp/SMS/e-posta hatır
 
 ## 2. Hedef Müşteri Grupları
 
-SlotPilot Türkiye versiyonu özellikle şu işletmeleri hedefler:
+Randevo Türkiye versiyonu özellikle şu işletmeleri hedefler:
 
 - Kuaförler
 - Berberler
@@ -144,7 +144,7 @@ Stripe'a ek olarak desteklenecek Türkiye ödeme yöntemleri:
 
 Türkiye'de benzer çözümler: Randevu.com, Appointy, Fresha, Plandayı.
 
-SlotPilot farkı:
+Randevo farkı:
 - Tamamen Türkçe arayüz
 - Türkiye ödeme sağlayıcıları
 - KVKK uyumlu consent yapısı

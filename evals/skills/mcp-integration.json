@@ -1,5 +1,5 @@
 {
-  "skill": "slotpilot-mcp-integration",
+  "skill": "randevo-mcp-integration",
   "description": "Eval: MCP security review skill triggers correctly",
   "test_prompts": [
     "Review MCP configuration for security issues.",

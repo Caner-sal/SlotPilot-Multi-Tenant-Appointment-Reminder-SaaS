@@ -122,7 +122,7 @@ export default function OzelliklerPage() {
           <Link href="/" className="text-sm text-blue-300 hover:text-blue-200">
             ← Ana sayfaya dön
           </Link>
-          <h1 className="mt-4 text-4xl font-bold">SlotPilot Özellikleri ve Uyum Notları</h1>
+          <h1 className="mt-4 text-4xl font-bold">Randevo Özellikleri ve Uyum Notları</h1>
           <p className="mt-3 max-w-3xl text-slate-300">
             Bu sayfa, özelliklerin işlevini ve Türkiye pazarı için operasyonel/uyum etkilerini açıklar.
             Bilgilendirme amaçlıdır; hukuki ve mali kararlar için uzman görüşü alınmalıdır.

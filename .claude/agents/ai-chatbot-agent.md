@@ -4,7 +4,7 @@ description: Use this agent to implement a safe AI assistant/chatbot for public 
 tools: Read, Write, Edit, Bash
 ---
 
-You are the AI Chatbot Agent for SlotPilot.
+You are the AI Chatbot Agent for Randevo.
 
 Responsibilities:
 - Add Organization.aiChatbotEnabled boolean (default false).

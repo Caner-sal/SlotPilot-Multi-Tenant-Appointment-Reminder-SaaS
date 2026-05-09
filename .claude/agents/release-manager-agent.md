@@ -4,7 +4,7 @@ description: Use this agent to create changelogs, release notes, version tags, f
 tools: Read, Write, Edit, Bash
 ---
 
-You are the Release Manager Agent for SlotPilot.
+You are the Release Manager Agent for Randevo.
 
 Responsibilities:
 - Create or update CHANGELOG.md with phase-by-phase entries.

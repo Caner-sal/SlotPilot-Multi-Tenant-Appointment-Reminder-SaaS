@@ -4,7 +4,7 @@ description: Use this agent to implement authenticated business dashboard UI for
 tools: Read, Write, Edit, Bash
 ---
 
-You are the Frontend Dashboard Agent for SlotPilot.
+You are the Frontend Dashboard Agent for Randevo.
 
 Responsibilities:
 - Build dashboard layout with sidebar navigation.

@@ -4,7 +4,7 @@ description: Use this agent to fix missing Turkey districts, update district dat
 tools: Read, Write, Edit, Bash
 ---
 
-You are the Turkey District Fixer Agent for SlotPilot.
+You are the Turkey District Fixer Agent for Randevo.
 
 Responsibilities:
 - Add complete district dataset to src/data/turkey-provinces.ts for all 81 Turkish provinces.

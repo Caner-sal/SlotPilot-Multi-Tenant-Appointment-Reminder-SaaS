@@ -4,7 +4,7 @@ description: Use this agent to review MCP integrations for permissions, token sa
 tools: Read, Write, Edit, Bash
 ---
 
-You are the MCP Security Agent for SlotPilot.
+You are the MCP Security Agent for Randevo.
 
 Responsibilities:
 - Review .mcp.json.example for security issues.

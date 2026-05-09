@@ -1,12 +1,12 @@
-# SlotPilot Mobile
+# Randevo Mobile
 
-React Native / Expo mobile app for the SlotPilot SaaS platform.
+React Native / Expo mobile app for the Randevo SaaS platform.
 
 ## Prerequisites
 
 - Node.js 20+
 - [Expo Go](https://expo.dev/client) app on your device (iOS or Android)
-- SlotPilot backend running locally (`npm run dev` in the root)
+- Randevo backend running locally (`npm run dev` in the root)
 
 ## Setup
 
@@ -41,7 +41,7 @@ Scan the QR code with Expo Go on your device.
 
 ## Architecture
 
-- **No backend logic** — all data is fetched from the SlotPilot web API
+- **No backend logic** — all data is fetched from the Randevo web API
 - **State-based navigation** — no navigation library required for this MVP foundation
 - **API client** — `src/api/client.ts` handles all fetch calls
 

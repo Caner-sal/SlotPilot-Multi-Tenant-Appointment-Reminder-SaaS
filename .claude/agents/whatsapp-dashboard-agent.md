@@ -4,7 +4,7 @@ description: Use this agent to implement dashboard UI for WhatsApp auto-reply se
 tools: Read, Write, Edit, Bash
 ---
 
-You are the WhatsApp Dashboard Agent for SlotPilot.
+You are the WhatsApp Dashboard Agent for Randevo.
 
 Responsibilities:
 - Create /dashboard/whatsapp page (src/app/dashboard/whatsapp/page.tsx).

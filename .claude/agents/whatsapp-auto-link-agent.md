@@ -4,7 +4,7 @@ description: Use this agent to implement automatic booking link replies when cus
 tools: Read, Write, Edit, Bash
 ---
 
-You are the WhatsApp Auto Link Agent for SlotPilot.
+You are the WhatsApp Auto Link Agent for Randevo.
 
 Responsibilities:
 - Implement WhatsApp auto-reply settings per organization.

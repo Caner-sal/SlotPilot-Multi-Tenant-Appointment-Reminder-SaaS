@@ -1,122 +1,122 @@
-# SlotPilot Türkiye İlçe Tamamlama + Skills/MCP Entegrasyon Planı
+﻿# Randevo TÃ¼rkiye Ä°lÃ§e Tamamlama + Skills/MCP Entegrasyon PlanÄ±
 
-> Bu dosya, SlotPilot Türkiye yerelleştirmesi tamamlandıktan sonra uygulanacak yeni güncelleme planıdır.  
-> Amaç: Türkiye il/ilçe verisindeki eksikleri tamamlamak, Anthropic Skills repo mantığından projeye uygun skill workflow’ları eklemek, Model Context Protocol reference server’larından güvenli ve faydalı olanları geliştirme ortamına dahil etmek, her phase sonunda test edip GitHub’a pushlamak ve her 2 phase sonrası context’i compact etmektir.
-
----
-
-## 1. Güncellemenin Ana Hedefi
-
-Bu güncellemede üç ana iş yapılacak:
-
-```txt
-1. Türkiye özelinde eksik ilçeler tamamlanacak.
-2. anthropics/skills reposu taranıp SlotPilot için faydalı skill yapıları eklenecek.
-3. modelcontextprotocol/servers reposu taranıp projeye faydalı MCP server entegrasyonları planlı şekilde eklenecek.
-```
-
-Kritik çalışma kuralları:
-
-```txt
-- Her phase ayrı branch üzerinde yapılacak.
-- Her phase merge edilmeden önce test edilecek.
-- Test geçmezse merge ve push yapılmayacak.
-- Her phase sonunda commit + push yapılacak.
-- Her 2 phase sonrası COMPACT_STATE güncellenecek.
-- COMPACT_STATE sonrası /compact çalıştırılacak veya kullanıcıya çalıştırması söylenecek.
-```
+> Bu dosya, Randevo TÃ¼rkiye yerelleÅŸtirmesi tamamlandÄ±ktan sonra uygulanacak yeni gÃ¼ncelleme planÄ±dÄ±r.  
+> AmaÃ§: TÃ¼rkiye il/ilÃ§e verisindeki eksikleri tamamlamak, Anthropic Skills repo mantÄ±ÄŸÄ±ndan projeye uygun skill workflowâ€™larÄ± eklemek, Model Context Protocol reference serverâ€™larÄ±ndan gÃ¼venli ve faydalÄ± olanlarÄ± geliÅŸtirme ortamÄ±na dahil etmek, her phase sonunda test edip GitHubâ€™a pushlamak ve her 2 phase sonrasÄ± contextâ€™i compact etmektir.
 
 ---
 
-## 2. Araştırma Notları
+## 1. GÃ¼ncellemenin Ana Hedefi
 
-### 2.1 Türkiye İl/İlçe Verisi
+Bu gÃ¼ncellemede Ã¼Ã§ ana iÅŸ yapÄ±lacak:
 
-Türkiye tarafında proje artık yalnızca büyükşehir ilçeleriyle sınırlı kalmamalı. Tüm 81 il ve güncel ilçe listesi hedeflenmeli.
+```txt
+1. TÃ¼rkiye Ã¶zelinde eksik ilÃ§eler tamamlanacak.
+2. anthropics/skills reposu taranÄ±p Randevo iÃ§in faydalÄ± skill yapÄ±larÄ± eklenecek.
+3. modelcontextprotocol/servers reposu taranÄ±p projeye faydalÄ± MCP server entegrasyonlarÄ± planlÄ± ÅŸekilde eklenecek.
+```
 
-Referans alınacak kaynak yaklaşımı:
+Kritik Ã§alÄ±ÅŸma kurallarÄ±:
+
+```txt
+- Her phase ayrÄ± branch Ã¼zerinde yapÄ±lacak.
+- Her phase merge edilmeden Ã¶nce test edilecek.
+- Test geÃ§mezse merge ve push yapÄ±lmayacak.
+- Her phase sonunda commit + push yapÄ±lacak.
+- Her 2 phase sonrasÄ± COMPACT_STATE gÃ¼ncellenecek.
+- COMPACT_STATE sonrasÄ± /compact Ã§alÄ±ÅŸtÄ±rÄ±lacak veya kullanÄ±cÄ±ya Ã§alÄ±ÅŸtÄ±rmasÄ± sÃ¶ylenecek.
+```
+
+---
+
+## 2. AraÅŸtÄ±rma NotlarÄ±
+
+### 2.1 TÃ¼rkiye Ä°l/Ä°lÃ§e Verisi
+
+TÃ¼rkiye tarafÄ±nda proje artÄ±k yalnÄ±zca bÃ¼yÃ¼kÅŸehir ilÃ§eleriyle sÄ±nÄ±rlÄ± kalmamalÄ±. TÃ¼m 81 il ve gÃ¼ncel ilÃ§e listesi hedeflenmeli.
+
+Referans alÄ±nacak kaynak yaklaÅŸÄ±mÄ±:
 
 ```txt
 Primary official source:
-- İçişleri Bakanlığı / Türkiye Mülki İdare Bölümleri Envanteri
+- Ä°Ã§iÅŸleri BakanlÄ±ÄŸÄ± / TÃ¼rkiye MÃ¼lki Ä°dare BÃ¶lÃ¼mleri Envanteri
 
 Secondary machine-readable sources:
-- Ulaştırma ve Altyapı Bakanlığı teknik dokümanlarındaki ilçe listesi XLSX
-- TÜİK ADNKS / nüfus veri portalları
+- UlaÅŸtÄ±rma ve AltyapÄ± BakanlÄ±ÄŸÄ± teknik dokÃ¼manlarÄ±ndaki ilÃ§e listesi XLSX
+- TÃœÄ°K ADNKS / nÃ¼fus veri portallarÄ±
 
 Development convenience source:
-- Açık kaynak JSON il/ilçe veri setleri
+- AÃ§Ä±k kaynak JSON il/ilÃ§e veri setleri
 ```
 
 Hedef veri kalite kriteri:
 
 ```txt
-- 81 il bulunmalı.
-- Güncel ilçe sayısı resmi kaynağa göre doğrulanmalı.
-- İl plakası doğru olmalı.
-- İl slug doğru olmalı.
-- İlçe slug doğru olmalı.
-- Büyük/küçük harf ve Türkçe karakter standardı korunmalı.
-- Eski kayıtlardaki province/district değerleri migration ile bozulmamalı.
+- 81 il bulunmalÄ±.
+- GÃ¼ncel ilÃ§e sayÄ±sÄ± resmi kaynaÄŸa gÃ¶re doÄŸrulanmalÄ±.
+- Ä°l plakasÄ± doÄŸru olmalÄ±.
+- Ä°l slug doÄŸru olmalÄ±.
+- Ä°lÃ§e slug doÄŸru olmalÄ±.
+- BÃ¼yÃ¼k/kÃ¼Ã§Ã¼k harf ve TÃ¼rkÃ§e karakter standardÄ± korunmalÄ±.
+- Eski kayÄ±tlardaki province/district deÄŸerleri migration ile bozulmamalÄ±.
 ```
 
-### 2.2 Anthropic Skills Repo’dan Alınacak Fikirler
+### 2.2 Anthropic Skills Repoâ€™dan AlÄ±nacak Fikirler
 
-`anthropics/skills` reposu doğrudan uygulama özelliği değil, Claude/agent workflow kalitesini artıracak skill yapıları sunar.
+`anthropics/skills` reposu doÄŸrudan uygulama Ã¶zelliÄŸi deÄŸil, Claude/agent workflow kalitesini artÄ±racak skill yapÄ±larÄ± sunar.
 
 Projeye eklenecek uygun fikirler:
 
 ```txt
-- skill-creator yaklaşımı: SlotPilot’a özel tekrar kullanılabilir skill yazma ve eval seti oluşturma
-- mcp-builder yaklaşımı: SlotPilot için MCP server/tool tasarlama standardı
-- webapp-testing yaklaşımı: Playwright ile browser tabanlı regression test akışı
-- frontend-design yaklaşımı: Türkçe SaaS dashboard ve public booking arayüzünü daha production-grade hale getirme
-- doc-coauthoring yaklaşımı: README, deployment doc, KVKK placeholder doc ve release note iyileştirme
+- skill-creator yaklaÅŸÄ±mÄ±: Randevoâ€™a Ã¶zel tekrar kullanÄ±labilir skill yazma ve eval seti oluÅŸturma
+- mcp-builder yaklaÅŸÄ±mÄ±: Randevo iÃ§in MCP server/tool tasarlama standardÄ±
+- webapp-testing yaklaÅŸÄ±mÄ±: Playwright ile browser tabanlÄ± regression test akÄ±ÅŸÄ±
+- frontend-design yaklaÅŸÄ±mÄ±: TÃ¼rkÃ§e SaaS dashboard ve public booking arayÃ¼zÃ¼nÃ¼ daha production-grade hale getirme
+- doc-coauthoring yaklaÅŸÄ±mÄ±: README, deployment doc, KVKK placeholder doc ve release note iyileÅŸtirme
 ```
 
-Doğrudan kopyalama kuralı:
+DoÄŸrudan kopyalama kuralÄ±:
 
 ```txt
-- Önce license kontrol edilir.
-- Source-available ama open-source olmayan document skill dosyaları doğrudan vendoring yapılmaz.
-- Bu projede asıl amaç repo mantığını örnek alarak SlotPilot’a özel skills yazmaktır.
+- Ã–nce license kontrol edilir.
+- Source-available ama open-source olmayan document skill dosyalarÄ± doÄŸrudan vendoring yapÄ±lmaz.
+- Bu projede asÄ±l amaÃ§ repo mantÄ±ÄŸÄ±nÄ± Ã¶rnek alarak Randevoâ€™a Ã¶zel skills yazmaktÄ±r.
 ```
 
-### 2.3 Model Context Protocol Servers Repo’dan Alınacak Fikirler
+### 2.3 Model Context Protocol Servers Repoâ€™dan AlÄ±nacak Fikirler
 
-`modelcontextprotocol/servers` reposu MCP reference server örnekleri içerir. Repo, reference server’ların production-ready çözüm değil, eğitim ve örnek amaçlı olduğunu belirtir. Bu yüzden SlotPilot’a direkt körlemesine production entegrasyonu yapılmayacak.
+`modelcontextprotocol/servers` reposu MCP reference server Ã¶rnekleri iÃ§erir. Repo, reference serverâ€™larÄ±n production-ready Ã§Ã¶zÃ¼m deÄŸil, eÄŸitim ve Ã¶rnek amaÃ§lÄ± olduÄŸunu belirtir. Bu yÃ¼zden Randevoâ€™a direkt kÃ¶rlemesine production entegrasyonu yapÄ±lmayacak.
 
-Projeye güvenli şekilde eklenebilecek reference server fikirleri:
+Projeye gÃ¼venli ÅŸekilde eklenebilecek reference server fikirleri:
 
 ```txt
-- Filesystem MCP: sadece proje klasörüyle sınırlı dosya okuma/yazma
-- Git MCP: repo status, diff, branch, commit/PR workflow yardımcıları
+- Filesystem MCP: sadece proje klasÃ¶rÃ¼yle sÄ±nÄ±rlÄ± dosya okuma/yazma
+- Git MCP: repo status, diff, branch, commit/PR workflow yardÄ±mcÄ±larÄ±
 - Time MCP: Europe/Istanbul timezone ve randevu tarih/saat testleri
-- Fetch MCP: dokümantasyon ve public web kaynaklarını kontrollü okuma
-- Memory MCP: agent çalışma notları ve proje kararlarının knowledge graph gibi tutulması
-- Sequential Thinking MCP: büyük migration/booking engine/debug işlerinde planlı düşünme
+- Fetch MCP: dokÃ¼mantasyon ve public web kaynaklarÄ±nÄ± kontrollÃ¼ okuma
+- Memory MCP: agent Ã§alÄ±ÅŸma notlarÄ± ve proje kararlarÄ±nÄ±n knowledge graph gibi tutulmasÄ±
+- Sequential Thinking MCP: bÃ¼yÃ¼k migration/booking engine/debug iÅŸlerinde planlÄ± dÃ¼ÅŸÃ¼nme
 ```
 
-Dikkatli ele alınacak veya doğrudan eklenmeyecek archived server fikirleri:
+Dikkatli ele alÄ±nacak veya doÄŸrudan eklenmeyecek archived server fikirleri:
 
 ```txt
-- GitHub MCP eski reference listede archived görünüyor; doğrudan vendoring yapılmaz.
-- PostgreSQL MCP archived görünüyor; production database için read-only debug bile olsa ayrıca güvenlik tasarımı gerekir.
-- Google Maps MCP archived görünüyor; Türkiye adres/konum için doğrudan kullanılmaz.
-- Puppeteer MCP archived görünüyor; webapp-testing skill yaklaşımıyla Playwright tercih edilir.
+- GitHub MCP eski reference listede archived gÃ¶rÃ¼nÃ¼yor; doÄŸrudan vendoring yapÄ±lmaz.
+- PostgreSQL MCP archived gÃ¶rÃ¼nÃ¼yor; production database iÃ§in read-only debug bile olsa ayrÄ±ca gÃ¼venlik tasarÄ±mÄ± gerekir.
+- Google Maps MCP archived gÃ¶rÃ¼nÃ¼yor; TÃ¼rkiye adres/konum iÃ§in doÄŸrudan kullanÄ±lmaz.
+- Puppeteer MCP archived gÃ¶rÃ¼nÃ¼yor; webapp-testing skill yaklaÅŸÄ±mÄ±yla Playwright tercih edilir.
 ```
 
 ---
 
 ## 3. Yeni Agent Listesi
 
-`.claude/agents/` içine şu agent dosyaları eklenecek:
+`.claude/agents/` iÃ§ine ÅŸu agent dosyalarÄ± eklenecek:
 
 ```txt
 turkey-district-auditor-agent.md
 turkey-district-fixer-agent.md
-slotpilot-skill-architect-agent.md
-slotpilot-skill-builder-agent.md
+randevo-skill-architect-agent.md
+randevo-skill-builder-agent.md
 mcp-research-agent.md
 mcp-integration-agent.md
 mcp-security-agent.md
@@ -127,7 +127,7 @@ github-push-agent.md
 
 ---
 
-# 4. Agent Tanımları
+# 4. Agent TanÄ±mlarÄ±
 
 ## 4.1 `turkey-district-auditor-agent.md`
 
@@ -138,7 +138,7 @@ description: Use this agent to audit Turkey province/district data, compare exis
 tools: Read, Write, Edit, Bash
 ---
 
-You are the Turkey District Auditor Agent for SlotPilot.
+You are the Turkey District Auditor Agent for Randevo.
 
 Responsibilities:
 - Inspect current Turkey province/district data in the project.
@@ -167,7 +167,7 @@ description: Use this agent to fix missing Turkey districts, update seed data, a
 tools: Read, Write, Edit, Bash
 ---
 
-You are the Turkey District Fixer Agent for SlotPilot.
+You are the Turkey District Fixer Agent for Randevo.
 
 Responsibilities:
 - Add complete district dataset.
@@ -185,50 +185,50 @@ Rules:
 - Existing businesses must retain safe address data.
 ```
 
-## 4.3 `slotpilot-skill-architect-agent.md`
+## 4.3 `randevo-skill-architect-agent.md`
 
 ```md
 ---
-name: slotpilot-skill-architect-agent
-description: Use this agent to design SlotPilot-specific Claude Skills inspired by anthropics/skills patterns, including trigger descriptions, folder structure, test prompts, and safe usage boundaries.
+name: randevo-skill-architect-agent
+description: Use this agent to design Randevo-specific Claude Skills inspired by anthropics/skills patterns, including trigger descriptions, folder structure, test prompts, and safe usage boundaries.
 tools: Read, Write, Edit
 ---
 
-You are the SlotPilot Skill Architect Agent.
+You are the Randevo Skill Architect Agent.
 
 Responsibilities:
 - Review anthropics/skills structure and patterns.
-- Design SlotPilot-specific skills.
-- Create docs/slotpilot-skills-architecture.md.
+- Design Randevo-specific skills.
+- Create docs/randevo-skills-architecture.md.
 - Define which skills should exist.
 - Define when each skill should trigger.
 - Define skill test prompts.
 - Review license/sourcing risks before copying anything.
 
 Rules:
-- Prefer creating original SlotPilot skills instead of copying repo content.
+- Prefer creating original Randevo skills instead of copying repo content.
 - Do not vendor source-available document skills directly.
 - Keep skills short and focused.
 ```
 
-## 4.4 `slotpilot-skill-builder-agent.md`
+## 4.4 `randevo-skill-builder-agent.md`
 
 ```md
 ---
-name: slotpilot-skill-builder-agent
-description: Use this agent to implement SlotPilot-specific skills, eval prompts, workflow references, and documentation for recurring development tasks.
+name: randevo-skill-builder-agent
+description: Use this agent to implement Randevo-specific skills, eval prompts, workflow references, and documentation for recurring development tasks.
 tools: Read, Write, Edit, Bash
 ---
 
-You are the SlotPilot Skill Builder Agent.
+You are the Randevo Skill Builder Agent.
 
 Responsibilities:
-- Create .claude/skills/slotpilot-booking-regression/SKILL.md.
-- Create .claude/skills/slotpilot-turkey-data/SKILL.md.
-- Create .claude/skills/slotpilot-mcp-integration/SKILL.md.
-- Create .claude/skills/slotpilot-release/SKILL.md.
+- Create .claude/skills/randevo-booking-regression/SKILL.md.
+- Create .claude/skills/randevo-turkey-data/SKILL.md.
+- Create .claude/skills/randevo-mcp-integration/SKILL.md.
+- Create .claude/skills/randevo-release/SKILL.md.
 - Add eval prompts under evals/skills/.
-- Add docs/slotpilot-skills-usage.md.
+- Add docs/randevo-skills-usage.md.
 
 Rules:
 - Skills must not contain secrets.
@@ -249,7 +249,7 @@ You are the MCP Research Agent.
 
 Responsibilities:
 - Review modelcontextprotocol/servers README and reference server list.
-- Identify useful MCP server ideas for SlotPilot development.
+- Identify useful MCP server ideas for Randevo development.
 - Mark archived servers as avoid/direct-vendor-risk.
 - Create docs/mcp-research-report.md.
 - Recommend safe local-only MCP configuration.
@@ -391,9 +391,9 @@ Rules:
 
 ---
 
-# 5. Branch, Test, Push ve Merge Politikası
+# 5. Branch, Test, Push ve Merge PolitikasÄ±
 
-Her phase şu akışla yürütülecek:
+Her phase ÅŸu akÄ±ÅŸla yÃ¼rÃ¼tÃ¼lecek:
 
 ```bash
 git checkout main
@@ -401,7 +401,7 @@ git pull
 git checkout -b feature/phase-name
 ```
 
-Phase işi yapılır.
+Phase iÅŸi yapÄ±lÄ±r.
 
 Sonra test:
 
@@ -415,7 +415,7 @@ npx prisma generate
 npx prisma migrate status
 ```
 
-Eğer e2e varsa:
+EÄŸer e2e varsa:
 
 ```bash
 npm run test:e2e
@@ -430,15 +430,15 @@ git commit -m "meaningful phase commit"
 git push -u origin feature/phase-name
 ```
 
-Merge öncesi:
+Merge Ã¶ncesi:
 
 ```txt
-- Testler geçti mi?
-- Build geçti mi?
-- Prisma validate geçti mi?
+- Testler geÃ§ti mi?
+- Build geÃ§ti mi?
+- Prisma validate geÃ§ti mi?
 - Migration status temiz mi?
-- QA raporu yazıldı mı?
-- COMPACT_STATE gerekiyorsa güncellendi mi?
+- QA raporu yazÄ±ldÄ± mÄ±?
+- COMPACT_STATE gerekiyorsa gÃ¼ncellendi mi?
 ```
 
 GitHub CLI varsa:
@@ -451,68 +451,68 @@ gh pr merge --squash --delete-branch
 GitHub CLI yoksa:
 
 ```txt
-GitHub web UI üzerinden PR aç.
-Checks geçince squash merge yap.
-Merge sonrası main branch'i pull et.
+GitHub web UI Ã¼zerinden PR aÃ§.
+Checks geÃ§ince squash merge yap.
+Merge sonrasÄ± main branch'i pull et.
 ```
 
 ---
 
-# 6. Phase Sırası
+# 6. Phase SÄ±rasÄ±
 
 ```txt
-Phase DS-0 — Baseline, Repo Scan ve Risk Raporu
-Phase DS-1 — Türkiye İlçe Data Audit
-Phase DS-2 — Eksik İlçeleri Tamamlama ve Migration
-Phase DS-3 — İl/İlçe UI, API ve E2E Validation
-Phase DS-4 — Anthropic Skills Mimari Planı
-Phase DS-5 — SlotPilot Skills Implementasyonu
-Phase DS-6 — MCP Servers Araştırma ve Güvenlik Tasarımı
-Phase DS-7 — Güvenli MCP Local Dev Entegrasyonu
-Phase DS-8 — Webapp Testing + Playwright Regression Workflow
-Phase DS-9 — Final QA, GitHub Merge, Compact ve Release Notes
+Phase DS-0 â€” Baseline, Repo Scan ve Risk Raporu
+Phase DS-1 â€” TÃ¼rkiye Ä°lÃ§e Data Audit
+Phase DS-2 â€” Eksik Ä°lÃ§eleri Tamamlama ve Migration
+Phase DS-3 â€” Ä°l/Ä°lÃ§e UI, API ve E2E Validation
+Phase DS-4 â€” Anthropic Skills Mimari PlanÄ±
+Phase DS-5 â€” Randevo Skills Implementasyonu
+Phase DS-6 â€” MCP Servers AraÅŸtÄ±rma ve GÃ¼venlik TasarÄ±mÄ±
+Phase DS-7 â€” GÃ¼venli MCP Local Dev Entegrasyonu
+Phase DS-8 â€” Webapp Testing + Playwright Regression Workflow
+Phase DS-9 â€” Final QA, GitHub Merge, Compact ve Release Notes
 ```
 
-Compact kuralı:
+Compact kuralÄ±:
 
 ```txt
-DS-0 + DS-1 sonrası compact
-DS-2 + DS-3 sonrası compact
-DS-4 + DS-5 sonrası compact
-DS-6 + DS-7 sonrası compact
-DS-8 + DS-9 sonrası final compact
+DS-0 + DS-1 sonrasÄ± compact
+DS-2 + DS-3 sonrasÄ± compact
+DS-4 + DS-5 sonrasÄ± compact
+DS-6 + DS-7 sonrasÄ± compact
+DS-8 + DS-9 sonrasÄ± final compact
 ```
 
 ---
 
-# 7. Phase Detayları
+# 7. Phase DetaylarÄ±
 
-## Phase DS-0 — Baseline, Repo Scan ve Risk Raporu
+## Phase DS-0 â€” Baseline, Repo Scan ve Risk Raporu
 
-Kullanılacak agentler:
+KullanÄ±lacak agentler:
 
 ```txt
 mcp-research-agent
-slotpilot-skill-architect-agent
+randevo-skill-architect-agent
 regression-merge-agent
 github-push-agent
 ```
 
-Amaç:
+AmaÃ§:
 
-Mevcut SlotPilot Türkiye projesini bozmadan baseline almak, iki repodan çıkarılacak fikirleri dokümante etmek.
+Mevcut Randevo TÃ¼rkiye projesini bozmadan baseline almak, iki repodan Ã§Ä±karÄ±lacak fikirleri dokÃ¼mante etmek.
 
-Yapılacaklar:
+YapÄ±lacaklar:
 
-1. Mevcut proje testlerini çalıştır.
-2. `anthropics/skills` repo yapısını incele.
-3. `modelcontextprotocol/servers` repo yapısını incele.
-4. Projeye eklenecek / eklenmeyecek parçaları belirle.
-5. `docs/repo-scan-report.md` oluştur.
-6. MCP ve Skills için license/security notları ekle.
-7. QA baseline raporu oluştur.
+1. Mevcut proje testlerini Ã§alÄ±ÅŸtÄ±r.
+2. `anthropics/skills` repo yapÄ±sÄ±nÄ± incele.
+3. `modelcontextprotocol/servers` repo yapÄ±sÄ±nÄ± incele.
+4. Projeye eklenecek / eklenmeyecek parÃ§alarÄ± belirle.
+5. `docs/repo-scan-report.md` oluÅŸtur.
+6. MCP ve Skills iÃ§in license/security notlarÄ± ekle.
+7. QA baseline raporu oluÅŸtur.
 
-Oluşturulacak dosyalar:
+OluÅŸturulacak dosyalar:
 
 ```txt
 docs/repo-scan-report.md
@@ -542,16 +542,16 @@ git push -u origin feature/ds-0-repo-scan
 Merge kriteri:
 
 ```txt
-- Sadece dokümantasyon değişti.
-- Mevcut testler geçti.
-- Build geçti.
+- Sadece dokÃ¼mantasyon deÄŸiÅŸti.
+- Mevcut testler geÃ§ti.
+- Build geÃ§ti.
 ```
 
 ---
 
-## Phase DS-1 — Türkiye İlçe Data Audit
+## Phase DS-1 â€” TÃ¼rkiye Ä°lÃ§e Data Audit
 
-Kullanılacak agentler:
+KullanÄ±lacak agentler:
 
 ```txt
 turkey-district-auditor-agent
@@ -559,29 +559,29 @@ regression-merge-agent
 github-push-agent
 ```
 
-Amaç:
+AmaÃ§:
 
-Projede hangi il/ilçe verilerinin eksik olduğunu net bulmak. Bu phase data değiştirmez, sadece rapor çıkarır.
+Projede hangi il/ilÃ§e verilerinin eksik olduÄŸunu net bulmak. Bu phase data deÄŸiÅŸtirmez, sadece rapor Ã§Ä±karÄ±r.
 
-Yapılacaklar:
+YapÄ±lacaklar:
 
-1. Mevcut `turkey-provinces`, `districts`, `Location`, `Address` kaynaklarını bul.
-2. İl sayısını kontrol et.
-3. İlçe sayısını kontrol et.
-4. Eksik ilçeleri il bazında listele.
-5. Duplicate ilçe var mı kontrol et.
-6. Slug çakışması var mı kontrol et.
-7. Türkçe karakter display sorunları var mı kontrol et.
-8. `scripts/audit-turkey-districts.ts` oluştur.
-9. `docs/turkiye-district-audit.md` oluştur.
+1. Mevcut `turkey-provinces`, `districts`, `Location`, `Address` kaynaklarÄ±nÄ± bul.
+2. Ä°l sayÄ±sÄ±nÄ± kontrol et.
+3. Ä°lÃ§e sayÄ±sÄ±nÄ± kontrol et.
+4. Eksik ilÃ§eleri il bazÄ±nda listele.
+5. Duplicate ilÃ§e var mÄ± kontrol et.
+6. Slug Ã§akÄ±ÅŸmasÄ± var mÄ± kontrol et.
+7. TÃ¼rkÃ§e karakter display sorunlarÄ± var mÄ± kontrol et.
+8. `scripts/audit-turkey-districts.ts` oluÅŸtur.
+9. `docs/turkiye-district-audit.md` oluÅŸtur.
 
-Audit script beklenen çıktısı:
+Audit script beklenen Ã§Ä±ktÄ±sÄ±:
 
 ```txt
 Province count: 81
 District count: EXPECTED_COUNT
 Missing districts:
-- İstanbul: ...
+- Ä°stanbul: ...
 - Ankara: ...
 Duplicate slugs:
 - ...
@@ -611,24 +611,24 @@ git push -u origin feature/ds-1-district-audit
 Merge kriteri:
 
 ```txt
-- Audit script çalışıyor.
-- Eksikler raporlandı.
-- Uygulama davranışı değişmedi.
+- Audit script Ã§alÄ±ÅŸÄ±yor.
+- Eksikler raporlandÄ±.
+- Uygulama davranÄ±ÅŸÄ± deÄŸiÅŸmedi.
 ```
 
 Compact:
 
 ```txt
-DS-0 ve DS-1 tamamlandıktan sonra compact-state-agent çalıştır.
-docs/COMPACT_STATE.md güncelle.
-/compact çalıştır veya kullanıcıdan çalıştırmasını iste.
+DS-0 ve DS-1 tamamlandÄ±ktan sonra compact-state-agent Ã§alÄ±ÅŸtÄ±r.
+docs/COMPACT_STATE.md gÃ¼ncelle.
+/compact Ã§alÄ±ÅŸtÄ±r veya kullanÄ±cÄ±dan Ã§alÄ±ÅŸtÄ±rmasÄ±nÄ± iste.
 ```
 
 ---
 
-## Phase DS-2 — Eksik İlçeleri Tamamlama ve Migration
+## Phase DS-2 â€” Eksik Ä°lÃ§eleri Tamamlama ve Migration
 
-Kullanılacak agentler:
+KullanÄ±lacak agentler:
 
 ```txt
 turkey-district-fixer-agent
@@ -636,13 +636,13 @@ regression-merge-agent
 github-push-agent
 ```
 
-Amaç:
+AmaÃ§:
 
-Eksik ilçeleri tamamlamak, data kaynağını normalize etmek, migration ve seed yapısını güvenli hale getirmek.
+Eksik ilÃ§eleri tamamlamak, data kaynaÄŸÄ±nÄ± normalize etmek, migration ve seed yapÄ±sÄ±nÄ± gÃ¼venli hale getirmek.
 
-Yapılacaklar:
+YapÄ±lacaklar:
 
-1. Canonical district dataset oluştur:
+1. Canonical district dataset oluÅŸtur:
 
 ```txt
 src/data/turkey/districts.ts
@@ -650,22 +650,22 @@ src/data/turkey/provinces.ts
 src/data/turkey/regions.ts
 ```
 
-2. Display name + slug standardı belirle:
+2. Display name + slug standardÄ± belirle:
 
 ```txt
-Display: Çankaya
+Display: Ã‡ankaya
 Slug: cankaya
 Province code: 06
 ```
 
-3. Eksik ilçeleri ekle.
-4. District schema/type güncelle.
-5. Seed script güncelle.
+3. Eksik ilÃ§eleri ekle.
+4. District schema/type gÃ¼ncelle.
+5. Seed script gÃ¼ncelle.
 6. Migration script yaz.
-7. Existing address kayıtları için safe fallback üret.
+7. Existing address kayÄ±tlarÄ± iÃ§in safe fallback Ã¼ret.
 8. Unit tests ekle.
 
-Beklenen test dosyaları:
+Beklenen test dosyalarÄ±:
 
 ```txt
 src/tests/turkey-districts.test.ts
@@ -677,10 +677,10 @@ Testler:
 
 ```txt
 - 81 il var.
-- Her ilin en az 1 ilçesi var.
-- Toplam ilçe sayısı official/reference expected count ile eşleşiyor.
+- Her ilin en az 1 ilÃ§esi var.
+- Toplam ilÃ§e sayÄ±sÄ± official/reference expected count ile eÅŸleÅŸiyor.
 - Sluglar unique.
-- Türkçe karakter display kaybolmuyor.
+- TÃ¼rkÃ§e karakter display kaybolmuyor.
 - Existing business address migration bozulmuyor.
 ```
 
@@ -717,9 +717,9 @@ Merge kriteri:
 
 ---
 
-## Phase DS-3 — İl/İlçe UI, API ve E2E Validation
+## Phase DS-3 â€” Ä°l/Ä°lÃ§e UI, API ve E2E Validation
 
-Kullanılacak agentler:
+KullanÄ±lacak agentler:
 
 ```txt
 turkey-district-fixer-agent
@@ -727,29 +727,29 @@ regression-merge-agent
 github-push-agent
 ```
 
-Amaç:
+AmaÃ§:
 
-Tamamlanan ilçe datasının UI, API ve public booking tarafında doğru çalıştığını doğrulamak.
+Tamamlanan ilÃ§e datasÄ±nÄ±n UI, API ve public booking tarafÄ±nda doÄŸru Ã§alÄ±ÅŸtÄ±ÄŸÄ±nÄ± doÄŸrulamak.
 
-Yapılacaklar:
+YapÄ±lacaklar:
 
-1. Dashboard işletme adres formunu güncelle.
-2. Location formunda il/ilçe dropdownlarını güncelle.
-3. Marketplace şehir/ilçe filtrelerini güncelle.
-4. Public booking adres gösterimini test et.
-5. API endpointleri district validation kullansın.
+1. Dashboard iÅŸletme adres formunu gÃ¼ncelle.
+2. Location formunda il/ilÃ§e dropdownlarÄ±nÄ± gÃ¼ncelle.
+3. Marketplace ÅŸehir/ilÃ§e filtrelerini gÃ¼ncelle.
+4. Public booking adres gÃ¶sterimini test et.
+5. API endpointleri district validation kullansÄ±n.
 6. E2E test ekle.
 
-E2E akış:
+E2E akÄ±ÅŸ:
 
 ```txt
 1. Login ol.
-2. İşletme adresinde İstanbul seç.
-3. İlçe olarak eksik olan ve yeni eklenen bir ilçeyi seç.
+2. Ä°ÅŸletme adresinde Ä°stanbul seÃ§.
+3. Ä°lÃ§e olarak eksik olan ve yeni eklenen bir ilÃ§eyi seÃ§.
 4. Kaydet.
-5. Marketplace filtresinde aynı il/ilçeyi seç.
-6. İşletmenin göründüğünü doğrula.
-7. Public booking sayfasında adresin doğru göründüğünü doğrula.
+5. Marketplace filtresinde aynÄ± il/ilÃ§eyi seÃ§.
+6. Ä°ÅŸletmenin gÃ¶rÃ¼ndÃ¼ÄŸÃ¼nÃ¼ doÄŸrula.
+7. Public booking sayfasÄ±nda adresin doÄŸru gÃ¶rÃ¼ndÃ¼ÄŸÃ¼nÃ¼ doÄŸrula.
 ```
 
 Testler:
@@ -776,45 +776,45 @@ git push -u origin feature/ds-3-district-ui-validation
 Compact:
 
 ```txt
-DS-2 ve DS-3 tamamlandıktan sonra compact-state-agent çalıştır.
-docs/COMPACT_STATE.md güncelle.
-/compact çalıştır veya kullanıcıdan çalıştırmasını iste.
+DS-2 ve DS-3 tamamlandÄ±ktan sonra compact-state-agent Ã§alÄ±ÅŸtÄ±r.
+docs/COMPACT_STATE.md gÃ¼ncelle.
+/compact Ã§alÄ±ÅŸtÄ±r veya kullanÄ±cÄ±dan Ã§alÄ±ÅŸtÄ±rmasÄ±nÄ± iste.
 ```
 
 ---
 
-## Phase DS-4 — Anthropic Skills Mimari Planı
+## Phase DS-4 â€” Anthropic Skills Mimari PlanÄ±
 
-Kullanılacak agentler:
+KullanÄ±lacak agentler:
 
 ```txt
-slotpilot-skill-architect-agent
+randevo-skill-architect-agent
 regression-merge-agent
 github-push-agent
 ```
 
-Amaç:
+AmaÃ§:
 
-Anthropic Skills repo yapısından ilham alarak SlotPilot’a özel skill mimarisi tasarlamak.
+Anthropic Skills repo yapÄ±sÄ±ndan ilham alarak Randevoâ€™a Ã¶zel skill mimarisi tasarlamak.
 
-Eklenecek SlotPilot skill adayları:
+Eklenecek Randevo skill adaylarÄ±:
 
 ```txt
-1. slotpilot-booking-regression
-2. slotpilot-turkey-data
-3. slotpilot-mcp-integration
-4. slotpilot-payment-safety
-5. slotpilot-release-manager
-6. slotpilot-kvkk-review
-7. slotpilot-ui-polish
+1. randevo-booking-regression
+2. randevo-turkey-data
+3. randevo-mcp-integration
+4. randevo-payment-safety
+5. randevo-release-manager
+6. randevo-kvkk-review
+7. randevo-ui-polish
 ```
 
-Yapılacaklar:
+YapÄ±lacaklar:
 
-1. `docs/slotpilot-skills-architecture.md` oluştur.
-2. Her skill için trigger açıklaması yaz.
-3. Her skill için test promptları yaz.
-4. Skill folder standardını belirle:
+1. `docs/randevo-skills-architecture.md` oluÅŸtur.
+2. Her skill iÃ§in trigger aÃ§Ä±klamasÄ± yaz.
+3. Her skill iÃ§in test promptlarÄ± yaz.
+4. Skill folder standardÄ±nÄ± belirle:
 
 ```txt
 .claude/skills/skill-name/SKILL.md
@@ -823,7 +823,7 @@ Yapılacaklar:
 ```
 
 5. License note yaz.
-6. Kopyalanmayacak kaynakları belirt.
+6. Kopyalanmayacak kaynaklarÄ± belirt.
 7. Skill eval stratejisini yaz.
 
 Testler:
@@ -839,57 +839,57 @@ Commit:
 
 ```bash
 git add .
-git commit -m "docs: design SlotPilot custom skills architecture"
+git commit -m "docs: design Randevo custom skills architecture"
 git push -u origin feature/ds-4-skills-architecture
 ```
 
 Merge kriteri:
 
 ```txt
-- Sadece docs/skill planı eklendi.
-- Kopyalanan lisanslı içerik yok.
-- Build/test geçiyor.
+- Sadece docs/skill planÄ± eklendi.
+- Kopyalanan lisanslÄ± iÃ§erik yok.
+- Build/test geÃ§iyor.
 ```
 
 ---
 
-## Phase DS-5 — SlotPilot Skills Implementasyonu
+## Phase DS-5 â€” Randevo Skills Implementasyonu
 
-Kullanılacak agentler:
+KullanÄ±lacak agentler:
 
 ```txt
-slotpilot-skill-builder-agent
+randevo-skill-builder-agent
 regression-merge-agent
 github-push-agent
 ```
 
-Amaç:
+AmaÃ§:
 
-SlotPilot’a özel tekrar kullanılabilir skills eklemek.
+Randevoâ€™a Ã¶zel tekrar kullanÄ±labilir skills eklemek.
 
-Oluşturulacak skills:
+OluÅŸturulacak skills:
 
 ```txt
-.claude/skills/slotpilot-booking-regression/SKILL.md
-.claude/skills/slotpilot-turkey-data/SKILL.md
-.claude/skills/slotpilot-mcp-integration/SKILL.md
-.claude/skills/slotpilot-payment-safety/SKILL.md
-.claude/skills/slotpilot-release-manager/SKILL.md
+.claude/skills/randevo-booking-regression/SKILL.md
+.claude/skills/randevo-turkey-data/SKILL.md
+.claude/skills/randevo-mcp-integration/SKILL.md
+.claude/skills/randevo-payment-safety/SKILL.md
+.claude/skills/randevo-release-manager/SKILL.md
 ```
 
-Her skill için:
+Her skill iÃ§in:
 
 ```txt
 - name
 - description
-- ne zaman kullanılır
-- adım adım workflow
-- çalıştırılacak testler
-- yasak işlemler
-- beklenen çıktı formatı
+- ne zaman kullanÄ±lÄ±r
+- adÄ±m adÄ±m workflow
+- Ã§alÄ±ÅŸtÄ±rÄ±lacak testler
+- yasak iÅŸlemler
+- beklenen Ã§Ä±ktÄ± formatÄ±
 ```
 
-Eval prompt dosyaları:
+Eval prompt dosyalarÄ±:
 
 ```txt
 evals/skills/booking-regression.json
@@ -902,9 +902,9 @@ evals/skills/release-manager.json
 Testler:
 
 ```txt
-- Skill dosyalarında name/description var.
-- SKILL.md dosyaları 500 satırı aşmıyor veya references kullanıyor.
-- Eval promptları JSON valid.
+- Skill dosyalarÄ±nda name/description var.
+- SKILL.md dosyalarÄ± 500 satÄ±rÄ± aÅŸmÄ±yor veya references kullanÄ±yor.
+- Eval promptlarÄ± JSON valid.
 - Yasak destructive command yok.
 ```
 
@@ -918,29 +918,29 @@ npm run build
 node scripts/validate-skills.js
 ```
 
-Eğer `scripts/validate-skills.js` yoksa bu phase içinde basit validator oluştur.
+EÄŸer `scripts/validate-skills.js` yoksa bu phase iÃ§inde basit validator oluÅŸtur.
 
 Commit:
 
 ```bash
 git add .
-git commit -m "feat: add SlotPilot custom Claude skills"
-git push -u origin feature/ds-5-slotpilot-skills
+git commit -m "feat: add Randevo custom Claude skills"
+git push -u origin feature/ds-5-randevo-skills
 ```
 
 Compact:
 
 ```txt
-DS-4 ve DS-5 tamamlandıktan sonra compact-state-agent çalıştır.
-docs/COMPACT_STATE.md güncelle.
-/compact çalıştır veya kullanıcıdan çalıştırmasını iste.
+DS-4 ve DS-5 tamamlandÄ±ktan sonra compact-state-agent Ã§alÄ±ÅŸtÄ±r.
+docs/COMPACT_STATE.md gÃ¼ncelle.
+/compact Ã§alÄ±ÅŸtÄ±r veya kullanÄ±cÄ±dan Ã§alÄ±ÅŸtÄ±rmasÄ±nÄ± iste.
 ```
 
 ---
 
-## Phase DS-6 — MCP Servers Araştırma ve Güvenlik Tasarımı
+## Phase DS-6 â€” MCP Servers AraÅŸtÄ±rma ve GÃ¼venlik TasarÄ±mÄ±
 
-Kullanılacak agentler:
+KullanÄ±lacak agentler:
 
 ```txt
 mcp-research-agent
@@ -949,39 +949,39 @@ regression-merge-agent
 github-push-agent
 ```
 
-Amaç:
+AmaÃ§:
 
-MCP reference server’lardan hangilerinin SlotPilot geliştirme workflow’una alınacağını seçmek.
+MCP reference serverâ€™lardan hangilerinin Randevo geliÅŸtirme workflowâ€™una alÄ±nacaÄŸÄ±nÄ± seÃ§mek.
 
-Seçilecek güvenli MCP fikirleri:
+SeÃ§ilecek gÃ¼venli MCP fikirleri:
 
 ```txt
-- filesystem: proje klasörüyle sınırlı
-- git: status/diff/branch/commit yardımı
+- filesystem: proje klasÃ¶rÃ¼yle sÄ±nÄ±rlÄ±
+- git: status/diff/branch/commit yardÄ±mÄ±
 - time: Europe/Istanbul timezone testleri
-- fetch: dokümantasyon okuma
-- memory: karar kayıtları
+- fetch: dokÃ¼mantasyon okuma
+- memory: karar kayÄ±tlarÄ±
 - sequential-thinking: migration/debug planlama
 ```
 
-Doğrudan eklenmeyecekler:
+DoÄŸrudan eklenmeyecekler:
 
 ```txt
-- Production DB’ye write erişimli MCP
+- Production DBâ€™ye write eriÅŸimli MCP
 - Payment provider MCP
-- Geniş filesystem erişimi
-- GitHub tokenlı geniş yetkili MCP
-- Archived server’ların direkt production kullanımı
+- GeniÅŸ filesystem eriÅŸimi
+- GitHub tokenlÄ± geniÅŸ yetkili MCP
+- Archived serverâ€™larÄ±n direkt production kullanÄ±mÄ±
 ```
 
-Yapılacaklar:
+YapÄ±lacaklar:
 
-1. `docs/mcp-research-report.md` oluştur.
-2. Güvenli/riski/kaçınılacak MCP listesini yaz.
-3. `docs/mcp-security-checklist.md` oluştur.
+1. `docs/mcp-research-report.md` oluÅŸtur.
+2. GÃ¼venli/riski/kaÃ§Ä±nÄ±lacak MCP listesini yaz.
+3. `docs/mcp-security-checklist.md` oluÅŸtur.
 4. MCP permission modelini yaz.
-5. Local-only yaklaşımı belirle.
-6. Token/secret politikası yaz.
+5. Local-only yaklaÅŸÄ±mÄ± belirle.
+6. Token/secret politikasÄ± yaz.
 
 Testler:
 
@@ -1002,9 +1002,9 @@ git push -u origin feature/ds-6-mcp-research
 
 ---
 
-## Phase DS-7 — Güvenli MCP Local Dev Entegrasyonu
+## Phase DS-7 â€” GÃ¼venli MCP Local Dev Entegrasyonu
 
-Kullanılacak agentler:
+KullanÄ±lacak agentler:
 
 ```txt
 mcp-integration-agent
@@ -1013,11 +1013,11 @@ regression-merge-agent
 github-push-agent
 ```
 
-Amaç:
+AmaÃ§:
 
-Gerçek secret içermeyen, sadece local development için kullanılacak MCP config örneği eklemek.
+GerÃ§ek secret iÃ§ermeyen, sadece local development iÃ§in kullanÄ±lacak MCP config Ã¶rneÄŸi eklemek.
 
-Oluşturulacak dosyalar:
+OluÅŸturulacak dosyalar:
 
 ```txt
 .mcp.json.example
@@ -1025,33 +1025,33 @@ docs/mcp-local-setup.md
 docs/mcp-usage-examples.md
 ```
 
-`.mcp.json.example` kuralları:
+`.mcp.json.example` kurallarÄ±:
 
 ```txt
-- Gerçek token yok.
-- Filesystem sadece proje root ile sınırlı.
-- Git sadece read/status/diff ağırlıklı kullanılacak.
-- Time server Europe/Istanbul kullanım örneği içerecek.
-- Fetch server yalnızca dokümantasyon için önerilecek.
-- Production deploy config değildir.
+- GerÃ§ek token yok.
+- Filesystem sadece proje root ile sÄ±nÄ±rlÄ±.
+- Git sadece read/status/diff aÄŸÄ±rlÄ±klÄ± kullanÄ±lacak.
+- Time server Europe/Istanbul kullanÄ±m Ã¶rneÄŸi iÃ§erecek.
+- Fetch server yalnÄ±zca dokÃ¼mantasyon iÃ§in Ã¶nerilecek.
+- Production deploy config deÄŸildir.
 ```
 
-MCP kullanım örnekleri:
+MCP kullanÄ±m Ã¶rnekleri:
 
 ```txt
-- "Git diff’i kontrol et ve phase merge raporu çıkar."
+- "Git diffâ€™i kontrol et ve phase merge raporu Ã§Ä±kar."
 - "Europe/Istanbul timezone ile randevu slot testlerini incele."
-- "docs/COMPACT_STATE.md dosyasına göre bir sonraki phase promptunu hazırla."
-- "Sadece proje klasörü içinde district data dosyalarını oku."
+- "docs/COMPACT_STATE.md dosyasÄ±na gÃ¶re bir sonraki phase promptunu hazÄ±rla."
+- "Sadece proje klasÃ¶rÃ¼ iÃ§inde district data dosyalarÄ±nÄ± oku."
 ```
 
 Testler:
 
 ```txt
 - .mcp.json.example JSON valid.
-- Secret placeholder dışında gerçek secret yok.
-- Docs içinde production uyarısı var.
-- Filesystem path geniş değil.
+- Secret placeholder dÄ±ÅŸÄ±nda gerÃ§ek secret yok.
+- Docs iÃ§inde production uyarÄ±sÄ± var.
+- Filesystem path geniÅŸ deÄŸil.
 ```
 
 Komutlar:
@@ -1064,7 +1064,7 @@ npm run build
 node scripts/check-no-secrets.js
 ```
 
-Eğer `scripts/check-no-secrets.js` yoksa basit secret scan scripti ekle.
+EÄŸer `scripts/check-no-secrets.js` yoksa basit secret scan scripti ekle.
 
 Commit:
 
@@ -1077,48 +1077,48 @@ git push -u origin feature/ds-7-mcp-local-config
 Compact:
 
 ```txt
-DS-6 ve DS-7 tamamlandıktan sonra compact-state-agent çalıştır.
-docs/COMPACT_STATE.md güncelle.
-/compact çalıştır veya kullanıcıdan çalıştırmasını iste.
+DS-6 ve DS-7 tamamlandÄ±ktan sonra compact-state-agent Ã§alÄ±ÅŸtÄ±r.
+docs/COMPACT_STATE.md gÃ¼ncelle.
+/compact Ã§alÄ±ÅŸtÄ±r veya kullanÄ±cÄ±dan Ã§alÄ±ÅŸtÄ±rmasÄ±nÄ± iste.
 ```
 
 ---
 
-## Phase DS-8 — Webapp Testing + Playwright Regression Workflow
+## Phase DS-8 â€” Webapp Testing + Playwright Regression Workflow
 
-Kullanılacak agentler:
+KullanÄ±lacak agentler:
 
 ```txt
-slotpilot-skill-builder-agent
+randevo-skill-builder-agent
 regression-merge-agent
 github-push-agent
 ```
 
-Amaç:
+AmaÃ§:
 
-Anthropic webapp-testing skill yaklaşımını SlotPilot’a uyarlayıp local browser regression workflow’u oluşturmak.
+Anthropic webapp-testing skill yaklaÅŸÄ±mÄ±nÄ± Randevoâ€™a uyarlayÄ±p local browser regression workflowâ€™u oluÅŸturmak.
 
-Yapılacaklar:
+YapÄ±lacaklar:
 
 1. Playwright helper scriptleri ekle.
 2. Local server lifecycle helper ekle.
-3. `tests/e2e/turkey-booking-flow.spec.ts` güncelle.
+3. `tests/e2e/turkey-booking-flow.spec.ts` gÃ¼ncelle.
 4. `tests/e2e/district-selection.spec.ts` ekle.
 5. `tests/e2e/mcp-safe-config.spec.ts` gerekirse docs validation olarak ekle.
-6. Browser screenshot artifact klasörü ekle.
-7. `docs/webapp-testing-workflow.md` oluştur.
+6. Browser screenshot artifact klasÃ¶rÃ¼ ekle.
+7. `docs/webapp-testing-workflow.md` oluÅŸtur.
 
-E2E test akışları:
+E2E test akÄ±ÅŸlarÄ±:
 
 ```txt
-1. Türkçe login/register.
-2. İşletme adresinde eksik tamamlanan ilçeyi seç.
-3. Hizmet oluştur.
-4. Müsaitlik ekle.
-5. Public booking aç.
-6. Randevu oluştur.
-7. Dashboard’da randevuyu gör.
-8. Marketplace il/ilçe filtresini doğrula.
+1. TÃ¼rkÃ§e login/register.
+2. Ä°ÅŸletme adresinde eksik tamamlanan ilÃ§eyi seÃ§.
+3. Hizmet oluÅŸtur.
+4. MÃ¼saitlik ekle.
+5. Public booking aÃ§.
+6. Randevu oluÅŸtur.
+7. Dashboardâ€™da randevuyu gÃ¶r.
+8. Marketplace il/ilÃ§e filtresini doÄŸrula.
 ```
 
 Komutlar:
@@ -1141,9 +1141,9 @@ git push -u origin feature/ds-8-playwright-regression
 
 ---
 
-## Phase DS-9 — Final QA, GitHub Merge, Compact ve Release Notes
+## Phase DS-9 â€” Final QA, GitHub Merge, Compact ve Release Notes
 
-Kullanılacak agentler:
+KullanÄ±lacak agentler:
 
 ```txt
 regression-merge-agent
@@ -1151,22 +1151,22 @@ compact-state-agent
 github-push-agent
 ```
 
-Amaç:
+AmaÃ§:
 
-Tüm değişiklikleri final testten geçirmek, GitHub’a pushlamak, release notu oluşturmak.
+TÃ¼m deÄŸiÅŸiklikleri final testten geÃ§irmek, GitHubâ€™a pushlamak, release notu oluÅŸturmak.
 
-Yapılacaklar:
+YapÄ±lacaklar:
 
-1. Full test çalıştır.
-2. Full e2e çalıştır.
-3. District audit script tekrar çalıştır.
-4. Skill validator çalıştır.
-5. MCP config validator çalıştır.
-6. README güncelle.
-7. CHANGELOG güncelle.
-8. `docs/COMPACT_STATE.md` final güncelle.
-9. GitHub’a push yap.
-10. Stable tag oluştur.
+1. Full test Ã§alÄ±ÅŸtÄ±r.
+2. Full e2e Ã§alÄ±ÅŸtÄ±r.
+3. District audit script tekrar Ã§alÄ±ÅŸtÄ±r.
+4. Skill validator Ã§alÄ±ÅŸtÄ±r.
+5. MCP config validator Ã§alÄ±ÅŸtÄ±r.
+6. README gÃ¼ncelle.
+7. CHANGELOG gÃ¼ncelle.
+8. `docs/COMPACT_STATE.md` final gÃ¼ncelle.
+9. GitHubâ€™a push yap.
+10. Stable tag oluÅŸtur.
 
 Komutlar:
 
@@ -1188,20 +1188,20 @@ Final acceptance checklist:
 
 ```txt
 [ ] 81 il var.
-[ ] Eksik ilçeler tamamlandı.
-[ ] İlçe audit PASS.
-[ ] İl/ilçe UI PASS.
-[ ] Marketplace il/ilçe filter PASS.
+[ ] Eksik ilÃ§eler tamamlandÄ±.
+[ ] Ä°lÃ§e audit PASS.
+[ ] Ä°l/ilÃ§e UI PASS.
+[ ] Marketplace il/ilÃ§e filter PASS.
 [ ] Public booking adres display PASS.
-[ ] SlotPilot custom skills eklendi.
+[ ] Randevo custom skills eklendi.
 [ ] Skill validator PASS.
 [ ] MCP research docs eklendi.
 [ ] Safe .mcp.json.example eklendi.
 [ ] Secret scan PASS.
 [ ] Playwright regression PASS.
 [ ] Build PASS.
-[ ] GitHub push tamamlandı.
-[ ] Final compact state güncellendi.
+[ ] GitHub push tamamlandÄ±.
+[ ] Final compact state gÃ¼ncellendi.
 ```
 
 Commit + tag:
@@ -1217,16 +1217,16 @@ git push origin v1.2.0-district-skills-mcp
 Compact:
 
 ```txt
-DS-8 ve DS-9 tamamlandıktan sonra compact-state-agent çalıştır.
+DS-8 ve DS-9 tamamlandÄ±ktan sonra compact-state-agent Ã§alÄ±ÅŸtÄ±r.
 docs/COMPACT_STATE.md final hale getir.
-/compact çalıştır veya kullanıcıdan çalıştırmasını iste.
+/compact Ã§alÄ±ÅŸtÄ±r veya kullanÄ±cÄ±dan Ã§alÄ±ÅŸtÄ±rmasÄ±nÄ± iste.
 ```
 
 ---
 
-# 8. Yeni Script Önerileri
+# 8. Yeni Script Ã–nerileri
 
-Bu update içinde eklenebilecek scriptler:
+Bu update iÃ§inde eklenebilecek scriptler:
 
 ```txt
 scripts/audit-turkey-districts.ts
@@ -1236,7 +1236,7 @@ scripts/validate-mcp-config.js
 scripts/generate-district-slugs.ts
 ```
 
-Package scripts önerisi:
+Package scripts Ã¶nerisi:
 
 ```json
 {
@@ -1252,9 +1252,9 @@ Package scripts önerisi:
 
 ---
 
-# 9. District Dataset Teknik Standardı
+# 9. District Dataset Teknik StandardÄ±
 
-Önerilen type yapısı:
+Ã–nerilen type yapÄ±sÄ±:
 
 ```ts
 export interface TurkeyProvince {
@@ -1274,36 +1274,36 @@ export interface TurkeyDistrict {
 }
 ```
 
-Slug standardı:
+Slug standardÄ±:
 
 ```txt
-Çankaya -> cankaya
-Üsküdar -> uskudar
-Şişli -> sisli
-Keçiören -> kecioren
+Ã‡ankaya -> cankaya
+ÃœskÃ¼dar -> uskudar
+ÅiÅŸli -> sisli
+KeÃ§iÃ¶ren -> kecioren
 ```
 
-Test standardı:
+Test standardÄ±:
 
 ```txt
-- Display name Türkçe kalır.
+- Display name TÃ¼rkÃ§e kalÄ±r.
 - Slug ASCII olur.
-- provincePlateCode doğru bağlanır.
-- Aynı ilde duplicate slug olmaz.
+- provincePlateCode doÄŸru baÄŸlanÄ±r.
+- AynÄ± ilde duplicate slug olmaz.
 - Global district id unique olur.
 ```
 
 ---
 
-# 10. MCP Config Güvenlik Standardı
+# 10. MCP Config GÃ¼venlik StandardÄ±
 
-`.mcp.json.example` içine sadece örnek config konur.
+`.mcp.json.example` iÃ§ine sadece Ã¶rnek config konur.
 
 Yasaklar:
 
 ```txt
-- Gerçek token
-- Geniş filesystem root erişimi
+- GerÃ§ek token
+- GeniÅŸ filesystem root eriÅŸimi
 - Production DB connection string
 - Stripe secret
 - Google OAuth secret
@@ -1313,11 +1313,11 @@ Yasaklar:
 - Destructive file deletion tool
 ```
 
-İzin verilen local kullanım:
+Ä°zin verilen local kullanÄ±m:
 
 ```txt
 - Project-scoped filesystem
-- Git status/diff ağırlıklı workflow
+- Git status/diff aÄŸÄ±rlÄ±klÄ± workflow
 - Time/timezone helper
 - Fetch public docs helper
 - Memory local notes
@@ -1326,12 +1326,12 @@ Yasaklar:
 
 ---
 
-# 11. COMPACT_STATE Şablonu
+# 11. COMPACT_STATE Åablonu
 
 `docs/COMPACT_STATE.md`:
 
 ```md
-# SlotPilot Compact State
+# Randevo Compact State
 
 ## Last Completed Phases
 
@@ -1358,10 +1358,10 @@ Yasaklar:
 ## Do Not Forget
 ```
 
-Her compact sonrası kullanılacak prompt:
+Her compact sonrasÄ± kullanÄ±lacak prompt:
 
 ```txt
-Read docs/COMPACT_STATE.md and SLOTPILOT_TURKIYE_DISTRICT_SKILLS_MCP_UPDATE_PLAN.md.
+Read docs/COMPACT_STATE.md and RANDEVO_TURKIYE_DISTRICT_SKILLS_MCP_UPDATE_PLAN.md.
 Continue only from the next unfinished phase.
 Do not redo completed work.
 Run tests before commit, push, and merge.
@@ -1370,14 +1370,14 @@ After 2 more phases, update COMPACT_STATE and run/request /compact.
 
 ---
 
-# 12. Claude Code Ana Prompt’u
+# 12. Claude Code Ana Promptâ€™u
 
 ```txt
-Read SLOTPILOT_TURKIYE_DISTRICT_SKILLS_MCP_UPDATE_PLAN.md carefully.
+Read RANDEVO_TURKIYE_DISTRICT_SKILLS_MCP_UPDATE_PLAN.md carefully.
 
 This update has three goals:
 1. Complete missing Turkey district data.
-2. Add SlotPilot-specific Claude Skills inspired by anthropics/skills.
+2. Add Randevo-specific Claude Skills inspired by anthropics/skills.
 3. Add safe local MCP development integration inspired by modelcontextprotocol/servers.
 
 Do not implement all phases at once.
@@ -1404,10 +1404,10 @@ Important:
 
 ---
 
-# 13. Antigravity Ana Prompt’u
+# 13. Antigravity Ana Promptâ€™u
 
 ```txt
-Read SLOTPILOT_TURKIYE_DISTRICT_SKILLS_MCP_UPDATE_PLAN.md.
+Read RANDEVO_TURKIYE_DISTRICT_SKILLS_MCP_UPDATE_PLAN.md.
 
 Create the new agents first.
 Then start with Phase DS-0 only.
@@ -1425,28 +1425,28 @@ After DS-0, stop and create an artifact with QA notes.
 
 # 14. Final Definition of Done
 
-Bu update bitmiş sayılması için:
+Bu update bitmiÅŸ sayÄ±lmasÄ± iÃ§in:
 
 ```txt
-- Türkiye ilçe eksikleri tamamlandı.
+- TÃ¼rkiye ilÃ§e eksikleri tamamlandÄ±.
 - District audit PASS.
 - District UI/API/e2e tests PASS.
-- SlotPilot custom skills eklendi.
+- Randevo custom skills eklendi.
 - Skill validator PASS.
 - MCP research report eklendi.
 - Safe .mcp.json.example eklendi.
 - MCP security checklist eklendi.
-- Playwright regression workflow güncellendi.
+- Playwright regression workflow gÃ¼ncellendi.
 - Her phase test edildi.
-- Her phase GitHub’a pushlandı.
-- Her phase merge edilmeden önce test edildi.
-- Her 2 phase sonrası COMPACT_STATE güncellendi.
-- Final tag oluşturuldu.
+- Her phase GitHubâ€™a pushlandÄ±.
+- Her phase merge edilmeden Ã¶nce test edildi.
+- Her 2 phase sonrasÄ± COMPACT_STATE gÃ¼ncellendi.
+- Final tag oluÅŸturuldu.
 ```
 
 ---
 
-# 15. Final Kontrol Prompt’u
+# 15. Final Kontrol Promptâ€™u
 
 ```txt
 Review the whole district + skills + MCP update.
@@ -1457,7 +1457,7 @@ Check:
 3. Does the district audit script pass?
 4. Do business address forms support completed district data?
 5. Does marketplace city/district filtering work?
-6. Are SlotPilot custom skills present and valid?
+6. Are Randevo custom skills present and valid?
 7. Are skill eval prompts valid JSON?
 8. Is .mcp.json.example safe and free of secrets?
 9. Are MCP integrations local-dev only?
@@ -1472,3 +1472,4 @@ Fix small issues only.
 Do not add new major features.
 Create final release notes and push them.
 ```
+

@@ -1,4 +1,4 @@
-# SlotPilot — API Contract
+# Randevo — API Contract
 
 All authenticated endpoints require a valid session cookie (NextAuth JWT).
 All responses use `{ data: ... }` for success and `{ error: ... }` for failure.

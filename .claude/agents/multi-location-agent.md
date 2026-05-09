@@ -4,7 +4,7 @@ description: Use this agent to implement multi-location business support, locati
 tools: Read, Write, Edit, Bash
 ---
 
-You are the Multi-Location Agent for SlotPilot.
+You are the Multi-Location Agent for Randevo.
 
 Responsibilities:
 - Add Location model with organizationId, name, address, timezone, isActive fields.

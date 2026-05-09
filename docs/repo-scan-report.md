@@ -1,6 +1,6 @@
-# SlotPilot — Repo Scan Report
+# Randevo — Repo Scan Report
 
-> Phase DS-0 baseline scan of anthropics/skills and modelcontextprotocol/servers for SlotPilot applicability.
+> Phase DS-0 baseline scan of anthropics/skills and modelcontextprotocol/servers for Randevo applicability.
 > Date: 2026-05-09
 
 ---
@@ -15,14 +15,14 @@
 ### License / Sourcing risk
 - Skills are documentation, not executable source code.
 - Content is meant to be adapted, not copy-pasted verbatim.
-- SlotPilot will create original skills inspired by the patterns, not vendor the files directly.
+- Randevo will create original skills inspired by the patterns, not vendor the files directly.
 
-### Applicable skill patterns for SlotPilot
-| Skill Pattern | SlotPilot Adaptation |
+### Applicable skill patterns for Randevo
+| Skill Pattern | Randevo Adaptation |
 |---|---|
 | webapp-testing | Booking flow regression, district UI validation |
 | mcp-builder | Safe local MCP config design |
-| skill-creator | SlotPilot-specific skill creation workflow |
+| skill-creator | Randevo-specific skill creation workflow |
 | frontend-design | Turkish SaaS dashboard UI polish |
 | doc-coauthoring | README, KVKK docs, deployment guide improvement |
 
@@ -38,7 +38,7 @@
 - Reference implementations of MCP servers for common development tools.
 - **These are examples/references, not production-ready services.**
 
-### Useful MCP Server Ideas for SlotPilot
+### Useful MCP Server Ideas for Randevo
 
 | MCP Server | Use Case | Safety Level |
 |---|---|---|
@@ -60,12 +60,12 @@
 
 ---
 
-## 3. SlotPilot Action Plan
+## 3. Randevo Action Plan
 
 Based on this scan:
 
 1. Create 10 new agent files for DS phase work.
-2. Design 5 SlotPilot-specific skills (booking-regression, turkey-data, mcp-integration, payment-safety, release-manager).
+2. Design 5 Randevo-specific skills (booking-regression, turkey-data, mcp-integration, payment-safety, release-manager).
 3. Add safe local-only MCP configuration example (.mcp.json.example).
 4. Never add production DB, payment provider, or broad filesystem MCP access.
 5. All MCP configs stay in .mcp.json.example — not committed as real .mcp.json.

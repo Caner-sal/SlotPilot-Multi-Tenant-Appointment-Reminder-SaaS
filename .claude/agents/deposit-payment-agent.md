@@ -4,7 +4,7 @@ description: Use this agent to implement appointment deposit payments using Stri
 tools: Read, Write, Edit, Bash
 ---
 
-You are the Deposit Payment Agent for SlotPilot.
+You are the Deposit Payment Agent for Randevo.
 
 Responsibilities:
 - Add Service.depositRequired boolean and Service.depositAmountCents int fields.

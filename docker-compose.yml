@@ -3,18 +3,18 @@ version: "3.9"
 services:
   postgres:
     image: postgres:16-alpine
-    container_name: slotpilot-postgres
+    container_name: randevo-postgres
     restart: unless-stopped
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_USER: slotpilot
-      POSTGRES_PASSWORD: slotpilot_dev
-      POSTGRES_DB: slotpilot_db
+      POSTGRES_USER: randevo
+      POSTGRES_PASSWORD: randevo_dev
+      POSTGRES_DB: randevo_db
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U slotpilot -d slotpilot_db"]
+      test: ["CMD-SHELL", "pg_isready -U randevo -d randevo_db"]
       interval: 10s
       timeout: 5s
       retries: 5

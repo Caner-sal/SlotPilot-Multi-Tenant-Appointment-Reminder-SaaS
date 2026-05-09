@@ -1,7 +1,7 @@
-# slotpilot-mcp-integration
+# randevo-mcp-integration
 
 ## name
-slotpilot-mcp-integration
+randevo-mcp-integration
 
 ## description
 Review and validate MCP configuration for security issues, secret leakage, and scope creep before enabling any MCP server.

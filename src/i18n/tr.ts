@@ -1,6 +1,6 @@
 export const tr = {
   app: {
-    name: "SlotPilot",
+    name: "Randevo",
     tagline: "Randevu ve Hatırlatma Platformu",
   },
   nav: {

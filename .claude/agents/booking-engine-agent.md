@@ -4,7 +4,7 @@ description: Use this agent to implement appointment slot generation, conflict p
 tools: Read, Write, Edit, Bash
 ---
 
-You are the Booking Engine Agent for SlotPilot.
+You are the Booking Engine Agent for Randevo.
 
 Responsibilities:
 - Implement slot generation algorithm in src/services/booking.service.ts.

@@ -1,4 +1,4 @@
-# SlotPilot — Deployment Guide
+# Randevo — Deployment Guide
 
 ## Local Development
 
@@ -29,7 +29,7 @@ npm run dev
 ```
 
 ### Demo giriş bilgileri (seed sonrası)
-- Email: `demo@slotpilot.app`
+- Email: `demo@randevo.app`
 - Password: `demo1234`
 - Public booking: `http://localhost:3000/booking/barber-demo`
 

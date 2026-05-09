@@ -1,8 +1,8 @@
-# SlotPilot — Backend Architecture
+# Randevo — Backend Architecture
 
 ## Overview
 
-SlotPilot uses the Next.js App Router with a clear separation between:
+Randevo uses the Next.js App Router with a clear separation between:
 - **Route Handlers** — request/response, validation, auth checks
 - **Service Layer** — business logic
 - **Prisma Layer** — database access

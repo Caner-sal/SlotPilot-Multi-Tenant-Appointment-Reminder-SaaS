@@ -21,8 +21,8 @@
 
 - .claude/agents/turkey-district-auditor-agent.md (new)
 - .claude/agents/turkey-district-fixer-agent.md (new)
-- .claude/agents/slotpilot-skill-architect-agent.md (new)
-- .claude/agents/slotpilot-skill-builder-agent.md (new)
+- .claude/agents/randevo-skill-architect-agent.md (new)
+- .claude/agents/randevo-skill-builder-agent.md (new)
 - .claude/agents/mcp-research-agent.md (new)
 - .claude/agents/mcp-integration-agent.md (new)
 - .claude/agents/mcp-security-agent.md (new)

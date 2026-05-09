@@ -1,4 +1,4 @@
-import type { PaymentProvider, PaymentResult } from "./payment-provider.interface";
+﻿import type { PaymentProvider, PaymentResult } from "./payment-provider.interface";
 
 export class ManualBankTransferProvider implements PaymentProvider {
   readonly name = "MANUAL_BANK_TRANSFER";
@@ -17,7 +17,7 @@ export class ManualBankTransferProvider implements PaymentProvider {
     const iban = process.env.BANK_TRANSFER_IBAN ?? "";
     const holder = process.env.BANK_TRANSFER_ACCOUNT_HOLDER ?? "";
     const bank = process.env.BANK_TRANSFER_BANK_NAME ?? "";
-    const prefix = process.env.BANK_TRANSFER_DESCRIPTION_PREFIX ?? "SLOTPILOT";
+    const prefix = process.env.BANK_TRANSFER_DESCRIPTION_PREFIX ?? "RANDEVO";
 
     const reference = `${prefix}-${Date.now()}`;
     const amount = (params.amountCents / 100).toFixed(2);
@@ -25,9 +25,9 @@ export class ManualBankTransferProvider implements PaymentProvider {
     const instructions = [
       `Tutar: ${amount} ${params.currency}`,
       iban ? `IBAN: ${iban}` : "",
-      holder ? `Alıcı: ${holder}` : "",
+      holder ? `AlÄ±cÄ±: ${holder}` : "",
       bank ? `Banka: ${bank}` : "",
-      `Açıklama: ${reference}`,
+      `AÃ§Ä±klama: ${reference}`,
       `E-posta: ${params.customerEmail}`,
     ]
       .filter(Boolean)
@@ -40,3 +40,4 @@ export class ManualBankTransferProvider implements PaymentProvider {
     };
   }
 }
+

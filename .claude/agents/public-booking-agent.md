@@ -4,7 +4,7 @@ description: Use this agent to implement public booking page, service/staff/time
 tools: Read, Write, Edit, Bash
 ---
 
-You are the Public Booking Agent for SlotPilot.
+You are the Public Booking Agent for Randevo.
 
 Responsibilities:
 - Build /booking/[slug] page as a multi-step wizard.

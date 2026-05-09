@@ -7,9 +7,9 @@ export default function BookingLayout({ children }: { children: React.ReactNode 
         <div className="max-w-3xl mx-auto px-4 h-14 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 text-gray-900 font-bold text-lg">
             <span className="text-blue-600">✈</span>
-            SlotPilot
+            Randevo
           </Link>
-          <span className="text-xs text-gray-400">Powered by SlotPilot</span>
+          <span className="text-xs text-gray-400">Powered by Randevo</span>
         </div>
       </header>
       <main>{children}</main>

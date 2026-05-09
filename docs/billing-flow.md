@@ -1,8 +1,8 @@
-# SlotPilot — Billing Flow
+# Randevo — Billing Flow
 
 ## Overview
 
-SlotPilot uses Stripe in test mode for subscription billing. The billing system is architecturally complete but uses test/placeholder keys in the MVP.
+Randevo uses Stripe in test mode for subscription billing. The billing system is architecturally complete but uses test/placeholder keys in the MVP.
 
 ## Plan Structure
 

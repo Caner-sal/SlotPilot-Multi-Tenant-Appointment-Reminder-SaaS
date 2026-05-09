@@ -12,7 +12,7 @@ export default async function StaffLayout({ children }: { children: React.ReactN
     <div className="min-h-screen bg-gray-50">
       <header className="flex items-center justify-between border-b bg-white px-6 py-4">
         <div className="flex items-center gap-6">
-          <span className="font-bold text-gray-900">SlotPilot Çalışan</span>
+          <span className="font-bold text-gray-900">Randevo Çalışan</span>
           <nav className="flex gap-4 text-sm">
             <Link href="/staff/dashboard" className="text-gray-600 hover:text-gray-900">
               Panel

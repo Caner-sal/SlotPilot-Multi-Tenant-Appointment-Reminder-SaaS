@@ -14,8 +14,8 @@ import { resetWhatsAppTextProvider } from "@/services/whatsapp/whatsapp-text.fac
 describe("buildReplyText", () => {
   it("replaces {{bookingUrl}} with the booking URL", () => {
     const template = "Merhaba 👋\nLink: {{bookingUrl}}\nİyi günler.";
-    expect(buildReplyText(template, "https://slotpilot.com/booking/demo")).toBe(
-      "Merhaba 👋\nLink: https://slotpilot.com/booking/demo\nİyi günler."
+    expect(buildReplyText(template, "https://randevo.com/booking/demo")).toBe(
+      "Merhaba 👋\nLink: https://randevo.com/booking/demo\nİyi günler."
     );
   });
 

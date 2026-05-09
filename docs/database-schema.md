@@ -1,4 +1,4 @@
-# SlotPilot — Database Schema
+# Randevo — Database Schema
 
 ## Overview
 

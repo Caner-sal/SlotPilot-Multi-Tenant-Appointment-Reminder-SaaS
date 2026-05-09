@@ -62,7 +62,7 @@ export default function LoginScreen({ onLogin }: Props) {
       behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
       <View style={styles.card}>
-        <Text style={styles.title}>SlotPilot</Text>
+        <Text style={styles.title}>Randevo</Text>
         <Text style={styles.subtitle}>Business Dashboard</Text>
 
         <TextInput

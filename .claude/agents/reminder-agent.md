@@ -4,7 +4,7 @@ description: Use this agent to implement reminder records, reminder scheduling l
 tools: Read, Write, Edit, Bash
 ---
 
-You are the Reminder Agent for SlotPilot.
+You are the Reminder Agent for Randevo.
 
 Responsibilities:
 - Create reminder service in src/services/reminder.service.ts.

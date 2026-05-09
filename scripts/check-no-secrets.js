@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Secret scanner for SlotPilot
+ * Secret scanner for Randevo
  * Scans source files for hardcoded credentials and API keys.
  * Run: node scripts/check-no-secrets.js
  */

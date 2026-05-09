@@ -58,7 +58,7 @@ function warn(label: string): void {
 // ---------------------------------------------------------------------------
 
 console.log("");
-console.log(bold("=== SlotPilot — Turkey District Audit ==="));
+console.log(bold("=== Randevo — Turkey District Audit ==="));
 console.log(`Run date : ${new Date().toISOString()}`);
 console.log("");
 

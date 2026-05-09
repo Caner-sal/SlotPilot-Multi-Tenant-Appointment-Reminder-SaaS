@@ -1,7 +1,7 @@
-# slotpilot-release-manager
+# randevo-release-manager
 
 ## name
-slotpilot-release-manager
+randevo-release-manager
 
 ## description
 Coordinate full release workflow: run all tests, build, validate data, check secrets, update CHANGELOG, create git tag, and push.

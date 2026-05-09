@@ -4,7 +4,7 @@ description: Use this agent to pin and validate the project's Node.js version, p
 tools: Read, Write, Edit, Bash
 ---
 
-You are the Node Upgrade Agent for SlotPilot.
+You are the Node Upgrade Agent for Randevo.
 
 Responsibilities:
 - Detect current local Node version: node -v.

@@ -1,4 +1,4 @@
-# SlotPilot — Claude Code / Antigravity Agent Project Brief
+# Randevo — Claude Code / Antigravity Agent Project Brief
 
 > Bu dosya Claude Code veya Google Antigravity içine verilecek ana proje talimatıdır.  
 > Amaç: Backend tarafı güçlü, para kazanma ihtimali olan, GitHub’da ciddi portfolyo projesi gibi duracak bir SaaS MVP geliştirmek.
@@ -7,7 +7,7 @@
 
 ## 1. Proje Fikri
 
-**Proje Adı:** SlotPilot  
+**Proje Adı:** Randevo  
 **Alt Başlık:** Multi-Tenant Appointment & Reminder SaaS  
 **Proje Türü:** Full-stack SaaS web uygulaması  
 **Zorluk:** Orta - ileri seviye  
@@ -19,7 +19,7 @@ Bu proje basit bir deneme projesinden daha detaylıdır. Backend tarafı özelli
 
 ## 2. Para Kazanma Mantığı
 
-SlotPilot küçük işletmelere aylık abonelik modeliyle satılabilecek bir SaaS olarak düşünülür.
+Randevo küçük işletmelere aylık abonelik modeliyle satılabilecek bir SaaS olarak düşünülür.
 
 ### 2.1 Hedef Müşteriler
 
@@ -53,14 +53,14 @@ Bu yöntemlerde sık görülen sorunlar:
 
 ### 2.3 Çözüm
 
-SlotPilot işletmeye özel public booking link verir.
+Randevo işletmeye özel public booking link verir.
 
 Örnek public linkler:
 
 ```txt
-slotpilot.app/barber-demo
-slotpilot.app/ekin-beauty
-slotpilot.app/caner-tutor
+randevo.app/barber-demo
+randevo.app/ekin-beauty
+randevo.app/caner-tutor
 ```
 
 Müşteri bu link üzerinden:
@@ -599,7 +599,7 @@ Audit log alanları:
 ## 8. Beklenen Dosya Yapısı
 
 ```txt
-slotpilot/
+randevo/
 ├── .claude/
 │   └── agents/
 │       ├── product-strategist.md
@@ -855,7 +855,7 @@ Alanlar:
 Claude Code’a verilecek ana prompt:
 
 ```txt
-You are building a full-stack SaaS MVP called "SlotPilot".
+You are building a full-stack SaaS MVP called "Randevo".
 
 Read PROJECT_BRIEF.md completely before editing code.
 
@@ -909,7 +909,7 @@ description: Use this agent to define SaaS requirements, target customer, moneti
 tools: Read, Write, Edit
 ---
 
-You are the Product Strategist Agent for SlotPilot.
+You are the Product Strategist Agent for Randevo.
 
 Responsibilities:
 - Read PROJECT_BRIEF.md.
@@ -1321,8 +1321,8 @@ Claude Code veya Antigravity bu sırayı takip etmeli.
 Amaç: Proje klasörünü ve temel kurulumu hazırlamak.
 
 ```bash
-mkdir slotpilot
-cd slotpilot
+mkdir randevo
+cd randevo
 git init
 npx create-next-app@latest . --typescript --tailwind --eslint --app --src-dir --import-alias "@/*"
 npm install
@@ -1365,7 +1365,7 @@ Commit:
 
 ```bash
 git add .
-git commit -m "docs: define slotpilot product requirements"
+git commit -m "docs: define randevo product requirements"
 ```
 
 ---
@@ -1903,7 +1903,7 @@ Commit:
 
 ```bash
 git add .
-git commit -m "style: polish slotpilot interface"
+git commit -m "style: polish randevo interface"
 ```
 
 ---
@@ -1932,7 +1932,7 @@ Yapılacaklar:
 README başlıkları:
 
 ```md
-# SlotPilot
+# Randevo
 
 A full-stack appointment booking and reminder SaaS MVP for local businesses.
 
@@ -1967,7 +1967,7 @@ Commit:
 
 ```bash
 git add .
-git commit -m "docs: prepare slotpilot for GitHub"
+git commit -m "docs: prepare randevo for GitHub"
 ```
 
 ---
@@ -2147,7 +2147,7 @@ Billing:
 ### 17.1 Workspace
 
 1. Antigravity aç.
-2. `slotpilot` klasörünü workspace olarak seç.
+2. `randevo` klasörünü workspace olarak seç.
 3. Güvenli ayarları seç:
    - Terminal commands: Request Review
    - Review policy: Request Review
@@ -2200,7 +2200,7 @@ Create screenshots and a QA artifact.
 Terminal:
 
 ```bash
-cd slotpilot
+cd randevo
 claude
 ```
 
@@ -2305,7 +2305,7 @@ Production build generated successfully.
 ```bash
 git status
 git add .
-git commit -m "chore: finalize slotpilot mvp"
+git commit -m "chore: finalize randevo mvp"
 git branch -M main
 git remote add origin YOUR_REPOSITORY_URL
 git push -u origin main
@@ -2383,7 +2383,7 @@ README için şu ekran görüntülerini al:
 Proje bittiğinde Claude Code / Antigravity’ye şu prompt ver:
 
 ```txt
-Review the entire SlotPilot project as if it will be published on GitHub and shown as a SaaS portfolio project.
+Review the entire Randevo project as if it will be published on GitHub and shown as a SaaS portfolio project.
 
 Check:
 1. Does npm run build pass?
@@ -2408,7 +2408,7 @@ Create a final summary.
 
 ## 25. Kısa Özet
 
-SlotPilot basit bir deneme projesi değil; gerçek SaaS mantığı olan, backend tarafı güçlü bir MVP projesidir.
+Randevo basit bir deneme projesi değil; gerçek SaaS mantığı olan, backend tarafı güçlü bir MVP projesidir.
 
 Öğreneceğin şeyler:
 
@@ -2432,5 +2432,5 @@ SlotPilot basit bir deneme projesi değil; gerçek SaaS mantığı olan, backend
 Final hedef:
 
 ```txt
-GitHub’da paylaşılabilecek, backend tarafı güçlü, para kazanma potansiyeli olan SlotPilot SaaS MVP.
+GitHub’da paylaşılabilecek, backend tarafı güçlü, para kazanma potansiyeli olan Randevo SaaS MVP.
 ```

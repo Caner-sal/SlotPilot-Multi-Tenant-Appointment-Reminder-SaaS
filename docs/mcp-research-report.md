@@ -1,6 +1,6 @@
-# SlotPilot — MCP Research Report
+# Randevo — MCP Research Report
 
-> Phase DS-6: Research modelcontextprotocol/servers for safe SlotPilot dev workflow integration.
+> Phase DS-6: Research modelcontextprotocol/servers for safe Randevo dev workflow integration.
 > Date: 2026-05-09
 
 ---
@@ -9,7 +9,7 @@
 
 MCP (Model Context Protocol) reference servers provide tools that Claude agents can call during development workflows. These are **examples for development use only** — not production-ready services.
 
-This report classifies each MCP server by safety level for SlotPilot local development.
+This report classifies each MCP server by safety level for Randevo local development.
 
 ---
 
@@ -19,37 +19,37 @@ This report classifies each MCP server by safety level for SlotPilot local devel
 - **Use case:** Read project source files, write documentation.
 - **Safety:** SAFE when scoped to project root only.
 - **Config:** `allowedDirectories: ["/path/to/project"]` — never `/` or `C:\`.
-- **SlotPilot use:** Read src/, docs/, prisma/ for context. Write docs only.
+- **Randevo use:** Read src/, docs/, prisma/ for context. Write docs only.
 
 ### 2.2 Git MCP  
 - **Use case:** Status, diff, branch, log, commit helpers.
 - **Safety:** SAFE with no force-push or destructive tools.
 - **Config:** Enable read tools (status, diff, log, branch) only.
-- **SlotPilot use:** Summarize what changed before commits, review diffs.
+- **Randevo use:** Summarize what changed before commits, review diffs.
 
 ### 2.3 Time MCP
 - **Use case:** Current time in Europe/Istanbul timezone.
 - **Safety:** SAFE — no auth, no data access.
 - **Config:** Set default timezone to `Europe/Istanbul`.
-- **SlotPilot use:** Verify appointment slot times in Turkey timezone tests.
+- **Randevo use:** Verify appointment slot times in Turkey timezone tests.
 
 ### 2.4 Fetch MCP
 - **Use case:** Read public documentation and open web pages.
 - **Safety:** SAFE for public URLs only.
 - **Config:** No authentication — public docs only.
-- **SlotPilot use:** Read Next.js, Prisma, Stripe docs when debugging.
+- **Randevo use:** Read Next.js, Prisma, Stripe docs when debugging.
 
 ### 2.5 Memory MCP
 - **Use case:** Persistent working notes and project decisions.
 - **Safety:** SAFE — local storage only, no external service.
 - **Config:** Local file-based storage in project or temp dir.
-- **SlotPilot use:** Remember phase decisions, open issues, context between sessions.
+- **Randevo use:** Remember phase decisions, open issues, context between sessions.
 
 ### 2.6 Sequential Thinking MCP
 - **Use case:** Plan complex multi-step reasoning flows.
 - **Safety:** SAFE — reasoning only, no file/network access.
 - **Config:** None required.
-- **SlotPilot use:** Plan district data migrations, debug complex booking logic.
+- **Randevo use:** Plan district data migrations, debug complex booking logic.
 
 ---
 

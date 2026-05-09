@@ -1,4 +1,4 @@
-# SlotPilot
+# Randevo
 
 **A full-stack multi-tenant appointment booking and reminder SaaS MVP for local businesses.**
 
@@ -131,8 +131,8 @@ src/
 ### 1. Clone and install
 
 ```bash
-git clone https://github.com/Caner-sal/SlotPilot-Multi-Tenant-Appointment-Reminder-SaaS.git
-cd SlotPilot-Multi-Tenant-Appointment-Reminder-SaaS
+git clone https://github.com/Caner-sal/Randevo-Multi-Tenant-Appointment-Reminder-SaaS.git
+cd Randevo-Multi-Tenant-Appointment-Reminder-SaaS
 npm install --legacy-peer-deps --ignore-scripts
 ```
 
@@ -193,7 +193,7 @@ See [.env.example](.env.example) for all variables. Key ones:
 After seeding:
 
 ```
-Email:    demo@slotpilot.app
+Email:    demo@randevo.app
 Password: demo1234
 ```
 

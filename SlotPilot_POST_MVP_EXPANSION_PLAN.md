@@ -1,14 +1,14 @@
-# SlotPilot Post-MVP Expansion Plan — Claude Code / Antigravity Update Brief
+﻿# Randevo Post-MVP Expansion Plan â€” Claude Code / Antigravity Update Brief
 
-> Bu dosya, ana `SlotPilot_AGENT_PROJECT_BRIEF.md` tamamlandıktan sonra uygulanacak gelişmiş özellikler için hazırlanmıştır.  
-> Amaç: SlotPilot projesini backend tarafı güçlü, gelir modeli olan, daha production-ready bir SaaS ürününe dönüştürmek.  
-> Bu dosya Claude Code veya Google Antigravity’ye verilecek ikinci aşama güncelleme planıdır.
+> Bu dosya, ana `Randevo_AGENT_PROJECT_BRIEF.md` tamamlandÄ±ktan sonra uygulanacak geliÅŸmiÅŸ Ã¶zellikler iÃ§in hazÄ±rlanmÄ±ÅŸtÄ±r.  
+> AmaÃ§: Randevo projesini backend tarafÄ± gÃ¼Ã§lÃ¼, gelir modeli olan, daha production-ready bir SaaS Ã¼rÃ¼nÃ¼ne dÃ¶nÃ¼ÅŸtÃ¼rmek.  
+> Bu dosya Claude Code veya Google Antigravityâ€™ye verilecek ikinci aÅŸama gÃ¼ncelleme planÄ±dÄ±r.
 
 ---
 
-## 1. Bu Dosyanın Amacı
+## 1. Bu DosyanÄ±n AmacÄ±
 
-Ana SlotPilot MVP bittikten sonra aşağıdaki özellikler sırasıyla eklenecek:
+Ana Randevo MVP bittikten sonra aÅŸaÄŸÄ±daki Ã¶zellikler sÄ±rasÄ±yla eklenecek:
 
 1. Full admin / superadmin panel
 2. Complex staff login
@@ -23,36 +23,36 @@ Ana SlotPilot MVP bittikten sonra aşağıdaki özellikler sırasıyla eklenecek
 11. Accounting integration
 12. Node.js version integration and environment hardening
 
-En önemli kural:
+En Ã¶nemli kural:
 
 ```txt
-Her özellik ayrı phase olarak eklenecek.
-Her phase sonunda migration, seed, typecheck, build, unit test, integration test ve mümkünse e2e test çalıştırılacak.
-Proje bozulursa bir sonraki phase’e geçilmeyecek.
+Her Ã¶zellik ayrÄ± phase olarak eklenecek.
+Her phase sonunda migration, seed, typecheck, build, unit test, integration test ve mÃ¼mkÃ¼nse e2e test Ã§alÄ±ÅŸtÄ±rÄ±lacak.
+Proje bozulursa bir sonraki phaseâ€™e geÃ§ilmeyecek.
 ```
 
 ---
 
 ## 2. Ana Strateji
 
-Bu expansion plan tek seferde uygulanmamalı.
+Bu expansion plan tek seferde uygulanmamalÄ±.
 
-En doğru çalışma şekli:
+En doÄŸru Ã§alÄ±ÅŸma ÅŸekli:
 
 ```txt
-1. Küçük feature branch aç.
-2. Sadece tek özelliği uygula.
-3. Database migration gerekiyorsa ayrı ve kontrollü yap.
-4. Seed data güncelle.
-5. Backend testleri çalıştır.
-6. Frontend build çalıştır.
-7. Playwright ile ana kullanıcı akışını test et.
+1. KÃ¼Ã§Ã¼k feature branch aÃ§.
+2. Sadece tek Ã¶zelliÄŸi uygula.
+3. Database migration gerekiyorsa ayrÄ± ve kontrollÃ¼ yap.
+4. Seed data gÃ¼ncelle.
+5. Backend testleri Ã§alÄ±ÅŸtÄ±r.
+6. Frontend build Ã§alÄ±ÅŸtÄ±r.
+7. Playwright ile ana kullanÄ±cÄ± akÄ±ÅŸÄ±nÄ± test et.
 8. Manuel QA checklist tamamla.
 9. Commit at.
-10. Bir sonraki phase’e geç.
+10. Bir sonraki phaseâ€™e geÃ§.
 ```
 
-Önerilen branch isimleri:
+Ã–nerilen branch isimleri:
 
 ```txt
 feature/superadmin-panel
@@ -71,22 +71,22 @@ chore/node-version-upgrade
 
 ---
 
-## 3. Genel Güvenlik Kuralları
+## 3. Genel GÃ¼venlik KurallarÄ±
 
-Agent’lar şu kurallara uymalı:
+Agentâ€™lar ÅŸu kurallara uymalÄ±:
 
-- Ana proje klasörü dışında dosya değiştirme.
-- Gerçek API secret, token, private key veya webhook secret commit’leme.
-- Sadece `.env.example` güncelle.
-- Production ödeme alma iddiası koyma.
-- Stripe önce test mode ile kullanılmalı.
-- SMS/WhatsApp gerçek gönderimlerinde provider approval, fiyatlandırma ve ülke regülasyonları dikkate alınmalı.
-- Google Calendar için OAuth token güvenliği sağlanmalı.
-- AI chatbot müşteri verisini gereksiz yere üçüncü tarafa göndermemeli.
-- Accounting integration tarafında finansal kayıtlar dikkatli tutulmalı.
-- Her external integration önce adapter/interface arkasına alınmalı.
-- Webhook route’ları signature verification olmadan production-ready sayılmamalı.
-- Her migration sonrası Prisma generate ve test çalıştırılmalı.
+- Ana proje klasÃ¶rÃ¼ dÄ±ÅŸÄ±nda dosya deÄŸiÅŸtirme.
+- GerÃ§ek API secret, token, private key veya webhook secret commitâ€™leme.
+- Sadece `.env.example` gÃ¼ncelle.
+- Production Ã¶deme alma iddiasÄ± koyma.
+- Stripe Ã¶nce test mode ile kullanÄ±lmalÄ±.
+- SMS/WhatsApp gerÃ§ek gÃ¶nderimlerinde provider approval, fiyatlandÄ±rma ve Ã¼lke regÃ¼lasyonlarÄ± dikkate alÄ±nmalÄ±.
+- Google Calendar iÃ§in OAuth token gÃ¼venliÄŸi saÄŸlanmalÄ±.
+- AI chatbot mÃ¼ÅŸteri verisini gereksiz yere Ã¼Ã§Ã¼ncÃ¼ tarafa gÃ¶ndermemeli.
+- Accounting integration tarafÄ±nda finansal kayÄ±tlar dikkatli tutulmalÄ±.
+- Her external integration Ã¶nce adapter/interface arkasÄ±na alÄ±nmalÄ±.
+- Webhook routeâ€™larÄ± signature verification olmadan production-ready sayÄ±lmamalÄ±.
+- Her migration sonrasÄ± Prisma generate ve test Ã§alÄ±ÅŸtÄ±rÄ±lmalÄ±.
 
 Yasak komutlar:
 
@@ -102,7 +102,7 @@ git clean -fd
 
 ## 4. Yeni Agent Listesi
 
-Bu expansion plan için `.claude/agents/` içine aşağıdaki agent dosyaları eklenecek.
+Bu expansion plan iÃ§in `.claude/agents/` iÃ§ine aÅŸaÄŸÄ±daki agent dosyalarÄ± eklenecek.
 
 ```txt
 superadmin-agent.md
@@ -123,7 +123,7 @@ release-manager-agent.md
 
 ---
 
-## 5. Agent Tanımları
+## 5. Agent TanÄ±mlarÄ±
 
 ### 5.1 `superadmin-agent.md`
 
@@ -134,7 +134,7 @@ description: Use this agent to implement platform-level superadmin features, adm
 tools: Read, Write, Edit, Bash
 ---
 
-You are the Superadmin Agent for SlotPilot.
+You are the Superadmin Agent for Randevo.
 
 Responsibilities:
 - Add platform-level superadmin role.
@@ -350,7 +350,7 @@ Rules:
 ```md
 ---
 name: mobile-app-agent
-description: Use this agent to plan and implement a native mobile app using Expo/React Native connected to the SlotPilot API.
+description: Use this agent to plan and implement a native mobile app using Expo/React Native connected to the Randevo API.
 tools: Read, Write, Edit, Bash
 ---
 
@@ -521,7 +521,7 @@ Rules:
 
 ## 6. Global Test Commands
 
-Her phase sonunda mümkün olduğunca şu komutlar çalıştırılmalı:
+Her phase sonunda mÃ¼mkÃ¼n olduÄŸunca ÅŸu komutlar Ã§alÄ±ÅŸtÄ±rÄ±lmalÄ±:
 
 ```bash
 npm run typecheck
@@ -533,19 +533,19 @@ npx prisma generate
 npx prisma migrate status
 ```
 
-Eğer Playwright varsa:
+EÄŸer Playwright varsa:
 
 ```bash
 npm run test:e2e
 ```
 
-Eğer seed kontrolü gerekiyorsa:
+EÄŸer seed kontrolÃ¼ gerekiyorsa:
 
 ```bash
 npx prisma db seed
 ```
 
-Eğer Stripe webhook test ediliyorsa:
+EÄŸer Stripe webhook test ediliyorsa:
 
 ```bash
 stripe listen --forward-to localhost:3000/api/webhooks/stripe
@@ -553,57 +553,57 @@ stripe listen --forward-to localhost:3000/api/webhooks/stripe
 
 Not:
 
-- Stripe CLI komutları sadece local/test ortamı içindir.
-- Gerçek secret kullanılmamalıdır.
+- Stripe CLI komutlarÄ± sadece local/test ortamÄ± iÃ§indir.
+- GerÃ§ek secret kullanÄ±lmamalÄ±dÄ±r.
 
 ---
 
-## 7. Expansion Phase Sırası
+## 7. Expansion Phase SÄ±rasÄ±
 
 ```txt
-Phase 20 — Regression Baseline
-Phase 21 — Full Admin / Superadmin Panel
-Phase 22 — Complex Staff Login
-Phase 23 — Multi-Location Support
-Phase 24 — Online Appointment Deposit Payments
-Phase 25 — Real SMS Integration
-Phase 26 — WhatsApp Integration
-Phase 27 — Google Calendar Sync
-Phase 28 — Marketplace
-Phase 29 — Native Mobile App
-Phase 30 — AI Chatbot
-Phase 31 — Accounting Integration
-Phase 32 — Node.js Version Integration
-Phase 33 — Final Hardening and Release
+Phase 20 â€” Regression Baseline
+Phase 21 â€” Full Admin / Superadmin Panel
+Phase 22 â€” Complex Staff Login
+Phase 23 â€” Multi-Location Support
+Phase 24 â€” Online Appointment Deposit Payments
+Phase 25 â€” Real SMS Integration
+Phase 26 â€” WhatsApp Integration
+Phase 27 â€” Google Calendar Sync
+Phase 28 â€” Marketplace
+Phase 29 â€” Native Mobile App
+Phase 30 â€” AI Chatbot
+Phase 31 â€” Accounting Integration
+Phase 32 â€” Node.js Version Integration
+Phase 33 â€” Final Hardening and Release
 ```
 
 
 ---
 
-## Phase 20 — Regression Baseline
+## Phase 20 â€” Regression Baseline
 
-Kullanılacak agent:
+KullanÄ±lacak agent:
 
 ```txt
 regression-qa-agent
 ```
 
-Amaç:
+AmaÃ§:
 
-Ana MVP bitmiş durumda mı, mevcut proje sağlam mı kontrol edilir.
+Ana MVP bitmiÅŸ durumda mÄ±, mevcut proje saÄŸlam mÄ± kontrol edilir.
 
-Yapılacaklar:
+YapÄ±lacaklar:
 
-1. Mevcut projeyi temiz branch üzerinde aç.
+1. Mevcut projeyi temiz branch Ã¼zerinde aÃ§.
 2. `.env.example` kontrol et.
 3. Database migration durumunu kontrol et.
-4. Seed data çalışıyor mu kontrol et.
+4. Seed data Ã§alÄ±ÅŸÄ±yor mu kontrol et.
 5. Auth flow test et.
 6. Public booking flow test et.
 7. Dashboard flow test et.
-8. Plan limit testlerini çalıştır.
-9. Build çalıştır.
-10. QA raporu oluştur.
+8. Plan limit testlerini Ã§alÄ±ÅŸtÄ±r.
+9. Build Ã§alÄ±ÅŸtÄ±r.
+10. QA raporu oluÅŸtur.
 
 Komutlar:
 
@@ -634,9 +634,9 @@ Manuel / e2e test:
 
 Kabul kriteri:
 
-- MVP sağlam olmalı.
-- Bilinen bug listesi oluşturulmalı.
-- Baseline commit atılmalı.
+- MVP saÄŸlam olmalÄ±.
+- Bilinen bug listesi oluÅŸturulmalÄ±.
+- Baseline commit atÄ±lmalÄ±.
 
 Commit:
 
@@ -647,19 +647,19 @@ git commit -m "test: establish post-mvp regression baseline"
 
 ---
 
-## Phase 21 — Full Admin / Superadmin Panel
+## Phase 21 â€” Full Admin / Superadmin Panel
 
-Kullanılacak agent:
+KullanÄ±lacak agent:
 
 ```txt
 superadmin-agent
 ```
 
-Amaç:
+AmaÃ§:
 
-Platform sahibinin tüm tenantları izleyebileceği güvenli admin panel eklenir.
+Platform sahibinin tÃ¼m tenantlarÄ± izleyebileceÄŸi gÃ¼venli admin panel eklenir.
 
-Database değişiklikleri:
+Database deÄŸiÅŸiklikleri:
 
 ```txt
 User.role veya PlatformRole enum eklenebilir:
@@ -677,13 +677,13 @@ Yeni sayfalar:
 /admin/audit-logs
 ```
 
-Yapılacaklar:
+YapÄ±lacaklar:
 
 1. Superadmin role modeli ekle.
-2. Superadmin seed user oluştur.
-3. `/admin` route group oluştur.
+2. Superadmin seed user oluÅŸtur.
+3. `/admin` route group oluÅŸtur.
 4. Superadmin guard helper yaz.
-5. Organization listesi oluştur.
+5. Organization listesi oluÅŸtur.
 6. Tenant usage metrikleri ekle:
    - appointment count
    - staff count
@@ -691,25 +691,25 @@ Yapılacaklar:
    - monthly usage
 7. Subscription status overview ekle.
 8. Audit log viewer ekle.
-9. Organization suspend/activate alanı ekle.
-10. Normal user erişimini engelle.
+9. Organization suspend/activate alanÄ± ekle.
+10. Normal user eriÅŸimini engelle.
 11. Testleri yaz.
 
 Testler:
 
 ```txt
-- Normal owner /admin sayfasına giremez.
-- Superadmin /admin sayfasına girebilir.
-- Superadmin organization list görebilir.
-- Normal owner başka organization detayını göremez.
-- Suspended organization public booking kapatılır.
+- Normal owner /admin sayfasÄ±na giremez.
+- Superadmin /admin sayfasÄ±na girebilir.
+- Superadmin organization list gÃ¶rebilir.
+- Normal owner baÅŸka organization detayÄ±nÄ± gÃ¶remez.
+- Suspended organization public booking kapatÄ±lÄ±r.
 ```
 
 Kabul kriteri:
 
-- Admin panel sadece superadmin tarafından erişilebilir.
-- Tenant data güvenliği bozulmaz.
-- MVP booking flow hâlâ çalışır.
+- Admin panel sadece superadmin tarafÄ±ndan eriÅŸilebilir.
+- Tenant data gÃ¼venliÄŸi bozulmaz.
+- MVP booking flow hÃ¢lÃ¢ Ã§alÄ±ÅŸÄ±r.
 
 Phase sonu test:
 
@@ -730,19 +730,19 @@ git commit -m "feat: add superadmin panel"
 
 ---
 
-## Phase 22 — Complex Staff Login
+## Phase 22 â€” Complex Staff Login
 
-Kullanılacak agent:
+KullanÄ±lacak agent:
 
 ```txt
 staff-portal-agent
 ```
 
-Amaç:
+AmaÃ§:
 
-Staff artık sadece owner tarafından yönetilen kayıt değil, sisteme giriş yapabilen sınırlı yetkili kullanıcı olur.
+Staff artÄ±k sadece owner tarafÄ±ndan yÃ¶netilen kayÄ±t deÄŸil, sisteme giriÅŸ yapabilen sÄ±nÄ±rlÄ± yetkili kullanÄ±cÄ± olur.
 
-Database değişiklikleri:
+Database deÄŸiÅŸiklikleri:
 
 ```txt
 Staff.userId nullable relation
@@ -759,35 +759,35 @@ Yeni sayfalar:
 /staff/availability
 ```
 
-Yapılacaklar:
+YapÄ±lacaklar:
 
-1. Staff-user ilişkisini tasarla.
+1. Staff-user iliÅŸkisini tasarla.
 2. Staff invite sistemi ekle.
-3. Owner staff invite oluşturabilsin.
-4. Staff invite token ile hesap oluşturabilsin.
-5. Staff dashboard route koruması ekle.
-6. Staff sadece kendi appointments listesini görsün.
-7. Staff kendi availability ayarını güncelleyebilsin.
-8. Owner staff hesabını disable edebilsin.
-9. Role/permission helperları yaz.
+3. Owner staff invite oluÅŸturabilsin.
+4. Staff invite token ile hesap oluÅŸturabilsin.
+5. Staff dashboard route korumasÄ± ekle.
+6. Staff sadece kendi appointments listesini gÃ¶rsÃ¼n.
+7. Staff kendi availability ayarÄ±nÄ± gÃ¼ncelleyebilsin.
+8. Owner staff hesabÄ±nÄ± disable edebilsin.
+9. Role/permission helperlarÄ± yaz.
 10. Testleri yaz.
 
 Testler:
 
 ```txt
 - Staff login olabilir.
-- Staff sadece kendi randevularını görür.
-- Staff başka staff randevusunu göremez.
+- Staff sadece kendi randevularÄ±nÄ± gÃ¶rÃ¼r.
+- Staff baÅŸka staff randevusunu gÃ¶remez.
 - Disabled staff login olamaz.
-- Owner staff invite oluşturabilir.
-- Staff billing sayfasına erişemez.
+- Owner staff invite oluÅŸturabilir.
+- Staff billing sayfasÄ±na eriÅŸemez.
 ```
 
 Kabul kriteri:
 
-- Staff portal çalışır.
+- Staff portal Ã§alÄ±ÅŸÄ±r.
 - Tenant isolation bozulmaz.
-- Owner dashboard hâlâ çalışır.
+- Owner dashboard hÃ¢lÃ¢ Ã§alÄ±ÅŸÄ±r.
 
 Phase sonu test:
 
@@ -807,19 +807,19 @@ git commit -m "feat: add staff login and staff portal"
 
 ---
 
-## Phase 23 — Multi-Location Support
+## Phase 23 â€” Multi-Location Support
 
-Kullanılacak agent:
+KullanÄ±lacak agent:
 
 ```txt
 multi-location-agent
 ```
 
-Amaç:
+AmaÃ§:
 
-Bir işletmenin birden fazla şube/lokasyon yönetebilmesi sağlanır.
+Bir iÅŸletmenin birden fazla ÅŸube/lokasyon yÃ¶netebilmesi saÄŸlanÄ±r.
 
-Database değişiklikleri:
+Database deÄŸiÅŸiklikleri:
 
 ```txt
 Location model ekle.
@@ -829,11 +829,11 @@ AvailabilityRule.locationId ekle.
 Appointment.locationId ekle.
 ```
 
-Önemli migration kuralı:
+Ã–nemli migration kuralÄ±:
 
 ```txt
-Mevcut her organization için otomatik "Main Location" oluştur.
-Eski services/staff/appointments bu default location’a bağlanır.
+Mevcut her organization iÃ§in otomatik "Main Location" oluÅŸtur.
+Eski services/staff/appointments bu default locationâ€™a baÄŸlanÄ±r.
 ```
 
 Yeni sayfalar:
@@ -843,33 +843,33 @@ Yeni sayfalar:
 /booking/[slug]/locations
 ```
 
-Yapılacaklar:
+YapÄ±lacaklar:
 
 1. Location model ekle.
 2. Migration script yaz.
 3. Default location seed ekle.
-4. Location CRUD API oluştur.
+4. Location CRUD API oluÅŸtur.
 5. Services/staff/availability/appointments location-aware hale getir.
-6. Public booking flow’da önce location seçtir.
-7. Booking engine slot generation içinde location kontrolü yap.
-8. Analytics location bazlı filtrelenebilsin.
+6. Public booking flowâ€™da Ã¶nce location seÃ§tir.
+7. Booking engine slot generation iÃ§inde location kontrolÃ¼ yap.
+8. Analytics location bazlÄ± filtrelenebilsin.
 9. Testleri yaz.
 
 Testler:
 
 ```txt
-- Existing organization migration sonrası default location alır.
-- Location A staff slotları Location B’de görünmez.
-- Appointment doğru location’a bağlanır.
-- Location disabled ise public booking’de görünmez.
-- Analytics location filter doğru çalışır.
+- Existing organization migration sonrasÄ± default location alÄ±r.
+- Location A staff slotlarÄ± Location Bâ€™de gÃ¶rÃ¼nmez.
+- Appointment doÄŸru locationâ€™a baÄŸlanÄ±r.
+- Location disabled ise public bookingâ€™de gÃ¶rÃ¼nmez.
+- Analytics location filter doÄŸru Ã§alÄ±ÅŸÄ±r.
 ```
 
 Kabul kriteri:
 
-- Single-location eski kullanım bozulmaz.
-- Multi-location booking doğru çalışır.
-- Double booking kontrolü location + staff bazında çalışır.
+- Single-location eski kullanÄ±m bozulmaz.
+- Multi-location booking doÄŸru Ã§alÄ±ÅŸÄ±r.
+- Double booking kontrolÃ¼ location + staff bazÄ±nda Ã§alÄ±ÅŸÄ±r.
 
 Phase sonu test:
 
@@ -892,19 +892,19 @@ git commit -m "feat: add multi-location support"
 
 ---
 
-## Phase 24 — Online Appointment Deposit Payments
+## Phase 24 â€” Online Appointment Deposit Payments
 
-Kullanılacak agent:
+KullanÄ±lacak agent:
 
 ```txt
 deposit-payment-agent
 ```
 
-Amaç:
+AmaÃ§:
 
-Bazı hizmetler için müşteri randevu alırken kapora/deposit ödeyebilsin.
+BazÄ± hizmetler iÃ§in mÃ¼ÅŸteri randevu alÄ±rken kapora/deposit Ã¶deyebilsin.
 
-Database değişiklikleri:
+Database deÄŸiÅŸiklikleri:
 
 ```txt
 Service.depositRequired boolean
@@ -924,35 +924,35 @@ FAILED
 REFUNDED
 ```
 
-Yapılacaklar:
+YapÄ±lacaklar:
 
 1. Service deposit settings ekle.
-2. Appointment payment status alanı ekle.
-3. Public booking flow’da deposit gereken hizmetleri göster.
-4. Appointment oluşturunca status `PENDING_PAYMENT` olabilir.
-5. Stripe Checkout Session oluştur.
+2. Appointment payment status alanÄ± ekle.
+3. Public booking flowâ€™da deposit gereken hizmetleri gÃ¶ster.
+4. Appointment oluÅŸturunca status `PENDING_PAYMENT` olabilir.
+5. Stripe Checkout Session oluÅŸtur.
 6. Checkout success/cancel URL ekle.
 7. Stripe webhook ile payment success yakala.
 8. Appointment paymentStatus `PAID` yap.
-9. Deposit paid sonrası appointment confirm et.
-10. Refund/cancellation policy dokümantasyonu yaz.
+9. Deposit paid sonrasÄ± appointment confirm et.
+10. Refund/cancellation policy dokÃ¼mantasyonu yaz.
 11. Testleri yaz.
 
 Testler:
 
 ```txt
 - Deposit gerekmeyen service normal booking yapar.
-- Deposit gereken service checkout session oluşturur.
+- Deposit gereken service checkout session oluÅŸturur.
 - Webhook success appointment paymentStatus PAID yapar.
 - Failed/cancelled payment appointment confirm etmez.
-- Webhook signature kontrol helperı test edilir.
+- Webhook signature kontrol helperÄ± test edilir.
 ```
 
 Kabul kriteri:
 
-- Stripe test mode ile çalışır.
-- Gerçek secret commitlenmez.
-- Appointment deposit flow booking’i bozmaz.
+- Stripe test mode ile Ã§alÄ±ÅŸÄ±r.
+- GerÃ§ek secret commitlenmez.
+- Appointment deposit flow bookingâ€™i bozmaz.
 
 Phase sonu test:
 
@@ -972,19 +972,19 @@ git commit -m "feat: add appointment deposit payments"
 
 ---
 
-## Phase 25 — Real SMS Integration
+## Phase 25 â€” Real SMS Integration
 
-Kullanılacak agent:
+KullanÄ±lacak agent:
 
 ```txt
 sms-integration-agent
 ```
 
-Amaç:
+AmaÃ§:
 
-Fake reminder sisteminden gerçek SMS provider entegrasyonuna geçiş yapılır. Local development hâlâ fake provider kullanır.
+Fake reminder sisteminden gerÃ§ek SMS provider entegrasyonuna geÃ§iÅŸ yapÄ±lÄ±r. Local development hÃ¢lÃ¢ fake provider kullanÄ±r.
 
-Database değişiklikleri:
+Database deÄŸiÅŸiklikleri:
 
 ```txt
 Reminder.provider
@@ -994,7 +994,7 @@ Customer.smsOptIn boolean
 Organization.smsEnabled boolean
 ```
 
-Yeni env değişkenleri:
+Yeni env deÄŸiÅŸkenleri:
 
 ```txt
 SMS_PROVIDER=FAKE
@@ -1003,33 +1003,33 @@ TWILIO_AUTH_TOKEN=
 TWILIO_PHONE_NUMBER=
 ```
 
-Yapılacaklar:
+YapÄ±lacaklar:
 
-1. `SmsProvider` interface oluştur.
-2. `FakeSmsProvider` oluştur.
-3. `TwilioSmsProvider` oluştur.
-4. Reminder service provider seçimini env üzerinden yapsın.
+1. `SmsProvider` interface oluÅŸtur.
+2. `FakeSmsProvider` oluÅŸtur.
+3. `TwilioSmsProvider` oluÅŸtur.
+4. Reminder service provider seÃ§imini env Ã¼zerinden yapsÄ±n.
 5. SMS template sistemi ekle.
-6. Customer SMS opt-in alanı ekle.
-7. Rate limit ve retry mantığı ekle.
-8. SMS delivery log alanlarını ekle.
+6. Customer SMS opt-in alanÄ± ekle.
+7. Rate limit ve retry mantÄ±ÄŸÄ± ekle.
+8. SMS delivery log alanlarÄ±nÄ± ekle.
 9. Testlerde provider mockla.
-10. Dokümantasyon yaz.
+10. DokÃ¼mantasyon yaz.
 
 Testler:
 
 ```txt
-- Fake SMS provider localde çalışır.
-- Twilio provider testte mocklanır.
-- SMS opt-in yoksa SMS gönderilmez.
+- Fake SMS provider localde Ã§alÄ±ÅŸÄ±r.
+- Twilio provider testte mocklanÄ±r.
+- SMS opt-in yoksa SMS gÃ¶nderilmez.
 - Provider hata verirse reminder FAILED olur.
-- Retry count doğru artar.
+- Retry count doÄŸru artar.
 ```
 
 Kabul kriteri:
 
-- Testlerde gerçek SMS gönderilmez.
-- Production SMS açıkça env ile enable edilir.
+- Testlerde gerÃ§ek SMS gÃ¶nderilmez.
+- Production SMS aÃ§Ä±kÃ§a env ile enable edilir.
 - Reminder sistemi bozulmaz.
 
 Phase sonu test:
@@ -1050,19 +1050,19 @@ git commit -m "feat: add sms reminder provider integration"
 
 ---
 
-## Phase 26 — WhatsApp Integration
+## Phase 26 â€” WhatsApp Integration
 
-Kullanılacak agent:
+KullanÄ±lacak agent:
 
 ```txt
 whatsapp-integration-agent
 ```
 
-Amaç:
+AmaÃ§:
 
-WhatsApp Business Cloud API uyumlu reminder/provider yapısı eklenir.
+WhatsApp Business Cloud API uyumlu reminder/provider yapÄ±sÄ± eklenir.
 
-Database değişiklikleri:
+Database deÄŸiÅŸiklikleri:
 
 ```txt
 Organization.whatsappEnabled
@@ -1073,7 +1073,7 @@ Reminder.templateName
 Reminder.providerMessageId
 ```
 
-Yeni env değişkenleri:
+Yeni env deÄŸiÅŸkenleri:
 
 ```txt
 WHATSAPP_PROVIDER=FAKE
@@ -1082,33 +1082,33 @@ META_WHATSAPP_PHONE_NUMBER_ID=
 META_WHATSAPP_WEBHOOK_VERIFY_TOKEN=
 ```
 
-Yapılacaklar:
+YapÄ±lacaklar:
 
-1. `WhatsAppProvider` interface oluştur.
-2. `FakeWhatsAppProvider` oluştur.
+1. `WhatsAppProvider` interface oluÅŸtur.
+2. `FakeWhatsAppProvider` oluÅŸtur.
 3. Meta Cloud API provider adapter yaz.
-4. Template message yapısını ekle.
-5. WhatsApp opt-in alanı ekle.
+4. Template message yapÄ±sÄ±nÄ± ekle.
+5. WhatsApp opt-in alanÄ± ekle.
 6. Reminder channel olarak WhatsApp ekle.
 7. Webhook verification route planla.
 8. Delivery status webhook handler ekle.
 9. Testleri mock provider ile yaz.
-10. Dokümantasyona business verification/template approval notları ekle.
+10. DokÃ¼mantasyona business verification/template approval notlarÄ± ekle.
 
 Testler:
 
 ```txt
-- Fake WhatsApp provider çalışır.
-- Opt-in yoksa mesaj gönderilmez.
-- Template name eksikse mesaj gönderilmez.
-- Webhook verify token doğruysa doğrulama başarılı olur.
+- Fake WhatsApp provider Ã§alÄ±ÅŸÄ±r.
+- Opt-in yoksa mesaj gÃ¶nderilmez.
+- Template name eksikse mesaj gÃ¶nderilmez.
+- Webhook verify token doÄŸruysa doÄŸrulama baÅŸarÄ±lÄ± olur.
 - Delivery webhook reminder status update eder.
 ```
 
 Kabul kriteri:
 
-- Gerçek WhatsApp mesajı testte gönderilmez.
-- Provider adapter izole çalışır.
+- GerÃ§ek WhatsApp mesajÄ± testte gÃ¶nderilmez.
+- Provider adapter izole Ã§alÄ±ÅŸÄ±r.
 - Reminder sistemi email/sms/whatsapp channel destekler.
 
 Phase sonu test:
@@ -1129,19 +1129,19 @@ git commit -m "feat: add whatsapp reminder integration"
 
 ---
 
-## Phase 27 — Google Calendar Sync
+## Phase 27 â€” Google Calendar Sync
 
-Kullanılacak agent:
+KullanÄ±lacak agent:
 
 ```txt
 calendar-sync-agent
 ```
 
-Amaç:
+AmaÃ§:
 
-İşletme veya staff Google Calendar bağlayabilsin; randevular calendar event olarak sync edilsin.
+Ä°ÅŸletme veya staff Google Calendar baÄŸlayabilsin; randevular calendar event olarak sync edilsin.
 
-Database değişiklikleri:
+Database deÄŸiÅŸiklikleri:
 
 ```txt
 CalendarConnection
@@ -1150,7 +1150,7 @@ Staff.calendarConnectionId opsiyonel
 Appointment.calendarEventId opsiyonel
 ```
 
-CalendarConnection alanları:
+CalendarConnection alanlarÄ±:
 
 ```txt
 id
@@ -1166,33 +1166,33 @@ createdAt
 updatedAt
 ```
 
-Yapılacaklar:
+YapÄ±lacaklar:
 
 1. Google OAuth flow planla.
 2. CalendarConnection modelini ekle.
 3. Token storage stratejisi yaz.
 4. Connect/disconnect UI ekle.
-5. Appointment confirmed olunca calendar event oluştur.
+5. Appointment confirmed olunca calendar event oluÅŸtur.
 6. Appointment cancelled olunca calendar event update/delete et.
-7. Sync failure appointment creation’ı bozmasın.
-8. Sync status göster.
+7. Sync failure appointment creationâ€™Ä± bozmasÄ±n.
+8. Sync status gÃ¶ster.
 9. Testlerde Google API mockla.
-10. Dokümantasyon yaz.
+10. DokÃ¼mantasyon yaz.
 
 Testler:
 
 ```txt
-- Calendar bağlı değilse appointment normal oluşur.
-- Calendar bağlıysa event insert çağrılır.
-- Appointment cancel olunca event update/delete çağrılır.
-- Token expired durumda refresh flow çağrılır.
+- Calendar baÄŸlÄ± deÄŸilse appointment normal oluÅŸur.
+- Calendar baÄŸlÄ±ysa event insert Ã§aÄŸrÄ±lÄ±r.
+- Appointment cancel olunca event update/delete Ã§aÄŸrÄ±lÄ±r.
+- Token expired durumda refresh flow Ã§aÄŸrÄ±lÄ±r.
 - Google API hata verirse appointment silinmez, sync failed olur.
 ```
 
 Kabul kriteri:
 
 - Calendar sync opsiyoneldir.
-- Tokenlar client’a sızmaz.
+- Tokenlar clientâ€™a sÄ±zmaz.
 - Booking flow bozulmaz.
 
 Phase sonu test:
@@ -1214,19 +1214,19 @@ git commit -m "feat: add google calendar sync"
 
 ---
 
-## Phase 28 — Marketplace
+## Phase 28 â€” Marketplace
 
-Kullanılacak agent:
+KullanÄ±lacak agent:
 
 ```txt
 marketplace-agent
 ```
 
-Amaç:
+AmaÃ§:
 
-SlotPilot içindeki işletmeler public marketplace üzerinde bulunabilir hale gelir.
+Randevo iÃ§indeki iÅŸletmeler public marketplace Ã¼zerinde bulunabilir hale gelir.
 
-Database değişiklikleri:
+Database deÄŸiÅŸiklikleri:
 
 ```txt
 Organization.marketplaceEnabled
@@ -1245,33 +1245,33 @@ Yeni sayfalar:
 /marketplace/business/[slug]
 ```
 
-Yapılacaklar:
+YapÄ±lacaklar:
 
 1. Marketplace visibility setting ekle.
-2. Organization kategori ve şehir alanları ekle.
-3. Marketplace search/filter backend route oluştur.
-4. Public marketplace sayfası oluştur.
-5. Business profile public sayfası oluştur.
+2. Organization kategori ve ÅŸehir alanlarÄ± ekle.
+3. Marketplace search/filter backend route oluÅŸtur.
+4. Public marketplace sayfasÄ± oluÅŸtur.
+5. Business profile public sayfasÄ± oluÅŸtur.
 6. Booking CTA ekle.
 7. SEO metadata ekle.
-8. Review-ready schema ekle ama fake review üretme.
+8. Review-ready schema ekle ama fake review Ã¼retme.
 9. Testleri yaz.
 
 Testler:
 
 ```txt
-- marketplaceEnabled false işletme görünmez.
-- marketplaceEnabled true işletme görünür.
-- Category filter doğru çalışır.
-- City filter doğru çalışır.
-- Private customer data görünmez.
+- marketplaceEnabled false iÅŸletme gÃ¶rÃ¼nmez.
+- marketplaceEnabled true iÅŸletme gÃ¶rÃ¼nÃ¼r.
+- Category filter doÄŸru Ã§alÄ±ÅŸÄ±r.
+- City filter doÄŸru Ã§alÄ±ÅŸÄ±r.
+- Private customer data gÃ¶rÃ¼nmez.
 ```
 
 Kabul kriteri:
 
-- Marketplace public çalışır.
-- Sadece opt-in işletmeler görünür.
-- Booking flow marketplace üzerinden çalışır.
+- Marketplace public Ã§alÄ±ÅŸÄ±r.
+- Sadece opt-in iÅŸletmeler gÃ¶rÃ¼nÃ¼r.
+- Booking flow marketplace Ã¼zerinden Ã§alÄ±ÅŸÄ±r.
 
 Phase sonu test:
 
@@ -1291,32 +1291,32 @@ git commit -m "feat: add public marketplace"
 
 ---
 
-## Phase 29 — Native Mobile App
+## Phase 29 â€” Native Mobile App
 
-Kullanılacak agent:
+KullanÄ±lacak agent:
 
 ```txt
 mobile-app-agent
 ```
 
-Amaç:
+AmaÃ§:
 
-Owner/staff için basit mobil uygulama hazırlanır.
+Owner/staff iÃ§in basit mobil uygulama hazÄ±rlanÄ±r.
 
-Önerilen yapı:
+Ã–nerilen yapÄ±:
 
 ```txt
-slotpilot/
-├── apps/
-│   ├── web/
-│   └── mobile/
+randevo/
+â”œâ”€â”€ apps/
+â”‚   â”œâ”€â”€ web/
+â”‚   â””â”€â”€ mobile/
 ```
 
-Eğer mevcut proje monorepo değilse, ilk aşamada şu yapı kullanılabilir:
+EÄŸer mevcut proje monorepo deÄŸilse, ilk aÅŸamada ÅŸu yapÄ± kullanÄ±labilir:
 
 ```txt
-slotpilot/
-├── mobile/
+randevo/
+â”œâ”€â”€ mobile/
 ```
 
 Teknoloji:
@@ -1325,7 +1325,7 @@ Teknoloji:
 Expo + React Native + TypeScript
 ```
 
-İlk mobil kapsam:
+Ä°lk mobil kapsam:
 
 - Login
 - Dashboard summary
@@ -1335,16 +1335,16 @@ Expo + React Native + TypeScript
 - Staff own appointment view
 - Basic settings link
 
-Yapılacaklar:
+YapÄ±lacaklar:
 
-1. Mobile app klasörü oluştur.
+1. Mobile app klasÃ¶rÃ¼ oluÅŸtur.
 2. Expo TypeScript app kur.
-3. API client oluştur.
+3. API client oluÅŸtur.
 4. Auth token/session stratejisi belirle.
-5. Login screen oluştur.
-6. Dashboard summary screen oluştur.
-7. Appointment list screen oluştur.
-8. Appointment detail/status update screen oluştur.
+5. Login screen oluÅŸtur.
+6. Dashboard summary screen oluÅŸtur.
+7. Appointment list screen oluÅŸtur.
+8. Appointment detail/status update screen oluÅŸtur.
 9. Staff view ekle.
 10. Mobile README yaz.
 11. Mobile test/smoke test ekle.
@@ -1352,18 +1352,18 @@ Yapılacaklar:
 Testler:
 
 ```txt
-- Mobile TypeScript check geçer.
-- API client mock testleri geçer.
-- Login form validation çalışır.
+- Mobile TypeScript check geÃ§er.
+- API client mock testleri geÃ§er.
+- Login form validation Ã§alÄ±ÅŸÄ±r.
 - Appointment list render olur.
-- Status update request doğru endpoint’e gider.
+- Status update request doÄŸru endpointâ€™e gider.
 ```
 
 Kabul kriteri:
 
 - Mobil app backend logic kopyalamaz.
 - API contracts web ile uyumludur.
-- App store publish bu phase’te yapılmaz.
+- App store publish bu phaseâ€™te yapÄ±lmaz.
 
 Phase sonu test:
 
@@ -1373,7 +1373,7 @@ npm test
 npm run build
 ```
 
-Mobil klasörde:
+Mobil klasÃ¶rde:
 
 ```bash
 npx expo-doctor
@@ -1388,19 +1388,19 @@ git commit -m "feat: add expo mobile app foundation"
 
 ---
 
-## Phase 30 — AI Chatbot
+## Phase 30 â€” AI Chatbot
 
-Kullanılacak agent:
+KullanÄ±lacak agent:
 
 ```txt
 ai-chatbot-agent
 ```
 
-Amaç:
+AmaÃ§:
 
-Public booking sayfasında işletme bilgileri ve randevu akışı hakkında yardımcı olan sınırlı kapsamlı AI chatbot eklenir.
+Public booking sayfasÄ±nda iÅŸletme bilgileri ve randevu akÄ±ÅŸÄ± hakkÄ±nda yardÄ±mcÄ± olan sÄ±nÄ±rlÄ± kapsamlÄ± AI chatbot eklenir.
 
-Database değişiklikleri:
+Database deÄŸiÅŸiklikleri:
 
 ```txt
 Organization.aiChatbotEnabled
@@ -1410,50 +1410,50 @@ ChatConversation
 ChatMessage
 ```
 
-AI kapsamı:
+AI kapsamÄ±:
 
 - Hizmet bilgisi anlatma
 - Fiyat bilgisi anlatma
-- Çalışma saatleri hakkında yardımcı olma
-- Booking formuna yönlendirme
-- Uygun slot sorgusunda backend booking API’den gerçek veri alma
+- Ã‡alÄ±ÅŸma saatleri hakkÄ±nda yardÄ±mcÄ± olma
+- Booking formuna yÃ¶nlendirme
+- Uygun slot sorgusunda backend booking APIâ€™den gerÃ§ek veri alma
 
-AI kapsam dışı:
+AI kapsam dÄ±ÅŸÄ±:
 
-- Özel müşteri verisi açıklama
-- Başka müşteri randevularını gösterme
-- Kesin sağlık/hukuk/finans tavsiyesi
-- Kullanıcı onayı olmadan randevu oluşturma
-- Sahte müsaitlik uydurma
+- Ã–zel mÃ¼ÅŸteri verisi aÃ§Ä±klama
+- BaÅŸka mÃ¼ÅŸteri randevularÄ±nÄ± gÃ¶sterme
+- Kesin saÄŸlÄ±k/hukuk/finans tavsiyesi
+- KullanÄ±cÄ± onayÄ± olmadan randevu oluÅŸturma
+- Sahte mÃ¼saitlik uydurma
 
-Yapılacaklar:
+YapÄ±lacaklar:
 
 1. AI chatbot settings ekle.
-2. Business FAQ alanı ekle.
-3. Public booking sayfasına chat widget ekle.
-4. Server-side AI route oluştur.
+2. Business FAQ alanÄ± ekle.
+3. Public booking sayfasÄ±na chat widget ekle.
+4. Server-side AI route oluÅŸtur.
 5. AI prompt guardrails yaz.
 6. Booking API tool-like helper tasarla.
 7. Chat history modelini ekle.
 8. Rate limit ekle.
-9. Safety fallback mesajları ekle.
+9. Safety fallback mesajlarÄ± ekle.
 10. Testleri yaz.
 
 Testler:
 
 ```txt
-- Chatbot disabled ise widget görünmez.
+- Chatbot disabled ise widget gÃ¶rÃ¼nmez.
 - Chatbot service bilgisi cevaplayabilir.
-- Chatbot private appointment data açıklamaz.
-- Chatbot booking yapmadan önce onay ister.
-- Rate limit aşılırsa güvenli hata döner.
+- Chatbot private appointment data aÃ§Ä±klamaz.
+- Chatbot booking yapmadan Ã¶nce onay ister.
+- Rate limit aÅŸÄ±lÄ±rsa gÃ¼venli hata dÃ¶ner.
 ```
 
 Kabul kriteri:
 
 - AI opsiyoneldir.
 - Tenant private data korunur.
-- Chatbot public booking’i bozmaz.
+- Chatbot public bookingâ€™i bozmaz.
 
 Phase sonu test:
 
@@ -1473,19 +1473,19 @@ git commit -m "feat: add scoped ai booking assistant"
 
 ---
 
-## Phase 31 — Accounting Integration
+## Phase 31 â€” Accounting Integration
 
-Kullanılacak agent:
+KullanÄ±lacak agent:
 
 ```txt
 accounting-agent
 ```
 
-Amaç:
+AmaÃ§:
 
-Ödeme ve randevu gelirlerini düzenli kayıt altına alan muhasebe/export altyapısı eklenir.
+Ã–deme ve randevu gelirlerini dÃ¼zenli kayÄ±t altÄ±na alan muhasebe/export altyapÄ±sÄ± eklenir.
 
-Database değişiklikleri:
+Database deÄŸiÅŸiklikleri:
 
 ```txt
 RevenueLedger
@@ -1493,7 +1493,7 @@ InvoiceRecord
 AccountingConnection
 ```
 
-RevenueLedger alanları:
+RevenueLedger alanlarÄ±:
 
 ```txt
 id
@@ -1508,43 +1508,43 @@ recordedAt
 metadata
 ```
 
-İlk kapsam:
+Ä°lk kapsam:
 
-- Revenue ledger oluşturma
-- Paid deposit kaydı
-- Completed appointment revenue kaydı
+- Revenue ledger oluÅŸturma
+- Paid deposit kaydÄ±
+- Completed appointment revenue kaydÄ±
 - CSV export
 - Date range filter
 - Accounting provider adapter interface
 - Xero/QuickBooks placeholder
 
-Yapılacaklar:
+YapÄ±lacaklar:
 
 1. RevenueLedger modelini ekle.
-2. Payment success olduğunda ledger record oluştur.
-3. Appointment completed olduğunda revenue record oluştur.
+2. Payment success olduÄŸunda ledger record oluÅŸtur.
+3. Appointment completed olduÄŸunda revenue record oluÅŸtur.
 4. Dashboard revenue report ekle.
 5. CSV export endpoint ekle.
 6. Accounting provider adapter interface ekle.
-7. Xero/QuickBooks entegrasyonu için placeholder tasarla.
-8. Dokümantasyona “tax/legal compliance değildir” notu ekle.
+7. Xero/QuickBooks entegrasyonu iÃ§in placeholder tasarla.
+8. DokÃ¼mantasyona â€œtax/legal compliance deÄŸildirâ€ notu ekle.
 9. Testleri yaz.
 
 Testler:
 
 ```txt
-- Payment success ledger oluşturur.
-- Duplicate webhook duplicate ledger oluşturmaz.
-- Date range revenue doğru hesaplanır.
-- CSV export doğru kolonları içerir.
-- Organization A ledger Organization B’ye görünmez.
+- Payment success ledger oluÅŸturur.
+- Duplicate webhook duplicate ledger oluÅŸturmaz.
+- Date range revenue doÄŸru hesaplanÄ±r.
+- CSV export doÄŸru kolonlarÄ± iÃ§erir.
+- Organization A ledger Organization Bâ€™ye gÃ¶rÃ¼nmez.
 ```
 
 Kabul kriteri:
 
-- Finansal kayıtlar testlidir.
-- CSV export çalışır.
-- Vergi/muhasebe uyumluluğu iddiası yapılmaz.
+- Finansal kayÄ±tlar testlidir.
+- CSV export Ã§alÄ±ÅŸÄ±r.
+- Vergi/muhasebe uyumluluÄŸu iddiasÄ± yapÄ±lmaz.
 
 Phase sonu test:
 
@@ -1564,68 +1564,68 @@ git commit -m "feat: add accounting export foundation"
 
 ---
 
-## Phase 32 — Node.js Version Integration
+## Phase 32 â€” Node.js Version Integration
 
-Kullanılacak agent:
+KullanÄ±lacak agent:
 
 ```txt
 node-upgrade-agent
 ```
 
-Amaç:
+AmaÃ§:
 
-Yeni kurulan Node.js sürümü projeye kontrollü şekilde entegre edilir. Her geliştiricide ve deploy ortamında aynı Node politikası kullanılır.
+Yeni kurulan Node.js sÃ¼rÃ¼mÃ¼ projeye kontrollÃ¼ ÅŸekilde entegre edilir. Her geliÅŸtiricide ve deploy ortamÄ±nda aynÄ± Node politikasÄ± kullanÄ±lÄ±r.
 
-Önemli not:
+Ã–nemli not:
 
 ```txt
-Next.js için minimum Node.js sürümü güncel dokümana göre kontrol edilmeli.
-Production için mümkünse LTS Node tercih edilmeli.
-Current Node kullanılacaksa risk notu README’ye yazılmalı.
+Next.js iÃ§in minimum Node.js sÃ¼rÃ¼mÃ¼ gÃ¼ncel dokÃ¼mana gÃ¶re kontrol edilmeli.
+Production iÃ§in mÃ¼mkÃ¼nse LTS Node tercih edilmeli.
+Current Node kullanÄ±lacaksa risk notu READMEâ€™ye yazÄ±lmalÄ±.
 ```
 
-Yapılacaklar:
+YapÄ±lacaklar:
 
-1. Local Node sürümünü tespit et:
+1. Local Node sÃ¼rÃ¼mÃ¼nÃ¼ tespit et:
 
 ```bash
 node -v
 npm -v
 ```
 
-2. Proje için Node policy seç:
+2. Proje iÃ§in Node policy seÃ§:
 
-Önerilen production policy:
+Ã–nerilen production policy:
 
 ```txt
 Node.js 24 LTS
 ```
 
-Eğer kullanıcı yeni kurduğu Current sürümü kullanmak istiyorsa:
+EÄŸer kullanÄ±cÄ± yeni kurduÄŸu Current sÃ¼rÃ¼mÃ¼ kullanmak istiyorsa:
 
 ```txt
 Node.js 26 Current
 ```
 
-Ama Current için not:
+Ama Current iÃ§in not:
 
 ```txt
-Current sürüm yeni özellikleri test etmek için uygundur; production için LTS daha güvenlidir.
+Current sÃ¼rÃ¼m yeni Ã¶zellikleri test etmek iÃ§in uygundur; production iÃ§in LTS daha gÃ¼venlidir.
 ```
 
-3. `.nvmrc` oluştur:
+3. `.nvmrc` oluÅŸtur:
 
 ```txt
 24
 ```
 
-veya kullanıcının kurduğu sürüm:
+veya kullanÄ±cÄ±nÄ±n kurduÄŸu sÃ¼rÃ¼m:
 
 ```txt
 26
 ```
 
-4. `package.json` içine engines ekle:
+4. `package.json` iÃ§ine engines ekle:
 
 ```json
 {
@@ -1644,7 +1644,7 @@ veya kullanıcının kurduğu sürüm:
 }
 ```
 
-Not: NPM sürümü localde `npm -v` ile doğrulanmalı.
+Not: NPM sÃ¼rÃ¼mÃ¼ localde `npm -v` ile doÄŸrulanmalÄ±.
 
 6. Optional environment check script ekle:
 
@@ -1652,7 +1652,7 @@ Not: NPM sürümü localde `npm -v` ile doğrulanmalı.
 scripts/check-node.js
 ```
 
-7. Package scripts içine ekle:
+7. Package scripts iÃ§ine ekle:
 
 ```json
 {
@@ -1662,7 +1662,7 @@ scripts/check-node.js
 }
 ```
 
-8. CI için Node version matrix ekle, eğer GitHub Actions varsa:
+8. CI iÃ§in Node version matrix ekle, eÄŸer GitHub Actions varsa:
 
 ```yaml
 strategy:
@@ -1676,9 +1676,9 @@ strategy:
 npm install
 ```
 
-Eğer `node_modules` temizlenecekse önce kullanıcı onayı alınmalı. Bu plan destructive temizleme komutunu otomatik çalıştırmaz.
+EÄŸer `node_modules` temizlenecekse Ã¶nce kullanÄ±cÄ± onayÄ± alÄ±nmalÄ±. Bu plan destructive temizleme komutunu otomatik Ã§alÄ±ÅŸtÄ±rmaz.
 
-10. Prisma ve build kontrolü:
+10. Prisma ve build kontrolÃ¼:
 
 ```bash
 npx prisma generate
@@ -1688,27 +1688,27 @@ npm test
 npm run build
 ```
 
-11. README’ye Node requirement ekle.
+11. READMEâ€™ye Node requirement ekle.
 
-12. `.env.example` güncel mi kontrol et.
+12. `.env.example` gÃ¼ncel mi kontrol et.
 
 Testler:
 
 ```txt
-- node -v beklenen aralığı karşılıyor.
-- npm install sorunsuz çalışıyor.
-- prisma generate çalışıyor.
-- build geçiyor.
-- testler geçiyor.
-- Next.js dev server açılıyor.
+- node -v beklenen aralÄ±ÄŸÄ± karÅŸÄ±lÄ±yor.
+- npm install sorunsuz Ã§alÄ±ÅŸÄ±yor.
+- prisma generate Ã§alÄ±ÅŸÄ±yor.
+- build geÃ§iyor.
+- testler geÃ§iyor.
+- Next.js dev server aÃ§Ä±lÄ±yor.
 ```
 
 Kabul kriteri:
 
-- Node sürümü repoda açıkça belirtilmiş.
-- Farklı geliştiriciler aynı Node politikasını görebiliyor.
-- Build/test yeni Node ile geçiyor.
-- README güncel.
+- Node sÃ¼rÃ¼mÃ¼ repoda aÃ§Ä±kÃ§a belirtilmiÅŸ.
+- FarklÄ± geliÅŸtiriciler aynÄ± Node politikasÄ±nÄ± gÃ¶rebiliyor.
+- Build/test yeni Node ile geÃ§iyor.
+- README gÃ¼ncel.
 
 Commit:
 
@@ -1719,32 +1719,32 @@ git commit -m "chore: pin node version and validate environment"
 
 ---
 
-## Phase 33 — Final Hardening and Release
+## Phase 33 â€” Final Hardening and Release
 
-Kullanılacak agent:
+KullanÄ±lacak agent:
 
 ```txt
 release-manager-agent
 ```
 
-Amaç:
+AmaÃ§:
 
-Tüm expansion özellikleri sonrası proje release-ready hale getirilir.
+TÃ¼m expansion Ã¶zellikleri sonrasÄ± proje release-ready hale getirilir.
 
-Yapılacaklar:
+YapÄ±lacaklar:
 
-1. Changelog oluştur.
-2. Migration listesi çıkar.
-3. Env variable listesi güncelle.
-4. External provider setup dokümantasyonunu güncelle.
+1. Changelog oluÅŸtur.
+2. Migration listesi Ã§Ä±kar.
+3. Env variable listesi gÃ¼ncelle.
+4. External provider setup dokÃ¼mantasyonunu gÃ¼ncelle.
 5. Feature flag listesini yaz.
-6. Security review checklist oluştur.
-7. Performance checklist oluştur.
-8. Final regression test çalıştır.
-9. README güncelle.
-10. GitHub release notes hazırla.
+6. Security review checklist oluÅŸtur.
+7. Performance checklist oluÅŸtur.
+8. Final regression test Ã§alÄ±ÅŸtÄ±r.
+9. README gÃ¼ncelle.
+10. GitHub release notes hazÄ±rla.
 
-Final test komutları:
+Final test komutlarÄ±:
 
 ```bash
 npm run typecheck
@@ -1778,12 +1778,12 @@ E2E testler:
 
 Kabul kriteri:
 
-- Build geçer.
-- Testler geçer.
+- Build geÃ§er.
+- Testler geÃ§er.
 - Kritik user flow bozulmaz.
-- README ve docs günceldir.
+- README ve docs gÃ¼nceldir.
 - Secret yoktur.
-- Production checklist hazırdır.
+- Production checklist hazÄ±rdÄ±r.
 
 Commit:
 
@@ -1792,7 +1792,7 @@ git add .
 git commit -m "chore: finalize post-mvp expansion release"
 ```
 
-Tag önerisi:
+Tag Ã¶nerisi:
 
 ```bash
 git tag v1.0.0-post-mvp
@@ -1800,9 +1800,9 @@ git tag v1.0.0-post-mvp
 
 ---
 
-## 9. Güncellenmiş Environment Variables
+## 9. GÃ¼ncellenmiÅŸ Environment Variables
 
-`.env.example` içine şu yeni alanlar eklenecek:
+`.env.example` iÃ§ine ÅŸu yeni alanlar eklenecek:
 
 ```env
 # App
@@ -1810,7 +1810,7 @@ NODE_ENV=development
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 
 # Database
-DATABASE_URL=postgresql://postgres:postgres@localhost:5432/slotpilot
+DATABASE_URL=postgresql://postgres:postgres@localhost:5432/randevo
 
 # Auth
 AUTH_SECRET=
@@ -1858,7 +1858,7 @@ QUICKBOOKS_CLIENT_SECRET=
 
 ## 10. Updated Database Models Summary
 
-Bu expansion sonrası eklenmesi muhtemel modeller:
+Bu expansion sonrasÄ± eklenmesi muhtemel modeller:
 
 ```txt
 PlatformRole
@@ -1875,52 +1875,52 @@ InvoiceRecord
 AccountingConnection
 ```
 
-Her yeni model için dikkat:
+Her yeni model iÃ§in dikkat:
 
 ```txt
-Tenant-owned ise organizationId bulunmalı.
+Tenant-owned ise organizationId bulunmalÄ±.
 Indexler eklenmeli.
-Sensitive token alanları encrypted tutulmalı.
-Webhook idempotency için unique event id alanı düşünülmeli.
+Sensitive token alanlarÄ± encrypted tutulmalÄ±.
+Webhook idempotency iÃ§in unique event id alanÄ± dÃ¼ÅŸÃ¼nÃ¼lmeli.
 ```
 
 ---
 
 ## 11. Global Regression Checklist
 
-Her phase sonunda bu checklist doldurulmalı:
+Her phase sonunda bu checklist doldurulmalÄ±:
 
 ```txt
 [ ] TypeScript errors yok
 [ ] Lint errors yok
-[ ] Unit tests geçiyor
-[ ] Integration tests geçiyor
-[ ] Build başarılı
+[ ] Unit tests geÃ§iyor
+[ ] Integration tests geÃ§iyor
+[ ] Build baÅŸarÄ±lÄ±
 [ ] Prisma schema valid
 [ ] Migration status temiz
-[ ] Seed çalışıyor
-[ ] Auth flow bozulmadı
-[ ] Tenant isolation bozulmadı
-[ ] Public booking bozulmadı
-[ ] Dashboard bozulmadı
-[ ] Billing test mode çalışıyor
-[ ] Reminder fake mode çalışıyor
-[ ] External provider gerçek secret istemiyor
-[ ] README/env docs güncel
-[ ] Yeni feature için tests eklendi
-[ ] Commit atıldı
+[ ] Seed Ã§alÄ±ÅŸÄ±yor
+[ ] Auth flow bozulmadÄ±
+[ ] Tenant isolation bozulmadÄ±
+[ ] Public booking bozulmadÄ±
+[ ] Dashboard bozulmadÄ±
+[ ] Billing test mode Ã§alÄ±ÅŸÄ±yor
+[ ] Reminder fake mode Ã§alÄ±ÅŸÄ±yor
+[ ] External provider gerÃ§ek secret istemiyor
+[ ] README/env docs gÃ¼ncel
+[ ] Yeni feature iÃ§in tests eklendi
+[ ] Commit atÄ±ldÄ±
 ```
 
 ---
 
-## 12. Claude Code Ana Güncelleme Prompt’u
+## 12. Claude Code Ana GÃ¼ncelleme Promptâ€™u
 
-Bu dosyayı Claude Code’a verdikten sonra şu prompt kullanılabilir:
+Bu dosyayÄ± Claude Codeâ€™a verdikten sonra ÅŸu prompt kullanÄ±labilir:
 
 ```txt
-Read SLOTPILOT_POST_MVP_EXPANSION_PLAN.md carefully.
+Read RANDEVO_POST_MVP_EXPANSION_PLAN.md carefully.
 
-This is a post-MVP expansion plan for SlotPilot. Do not implement all features at once.
+This is a post-MVP expansion plan for Randevo. Do not implement all features at once.
 
 Start with Phase 20 only:
 - Run regression baseline checks.
@@ -1941,17 +1941,17 @@ Important:
 
 ---
 
-## 13. Antigravity Ana Güncelleme Prompt’u
+## 13. Antigravity Ana GÃ¼ncelleme Promptâ€™u
 
-Antigravity için:
+Antigravity iÃ§in:
 
 ```txt
-Read SLOTPILOT_POST_MVP_EXPANSION_PLAN.md.
+Read RANDEVO_POST_MVP_EXPANSION_PLAN.md.
 
 Create the new expansion agents first.
 
 Then start with Phase 20 Regression Baseline.
-Use browser automation to verify the current SlotPilot MVP flow:
+Use browser automation to verify the current Randevo MVP flow:
 1. Register/login.
 2. Create organization.
 3. Add service.
@@ -1999,18 +1999,18 @@ En riskli alanlar:
 
 ---
 
-## 15. En Önemli Teknik Kural
+## 15. En Ã–nemli Teknik Kural
 
 ```txt
-Client tarafı sadece UI’dır.
-Para, tenant security, booking conflict, plan limit, staff permission, payment confirmation ve accounting kayıtları mutlaka backend tarafında doğrulanır.
+Client tarafÄ± sadece UIâ€™dÄ±r.
+Para, tenant security, booking conflict, plan limit, staff permission, payment confirmation ve accounting kayÄ±tlarÄ± mutlaka backend tarafÄ±nda doÄŸrulanÄ±r.
 ```
 
 ---
 
 ## 16. Final Hedef
 
-Bu güncelleme planı tamamlandığında SlotPilot şu seviyeye gelir:
+Bu gÃ¼ncelleme planÄ± tamamlandÄ±ÄŸÄ±nda Randevo ÅŸu seviyeye gelir:
 
 ```txt
 Multi-tenant,
@@ -2018,11 +2018,12 @@ multi-location,
 subscription-based,
 deposit payment destekli,
 SMS/WhatsApp/Calendar entegrasyonlu,
-staff portalı olan,
-marketplace sayfası bulunan,
-mobil uygulama temeli atılmış,
-AI destekli public booking assistant içeren,
+staff portalÄ± olan,
+marketplace sayfasÄ± bulunan,
+mobil uygulama temeli atÄ±lmÄ±ÅŸ,
+AI destekli public booking assistant iÃ§eren,
 accounting export yapabilen,
-Node sürümü sabitlenmiş,
-testli ve GitHub’da güçlü görünen bir SaaS MVP.
+Node sÃ¼rÃ¼mÃ¼ sabitlenmiÅŸ,
+testli ve GitHubâ€™da gÃ¼Ã§lÃ¼ gÃ¶rÃ¼nen bir SaaS MVP.
 ```
+

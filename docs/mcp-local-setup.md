@@ -1,4 +1,4 @@
-# SlotPilot — MCP Local Setup Guide
+# Randevo — MCP Local Setup Guide
 
 > Phase DS-7: Safe local development MCP configuration.
 
@@ -8,7 +8,7 @@
 
 - Node.js >= 20 (see `.nvmrc`)
 - Claude Code CLI installed
-- SlotPilot project cloned locally
+- Randevo project cloned locally
 
 ---
 
@@ -26,12 +26,12 @@ Replace `/REPLACE/WITH/YOUR/PROJECT/ROOT/PATH` with your actual project root:
 
 **Mac/Linux example:**
 ```
-/Users/yourname/SlotPilot
+/Users/yourname/Randevo
 ```
 
 **Windows example (use forward slashes):**
 ```
-C:/Users/yourname/SlotPilot
+C:/Users/yourname/Randevo
 ```
 
 ### 3. Add .mcp.json to .gitignore

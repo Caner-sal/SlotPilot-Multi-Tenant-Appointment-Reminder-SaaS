@@ -24,7 +24,7 @@ export async function sendEmail(payload: EmailPayload): Promise<EmailResult> {
     const resend = new Resend(process.env.RESEND_API_KEY);
 
     const { data, error } = await resend.emails.send({
-      from: process.env.EMAIL_FROM ?? "noreply@slotpilot.app",
+      from: process.env.EMAIL_FROM ?? "noreply@randevo.app",
       to: payload.to,
       subject: payload.subject,
       html: payload.html,
@@ -73,7 +73,7 @@ export function buildReminderEmail(data: {
           <tr><td style="padding: 8px; border: 1px solid #ddd;"><strong>Tarih & Saat</strong></td><td style="padding: 8px; border: 1px solid #ddd;">${dateStr}</td></tr>
         </table>
         <p style="margin-top: 20px;">Görüşmek üzere.</p>
-        <p style="color: #888; font-size: 12px;">SlotPilot Randevu Sistemi</p>
+        <p style="color: #888; font-size: 12px;">Randevo Randevu Sistemi</p>
       </div>
     `,
   };

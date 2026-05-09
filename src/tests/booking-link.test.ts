@@ -19,16 +19,16 @@ describe("getBookingUrl", () => {
   });
 
   it("uses NEXT_PUBLIC_BOOKING_BASE_URL when set", () => {
-    process.env.NEXT_PUBLIC_BOOKING_BASE_URL = "https://slotpilot.com/booking";
+    process.env.NEXT_PUBLIC_BOOKING_BASE_URL = "https://randevo.com/booking";
     delete process.env.NEXT_PUBLIC_APP_URL;
     // Base already includes /booking; function appends /orgSlug directly
-    expect(getBookingUrl("barber-demo")).toBe("https://slotpilot.com/booking/barber-demo");
+    expect(getBookingUrl("barber-demo")).toBe("https://randevo.com/booking/barber-demo");
   });
 
   it("falls back to NEXT_PUBLIC_APP_URL when NEXT_PUBLIC_BOOKING_BASE_URL is not set", () => {
     delete process.env.NEXT_PUBLIC_BOOKING_BASE_URL;
-    process.env.NEXT_PUBLIC_APP_URL = "https://app.slotpilot.com";
-    expect(getBookingUrl("berber-istanbul")).toBe("https://app.slotpilot.com/booking/berber-istanbul");
+    process.env.NEXT_PUBLIC_APP_URL = "https://app.randevo.com";
+    expect(getBookingUrl("berber-istanbul")).toBe("https://app.randevo.com/booking/berber-istanbul");
   });
 
   it("falls back to localhost when neither env is set", () => {

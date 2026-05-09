@@ -95,7 +95,7 @@ export default function HomePage() {
             <span className="h-2 w-2 animate-pulse rounded-full bg-blue-400" />
             <span className="text-sm font-medium text-blue-300">Türkiye MVP sürümü canlı</span>
           </div>
-          <h1 className="mb-5 text-6xl font-bold leading-tight text-white">SlotPilot</h1>
+          <h1 className="mb-5 text-6xl font-bold leading-tight text-white">Randevo</h1>
           <p className="mb-3 text-2xl font-light text-blue-200">Türkiye Odaklı Randevu ve Hatırlatma SaaS</p>
           <p className="mx-auto mb-10 max-w-3xl text-lg text-slate-300">
             Berber, güzellik salonu, klinik ve yerel hizmet işletmeleri için; Türkçe arayüz,
@@ -187,7 +187,7 @@ export default function HomePage() {
         </div>
 
         <div className="border-t border-slate-800 pt-8 text-center text-sm text-slate-500">
-          <p>SlotPilot • Türkiye için geliştirilen çok kiracılı randevu platformu</p>
+          <p>Randevo • Türkiye için geliştirilen çok kiracılı randevu platformu</p>
         </div>
       </div>
     </main>

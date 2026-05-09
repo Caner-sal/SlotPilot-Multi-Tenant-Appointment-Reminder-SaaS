@@ -1,4 +1,4 @@
-# SlotPilot — MCP Security Checklist
+# Randevo — MCP Security Checklist
 
 > Phase DS-7: Security review checklist for all MCP integrations.
 

@@ -187,7 +187,7 @@ export function Sidebar() {
     <div className="flex h-full flex-col">
       <div className="flex items-center gap-2 px-4 py-5 border-b border-border">
         <span className="text-xl">✈️</span>
-        <span className="text-lg font-bold tracking-tight">SlotPilot</span>
+        <span className="text-lg font-bold tracking-tight">Randevo</span>
       </div>
 
       <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-1">

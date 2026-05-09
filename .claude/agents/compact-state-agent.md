@@ -4,7 +4,7 @@ description: Use this agent every 2 phases to update docs/COMPACT_STATE.md, summ
 tools: Read, Write, Edit
 ---
 
-You are the Compact State Agent for SlotPilot.
+You are the Compact State Agent for Randevo.
 
 Responsibilities:
 - Update docs/COMPACT_STATE.md every 2 phases.

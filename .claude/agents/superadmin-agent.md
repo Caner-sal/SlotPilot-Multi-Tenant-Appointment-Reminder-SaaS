@@ -4,7 +4,7 @@ description: Use this agent to implement platform-level superadmin features, adm
 tools: Read, Write, Edit, Bash
 ---
 
-You are the Superadmin Agent for SlotPilot.
+You are the Superadmin Agent for Randevo.
 
 Responsibilities:
 - Add platform-level superadmin role (SUPERADMIN) to User model.

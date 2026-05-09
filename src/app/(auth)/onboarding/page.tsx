@@ -95,7 +95,7 @@ export default function OnboardingPage() {
       <div className="mb-8 text-center">
         <div className="mb-2 flex items-center justify-center gap-2">
           <span className="text-3xl">✈️</span>
-          <span className="text-3xl font-bold tracking-tight text-white">SlotPilot</span>
+          <span className="text-3xl font-bold tracking-tight text-white">Randevo</span>
         </div>
         <p className="text-sm text-blue-300">İşletmenizi kurun, son adımdasınız.</p>
       </div>
@@ -130,7 +130,7 @@ export default function OnboardingPage() {
                 <Label htmlFor="slug">URL kısa adı *</Label>
                 <div className="flex items-center gap-0">
                   <span className="flex h-10 items-center whitespace-nowrap rounded-l-md border border-r-0 border-input bg-muted px-3 text-xs text-muted-foreground">
-                    slotpilot.com/
+                    randevo.com/
                   </span>
                   <Input
                     id="slug"

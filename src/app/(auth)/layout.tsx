@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "SlotPilot — Auth",
+  title: "Randevo — Auth",
 };
 
 export default function AuthLayout({

@@ -1,5 +1,5 @@
 {
-  "skill": "slotpilot-payment-safety",
+  "skill": "randevo-payment-safety",
   "description": "Eval: payment safety review skill triggers correctly",
   "test_prompts": [
     "Run payment safety review after billing changes.",

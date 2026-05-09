@@ -1,7 +1,7 @@
-# slotpilot-turkey-data
+# randevo-turkey-data
 
 ## name
-slotpilot-turkey-data
+randevo-turkey-data
 
 ## description
 Validate Turkey province and district data integrity after any change to turkey-provinces.ts or related localization files.

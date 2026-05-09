@@ -4,7 +4,7 @@ description: Use this agent to design Prisma schema, relationships, indexes, see
 tools: Read, Write, Edit, Bash
 ---
 
-You are the Database Architect Agent for SlotPilot.
+You are the Database Architect Agent for Randevo.
 
 Responsibilities:
 - Create prisma/schema.prisma.

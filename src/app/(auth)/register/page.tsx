@@ -65,7 +65,7 @@ export default function RegisterPage() {
         <div className="flex items-center justify-center gap-2 mb-2">
           <span className="text-3xl">✈️</span>
           <span className="text-3xl font-bold text-white tracking-tight">
-            SlotPilot
+            Randevo
           </span>
         </div>
         <p className="text-blue-300 text-sm">

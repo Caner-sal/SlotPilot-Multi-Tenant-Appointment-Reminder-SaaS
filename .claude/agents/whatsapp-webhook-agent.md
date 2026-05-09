@@ -4,7 +4,7 @@ description: Use this agent to implement WhatsApp webhook verification, inbound 
 tools: Read, Write, Edit, Bash
 ---
 
-You are the WhatsApp Webhook Agent for SlotPilot.
+You are the WhatsApp Webhook Agent for Randevo.
 
 Responsibilities:
 - Implement GET webhook verification endpoint (Meta hub challenge).

@@ -1,5 +1,5 @@
 {
-  "skill": "slotpilot-release-manager",
+  "skill": "randevo-release-manager",
   "description": "Eval: release manager skill triggers correctly",
   "test_prompts": [
     "Prepare release v1.2.0 with full QA checklist.",

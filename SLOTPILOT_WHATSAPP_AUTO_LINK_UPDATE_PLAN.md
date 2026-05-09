@@ -1,176 +1,176 @@
-# SlotPilot WhatsApp Otomatik Link Gönderme Güncelleme Planı
+﻿# Randevo WhatsApp Otomatik Link GÃ¶nderme GÃ¼ncelleme PlanÄ±
 
-> Bu dosya SlotPilot Türkiye sürümüne eklenecek WhatsApp otomasyon modülü için hazırlanmıştır.  
-> Amaç: Müşteri işletmeye WhatsApp üzerinden yazdığında, sistemin otomatik olarak işletmenin SlotPilot randevu/website linkini göndermesi.  
-> Bu güncelleme mevcut SMS/WhatsApp reminder altyapısından farklıdır; burada kullanıcı mesajı geldiğinde inbound webhook tetiklenir ve otomatik cevap verilir.
+> Bu dosya Randevo TÃ¼rkiye sÃ¼rÃ¼mÃ¼ne eklenecek WhatsApp otomasyon modÃ¼lÃ¼ iÃ§in hazÄ±rlanmÄ±ÅŸtÄ±r.  
+> AmaÃ§: MÃ¼ÅŸteri iÅŸletmeye WhatsApp Ã¼zerinden yazdÄ±ÄŸÄ±nda, sistemin otomatik olarak iÅŸletmenin Randevo randevu/website linkini gÃ¶ndermesi.  
+> Bu gÃ¼ncelleme mevcut SMS/WhatsApp reminder altyapÄ±sÄ±ndan farklÄ±dÄ±r; burada kullanÄ±cÄ± mesajÄ± geldiÄŸinde inbound webhook tetiklenir ve otomatik cevap verilir.
 
 ---
 
-## 1. Özellik Özeti
+## 1. Ã–zellik Ã–zeti
 
-Yeni özellik adı:
+Yeni Ã¶zellik adÄ±:
 
 ```txt
 WhatsApp Auto Booking Link Reply
 ```
 
-Kullanıcı senaryosu:
+KullanÄ±cÄ± senaryosu:
 
 ```txt
-1. Müşteri işletmenin WhatsApp numarasına mesaj yazar.
-2. WhatsApp Business Platform inbound webhook'u SlotPilot backend'e mesajı iletir.
-3. SlotPilot mesajı kaydeder.
-4. İşletmenin auto-reply ayarları kontrol edilir.
-5. Uygunsa müşteriye otomatik Türkçe cevap gönderilir.
-6. Cevabın içinde işletmenin public booking linki bulunur.
-7. İşletme dashboard'da gelen mesaj ve gönderilen otomatik cevabı görebilir.
+1. MÃ¼ÅŸteri iÅŸletmenin WhatsApp numarasÄ±na mesaj yazar.
+2. WhatsApp Business Platform inbound webhook'u Randevo backend'e mesajÄ± iletir.
+3. Randevo mesajÄ± kaydeder.
+4. Ä°ÅŸletmenin auto-reply ayarlarÄ± kontrol edilir.
+5. Uygunsa mÃ¼ÅŸteriye otomatik TÃ¼rkÃ§e cevap gÃ¶nderilir.
+6. CevabÄ±n iÃ§inde iÅŸletmenin public booking linki bulunur.
+7. Ä°ÅŸletme dashboard'da gelen mesaj ve gÃ¶nderilen otomatik cevabÄ± gÃ¶rebilir.
 ```
 
-Örnek otomatik cevap:
+Ã–rnek otomatik cevap:
 
 ```txt
-Merhaba 👋
-Randevu almak için linkimizi kullanabilirsiniz:
+Merhaba ğŸ‘‹
+Randevu almak iÃ§in linkimizi kullanabilirsiniz:
 {{bookingUrl}}
 
-Bu linkten hizmet seçebilir, uygun saatleri görebilir ve randevunuzu oluşturabilirsiniz.
-İnsan desteği için bu mesaja yazmaya devam edebilirsiniz.
+Bu linkten hizmet seÃ§ebilir, uygun saatleri gÃ¶rebilir ve randevunuzu oluÅŸturabilirsiniz.
+Ä°nsan desteÄŸi iÃ§in bu mesaja yazmaya devam edebilirsiniz.
 ```
 
 ---
 
-## 2. Teknik Gerçekler ve Politika Notları
+## 2. Teknik GerÃ§ekler ve Politika NotlarÄ±
 
-Bu özellik iki farklı WhatsApp kullanım şeklini ayırmalıdır:
+Bu Ã¶zellik iki farklÄ± WhatsApp kullanÄ±m ÅŸeklini ayÄ±rmalÄ±dÄ±r:
 
 ### 2.1 WhatsApp Business App
 
-Küçük işletmelerin telefonda kullandığı klasik WhatsApp Business uygulamasıdır.
+KÃ¼Ã§Ã¼k iÅŸletmelerin telefonda kullandÄ±ÄŸÄ± klasik WhatsApp Business uygulamasÄ±dÄ±r.
 
 Bu uygulamada:
 
 ```txt
-- Greeting message / away message gibi basit otomasyonlar vardır.
-- SlotPilot backend'e doğrudan inbound webhook bağlanamaz.
-- Bizim sistemin otomatik link gönderebilmesi için WhatsApp Business Platform / Cloud API veya Twilio gibi provider gerekir.
+- Greeting message / away message gibi basit otomasyonlar vardÄ±r.
+- Randevo backend'e doÄŸrudan inbound webhook baÄŸlanamaz.
+- Bizim sistemin otomatik link gÃ¶nderebilmesi iÃ§in WhatsApp Business Platform / Cloud API veya Twilio gibi provider gerekir.
 ```
 
 ### 2.2 WhatsApp Business Platform / Cloud API
 
-SlotPilot'in backend üzerinden mesaj alıp gönderebilmesi için kullanılacak asıl yöntemdir.
+Randevo'in backend Ã¼zerinden mesaj alÄ±p gÃ¶nderebilmesi iÃ§in kullanÄ±lacak asÄ±l yÃ¶ntemdir.
 
-Bu yapıda:
+Bu yapÄ±da:
 
 ```txt
 - Meta App ve WhatsApp Business Account gerekir.
-- Business phone number bağlanır.
+- Business phone number baÄŸlanÄ±r.
 - Webhook verification endpoint gerekir.
-- Inbound messages webhook ile alınır.
-- Messages API ile cevap gönderilir.
-- Testlerde gerçek mesaj gönderilmez; fake provider kullanılır.
+- Inbound messages webhook ile alÄ±nÄ±r.
+- Messages API ile cevap gÃ¶nderilir.
+- Testlerde gerÃ§ek mesaj gÃ¶nderilmez; fake provider kullanÄ±lÄ±r.
 ```
 
-### 2.3 24 Saat Kuralı
+### 2.3 24 Saat KuralÄ±
 
-Kullanıcı işletmeye mesaj attığında 24 saatlik customer service window oluşur. Bu pencere içinde işletme serbest metinle cevap verebilir. Pencere dışında mesaj gönderilecekse approved message template gerekir.
+KullanÄ±cÄ± iÅŸletmeye mesaj attÄ±ÄŸÄ±nda 24 saatlik customer service window oluÅŸur. Bu pencere iÃ§inde iÅŸletme serbest metinle cevap verebilir. Pencere dÄ±ÅŸÄ±nda mesaj gÃ¶nderilecekse approved message template gerekir.
 
-Bu özellik inbound mesaja cevap verdiği için temel akışta 24 saatlik pencere içinde çalışmalıdır.
+Bu Ã¶zellik inbound mesaja cevap verdiÄŸi iÃ§in temel akÄ±ÅŸta 24 saatlik pencere iÃ§inde Ã§alÄ±ÅŸmalÄ±dÄ±r.
 
-### 2.4 Opt-in ve İzin
+### 2.4 Opt-in ve Ä°zin
 
-SlotPilot bu modülde spam yapmamalıdır.
+Randevo bu modÃ¼lde spam yapmamalÄ±dÄ±r.
 
 Kurallar:
 
 ```txt
-- Otomatik cevap sadece müşteri işletmeye mesaj attıktan sonra tetiklenir.
-- Toplu reklam mesajı gönderilmez.
-- Kampanya/marketing mesajı ile randevu linki otomatik cevabı ayrılır.
-- Kullanıcı çıkmak/istemiyorum/yazma gibi mesaj yazarsa auto-reply durdurulabilir.
-- Müşteriye insan desteğine ulaşma yolu sunulur.
+- Otomatik cevap sadece mÃ¼ÅŸteri iÅŸletmeye mesaj attÄ±ktan sonra tetiklenir.
+- Toplu reklam mesajÄ± gÃ¶nderilmez.
+- Kampanya/marketing mesajÄ± ile randevu linki otomatik cevabÄ± ayrÄ±lÄ±r.
+- KullanÄ±cÄ± Ã§Ä±kmak/istemiyorum/yazma gibi mesaj yazarsa auto-reply durdurulabilir.
+- MÃ¼ÅŸteriye insan desteÄŸine ulaÅŸma yolu sunulur.
 ```
 
 ---
 
-## 3. İş Kuralları
+## 3. Ä°ÅŸ KurallarÄ±
 
-### 3.1 Auto Reply Aç/Kapat
+### 3.1 Auto Reply AÃ§/Kapat
 
-Her işletme bu özelliği dashboard'dan açıp kapatabilmeli.
+Her iÅŸletme bu Ã¶zelliÄŸi dashboard'dan aÃ§Ä±p kapatabilmeli.
 
 ```txt
-WhatsApp otomatik cevap: Açık / Kapalı
+WhatsApp otomatik cevap: AÃ§Ä±k / KapalÄ±
 ```
 
-### 3.2 Mesaj Tekrarını Önleme
+### 3.2 Mesaj TekrarÄ±nÄ± Ã–nleme
 
-Aynı kişiye her mesajında link atmak rahatsız edici olabilir.
+AynÄ± kiÅŸiye her mesajÄ±nda link atmak rahatsÄ±z edici olabilir.
 
-Varsayılan kural:
+VarsayÄ±lan kural:
 
 ```txt
-Aynı WhatsApp numarasına 24 saat içinde en fazla 1 otomatik booking link cevabı gönder.
+AynÄ± WhatsApp numarasÄ±na 24 saat iÃ§inde en fazla 1 otomatik booking link cevabÄ± gÃ¶nder.
 ```
 
 Opsiyonel ayarlar:
 
 ```txt
-- Her yeni konuşmada gönder
-- 24 saatte bir gönder
-- 7 günde bir gönder
-- Sadece belirli anahtar kelimeler gelirse gönder
+- Her yeni konuÅŸmada gÃ¶nder
+- 24 saatte bir gÃ¶nder
+- 7 gÃ¼nde bir gÃ¶nder
+- Sadece belirli anahtar kelimeler gelirse gÃ¶nder
 ```
 
 ### 3.3 Anahtar Kelime Modu
 
-İşletme isterse otomatik cevap sadece bazı kelimelerde çalışır.
+Ä°ÅŸletme isterse otomatik cevap sadece bazÄ± kelimelerde Ã§alÄ±ÅŸÄ±r.
 
-Örnek tetikleyiciler:
+Ã–rnek tetikleyiciler:
 
 ```txt
 randevu
 randavu
 fiyat
-ücret
-boş saat
-müsaitlik
+Ã¼cret
+boÅŸ saat
+mÃ¼saitlik
 adres
 link
 ```
 
-MVP varsayılanı:
+MVP varsayÄ±lanÄ±:
 
 ```txt
-Her inbound mesajda, rate limit uygunsa booking link gönder.
+Her inbound mesajda, rate limit uygunsa booking link gÃ¶nder.
 ```
 
-Sonraki geliştirme:
+Sonraki geliÅŸtirme:
 
 ```txt
 Keyword-based mode eklenebilir.
 ```
 
-### 3.4 İnsan Desteği Mesajı
+### 3.4 Ä°nsan DesteÄŸi MesajÄ±
 
-Otomatik cevapta her zaman insan desteği seçeneği belirtilmeli.
+Otomatik cevapta her zaman insan desteÄŸi seÃ§eneÄŸi belirtilmeli.
 
-Örnek:
+Ã–rnek:
 
 ```txt
-İnsan desteği için bu mesaja yazmaya devam edebilirsiniz.
+Ä°nsan desteÄŸi iÃ§in bu mesaja yazmaya devam edebilirsiniz.
 ```
 
-### 3.5 Mesaj Döngüsünü Engelleme
+### 3.5 Mesaj DÃ¶ngÃ¼sÃ¼nÃ¼ Engelleme
 
-Sistem başka botların veya kendi gönderdiği mesajların tekrar webhook'a düşmesiyle loop oluşturmamalı.
+Sistem baÅŸka botlarÄ±n veya kendi gÃ¶nderdiÄŸi mesajlarÄ±n tekrar webhook'a dÃ¼ÅŸmesiyle loop oluÅŸturmamalÄ±.
 
 Kurallar:
 
 ```txt
-- Sadece inbound user messages işlenir.
+- Sadece inbound user messages iÅŸlenir.
 - Status webhook eventleri auto-reply tetiklemez.
 - Business outbound messages auto-reply tetiklemez.
-- Aynı WhatsApp messageId ikinci kez gelirse ignore edilir.
+- AynÄ± WhatsApp messageId ikinci kez gelirse ignore edilir.
 ```
 
 ---
@@ -196,7 +196,7 @@ createdAt
 updatedAt
 ```
 
-`replyMode` seçenekleri:
+`replyMode` seÃ§enekleri:
 
 ```txt
 ALWAYS
@@ -204,7 +204,7 @@ KEYWORD_ONLY
 DISABLED
 ```
 
-`provider` seçenekleri:
+`provider` seÃ§enekleri:
 
 ```txt
 FAKE
@@ -246,7 +246,7 @@ sentAt
 createdAt
 ```
 
-Status seçenekleri:
+Status seÃ§enekleri:
 
 ```txt
 PENDING
@@ -272,12 +272,12 @@ updatedAt
 Not:
 
 ```txt
-Bu tablo KVKK/İYS consent sistemiyle uyumlu çalışmalı.
+Bu tablo KVKK/Ä°YS consent sistemiyle uyumlu Ã§alÄ±ÅŸmalÄ±.
 ```
 
 ---
 
-## 5. Yeni API Route Taslağı
+## 5. Yeni API Route TaslaÄŸÄ±
 
 ### 5.1 Webhook Verification
 
@@ -285,10 +285,10 @@ Bu tablo KVKK/İYS consent sistemiyle uyumlu çalışmalı.
 GET /api/webhooks/whatsapp
 ```
 
-Görev:
+GÃ¶rev:
 
 ```txt
-Meta webhook verification challenge cevaplanır.
+Meta webhook verification challenge cevaplanÄ±r.
 ```
 
 ### 5.2 Inbound Message Webhook
@@ -297,10 +297,10 @@ Meta webhook verification challenge cevaplanır.
 POST /api/webhooks/whatsapp
 ```
 
-Görev:
+GÃ¶rev:
 
 ```txt
-Inbound mesajları ve status eventlerini alır.
+Inbound mesajlarÄ± ve status eventlerini alÄ±r.
 Inbound user message ise auto-reply service'e iletir.
 ```
 
@@ -323,10 +323,10 @@ GET /api/whatsapp/auto-reply/logs
 POST /api/whatsapp/auto-reply/preview
 ```
 
-Görev:
+GÃ¶rev:
 
 ```txt
-Gerçek WhatsApp mesajı göndermeden işletmeye mesaj önizlemesi gösterir.
+GerÃ§ek WhatsApp mesajÄ± gÃ¶ndermeden iÅŸletmeye mesaj Ã¶nizlemesi gÃ¶sterir.
 ```
 
 ### 5.6 Fake Provider Test Endpoint
@@ -335,17 +335,17 @@ Gerçek WhatsApp mesajı göndermeden işletmeye mesaj önizlemesi gösterir.
 POST /api/dev/fake-whatsapp/inbound
 ```
 
-Sadece development ortamında çalışır.
+Sadece development ortamÄ±nda Ã§alÄ±ÅŸÄ±r.
 
-Görev:
+GÃ¶rev:
 
 ```txt
-Gerçek WhatsApp webhook gelmeden local test için inbound message simüle eder.
+GerÃ§ek WhatsApp webhook gelmeden local test iÃ§in inbound message simÃ¼le eder.
 ```
 
 ---
 
-## 6. Yeni Service Dosyaları
+## 6. Yeni Service DosyalarÄ±
 
 ```txt
 src/services/whatsapp-auto-reply.service.ts
@@ -360,13 +360,13 @@ src/services/booking-link.service.ts
 Sorumluluk:
 
 ```txt
-- Inbound mesajı analiz eder.
-- Auto-reply açık mı kontrol eder.
+- Inbound mesajÄ± analiz eder.
+- Auto-reply aÃ§Ä±k mÄ± kontrol eder.
 - Cooldown/rate limit uygular.
 - Keyword mode kontrol eder.
-- Booking URL oluşturur.
-- Provider ile mesaj gönderir.
-- Log kaydı oluşturur.
+- Booking URL oluÅŸturur.
+- Provider ile mesaj gÃ¶nderir.
+- Log kaydÄ± oluÅŸturur.
 ```
 
 ### 6.2 whatsapp-provider.service.ts
@@ -379,7 +379,7 @@ interface WhatsAppProvider {
 }
 ```
 
-Provider implementasyonları:
+Provider implementasyonlarÄ±:
 
 ```txt
 FakeWhatsAppProvider
@@ -389,24 +389,24 @@ TwilioWhatsAppProvider
 
 ### 6.3 booking-link.service.ts
 
-Görev:
+GÃ¶rev:
 
 ```txt
-organization slug veya location slug üzerinden doğru public booking linki üretir.
+organization slug veya location slug Ã¼zerinden doÄŸru public booking linki Ã¼retir.
 ```
 
-Örnek:
+Ã–rnek:
 
 ```txt
-https://slotpilot.com/randevu/ekin-guzellik
-https://slotpilot.com/randevu/halil-berber/kadikoy
+https://randevo.com/randevu/ekin-guzellik
+https://randevo.com/randevu/halil-berber/kadikoy
 ```
 
 ---
 
 ## 7. Yeni Agent Listesi
 
-`.claude/agents/` içine şu agent dosyaları eklenecek:
+`.claude/agents/` iÃ§ine ÅŸu agent dosyalarÄ± eklenecek:
 
 ```txt
 whatsapp-auto-link-agent.md
@@ -421,7 +421,7 @@ github-release-agent.md
 
 ---
 
-# 8. Agent Tanımları
+# 8. Agent TanÄ±mlarÄ±
 
 ## 8.1 `whatsapp-auto-link-agent.md`
 
@@ -432,7 +432,7 @@ description: Use this agent to implement automatic booking link replies when cus
 tools: Read, Write, Edit, Bash
 ---
 
-You are the WhatsApp Auto Link Agent for SlotPilot.
+You are the WhatsApp Auto Link Agent for Randevo.
 
 Responsibilities:
 - Implement WhatsApp auto-reply settings.
@@ -600,43 +600,43 @@ Required commands:
 
 ---
 
-# 9. Phase Sırası
+# 9. Phase SÄ±rasÄ±
 
-Bu güncelleme 6 phase olarak yapılacak.
+Bu gÃ¼ncelleme 6 phase olarak yapÄ±lacak.
 
 ```txt
-Phase WA-0 — WhatsApp Auto-Link Baseline and Policy Notes
-Phase WA-1 — Database Models and Provider Abstraction
-Phase WA-2 — Webhook Receiver and Inbound Message Logging
-Phase WA-3 — Auto Booking Link Reply Service
-Phase WA-4 — Dashboard Settings and Logs UI
-Phase WA-5 — Final QA, Merge, Push, and Release Notes
+Phase WA-0 â€” WhatsApp Auto-Link Baseline and Policy Notes
+Phase WA-1 â€” Database Models and Provider Abstraction
+Phase WA-2 â€” Webhook Receiver and Inbound Message Logging
+Phase WA-3 â€” Auto Booking Link Reply Service
+Phase WA-4 â€” Dashboard Settings and Logs UI
+Phase WA-5 â€” Final QA, Merge, Push, and Release Notes
 ```
 
-Compact kuralı:
+Compact kuralÄ±:
 
 ```txt
-WA-0 + WA-1 sonrası compact
-WA-2 + WA-3 sonrası compact
-WA-4 + WA-5 sonrası final compact summary
+WA-0 + WA-1 sonrasÄ± compact
+WA-2 + WA-3 sonrasÄ± compact
+WA-4 + WA-5 sonrasÄ± final compact summary
 ```
 
 Her phase sonunda:
 
 ```txt
-1. Test çalıştır.
+1. Test Ã§alÄ±ÅŸtÄ±r.
 2. Build al.
 3. Prisma kontrol et.
 4. Commit at.
 5. Feature branch'i GitHub'a push et.
-6. Merge etmeden önce CI/test geçmesini bekle.
+6. Merge etmeden Ã¶nce CI/test geÃ§mesini bekle.
 ```
 
 ---
 
-# 10. Global Test Komutları
+# 10. Global Test KomutlarÄ±
 
-Her phase sonunda çalıştırılacak komutlar:
+Her phase sonunda Ã§alÄ±ÅŸtÄ±rÄ±lacak komutlar:
 
 ```bash
 npm run typecheck
@@ -648,7 +648,7 @@ npx prisma generate
 npx prisma migrate status
 ```
 
-Eğer e2e test varsa:
+EÄŸer e2e test varsa:
 
 ```bash
 npm run test:e2e
@@ -663,38 +663,38 @@ git commit -m "PHASE_COMMIT_MESSAGE"
 git push origin CURRENT_BRANCH
 ```
 
-Merge öncesi:
+Merge Ã¶ncesi:
 
 ```txt
-- CI yeşil olmalı.
-- Build geçmeli.
-- Testler geçmeli.
-- Prisma migration status temiz olmalı.
-- Manual QA notu yazılmalı.
+- CI yeÅŸil olmalÄ±.
+- Build geÃ§meli.
+- Testler geÃ§meli.
+- Prisma migration status temiz olmalÄ±.
+- Manual QA notu yazÄ±lmalÄ±.
 ```
 
 ---
 
-# 11. Compact Protokolü
+# 11. Compact ProtokolÃ¼
 
-Her 2 phase sonunda `compact-maintainer-agent` çalıştırılacak.
+Her 2 phase sonunda `compact-maintainer-agent` Ã§alÄ±ÅŸtÄ±rÄ±lacak.
 
-Yapılacaklar:
+YapÄ±lacaklar:
 
-1. `docs/COMPACT_STATE.md` güncelle.
+1. `docs/COMPACT_STATE.md` gÃ¼ncelle.
 2. Tamamlanan phase'leri yaz.
-3. Değişen database modellerini yaz.
-4. Yeni env değişkenlerini yaz.
-5. Test sonuçlarını yaz.
+3. DeÄŸiÅŸen database modellerini yaz.
+4. Yeni env deÄŸiÅŸkenlerini yaz.
+5. Test sonuÃ§larÄ±nÄ± yaz.
 6. Bilinen riskleri yaz.
-7. Sonraki phase prompt'unu hazırla.
-8. Claude Code destekliyorsa `/compact` çalıştırılması istenir.
-9. Antigravity kullanılıyorsa context summary artifact oluşturulur.
+7. Sonraki phase prompt'unu hazÄ±rla.
+8. Claude Code destekliyorsa `/compact` Ã§alÄ±ÅŸtÄ±rÄ±lmasÄ± istenir.
+9. Antigravity kullanÄ±lÄ±yorsa context summary artifact oluÅŸturulur.
 
-Compact sonrası prompt:
+Compact sonrasÄ± prompt:
 
 ```txt
-Read docs/COMPACT_STATE.md and SLOTPILOT_WHATSAPP_AUTO_LINK_UPDATE_PLAN.md.
+Read docs/COMPACT_STATE.md and RANDEVO_WHATSAPP_AUTO_LINK_UPDATE_PLAN.md.
 Continue from the next unfinished WhatsApp auto-link phase only.
 Do not re-implement completed phases.
 Run tests before commit and push.
@@ -702,42 +702,42 @@ Run tests before commit and push.
 
 ---
 
-# 12. Phase Detayları
+# 12. Phase DetaylarÄ±
 
 ---
 
-## Phase WA-0 — WhatsApp Auto-Link Baseline and Policy Notes
+## Phase WA-0 â€” WhatsApp Auto-Link Baseline and Policy Notes
 
-Kullanılacak agent:
+KullanÄ±lacak agent:
 
 ```txt
 whatsapp-policy-agent
 whatsapp-qa-agent
 ```
 
-Amaç:
+AmaÃ§:
 
-Mevcut WhatsApp/reminder altyapısı ve Türkiye yerelleştirme durumu bozulmadan bu yeni modül için policy ve teknik temel hazırlanır.
+Mevcut WhatsApp/reminder altyapÄ±sÄ± ve TÃ¼rkiye yerelleÅŸtirme durumu bozulmadan bu yeni modÃ¼l iÃ§in policy ve teknik temel hazÄ±rlanÄ±r.
 
-Yapılacaklar:
+YapÄ±lacaklar:
 
 1. Mevcut WhatsApp provider/reminder kodunu tara.
-2. Mevcut KVKK/İYS consent yapısını kontrol et.
-3. `docs/whatsapp-auto-link-policy.md` oluştur.
-4. 24 saat customer service window kuralını yaz.
-5. Template message dış pencere notunu yaz.
+2. Mevcut KVKK/Ä°YS consent yapÄ±sÄ±nÄ± kontrol et.
+3. `docs/whatsapp-auto-link-policy.md` oluÅŸtur.
+4. 24 saat customer service window kuralÄ±nÄ± yaz.
+5. Template message dÄ±ÅŸ pencere notunu yaz.
 6. Opt-out kelimelerini belirle.
-7. Otomatik cevap metni için Türkçe copy hazırla.
-8. Feature branch oluştur.
-9. Baseline testleri çalıştır.
+7. Otomatik cevap metni iÃ§in TÃ¼rkÃ§e copy hazÄ±rla.
+8. Feature branch oluÅŸtur.
+9. Baseline testleri Ã§alÄ±ÅŸtÄ±r.
 
-Opt-out kelime önerileri:
+Opt-out kelime Ã¶nerileri:
 
 ```txt
 iptal
 istemiyorum
 yazma
-mesaj gönderme
+mesaj gÃ¶nderme
 durdur
 stop
 unsubscribe
@@ -746,12 +746,12 @@ unsubscribe
 Default auto-reply copy:
 
 ```txt
-Merhaba 👋
-Randevu almak için linkimizi kullanabilirsiniz:
+Merhaba ğŸ‘‹
+Randevu almak iÃ§in linkimizi kullanabilirsiniz:
 {{bookingUrl}}
 
-Bu linkten hizmet seçebilir, uygun saatleri görebilir ve randevunuzu oluşturabilirsiniz.
-İnsan desteği için bu mesaja yazmaya devam edebilirsiniz.
+Bu linkten hizmet seÃ§ebilir, uygun saatleri gÃ¶rebilir ve randevunuzu oluÅŸturabilirsiniz.
+Ä°nsan desteÄŸi iÃ§in bu mesaja yazmaya devam edebilirsiniz.
 ```
 
 Testler:
@@ -766,9 +766,9 @@ npm run build
 Kabul kriteri:
 
 ```txt
-- Davranış değişikliği yok.
-- Policy dokümanı hazır.
-- Baseline testler geçiyor.
+- DavranÄ±ÅŸ deÄŸiÅŸikliÄŸi yok.
+- Policy dokÃ¼manÄ± hazÄ±r.
+- Baseline testler geÃ§iyor.
 - Feature branch GitHub'a push edildi.
 ```
 
@@ -783,9 +783,9 @@ git push origin feature/whatsapp-auto-link
 
 ---
 
-## Phase WA-1 — Database Models and Provider Abstraction
+## Phase WA-1 â€” Database Models and Provider Abstraction
 
-Kullanılacak agent:
+KullanÄ±lacak agent:
 
 ```txt
 whatsapp-provider-agent
@@ -793,31 +793,31 @@ whatsapp-auto-link-agent
 whatsapp-qa-agent
 ```
 
-Amaç:
+AmaÃ§:
 
-Database modelleri ve provider abstraction hazırlanır. Gerçek mesaj gönderimi henüz aktif edilmez.
+Database modelleri ve provider abstraction hazÄ±rlanÄ±r. GerÃ§ek mesaj gÃ¶nderimi henÃ¼z aktif edilmez.
 
-Yapılacaklar:
+YapÄ±lacaklar:
 
 1. Prisma modellerini ekle:
    - WhatsAppAutoReplySettings
    - WhatsAppInboundMessage
    - WhatsAppAutoReplyLog
    - WhatsAppContactPreference
-2. Enumları ekle:
+2. EnumlarÄ± ekle:
    - WhatsAppProviderType
    - AutoReplyMode
    - AutoReplyStatus
-3. Migration oluştur.
-4. Seed içine demo organization için default settings ekle.
-5. Provider interface oluştur.
-6. Fake provider oluştur.
-7. Meta provider skeleton oluştur.
-8. Twilio provider placeholder oluştur.
-9. `.env.example` güncelle.
+3. Migration oluÅŸtur.
+4. Seed iÃ§ine demo organization iÃ§in default settings ekle.
+5. Provider interface oluÅŸtur.
+6. Fake provider oluÅŸtur.
+7. Meta provider skeleton oluÅŸtur.
+8. Twilio provider placeholder oluÅŸtur.
+9. `.env.example` gÃ¼ncelle.
 10. Unit testleri yaz.
 
-Yeni env değişkenleri:
+Yeni env deÄŸiÅŸkenleri:
 
 ```env
 WHATSAPP_AUTO_REPLY_ENABLED=false
@@ -856,10 +856,10 @@ npx prisma migrate status
 Kabul kriteri:
 
 ```txt
-- Migration çalışıyor.
-- Provider abstraction hazır.
+- Migration Ã§alÄ±ÅŸÄ±yor.
+- Provider abstraction hazÄ±r.
 - Default provider FAKE.
-- GitHub push yapıldı.
+- GitHub push yapÄ±ldÄ±.
 ```
 
 Commit:
@@ -873,42 +873,42 @@ git push origin feature/whatsapp-auto-link
 Compact:
 
 ```txt
-WA-0 ve WA-1 tamamlandıktan sonra compact-maintainer-agent çalıştır.
-docs/COMPACT_STATE.md güncelle.
-Claude Code destekliyorsa /compact çalıştır.
+WA-0 ve WA-1 tamamlandÄ±ktan sonra compact-maintainer-agent Ã§alÄ±ÅŸtÄ±r.
+docs/COMPACT_STATE.md gÃ¼ncelle.
+Claude Code destekliyorsa /compact Ã§alÄ±ÅŸtÄ±r.
 ```
 
 ---
 
-## Phase WA-2 — Webhook Receiver and Inbound Message Logging
+## Phase WA-2 â€” Webhook Receiver and Inbound Message Logging
 
-Kullanılacak agent:
+KullanÄ±lacak agent:
 
 ```txt
 whatsapp-webhook-agent
 whatsapp-qa-agent
 ```
 
-Amaç:
+AmaÃ§:
 
-WhatsApp inbound webhook endpointleri hazırlanır ve gelen mesajlar güvenli şekilde loglanır. Auto reply henüz gönderilmeyebilir veya feature flag kapalı kalır.
+WhatsApp inbound webhook endpointleri hazÄ±rlanÄ±r ve gelen mesajlar gÃ¼venli ÅŸekilde loglanÄ±r. Auto reply henÃ¼z gÃ¶nderilmeyebilir veya feature flag kapalÄ± kalÄ±r.
 
-Yapılacaklar:
+YapÄ±lacaklar:
 
-1. `GET /api/webhooks/whatsapp` verification endpoint oluştur.
-2. `POST /api/webhooks/whatsapp` receiver oluştur.
+1. `GET /api/webhooks/whatsapp` verification endpoint oluÅŸtur.
+2. `POST /api/webhooks/whatsapp` receiver oluÅŸtur.
 3. Meta Cloud API payload parser yaz.
-4. Status eventlerini inbound user message'lardan ayır.
+4. Status eventlerini inbound user message'lardan ayÄ±r.
 5. Provider message ID ile deduplication yap.
-6. Raw payload saklama stratejisini güvenli yap.
+6. Raw payload saklama stratejisini gÃ¼venli yap.
 7. Organization mapping stratejisini belirle:
    - phoneNumberId -> organization
    - toPhone -> organization
-8. Inbound message DB kaydı oluştur.
-9. Unknown payload için safe no-op davranışı ekle.
+8. Inbound message DB kaydÄ± oluÅŸtur.
+9. Unknown payload iÃ§in safe no-op davranÄ±ÅŸÄ± ekle.
 10. Fixture testleri yaz.
 
-Test fixture türleri:
+Test fixture tÃ¼rleri:
 
 ```txt
 - Valid inbound text message
@@ -922,8 +922,8 @@ Test fixture türleri:
 Testler:
 
 ```txt
-- Verification token doğruysa challenge döner.
-- Verification token yanlışsa 403 döner.
+- Verification token doÄŸruysa challenge dÃ¶ner.
+- Verification token yanlÄ±ÅŸsa 403 dÃ¶ner.
 - Inbound text message kaydedilir.
 - Duplicate message ikinci kez kaydedilmez.
 - Status event auto-reply tetiklemez.
@@ -952,9 +952,9 @@ git push origin feature/whatsapp-auto-link
 
 ---
 
-## Phase WA-3 — Auto Booking Link Reply Service
+## Phase WA-3 â€” Auto Booking Link Reply Service
 
-Kullanılacak agent:
+KullanÄ±lacak agent:
 
 ```txt
 whatsapp-auto-link-agent
@@ -962,23 +962,23 @@ whatsapp-policy-agent
 whatsapp-qa-agent
 ```
 
-Amaç:
+AmaÃ§:
 
-Gelen WhatsApp mesajından sonra otomatik booking link cevabı gönderilir.
+Gelen WhatsApp mesajÄ±ndan sonra otomatik booking link cevabÄ± gÃ¶nderilir.
 
-Yapılacaklar:
+YapÄ±lacaklar:
 
-1. `booking-link.service.ts` oluştur.
-2. Organization slug üzerinden booking URL üret.
+1. `booking-link.service.ts` oluÅŸtur.
+2. Organization slug Ã¼zerinden booking URL Ã¼ret.
 3. Multi-location varsa location-aware URL destekle.
-4. Auto-reply service oluştur.
-5. Cooldown kuralını ekle.
+4. Auto-reply service oluÅŸtur.
+5. Cooldown kuralÄ±nÄ± ekle.
 6. Keyword mode ekle.
-7. Opt-out kontrolü ekle.
+7. Opt-out kontrolÃ¼ ekle.
 8. Contact preference update et.
-9. Fake provider ile mesaj gönderimini bağla.
-10. Sent/skipped/failed log oluştur.
-11. Webhook receiver ile service'i bağla.
+9. Fake provider ile mesaj gÃ¶nderimini baÄŸla.
+10. Sent/skipped/failed log oluÅŸtur.
+11. Webhook receiver ile service'i baÄŸla.
 12. Testleri yaz.
 
 Skip sebepleri:
@@ -997,14 +997,14 @@ PROVIDER_ERROR
 Testler:
 
 ```txt
-- Auto reply enabled ise inbound mesaj sonrası fake message sent olur.
+- Auto reply enabled ise inbound mesaj sonrasÄ± fake message sent olur.
 - Auto reply disabled ise skipped olur.
 - Cooldown aktifse ikinci mesaj skipped olur.
-- Opt-out mesajı gelirse kullanıcı blocked/preference updated olur.
-- Booking disabled ise link gönderilmez.
-- Keyword mode keyword yoksa göndermez.
-- Generated booking URL doğru slug içerir.
-- Provider hata verirse FAILED log oluşur.
+- Opt-out mesajÄ± gelirse kullanÄ±cÄ± blocked/preference updated olur.
+- Booking disabled ise link gÃ¶nderilmez.
+- Keyword mode keyword yoksa gÃ¶ndermez.
+- Generated booking URL doÄŸru slug iÃ§erir.
+- Provider hata verirse FAILED log oluÅŸur.
 ```
 
 Komutlar:
@@ -1027,75 +1027,75 @@ git push origin feature/whatsapp-auto-link
 Compact:
 
 ```txt
-WA-2 ve WA-3 tamamlandıktan sonra compact-maintainer-agent çalıştır.
-docs/COMPACT_STATE.md güncelle.
-Claude Code destekliyorsa /compact çalıştır.
+WA-2 ve WA-3 tamamlandÄ±ktan sonra compact-maintainer-agent Ã§alÄ±ÅŸtÄ±r.
+docs/COMPACT_STATE.md gÃ¼ncelle.
+Claude Code destekliyorsa /compact Ã§alÄ±ÅŸtÄ±r.
 ```
 
 ---
 
-## Phase WA-4 — Dashboard Settings and Logs UI
+## Phase WA-4 â€” Dashboard Settings and Logs UI
 
-Kullanılacak agent:
+KullanÄ±lacak agent:
 
 ```txt
 whatsapp-dashboard-agent
 whatsapp-qa-agent
 ```
 
-Amaç:
+AmaÃ§:
 
-İşletme dashboard'dan WhatsApp otomatik link özelliğini yönetebilir.
+Ä°ÅŸletme dashboard'dan WhatsApp otomatik link Ã¶zelliÄŸini yÃ¶netebilir.
 
-Yeni sayfa önerisi:
+Yeni sayfa Ã¶nerisi:
 
 ```txt
 /dashboard/whatsapp
 ```
 
-Yapılacaklar:
+YapÄ±lacaklar:
 
-1. WhatsApp settings sayfası oluştur.
-2. Auto-reply aç/kapat switch ekle.
+1. WhatsApp settings sayfasÄ± oluÅŸtur.
+2. Auto-reply aÃ§/kapat switch ekle.
 3. Message template editor ekle.
-4. Cooldown seçimi ekle:
+4. Cooldown seÃ§imi ekle:
    - 1 saat
    - 6 saat
    - 24 saat
-   - 7 gün
-5. Reply mode seçimi ekle:
+   - 7 gÃ¼n
+5. Reply mode seÃ§imi ekle:
    - Her mesajda
    - Anahtar kelime varsa
-   - Kapalı
+   - KapalÄ±
 6. Keyword editor ekle.
 7. Booking link preview ekle.
 8. Message preview ekle.
 9. Auto reply logs table ekle.
 10. Provider status card ekle.
-11. Türkçe UI copy kullan.
+11. TÃ¼rkÃ§e UI copy kullan.
 12. Tests/e2e ekle.
 
-Türkçe UI metinleri:
+TÃ¼rkÃ§e UI metinleri:
 
 ```txt
-WhatsApp Otomatik Yanıt
-Randevu linkini otomatik gönder
-Mesaj şablonu
-Tekrar gönderim aralığı
+WhatsApp Otomatik YanÄ±t
+Randevu linkini otomatik gÃ¶nder
+Mesaj ÅŸablonu
+Tekrar gÃ¶nderim aralÄ±ÄŸÄ±
 Anahtar kelimeler
-Önizleme
-Gönderim geçmişi
-Sağlayıcı durumu
+Ã–nizleme
+GÃ¶nderim geÃ§miÅŸi
+SaÄŸlayÄ±cÄ± durumu
 ```
 
 Testler:
 
 ```txt
-- Owner settings sayfasını görebilir.
-- Staff billing/admin yetkisi yoksa settings değiştiremez.
-- Settings update tenant-scoped çalışır.
-- Preview gerçek mesaj göndermez.
-- Logs sadece current organization kayıtlarını gösterir.
+- Owner settings sayfasÄ±nÄ± gÃ¶rebilir.
+- Staff billing/admin yetkisi yoksa settings deÄŸiÅŸtiremez.
+- Settings update tenant-scoped Ã§alÄ±ÅŸÄ±r.
+- Preview gerÃ§ek mesaj gÃ¶ndermez.
+- Logs sadece current organization kayÄ±tlarÄ±nÄ± gÃ¶sterir.
 ```
 
 Komutlar:
@@ -1117,9 +1117,9 @@ git push origin feature/whatsapp-auto-link
 
 ---
 
-## Phase WA-5 — Final QA, Merge, Push, and Release Notes
+## Phase WA-5 â€” Final QA, Merge, Push, and Release Notes
 
-Kullanılacak agent:
+KullanÄ±lacak agent:
 
 ```txt
 whatsapp-qa-agent
@@ -1127,27 +1127,27 @@ github-release-agent
 compact-maintainer-agent
 ```
 
-Amaç:
+AmaÃ§:
 
-Özelliğin tamamı test edilir, merge öncesi güvenlik ve regression kontrolü yapılır, GitHub'a push edilir.
+Ã–zelliÄŸin tamamÄ± test edilir, merge Ã¶ncesi gÃ¼venlik ve regression kontrolÃ¼ yapÄ±lÄ±r, GitHub'a push edilir.
 
-Yapılacaklar:
+YapÄ±lacaklar:
 
-1. Full regression test çalıştır.
-2. Webhook fixture testlerini çalıştır.
-3. Dashboard e2e test çalıştır.
+1. Full regression test Ã§alÄ±ÅŸtÄ±r.
+2. Webhook fixture testlerini Ã§alÄ±ÅŸtÄ±r.
+3. Dashboard e2e test Ã§alÄ±ÅŸtÄ±r.
 4. Fake provider ile local inbound simulation test et.
-5. README güncelle.
+5. README gÃ¼ncelle.
 6. `.env.example` kontrol et.
-7. CHANGELOG güncelle.
-8. `docs/whatsapp-auto-link.md` oluştur.
-9. PR/Merge checklist oluştur.
+7. CHANGELOG gÃ¼ncelle.
+8. `docs/whatsapp-auto-link.md` oluÅŸtur.
+9. PR/Merge checklist oluÅŸtur.
 10. Feature branch'i push et.
-11. CI geçerse main'e merge et.
+11. CI geÃ§erse main'e merge et.
 12. main branch push et.
-13. Tag önerisi oluştur.
+13. Tag Ã¶nerisi oluÅŸtur.
 
-Final test komutları:
+Final test komutlarÄ±:
 
 ```bash
 npm run typecheck
@@ -1163,33 +1163,33 @@ npm run test:e2e
 Manual QA:
 
 ```txt
-1. Dashboard'da WhatsApp auto-reply aç.
-2. Mesaj şablonu düzenle.
+1. Dashboard'da WhatsApp auto-reply aÃ§.
+2. Mesaj ÅŸablonu dÃ¼zenle.
 3. Preview kontrol et.
-4. Fake inbound endpoint ile müşteri mesajı simüle et.
-5. Auto-reply log oluştuğunu kontrol et.
-6. Aynı numaradan tekrar mesaj simüle et.
-7. Cooldown nedeniyle skipped olduğunu kontrol et.
-8. Opt-out mesajı simüle et.
-9. Sonraki mesajda reply gönderilmediğini kontrol et.
-10. Public booking linkinin doğru çalıştığını kontrol et.
+4. Fake inbound endpoint ile mÃ¼ÅŸteri mesajÄ± simÃ¼le et.
+5. Auto-reply log oluÅŸtuÄŸunu kontrol et.
+6. AynÄ± numaradan tekrar mesaj simÃ¼le et.
+7. Cooldown nedeniyle skipped olduÄŸunu kontrol et.
+8. Opt-out mesajÄ± simÃ¼le et.
+9. Sonraki mesajda reply gÃ¶nderilmediÄŸini kontrol et.
+10. Public booking linkinin doÄŸru Ã§alÄ±ÅŸtÄ±ÄŸÄ±nÄ± kontrol et.
 ```
 
-Merge öncesi checklist:
+Merge Ã¶ncesi checklist:
 
 ```txt
-[ ] Typecheck geçti
-[ ] Lint geçti
-[ ] Unit tests geçti
-[ ] Build geçti
-[ ] Prisma validate geçti
+[ ] Typecheck geÃ§ti
+[ ] Lint geÃ§ti
+[ ] Unit tests geÃ§ti
+[ ] Build geÃ§ti
+[ ] Prisma validate geÃ§ti
 [ ] Migration status temiz
-[ ] E2E geçti veya manuel QA raporu var
-[ ] Gerçek secret commitlenmedi
+[ ] E2E geÃ§ti veya manuel QA raporu var
+[ ] GerÃ§ek secret commitlenmedi
 [ ] Default provider FAKE
-[ ] WhatsApp policy docs hazır
-[ ] README güncellendi
-[ ] CHANGELOG güncellendi
+[ ] WhatsApp policy docs hazÄ±r
+[ ] README gÃ¼ncellendi
+[ ] CHANGELOG gÃ¼ncellendi
 ```
 
 Commit:
@@ -1213,7 +1213,7 @@ npm run build
 git push origin main
 ```
 
-Tag önerisi:
+Tag Ã¶nerisi:
 
 ```bash
 git tag v1.2.0-whatsapp-auto-link
@@ -1223,16 +1223,16 @@ git push origin v1.2.0-whatsapp-auto-link
 Final compact:
 
 ```txt
-WA-4 ve WA-5 tamamlandıktan sonra compact-maintainer-agent çalıştır.
-docs/COMPACT_STATE.md güncelle.
-Final summary oluştur.
+WA-4 ve WA-5 tamamlandÄ±ktan sonra compact-maintainer-agent Ã§alÄ±ÅŸtÄ±r.
+docs/COMPACT_STATE.md gÃ¼ncelle.
+Final summary oluÅŸtur.
 ```
 
 ---
 
 # 13. Yeni Environment Variables
 
-`.env.example` içine eklenecek alanlar:
+`.env.example` iÃ§ine eklenecek alanlar:
 
 ```env
 # WhatsApp Auto Link Reply
@@ -1257,67 +1257,67 @@ NEXT_PUBLIC_BOOKING_BASE_URL=http://localhost:3000/randevu
 
 ---
 
-# 14. Türkçe Mesaj Şablonları
+# 14. TÃ¼rkÃ§e Mesaj ÅablonlarÄ±
 
 ## 14.1 Default Auto Reply
 
 ```txt
-Merhaba 👋
-Randevu almak için linkimizi kullanabilirsiniz:
+Merhaba ğŸ‘‹
+Randevu almak iÃ§in linkimizi kullanabilirsiniz:
 {{bookingUrl}}
 
-Bu linkten hizmet seçebilir, uygun saatleri görebilir ve randevunuzu oluşturabilirsiniz.
-İnsan desteği için bu mesaja yazmaya devam edebilirsiniz.
+Bu linkten hizmet seÃ§ebilir, uygun saatleri gÃ¶rebilir ve randevunuzu oluÅŸturabilirsiniz.
+Ä°nsan desteÄŸi iÃ§in bu mesaja yazmaya devam edebilirsiniz.
 ```
 
-## 14.2 Kısa Versiyon
+## 14.2 KÄ±sa Versiyon
 
 ```txt
-Merhaba, randevu almak için linkimiz: {{bookingUrl}}
+Merhaba, randevu almak iÃ§in linkimiz: {{bookingUrl}}
 ```
 
-## 14.3 Kapalı Saat Mesajı
+## 14.3 KapalÄ± Saat MesajÄ±
 
 ```txt
-Merhaba 👋
-Şu anda hızlıca dönüş yapamayabiliriz. Randevu almak için linkimizi kullanabilirsiniz:
-{{bookingUrl}}
-```
-
-## 14.4 Anahtar Kelime Yanıtı
-
-```txt
-Randevu ve uygun saatler için linkimiz:
+Merhaba ğŸ‘‹
+Åu anda hÄ±zlÄ±ca dÃ¶nÃ¼ÅŸ yapamayabiliriz. Randevu almak iÃ§in linkimizi kullanabilirsiniz:
 {{bookingUrl}}
 ```
 
-## 14.5 Opt-out Sonrası İç Not
-
-Bu mesaj müşteriye gönderilmez, sistem logu olarak tutulur:
+## 14.4 Anahtar Kelime YanÄ±tÄ±
 
 ```txt
-Müşteri WhatsApp otomatik mesajlarını almak istemediğini belirtti. Auto-reply devre dışı bırakıldı.
+Randevu ve uygun saatler iÃ§in linkimiz:
+{{bookingUrl}}
+```
+
+## 14.5 Opt-out SonrasÄ± Ä°Ã§ Not
+
+Bu mesaj mÃ¼ÅŸteriye gÃ¶nderilmez, sistem logu olarak tutulur:
+
+```txt
+MÃ¼ÅŸteri WhatsApp otomatik mesajlarÄ±nÄ± almak istemediÄŸini belirtti. Auto-reply devre dÄ±ÅŸÄ± bÄ±rakÄ±ldÄ±.
 ```
 
 ---
 
-# 15. Güvenlik ve Uyumluluk Kuralları
+# 15. GÃ¼venlik ve Uyumluluk KurallarÄ±
 
 ```txt
-- Webhook verify token env değişkeninden okunmalı.
-- Meta app secret varsa signature validation planlanmalı.
-- Raw payload production loglarına açık yazılmamalı.
-- Customer phone tenant-scoped tutulmalı.
-- Başka organization'ın WhatsApp mesajları görünmemeli.
-- Marketing mesajı bu auto-reply modülüyle karıştırılmamalı.
-- Opt-out mesajları saygıyla işlenmeli.
-- Gerçek WhatsApp tokenları commitlenmemeli.
-- Testlerde gerçek mesaj gönderilmemeli.
+- Webhook verify token env deÄŸiÅŸkeninden okunmalÄ±.
+- Meta app secret varsa signature validation planlanmalÄ±.
+- Raw payload production loglarÄ±na aÃ§Ä±k yazÄ±lmamalÄ±.
+- Customer phone tenant-scoped tutulmalÄ±.
+- BaÅŸka organization'Ä±n WhatsApp mesajlarÄ± gÃ¶rÃ¼nmemeli.
+- Marketing mesajÄ± bu auto-reply modÃ¼lÃ¼yle karÄ±ÅŸtÄ±rÄ±lmamalÄ±.
+- Opt-out mesajlarÄ± saygÄ±yla iÅŸlenmeli.
+- GerÃ§ek WhatsApp tokenlarÄ± commitlenmemeli.
+- Testlerde gerÃ§ek mesaj gÃ¶nderilmemeli.
 ```
 
 ---
 
-# 16. GitHub Push Politikası
+# 16. GitHub Push PolitikasÄ±
 
 Her phase sonunda:
 
@@ -1328,24 +1328,24 @@ git commit -m "meaningful message"
 git push origin feature/whatsapp-auto-link
 ```
 
-Main merge sadece şu şartlarda yapılır:
+Main merge sadece ÅŸu ÅŸartlarda yapÄ±lÄ±r:
 
 ```txt
-- Typecheck geçti.
-- Lint geçti.
-- Unit tests geçti.
-- Build geçti.
-- Prisma validation geçti.
+- Typecheck geÃ§ti.
+- Lint geÃ§ti.
+- Unit tests geÃ§ti.
+- Build geÃ§ti.
+- Prisma validation geÃ§ti.
 - Migration status temiz.
-- WhatsApp fake provider testleri geçti.
-- Webhook fixture testleri geçti.
+- WhatsApp fake provider testleri geÃ§ti.
+- Webhook fixture testleri geÃ§ti.
 - Secret scan manuel kontrol edildi.
 ```
 
-Force push yasaktır:
+Force push yasaktÄ±r:
 
 ```txt
-git push --force kullanılmayacak.
+git push --force kullanÄ±lmayacak.
 ```
 
 ---
@@ -1353,9 +1353,9 @@ git push --force kullanılmayacak.
 # 17. Claude Code Ana Prompt'u
 
 ```txt
-Read SLOTPILOT_WHATSAPP_AUTO_LINK_UPDATE_PLAN.md carefully.
+Read RANDEVO_WHATSAPP_AUTO_LINK_UPDATE_PLAN.md carefully.
 
-This update adds WhatsApp automatic booking link replies to SlotPilot.
+This update adds WhatsApp automatic booking link replies to Randevo.
 Do not implement all phases at once.
 
 Start with Phase WA-0 only:
@@ -1379,12 +1379,12 @@ Important:
 # 18. Antigravity Ana Prompt'u
 
 ```txt
-Read SLOTPILOT_WHATSAPP_AUTO_LINK_UPDATE_PLAN.md.
+Read RANDEVO_WHATSAPP_AUTO_LINK_UPDATE_PLAN.md.
 
 Create the WhatsApp auto-link agents first.
 Then start Phase WA-0 only.
 
-Use browser automation to verify the current SlotPilot flow before changing behavior:
+Use browser automation to verify the current Randevo flow before changing behavior:
 1. Owner login.
 2. Open dashboard.
 3. Open public booking link.
@@ -1399,28 +1399,28 @@ Commit and push only if tests pass.
 
 # 19. Final Definition of Done
 
-Bu güncelleme bitmiş sayılması için:
+Bu gÃ¼ncelleme bitmiÅŸ sayÄ±lmasÄ± iÃ§in:
 
 ```txt
-- WhatsApp webhook verification endpoint çalışıyor.
-- Inbound WhatsApp mesajları loglanıyor.
-- Duplicate webhook eventleri tekrar işlenmiyor.
-- Auto-reply settings tenant-scoped çalışıyor.
-- Fake provider ile otomatik booking link mesajı gönderiliyor.
-- Meta Cloud API provider env ile hazırlanmış durumda.
-- Cooldown kuralı çalışıyor.
-- Opt-out kuralı çalışıyor.
-- Keyword mode çalışıyor.
-- Booking URL doğru üretiliyor.
-- Dashboard settings Türkçe.
-- Auto-reply logs dashboard'da görünüyor.
-- Testler geçiyor.
-- Build geçiyor.
-- README/CHANGELOG/docs güncel.
+- WhatsApp webhook verification endpoint Ã§alÄ±ÅŸÄ±yor.
+- Inbound WhatsApp mesajlarÄ± loglanÄ±yor.
+- Duplicate webhook eventleri tekrar iÅŸlenmiyor.
+- Auto-reply settings tenant-scoped Ã§alÄ±ÅŸÄ±yor.
+- Fake provider ile otomatik booking link mesajÄ± gÃ¶nderiliyor.
+- Meta Cloud API provider env ile hazÄ±rlanmÄ±ÅŸ durumda.
+- Cooldown kuralÄ± Ã§alÄ±ÅŸÄ±yor.
+- Opt-out kuralÄ± Ã§alÄ±ÅŸÄ±yor.
+- Keyword mode Ã§alÄ±ÅŸÄ±yor.
+- Booking URL doÄŸru Ã¼retiliyor.
+- Dashboard settings TÃ¼rkÃ§e.
+- Auto-reply logs dashboard'da gÃ¶rÃ¼nÃ¼yor.
+- Testler geÃ§iyor.
+- Build geÃ§iyor.
+- README/CHANGELOG/docs gÃ¼ncel.
 - GitHub feature branch push edildi.
-- Merge öncesi testler geçti.
-- Main branch'e merge ve push yapıldı.
-- docs/COMPACT_STATE.md güncel.
+- Merge Ã¶ncesi testler geÃ§ti.
+- Main branch'e merge ve push yapÄ±ldÄ±.
+- docs/COMPACT_STATE.md gÃ¼ncel.
 ```
 
 ---
@@ -1428,7 +1428,7 @@ Bu güncelleme bitmiş sayılması için:
 # 20. Final Kontrol Prompt'u
 
 ```txt
-Review the WhatsApp auto-link update for SlotPilot.
+Review the WhatsApp auto-link update for Randevo.
 
 Check:
 1. Does webhook verification work?
@@ -1450,3 +1450,4 @@ Check:
 Fix small issues only. Do not add new major features.
 Create final release notes.
 ```
+

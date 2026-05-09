@@ -1,214 +1,214 @@
-# SlotPilot Türkiye Yerelleştirme Planı — Claude Code / Antigravity Update Brief
+﻿# Randevo TÃ¼rkiye YerelleÅŸtirme PlanÄ± â€” Claude Code / Antigravity Update Brief
 
-> Bu dosya, SlotPilot projesinin Türkiye pazarına uyarlanması için hazırlanmıştır.  
-> Ana SlotPilot MVP ve Post-MVP expansion adımları tamamlandıktan sonra uygulanacak yeni güncelleme planıdır.  
-> Amaç: Dil, para birimi, şehir/ilçe sistemi, yerel ödeme altyapısı, KVKK/İYS izinleri, Türkiye marketplace yapısı ve yerel faturalama hazırlığını planlı şekilde eklemek.
+> Bu dosya, Randevo projesinin TÃ¼rkiye pazarÄ±na uyarlanmasÄ± iÃ§in hazÄ±rlanmÄ±ÅŸtÄ±r.  
+> Ana Randevo MVP ve Post-MVP expansion adÄ±mlarÄ± tamamlandÄ±ktan sonra uygulanacak yeni gÃ¼ncelleme planÄ±dÄ±r.  
+> AmaÃ§: Dil, para birimi, ÅŸehir/ilÃ§e sistemi, yerel Ã¶deme altyapÄ±sÄ±, KVKK/Ä°YS izinleri, TÃ¼rkiye marketplace yapÄ±sÄ± ve yerel faturalama hazÄ±rlÄ±ÄŸÄ±nÄ± planlÄ± ÅŸekilde eklemek.
 
 ---
 
 ## 1. Ana Hedef
 
-SlotPilot artık global/İngilizce bir SaaS MVP yerine Türkiye’de küçük işletmelerin kullanabileceği yerel bir randevu SaaS ürününe dönüştürülecek.
+Randevo artÄ±k global/Ä°ngilizce bir SaaS MVP yerine TÃ¼rkiyeâ€™de kÃ¼Ã§Ã¼k iÅŸletmelerin kullanabileceÄŸi yerel bir randevu SaaS Ã¼rÃ¼nÃ¼ne dÃ¶nÃ¼ÅŸtÃ¼rÃ¼lecek.
 
 Ana hedefler:
 
 ```txt
-- Arayüz tamamen Türkçe olacak.
-- Varsayılan para birimi Türk lirası olacak.
-- Türkiye şehirleri ve büyükşehir ilçeleri desteklenecek.
-- Abonelik paketleri Türkiye fiyatlarına göre düzenlenecek.
-- Başlangıç planı 40 TL / ay olacak.
-- Pro planı 249 TL / ay olacak.
-- Türkiye’ye uygun ödeme sağlayıcı altyapısı eklenecek.
-- KVKK ve ticari ileti izinleri ayrıştırılacak.
-- Türkiye’ye özel bildirim şablonları eklenecek.
-- Marketplace şehir/kategori bazlı Türkçe çalışacak.
-- Her phase sonunda test + commit + push yapılacak.
-- En fazla 2 phase tamamlandıktan sonra compact protokolü çalışacak.
+- ArayÃ¼z tamamen TÃ¼rkÃ§e olacak.
+- VarsayÄ±lan para birimi TÃ¼rk lirasÄ± olacak.
+- TÃ¼rkiye ÅŸehirleri ve bÃ¼yÃ¼kÅŸehir ilÃ§eleri desteklenecek.
+- Abonelik paketleri TÃ¼rkiye fiyatlarÄ±na gÃ¶re dÃ¼zenlenecek.
+- BaÅŸlangÄ±Ã§ planÄ± 40 TL / ay olacak.
+- Pro planÄ± 249 TL / ay olacak.
+- TÃ¼rkiyeâ€™ye uygun Ã¶deme saÄŸlayÄ±cÄ± altyapÄ±sÄ± eklenecek.
+- KVKK ve ticari ileti izinleri ayrÄ±ÅŸtÄ±rÄ±lacak.
+- TÃ¼rkiyeâ€™ye Ã¶zel bildirim ÅŸablonlarÄ± eklenecek.
+- Marketplace ÅŸehir/kategori bazlÄ± TÃ¼rkÃ§e Ã§alÄ±ÅŸacak.
+- Her phase sonunda test + commit + push yapÄ±lacak.
+- En fazla 2 phase tamamlandÄ±ktan sonra compact protokolÃ¼ Ã§alÄ±ÅŸacak.
 ```
 
 ---
 
-## 2. Türkiye Pazarına Göre Ürün Kararları
+## 2. TÃ¼rkiye PazarÄ±na GÃ¶re ÃœrÃ¼n KararlarÄ±
 
-### 2.1 Hedef Müşteri
+### 2.1 Hedef MÃ¼ÅŸteri
 
-Türkiye versiyonu özellikle şu işletmeleri hedefler:
+TÃ¼rkiye versiyonu Ã¶zellikle ÅŸu iÅŸletmeleri hedefler:
 
 ```txt
-- Kuaförler
+- KuafÃ¶rler
 - Berberler
-- Güzellik salonları
-- Protez tırnak / nail art stüdyoları
+- GÃ¼zellik salonlarÄ±
+- Protez tÄ±rnak / nail art stÃ¼dyolarÄ±
 - Diyetisyenler
-- Psikolojik danışmanlık ofisleri
-- Özel ders verenler
-- Spor eğitmenleri
-- Pilates/yoga stüdyoları
-- Klinik dışı randevulu danışmanlık hizmetleri
-- Kurs ve atölye merkezleri
-- Oto bakım / ekspertiz randevu işletmeleri
-- Pet kuaförleri
+- Psikolojik danÄ±ÅŸmanlÄ±k ofisleri
+- Ã–zel ders verenler
+- Spor eÄŸitmenleri
+- Pilates/yoga stÃ¼dyolarÄ±
+- Klinik dÄ±ÅŸÄ± randevulu danÄ±ÅŸmanlÄ±k hizmetleri
+- Kurs ve atÃ¶lye merkezleri
+- Oto bakÄ±m / ekspertiz randevu iÅŸletmeleri
+- Pet kuafÃ¶rleri
 ```
 
-### 2.2 Türkiye’de Çözülmesi Gereken Sorun
+### 2.2 TÃ¼rkiyeâ€™de Ã‡Ã¶zÃ¼lmesi Gereken Sorun
 
-Türkiye’de birçok küçük işletme randevuları şu kanallarla yönetir:
+TÃ¼rkiyeâ€™de birÃ§ok kÃ¼Ã§Ã¼k iÅŸletme randevularÄ± ÅŸu kanallarla yÃ¶netir:
 
 ```txt
 - WhatsApp
 - Instagram DM
-- Telefon araması
-- Kağıt ajanda
+- Telefon aramasÄ±
+- KaÄŸÄ±t ajanda
 - Excel
 - Google Calendar
 ```
 
-Bu yöntemlerde sık görülen problemler:
+Bu yÃ¶ntemlerde sÄ±k gÃ¶rÃ¼len problemler:
 
 ```txt
-- Randevular karışır.
-- Müşteri randevuyu unutur.
-- Aynı saate iki kişi yazılır.
-- Kapora takibi manuel yapılır.
-- İşletme yoğun gün/saat raporu alamaz.
-- Müşteri işletme kapalıyken randevu alamaz.
-- Randevu iptali ve no-show oranı izlenemez.
+- Randevular karÄ±ÅŸÄ±r.
+- MÃ¼ÅŸteri randevuyu unutur.
+- AynÄ± saate iki kiÅŸi yazÄ±lÄ±r.
+- Kapora takibi manuel yapÄ±lÄ±r.
+- Ä°ÅŸletme yoÄŸun gÃ¼n/saat raporu alamaz.
+- MÃ¼ÅŸteri iÅŸletme kapalÄ±yken randevu alamaz.
+- Randevu iptali ve no-show oranÄ± izlenemez.
 ```
 
-### 2.3 Türkiye’ye Uygun Değer Önerisi
+### 2.3 TÃ¼rkiyeâ€™ye Uygun DeÄŸer Ã–nerisi
 
 ```txt
-Küçük işletmeler için Türkçe, uygun fiyatlı, WhatsApp/SMS/e-posta hatırlatma altyapısına hazır, kapora ve randevu yönetimi odaklı SaaS randevu sistemi.
-```
-
----
-
-## 3. Araştırma Notları
-
-Bu plan Türkiye pazarına uyarlanırken şu başlıklar dikkate alınmıştır:
-
-```txt
-- KVKK tarafında aydınlatma yükümlülüğü ve açık rıza süreçleri ayrı ele alınmalıdır.
-- Ticari elektronik ileti izinleri İYS mantığına uygun ayrı consent alanlarıyla tutulmalıdır.
-- Türkiye’de ödeme için Stripe dışında iyzico, PayTR, Param, Sipay, banka sanal POS ve manuel havale/EFT akışı düşünülmelidir.
-- GİB e-Arşiv/e-Fatura tarafında doğrudan resmi entegrasyon yerine ilk aşamada export-ready veri yapısı yapılmalıdır.
-- Türkiye’de adresleme il/ilçe temelli kurulmalıdır.
-```
-
-Kaynak notları:
-
-```txt
-- KVKK resmi sitesi: Aydınlatma yükümlülüğü ve açık rıza süreçlerinin ayrılığı.
-- İYS resmi sitesi ve Ticaret Bakanlığı: Ticari elektronik ileti izinlerinin merkezi yönetimi.
-- iyzico geliştirici dokümanları: Türkiye ödeme API entegrasyon seçenekleri.
-- PayTR geliştirici dokümanları: Sanal POS / iFrame / direkt API entegrasyon akışları.
-- GİB e-Arşiv / e-Fatura portalları: Elektronik belge süreçleri için resmi platformlar.
+KÃ¼Ã§Ã¼k iÅŸletmeler iÃ§in TÃ¼rkÃ§e, uygun fiyatlÄ±, WhatsApp/SMS/e-posta hatÄ±rlatma altyapÄ±sÄ±na hazÄ±r, kapora ve randevu yÃ¶netimi odaklÄ± SaaS randevu sistemi.
 ```
 
 ---
 
-## 4. Türkiye Fiyatlandırması
+## 3. AraÅŸtÄ±rma NotlarÄ±
+
+Bu plan TÃ¼rkiye pazarÄ±na uyarlanÄ±rken ÅŸu baÅŸlÄ±klar dikkate alÄ±nmÄ±ÅŸtÄ±r:
+
+```txt
+- KVKK tarafÄ±nda aydÄ±nlatma yÃ¼kÃ¼mlÃ¼lÃ¼ÄŸÃ¼ ve aÃ§Ä±k rÄ±za sÃ¼reÃ§leri ayrÄ± ele alÄ±nmalÄ±dÄ±r.
+- Ticari elektronik ileti izinleri Ä°YS mantÄ±ÄŸÄ±na uygun ayrÄ± consent alanlarÄ±yla tutulmalÄ±dÄ±r.
+- TÃ¼rkiyeâ€™de Ã¶deme iÃ§in Stripe dÄ±ÅŸÄ±nda iyzico, PayTR, Param, Sipay, banka sanal POS ve manuel havale/EFT akÄ±ÅŸÄ± dÃ¼ÅŸÃ¼nÃ¼lmelidir.
+- GÄ°B e-ArÅŸiv/e-Fatura tarafÄ±nda doÄŸrudan resmi entegrasyon yerine ilk aÅŸamada export-ready veri yapÄ±sÄ± yapÄ±lmalÄ±dÄ±r.
+- TÃ¼rkiyeâ€™de adresleme il/ilÃ§e temelli kurulmalÄ±dÄ±r.
+```
+
+Kaynak notlarÄ±:
+
+```txt
+- KVKK resmi sitesi: AydÄ±nlatma yÃ¼kÃ¼mlÃ¼lÃ¼ÄŸÃ¼ ve aÃ§Ä±k rÄ±za sÃ¼reÃ§lerinin ayrÄ±lÄ±ÄŸÄ±.
+- Ä°YS resmi sitesi ve Ticaret BakanlÄ±ÄŸÄ±: Ticari elektronik ileti izinlerinin merkezi yÃ¶netimi.
+- iyzico geliÅŸtirici dokÃ¼manlarÄ±: TÃ¼rkiye Ã¶deme API entegrasyon seÃ§enekleri.
+- PayTR geliÅŸtirici dokÃ¼manlarÄ±: Sanal POS / iFrame / direkt API entegrasyon akÄ±ÅŸlarÄ±.
+- GÄ°B e-ArÅŸiv / e-Fatura portallarÄ±: Elektronik belge sÃ¼reÃ§leri iÃ§in resmi platformlar.
+```
+
+---
+
+## 4. TÃ¼rkiye FiyatlandÄ±rmasÄ±
 
 ### 4.1 Paketler
 
 ```txt
-Ücretsiz Plan — 0 TL / ay
-Başlangıç Planı — 40 TL / ay
-Pro Plan — 249 TL / ay
-Kurumsal Plan — Teklif al
+Ãœcretsiz Plan â€” 0 TL / ay
+BaÅŸlangÄ±Ã§ PlanÄ± â€” 40 TL / ay
+Pro Plan â€” 249 TL / ay
+Kurumsal Plan â€” Teklif al
 ```
 
 ### 4.2 Paket Limitleri
 
-#### Ücretsiz Plan
+#### Ãœcretsiz Plan
 
 ```txt
-- 1 işletme
-- 1 çalışan
+- 1 iÅŸletme
+- 1 Ã§alÄ±ÅŸan
 - 20 randevu / ay
 - Public booking link
 - Temel dashboard
-- E-posta hatırlatma yok
+- E-posta hatÄ±rlatma yok
 - SMS/WhatsApp yok
-- Marketplace görünürlüğü yok
+- Marketplace gÃ¶rÃ¼nÃ¼rlÃ¼ÄŸÃ¼ yok
 ```
 
-#### Başlangıç Planı — 40 TL / ay
+#### BaÅŸlangÄ±Ã§ PlanÄ± â€” 40 TL / ay
 
 ```txt
-- 1 işletme
-- 3 çalışan
+- 1 iÅŸletme
+- 3 Ã§alÄ±ÅŸan
 - 300 randevu / ay
-- Türkçe public booking sayfası
-- E-posta hatırlatma
+- TÃ¼rkÃ§e public booking sayfasÄ±
+- E-posta hatÄ±rlatma
 - Temel raporlar
-- Türkiye il/ilçe adres desteği
+- TÃ¼rkiye il/ilÃ§e adres desteÄŸi
 - CSV export
 ```
 
-#### Pro Plan — 249 TL / ay
+#### Pro Plan â€” 249 TL / ay
 
 ```txt
-- Sınırsız çalışan
+- SÄ±nÄ±rsÄ±z Ã§alÄ±ÅŸan
 - 2.000 randevu / ay
-- SMS/WhatsApp provider altyapısı
-- Kapora ödeme altyapısı
-- Marketplace görünürlüğü
-- Gelişmiş raporlar
-- Çoklu şube desteği
-- e-Arşiv/e-Fatura export hazırlığı
+- SMS/WhatsApp provider altyapÄ±sÄ±
+- Kapora Ã¶deme altyapÄ±sÄ±
+- Marketplace gÃ¶rÃ¼nÃ¼rlÃ¼ÄŸÃ¼
+- GeliÅŸmiÅŸ raporlar
+- Ã‡oklu ÅŸube desteÄŸi
+- e-ArÅŸiv/e-Fatura export hazÄ±rlÄ±ÄŸÄ±
 ```
 
-#### Kurumsal Plan — Teklif al
+#### Kurumsal Plan â€” Teklif al
 
 ```txt
-- Çoklu işletme/şube
-- Özel entegrasyon
-- Özel destek
+- Ã‡oklu iÅŸletme/ÅŸube
+- Ã–zel entegrasyon
+- Ã–zel destek
 - Muhasebe entegrasyonu
-- Yüksek hacimli randevu limiti
-- SLA ve özel onboarding
+- YÃ¼ksek hacimli randevu limiti
+- SLA ve Ã¶zel onboarding
 ```
 
-### 4.3 Yıllık İndirim Placeholder
+### 4.3 YÄ±llÄ±k Ä°ndirim Placeholder
 
 ```txt
-Yıllık ödemede 2 ay ücretsiz.
-Başlangıç yıllık: 400 TL / yıl
-Pro yıllık: 2.490 TL / yıl
+YÄ±llÄ±k Ã¶demede 2 ay Ã¼cretsiz.
+BaÅŸlangÄ±Ã§ yÄ±llÄ±k: 400 TL / yÄ±l
+Pro yÄ±llÄ±k: 2.490 TL / yÄ±l
 ```
 
 Not:
 
 ```txt
-Fiyatlar MVP denemesi içindir. Canlı ticari kullanım öncesi vergi, KDV, ödeme kuruluşu komisyonları ve faturalama süreçleri muhasebeciyle doğrulanmalıdır.
+Fiyatlar MVP denemesi iÃ§indir. CanlÄ± ticari kullanÄ±m Ã¶ncesi vergi, KDV, Ã¶deme kuruluÅŸu komisyonlarÄ± ve faturalama sÃ¼reÃ§leri muhasebeciyle doÄŸrulanmalÄ±dÄ±r.
 ```
 
 ---
 
-## 5. Türkiye’ye Özel Yeni Özellikler
+## 5. TÃ¼rkiyeâ€™ye Ã–zel Yeni Ã–zellikler
 
 ```txt
-1. Türkçe UI ve i18n
-2. tr-TR tarih/saat/para formatı
+1. TÃ¼rkÃ§e UI ve i18n
+2. tr-TR tarih/saat/para formatÄ±
 3. TRY para birimi
-4. Türkiye il/ilçe verisi
-5. Türkiye adres formatı
+4. TÃ¼rkiye il/ilÃ§e verisi
+5. TÃ¼rkiye adres formatÄ±
 6. +90 telefon normalizasyonu
-7. Türkiye abonelik paketleri
-8. Yerel ödeme sağlayıcı abstraction
-9. Havale/EFT manuel ödeme akışı
+7. TÃ¼rkiye abonelik paketleri
+8. Yerel Ã¶deme saÄŸlayÄ±cÄ± abstraction
+9. Havale/EFT manuel Ã¶deme akÄ±ÅŸÄ±
 10. iyzico/PayTR/Param adapter placeholder
-11. KVKK aydınlatma metni alanları
-12. Açık rıza ve aydınlatma ayrımı
-13. Ticari ileti / pazarlama izni ayrımı
-14. İYS uyumlu izin mimarisi
-15. Türkçe SMS/e-posta/WhatsApp şablonları
-16. Türkiye marketplace kategori ve şehir filtreleri
-17. e-Arşiv/e-Fatura export hazırlığı
-18. Resmi tatil ve özel gün desteği
-19. Her 2 phase sonrası compact protokolü
+11. KVKK aydÄ±nlatma metni alanlarÄ±
+12. AÃ§Ä±k rÄ±za ve aydÄ±nlatma ayrÄ±mÄ±
+13. Ticari ileti / pazarlama izni ayrÄ±mÄ±
+14. Ä°YS uyumlu izin mimarisi
+15. TÃ¼rkÃ§e SMS/e-posta/WhatsApp ÅŸablonlarÄ±
+16. TÃ¼rkiye marketplace kategori ve ÅŸehir filtreleri
+17. e-ArÅŸiv/e-Fatura export hazÄ±rlÄ±ÄŸÄ±
+18. Resmi tatil ve Ã¶zel gÃ¼n desteÄŸi
+19. Her 2 phase sonrasÄ± compact protokolÃ¼
 20. Her phase sonunda GitHub commit + push
 ```
 
@@ -216,7 +216,7 @@ Fiyatlar MVP denemesi içindir. Canlı ticari kullanım öncesi vergi, KDV, öde
 
 ## 6. Yeni Agent Listesi
 
-`.claude/agents/` klasörüne şu agent dosyaları eklenecek:
+`.claude/agents/` klasÃ¶rÃ¼ne ÅŸu agent dosyalarÄ± eklenecek:
 
 ```txt
 turkey-product-agent.md
@@ -236,18 +236,18 @@ github-release-agent.md
 
 ---
 
-# 7. Agent Tanımları
+# 7. Agent TanÄ±mlarÄ±
 
 ## 7.1 `turkey-product-agent.md`
 
 ```md
 ---
 name: turkey-product-agent
-description: Use this agent to adapt SlotPilot product strategy, Turkish pricing, packaging, target users, and local feature priorities.
+description: Use this agent to adapt Randevo product strategy, Turkish pricing, packaging, target users, and local feature priorities.
 tools: Read, Write, Edit
 ---
 
-You are the Turkey Product Agent for SlotPilot.
+You are the Turkey Product Agent for Randevo.
 
 Responsibilities:
 - Rewrite product assumptions for the Turkish market.
@@ -331,8 +331,8 @@ You are the Turkey Pricing Agent.
 
 Responsibilities:
 - Add Turkey-specific pricing configuration.
-- Implement Ücretsiz, Başlangıç, Pro, Kurumsal plans.
-- Set Başlangıç to 40 TRY/month.
+- Implement Ãœcretsiz, BaÅŸlangÄ±Ã§, Pro, Kurumsal plans.
+- Set BaÅŸlangÄ±Ã§ to 40 TRY/month.
 - Set Pro to 249 TRY/month.
 - Add annual discount placeholders.
 - Update backend plan limit checks.
@@ -390,7 +390,7 @@ Responsibilities:
 - Separate appointment notifications from marketing consent.
 - Add consent log model.
 - Add customer data deletion request model.
-- Add Turkish placeholder texts for KVKK and açık rıza.
+- Add Turkish placeholder texts for KVKK and aÃ§Ä±k rÄ±za.
 - Add tests for consent requirements.
 
 Rules:
@@ -456,7 +456,7 @@ Rules:
 ```md
 ---
 name: turkey-invoice-agent
-description: Use this agent to add e-Arşiv/e-Fatura ready export fields, invoice information forms, tax office/VKN/TCKN fields, and accounting export notes.
+description: Use this agent to add e-ArÅŸiv/e-Fatura ready export fields, invoice information forms, tax office/VKN/TCKN fields, and accounting export notes.
 tools: Read, Write, Edit, Bash
 ---
 
@@ -467,12 +467,12 @@ Responsibilities:
 - Add VKN/TCKN optional fields.
 - Add tax office field.
 - Add company title field.
-- Add e-Arşiv/e-Fatura export-ready CSV/JSON.
+- Add e-ArÅŸiv/e-Fatura export-ready CSV/JSON.
 - Add invoice address fields.
 - Add tests for invoice data validation.
 
 Rules:
-- Do not claim official GİB integration unless actually implemented.
+- Do not claim official GÄ°B integration unless actually implemented.
 - Do not validate/store unnecessary sensitive identity data by default.
 - Invoice information must be optional unless business enables invoicing.
 ```
@@ -589,49 +589,49 @@ Rules:
 
 ---
 
-# 8. Phase Sırası
+# 8. Phase SÄ±rasÄ±
 
-Bu adaptasyon 10 phase halinde yapılacak.
+Bu adaptasyon 10 phase halinde yapÄ±lacak.
 
 ```txt
-Phase TR-0 — Türkiye Baseline ve Araştırma Notları
-Phase TR-1 — Türkçe UI ve i18n
-Phase TR-2 — Türkiye il/ilçe, adres ve telefon desteği
-Phase TR-3 — TRY fiyatlandırma ve Türkiye abonelik paketleri
-Phase TR-4 — Yerel ödeme sağlayıcıları ve manuel ödeme
-Phase TR-5 — KVKK, açık rıza ve İYS ayrımı
-Phase TR-6 — Türkçe bildirim şablonları
-Phase TR-7 — Türkiye marketplace ve yerel SEO
-Phase TR-8 — e-Arşiv/e-Fatura export hazırlığı
-Phase TR-9 — Türkiye resmi tatilleri ve final QA
+Phase TR-0 â€” TÃ¼rkiye Baseline ve AraÅŸtÄ±rma NotlarÄ±
+Phase TR-1 â€” TÃ¼rkÃ§e UI ve i18n
+Phase TR-2 â€” TÃ¼rkiye il/ilÃ§e, adres ve telefon desteÄŸi
+Phase TR-3 â€” TRY fiyatlandÄ±rma ve TÃ¼rkiye abonelik paketleri
+Phase TR-4 â€” Yerel Ã¶deme saÄŸlayÄ±cÄ±larÄ± ve manuel Ã¶deme
+Phase TR-5 â€” KVKK, aÃ§Ä±k rÄ±za ve Ä°YS ayrÄ±mÄ±
+Phase TR-6 â€” TÃ¼rkÃ§e bildirim ÅŸablonlarÄ±
+Phase TR-7 â€” TÃ¼rkiye marketplace ve yerel SEO
+Phase TR-8 â€” e-ArÅŸiv/e-Fatura export hazÄ±rlÄ±ÄŸÄ±
+Phase TR-9 â€” TÃ¼rkiye resmi tatilleri ve final QA
 ```
 
-Compact kuralı:
+Compact kuralÄ±:
 
 ```txt
-TR-0 + TR-1 sonrası compact
-TR-2 + TR-3 sonrası compact
-TR-4 + TR-5 sonrası compact
-TR-6 + TR-7 sonrası compact
-TR-8 + TR-9 sonrası final compact summary
+TR-0 + TR-1 sonrasÄ± compact
+TR-2 + TR-3 sonrasÄ± compact
+TR-4 + TR-5 sonrasÄ± compact
+TR-6 + TR-7 sonrasÄ± compact
+TR-8 + TR-9 sonrasÄ± final compact summary
 ```
 
 Her phase sonunda:
 
 ```txt
-1. Test çalıştır.
+1. Test Ã§alÄ±ÅŸtÄ±r.
 2. Build al.
 3. Migration kontrol et.
-4. CHANGELOG güncelle.
+4. CHANGELOG gÃ¼ncelle.
 5. Commit at.
 6. GitHub remote varsa push yap.
 ```
 
 ---
 
-# 9. Global Test Komutları
+# 9. Global Test KomutlarÄ±
 
-Her phase sonunda çalıştırılacak komutlar:
+Her phase sonunda Ã§alÄ±ÅŸtÄ±rÄ±lacak komutlar:
 
 ```bash
 npm run typecheck
@@ -643,13 +643,13 @@ npx prisma generate
 npx prisma migrate status
 ```
 
-Eğer e2e test varsa:
+EÄŸer e2e test varsa:
 
 ```bash
 npm run test:e2e
 ```
 
-Eğer seed değiştiyse:
+EÄŸer seed deÄŸiÅŸtiyse:
 
 ```bash
 npx prisma db seed
@@ -667,41 +667,41 @@ git push
 Not:
 
 ```txt
-Testler başarısızsa push yapılmaz.
-Kullanıcı özellikle isterse broken branch olarak farklı branch’e push yapılabilir.
+Testler baÅŸarÄ±sÄ±zsa push yapÄ±lmaz.
+KullanÄ±cÄ± Ã¶zellikle isterse broken branch olarak farklÄ± branchâ€™e push yapÄ±labilir.
 ```
 
 ---
 
-# 10. Compact Protokolü
+# 10. Compact ProtokolÃ¼
 
-Amaç:
+AmaÃ§:
 
 ```txt
-Token/context dolmasını engellemek ve uzun geliştirme sürecinde Claude Code / Antigravity’nin kafasının karışmasını azaltmak.
+Token/context dolmasÄ±nÄ± engellemek ve uzun geliÅŸtirme sÃ¼recinde Claude Code / Antigravityâ€™nin kafasÄ±nÄ±n karÄ±ÅŸmasÄ±nÄ± azaltmak.
 ```
 
-Her 2 phase sonunda `compact-maintainer-agent` çalıştırılacak.
+Her 2 phase sonunda `compact-maintainer-agent` Ã§alÄ±ÅŸtÄ±rÄ±lacak.
 
-Yapılacaklar:
+YapÄ±lacaklar:
 
 ```txt
-1. docs/COMPACT_STATE.md güncelle.
-2. Son 2 phase’te yapılanları özetle.
-3. Değişen dosya gruplarını listele.
-4. Yeni env değişkenlerini listele.
+1. docs/COMPACT_STATE.md gÃ¼ncelle.
+2. Son 2 phaseâ€™te yapÄ±lanlarÄ± Ã¶zetle.
+3. DeÄŸiÅŸen dosya gruplarÄ±nÄ± listele.
+4. Yeni env deÄŸiÅŸkenlerini listele.
 5. Yeni database modellerini listele.
-6. Test sonuçlarını yaz.
+6. Test sonuÃ§larÄ±nÄ± yaz.
 7. Bilinen bug/riskleri yaz.
-8. Bir sonraki phase için kısa prompt hazırla.
-9. Claude Code destekliyorsa /compact çalıştırılması istenir.
-10. Antigravity destekliyorsa context summary artifact oluşturulur.
+8. Bir sonraki phase iÃ§in kÄ±sa prompt hazÄ±rla.
+9. Claude Code destekliyorsa /compact Ã§alÄ±ÅŸtÄ±rÄ±lmasÄ± istenir.
+10. Antigravity destekliyorsa context summary artifact oluÅŸturulur.
 ```
 
-`docs/COMPACT_STATE.md` şablonu:
+`docs/COMPACT_STATE.md` ÅŸablonu:
 
 ```md
-# SlotPilot Türkiye Compact State
+# Randevo TÃ¼rkiye Compact State
 
 ## Last Completed Phases
 
@@ -720,10 +720,10 @@ Yapılacaklar:
 ## Do Not Forget
 ```
 
-Compact sonrası kullanılacak prompt:
+Compact sonrasÄ± kullanÄ±lacak prompt:
 
 ```txt
-Read docs/COMPACT_STATE.md and SLOTPILOT_TURKIYE_LOCALIZATION_PLAN.md.
+Read docs/COMPACT_STATE.md and RANDEVO_TURKIYE_LOCALIZATION_PLAN.md.
 Continue from the next unfinished phase only.
 Do not re-implement completed phases.
 Run tests before commit and push.
@@ -731,38 +731,38 @@ Run tests before commit and push.
 
 ---
 
-# 11. Phase Detayları
+# 11. Phase DetaylarÄ±
 
-## Phase TR-0 — Türkiye Baseline ve Araştırma Notları
+## Phase TR-0 â€” TÃ¼rkiye Baseline ve AraÅŸtÄ±rma NotlarÄ±
 
-Kullanılacak agent:
+KullanÄ±lacak agent:
 
 ```txt
 turkey-product-agent
 turkey-qa-agent
 ```
 
-Amaç:
+AmaÃ§:
 
 ```txt
-Mevcut SlotPilot projesi bozulmadan Türkiye adaptasyonuna hazır mı kontrol edilir.
+Mevcut Randevo projesi bozulmadan TÃ¼rkiye adaptasyonuna hazÄ±r mÄ± kontrol edilir.
 ```
 
-Yapılacaklar:
+YapÄ±lacaklar:
 
 ```txt
 1. Mevcut branch temiz mi kontrol et.
-2. Mevcut testleri çalıştır.
-3. Türkiye ürün stratejisi dokümanı oluştur.
-4. Hedef müşteri gruplarını yaz.
-5. Türkiye fiyatlandırmasını netleştir.
-6. Türkiye ödeme sağlayıcılarını not et.
-7. KVKK/İYS gereksinimlerini ürün seviyesinde listele.
-8. Türkiye şehir/adres ihtiyacını planla.
-9. GitHub için changelog başlat.
+2. Mevcut testleri Ã§alÄ±ÅŸtÄ±r.
+3. TÃ¼rkiye Ã¼rÃ¼n stratejisi dokÃ¼manÄ± oluÅŸtur.
+4. Hedef mÃ¼ÅŸteri gruplarÄ±nÄ± yaz.
+5. TÃ¼rkiye fiyatlandÄ±rmasÄ±nÄ± netleÅŸtir.
+6. TÃ¼rkiye Ã¶deme saÄŸlayÄ±cÄ±larÄ±nÄ± not et.
+7. KVKK/Ä°YS gereksinimlerini Ã¼rÃ¼n seviyesinde listele.
+8. TÃ¼rkiye ÅŸehir/adres ihtiyacÄ±nÄ± planla.
+9. GitHub iÃ§in changelog baÅŸlat.
 ```
 
-Oluşturulacak dosya:
+OluÅŸturulacak dosya:
 
 ```txt
 docs/turkiye-product-strategy.md
@@ -780,10 +780,10 @@ npm run build
 Kabul kriteri:
 
 ```txt
-- Mevcut proje build alıyor.
-- Türkiye strateji dokümanı oluştu.
-- Henüz davranış değişikliği yapılmadı.
-- GitHub commit + push yapıldı.
+- Mevcut proje build alÄ±yor.
+- TÃ¼rkiye strateji dokÃ¼manÄ± oluÅŸtu.
+- HenÃ¼z davranÄ±ÅŸ deÄŸiÅŸikliÄŸi yapÄ±lmadÄ±.
+- GitHub commit + push yapÄ±ldÄ±.
 ```
 
 Commit:
@@ -796,51 +796,51 @@ git push
 
 ---
 
-## Phase TR-1 — Türkçe UI ve i18n
+## Phase TR-1 â€” TÃ¼rkÃ§e UI ve i18n
 
-Kullanılacak agent:
+KullanÄ±lacak agent:
 
 ```txt
 i18n-localization-agent
 turkey-qa-agent
 ```
 
-Amaç:
+AmaÃ§:
 
 ```txt
-Arayüzün Türkçeleştirilmesi ve gelecekte çoklu dil desteği için i18n yapısının kurulması.
+ArayÃ¼zÃ¼n TÃ¼rkÃ§eleÅŸtirilmesi ve gelecekte Ã§oklu dil desteÄŸi iÃ§in i18n yapÄ±sÄ±nÄ±n kurulmasÄ±.
 ```
 
-Yapılacaklar:
+YapÄ±lacaklar:
 
 ```txt
-1. src/i18n/ klasörü oluştur.
-2. tr.ts dictionary oluştur.
-3. Gerekirse en.ts fallback dictionary oluştur.
-4. UI stringlerini dictionary key’lerine taşı.
-5. Dashboard menülerini Türkçeleştir.
-6. Public booking sayfasını Türkçeleştir.
-7. Form validation mesajlarını Türkçeleştir.
+1. src/i18n/ klasÃ¶rÃ¼ oluÅŸtur.
+2. tr.ts dictionary oluÅŸtur.
+3. Gerekirse en.ts fallback dictionary oluÅŸtur.
+4. UI stringlerini dictionary keyâ€™lerine taÅŸÄ±.
+5. Dashboard menÃ¼lerini TÃ¼rkÃ§eleÅŸtir.
+6. Public booking sayfasÄ±nÄ± TÃ¼rkÃ§eleÅŸtir.
+7. Form validation mesajlarÄ±nÄ± TÃ¼rkÃ§eleÅŸtir.
 8. Date format helper ekle.
 9. Currency format helper ekle.
 10. Timezone default olarak Europe/Istanbul ayarla.
 ```
 
-Örnek Türkçe UI metinleri:
+Ã–rnek TÃ¼rkÃ§e UI metinleri:
 
 ```txt
 Randevular
 Hizmetler
-Çalışanlar
-Müsaitlik
-Müşteriler
+Ã‡alÄ±ÅŸanlar
+MÃ¼saitlik
+MÃ¼ÅŸteriler
 Abonelik
 Ayarlar
-Bugünkü Randevular
+BugÃ¼nkÃ¼ Randevular
 Yeni Hizmet Ekle
 Randevu Al
 Uygun Saatler
-Randevunuz oluşturuldu
+Randevunuz oluÅŸturuldu
 ```
 
 Helper fonksiyonlar:
@@ -855,10 +855,10 @@ formatDateTimeTR(date)
 Testler:
 
 ```txt
-- TRY formatı tutarlı çalışır.
-- Tarih tr-TR formatında gösterilir.
-- İngilizce public UI string kalmadığı kontrol edilir.
-- Validation mesajları Türkçe görünür.
+- TRY formatÄ± tutarlÄ± Ã§alÄ±ÅŸÄ±r.
+- Tarih tr-TR formatÄ±nda gÃ¶sterilir.
+- Ä°ngilizce public UI string kalmadÄ±ÄŸÄ± kontrol edilir.
+- Validation mesajlarÄ± TÃ¼rkÃ§e gÃ¶rÃ¼nÃ¼r.
 ```
 
 Komutlar:
@@ -881,43 +881,43 @@ git push
 Compact:
 
 ```txt
-TR-0 ve TR-1 tamamlandıktan sonra compact-maintainer-agent çalıştır.
-docs/COMPACT_STATE.md güncelle.
-Claude Code destekliyorsa /compact çalıştır.
+TR-0 ve TR-1 tamamlandÄ±ktan sonra compact-maintainer-agent Ã§alÄ±ÅŸtÄ±r.
+docs/COMPACT_STATE.md gÃ¼ncelle.
+Claude Code destekliyorsa /compact Ã§alÄ±ÅŸtÄ±r.
 ```
 
 ---
 
-## Phase TR-2 — Türkiye İl/İlçe, Adres ve Telefon Desteği
+## Phase TR-2 â€” TÃ¼rkiye Ä°l/Ä°lÃ§e, Adres ve Telefon DesteÄŸi
 
-Kullanılacak agent:
+KullanÄ±lacak agent:
 
 ```txt
 turkey-data-agent
 turkey-qa-agent
 ```
 
-Yapılacaklar:
+YapÄ±lacaklar:
 
 ```txt
-1. src/data/turkey-provinces.ts oluştur.
+1. src/data/turkey-provinces.ts oluÅŸtur.
 2. 81 ili ekle.
-3. İl plaka kodu alanı ekle.
-4. Büyükşehir ilçeleri için başlangıç district datası ekle.
-5. BusinessProfile address alanlarını güncelle:
+3. Ä°l plaka kodu alanÄ± ekle.
+4. BÃ¼yÃ¼kÅŸehir ilÃ§eleri iÃ§in baÅŸlangÄ±Ã§ district datasÄ± ekle.
+5. BusinessProfile address alanlarÄ±nÄ± gÃ¼ncelle:
    - province
    - district
    - neighborhood
    - addressLine
    - postalCode
-6. Location model varsa location address alanlarını güncelle.
-7. Public booking business address gösterimini Türkçe yap.
-8. Phone normalization helper oluştur.
-9. +90 default ülke kodu desteği ekle.
-10. Telefon display formatı ekle.
+6. Location model varsa location address alanlarÄ±nÄ± gÃ¼ncelle.
+7. Public booking business address gÃ¶sterimini TÃ¼rkÃ§e yap.
+8. Phone normalization helper oluÅŸtur.
+9. +90 default Ã¼lke kodu desteÄŸi ekle.
+10. Telefon display formatÄ± ekle.
 ```
 
-Telefon örneği:
+Telefon Ã¶rneÄŸi:
 
 ```txt
 Input: 0532 123 45 67
@@ -928,11 +928,11 @@ Displayed: 0532 123 45 67
 Testler:
 
 ```txt
-- 81 il datası eksiksiz.
-- İstanbul/Ankara/İzmir district datası dönüyor.
+- 81 il datasÄ± eksiksiz.
+- Ä°stanbul/Ankara/Ä°zmir district datasÄ± dÃ¶nÃ¼yor.
 - +90 telefon normalize ediliyor.
-- Hatalı telefon reddediliyor.
-- Existing organization migration safe default değer üretiyor.
+- HatalÄ± telefon reddediliyor.
+- Existing organization migration safe default deÄŸer Ã¼retiyor.
 ```
 
 Komutlar:
@@ -957,43 +957,43 @@ git push
 
 ---
 
-## Phase TR-3 — TRY Fiyatlandırma ve Türkiye Abonelik Paketleri
+## Phase TR-3 â€” TRY FiyatlandÄ±rma ve TÃ¼rkiye Abonelik Paketleri
 
-Kullanılacak agent:
+KullanÄ±lacak agent:
 
 ```txt
 turkey-pricing-agent
 turkey-qa-agent
 ```
 
-Yapılacaklar:
+YapÄ±lacaklar:
 
 ```txt
-1. src/config/pricing.tr.ts oluştur.
-2. Plan isimlerini Türkçeleştir:
-   - Ücretsiz
-   - Başlangıç
+1. src/config/pricing.tr.ts oluÅŸtur.
+2. Plan isimlerini TÃ¼rkÃ§eleÅŸtir:
+   - Ãœcretsiz
+   - BaÅŸlangÄ±Ã§
    - Pro
    - Kurumsal
-3. Başlangıç planı 40 TL / ay olarak ayarla.
-4. Pro planı 249 TL / ay olarak ayarla.
-5. Plan limitlerini backend’e bağla.
-6. Billing UI Türkçeleştir.
+3. BaÅŸlangÄ±Ã§ planÄ± 40 TL / ay olarak ayarla.
+4. Pro planÄ± 249 TL / ay olarak ayarla.
+5. Plan limitlerini backendâ€™e baÄŸla.
+6. Billing UI TÃ¼rkÃ§eleÅŸtir.
 7. Subscription modelinde currency TRY destekle.
 8. Plan migration stratejisi yaz.
 9. Annual discount placeholder ekle.
-10. Tests güncelle.
+10. Tests gÃ¼ncelle.
 ```
 
 Testler:
 
 ```txt
-- Başlangıç planı 40 TRY döner.
-- Pro planı 249 TRY döner.
-- Ücretsiz plan staff/randevu limitleri enforce edilir.
-- Başlangıç planı 3 staff ve 300 randevu limiti uygular.
-- Pro planı 2.000 randevu limiti uygular.
-- Currency display TRY formatında görünür.
+- BaÅŸlangÄ±Ã§ planÄ± 40 TRY dÃ¶ner.
+- Pro planÄ± 249 TRY dÃ¶ner.
+- Ãœcretsiz plan staff/randevu limitleri enforce edilir.
+- BaÅŸlangÄ±Ã§ planÄ± 3 staff ve 300 randevu limiti uygular.
+- Pro planÄ± 2.000 randevu limiti uygular.
+- Currency display TRY formatÄ±nda gÃ¶rÃ¼nÃ¼r.
 ```
 
 Komutlar:
@@ -1016,23 +1016,23 @@ git push
 Compact:
 
 ```txt
-TR-2 ve TR-3 tamamlandıktan sonra compact-maintainer-agent çalıştır.
-docs/COMPACT_STATE.md güncelle.
-Claude Code destekliyorsa /compact çalıştır.
+TR-2 ve TR-3 tamamlandÄ±ktan sonra compact-maintainer-agent Ã§alÄ±ÅŸtÄ±r.
+docs/COMPACT_STATE.md gÃ¼ncelle.
+Claude Code destekliyorsa /compact Ã§alÄ±ÅŸtÄ±r.
 ```
 
 ---
 
-## Phase TR-4 — Yerel Ödeme Sağlayıcıları ve Manuel Ödeme
+## Phase TR-4 â€” Yerel Ã–deme SaÄŸlayÄ±cÄ±larÄ± ve Manuel Ã–deme
 
-Kullanılacak agent:
+KullanÄ±lacak agent:
 
 ```txt
 local-payment-agent
 turkey-qa-agent
 ```
 
-Yapılacaklar:
+YapÄ±lacaklar:
 
 ```txt
 1. Payment provider enum ekle:
@@ -1041,37 +1041,37 @@ Yapılacaklar:
    - IYZICO
    - PAYTR
    - PARAM
-2. PaymentProviderAdapter interface oluştur.
-3. ManualBankTransferProvider oluştur.
-4. iyzico adapter stub oluştur.
-5. PayTR adapter stub oluştur.
-6. Param adapter stub oluştur.
-7. Ödeme talimatları sayfası oluştur.
-8. IBAN bilgileri ayarı ekle.
-9. Dekont yükleme placeholder ekle.
-10. Backend-controlled payment approval alanı ekle.
-11. .env.example güncelle.
+2. PaymentProviderAdapter interface oluÅŸtur.
+3. ManualBankTransferProvider oluÅŸtur.
+4. iyzico adapter stub oluÅŸtur.
+5. PayTR adapter stub oluÅŸtur.
+6. Param adapter stub oluÅŸtur.
+7. Ã–deme talimatlarÄ± sayfasÄ± oluÅŸtur.
+8. IBAN bilgileri ayarÄ± ekle.
+9. Dekont yÃ¼kleme placeholder ekle.
+10. Backend-controlled payment approval alanÄ± ekle.
+11. .env.example gÃ¼ncelle.
 ```
 
-Manuel ödeme akışı:
+Manuel Ã¶deme akÄ±ÅŸÄ±:
 
 ```txt
-1. Müşteri/işletme ödeme seçer.
-2. Sistem havale/EFT talimatı gösterir.
-3. Kullanıcı açıklama kodunu görür.
-4. Ödeme status PENDING_MANUAL olur.
-5. İşletme/admin manuel onaylar.
+1. MÃ¼ÅŸteri/iÅŸletme Ã¶deme seÃ§er.
+2. Sistem havale/EFT talimatÄ± gÃ¶sterir.
+3. KullanÄ±cÄ± aÃ§Ä±klama kodunu gÃ¶rÃ¼r.
+4. Ã–deme status PENDING_MANUAL olur.
+5. Ä°ÅŸletme/admin manuel onaylar.
 6. Status PAID olur.
 ```
 
 Testler:
 
 ```txt
-- Provider selection doğru çalışır.
-- Manual payment PENDING_MANUAL oluşturur.
-- Manual approve sonrası PAID olur.
-- Fake provider testte kullanılır.
-- Real provider secrets olmadan build geçer.
+- Provider selection doÄŸru Ã§alÄ±ÅŸÄ±r.
+- Manual payment PENDING_MANUAL oluÅŸturur.
+- Manual approve sonrasÄ± PAID olur.
+- Fake provider testte kullanÄ±lÄ±r.
+- Real provider secrets olmadan build geÃ§er.
 ```
 
 Komutlar:
@@ -1093,16 +1093,16 @@ git push
 
 ---
 
-## Phase TR-5 — KVKK, Açık Rıza ve İYS Ayrımı
+## Phase TR-5 â€” KVKK, AÃ§Ä±k RÄ±za ve Ä°YS AyrÄ±mÄ±
 
-Kullanılacak agent:
+KullanÄ±lacak agent:
 
 ```txt
 kvkk-compliance-agent
 turkey-qa-agent
 ```
 
-Database değişiklikleri:
+Database deÄŸiÅŸiklikleri:
 
 ```txt
 ConsentLog
@@ -1110,7 +1110,7 @@ CustomerConsent
 DataDeletionRequest
 ```
 
-Consent alanları:
+Consent alanlarÄ±:
 
 ```txt
 privacyNoticeAcknowledged
@@ -1123,38 +1123,38 @@ consentUserAgent
 consentCreatedAt
 ```
 
-Yapılacaklar:
+YapÄ±lacaklar:
 
 ```txt
 1. KVKK placeholder metni ekle.
-2. Açık rıza metni placeholder ekle.
+2. AÃ§Ä±k rÄ±za metni placeholder ekle.
 3. Ticari ileti izni metni placeholder ekle.
 4. Public booking formuna checkboxlar ekle.
-5. Aydınlatma ve açık rıza checkboxlarını ayrı tut.
+5. AydÄ±nlatma ve aÃ§Ä±k rÄ±za checkboxlarÄ±nÄ± ayrÄ± tut.
 6. Pazarlama iznini opsiyonel yap.
-7. Randevu bilgilendirme iznini ayrı tut.
-8. ConsentLog kaydı oluştur.
+7. Randevu bilgilendirme iznini ayrÄ± tut.
+8. ConsentLog kaydÄ± oluÅŸtur.
 9. Data deletion request endpoint ekle.
 10. Tests ekle.
 ```
 
-Form checkbox önerisi:
+Form checkbox Ã¶nerisi:
 
 ```txt
-[Zorunlu] KVKK Aydınlatma Metni’ni okudum.
-[Opsiyonel] Randevu hatırlatmaları almak istiyorum.
-[Opsiyonel] Kampanya ve duyuru mesajları almak istiyorum.
-[Koşula bağlı] Açık rıza metnini onaylıyorum.
+[Zorunlu] KVKK AydÄ±nlatma Metniâ€™ni okudum.
+[Opsiyonel] Randevu hatÄ±rlatmalarÄ± almak istiyorum.
+[Opsiyonel] Kampanya ve duyuru mesajlarÄ± almak istiyorum.
+[KoÅŸula baÄŸlÄ±] AÃ§Ä±k rÄ±za metnini onaylÄ±yorum.
 ```
 
 Testler:
 
 ```txt
-- KVKK aydınlatma onayı olmadan appointment oluşturulmaz.
-- Marketing consent false olsa da appointment oluşturulabilir.
-- Marketing mesajı marketingConsent yoksa gönderilmez.
-- Consent log oluşturulur.
-- Data deletion request oluşturulur.
+- KVKK aydÄ±nlatma onayÄ± olmadan appointment oluÅŸturulmaz.
+- Marketing consent false olsa da appointment oluÅŸturulabilir.
+- Marketing mesajÄ± marketingConsent yoksa gÃ¶nderilmez.
+- Consent log oluÅŸturulur.
+- Data deletion request oluÅŸturulur.
 ```
 
 Komutlar:
@@ -1180,51 +1180,51 @@ git push
 Compact:
 
 ```txt
-TR-4 ve TR-5 tamamlandıktan sonra compact-maintainer-agent çalıştır.
-docs/COMPACT_STATE.md güncelle.
-Claude Code destekliyorsa /compact çalıştır.
+TR-4 ve TR-5 tamamlandÄ±ktan sonra compact-maintainer-agent Ã§alÄ±ÅŸtÄ±r.
+docs/COMPACT_STATE.md gÃ¼ncelle.
+Claude Code destekliyorsa /compact Ã§alÄ±ÅŸtÄ±r.
 ```
 
 ---
 
-## Phase TR-6 — Türkçe Bildirim Şablonları
+## Phase TR-6 â€” TÃ¼rkÃ§e Bildirim ÅablonlarÄ±
 
-Kullanılacak agent:
+KullanÄ±lacak agent:
 
 ```txt
 turkey-notification-agent
 turkey-qa-agent
 ```
 
-Yapılacaklar:
+YapÄ±lacaklar:
 
 ```txt
-1. Türkçe email template oluştur.
-2. Türkçe SMS template oluştur.
-3. Türkçe WhatsApp template placeholder oluştur.
-4. Appointment reminder ile marketing message ayrımını kodda belirt.
+1. TÃ¼rkÃ§e email template oluÅŸtur.
+2. TÃ¼rkÃ§e SMS template oluÅŸtur.
+3. TÃ¼rkÃ§e WhatsApp template placeholder oluÅŸtur.
+4. Appointment reminder ile marketing message ayrÄ±mÄ±nÄ± kodda belirt.
 5. Notification templates versiyonlanabilir hale getir.
-6. Varsayılan reminder zamanlarını ekle:
-   - 24 saat önce
-   - 3 saat önce
-   - 1 saat önce
-7. İşletme adı, hizmet, tarih, saat, adres değişkenlerini template’e bağla.
+6. VarsayÄ±lan reminder zamanlarÄ±nÄ± ekle:
+   - 24 saat Ã¶nce
+   - 3 saat Ã¶nce
+   - 1 saat Ã¶nce
+7. Ä°ÅŸletme adÄ±, hizmet, tarih, saat, adres deÄŸiÅŸkenlerini templateâ€™e baÄŸla.
 8. Tests yaz.
 ```
 
-Örnek randevu hatırlatma:
+Ã–rnek randevu hatÄ±rlatma:
 
 ```txt
-Merhaba {{customerName}}, {{businessName}} randevunuz {{date}} saat {{time}} için planlandı. Hizmet: {{serviceName}}. Adres: {{address}}.
+Merhaba {{customerName}}, {{businessName}} randevunuz {{date}} saat {{time}} iÃ§in planlandÄ±. Hizmet: {{serviceName}}. Adres: {{address}}.
 ```
 
 Testler:
 
 ```txt
-- Türkçe template değişkenleri doğru replace edilir.
-- Marketing consent yoksa kampanya mesajı hazırlanmaz.
-- Appointment reminder transactional channel olarak çalışır.
-- Fake SMS/WhatsApp provider testleri geçer.
+- TÃ¼rkÃ§e template deÄŸiÅŸkenleri doÄŸru replace edilir.
+- Marketing consent yoksa kampanya mesajÄ± hazÄ±rlanmaz.
+- Appointment reminder transactional channel olarak Ã§alÄ±ÅŸÄ±r.
+- Fake SMS/WhatsApp provider testleri geÃ§er.
 ```
 
 Komutlar:
@@ -1246,57 +1246,57 @@ git push
 
 ---
 
-## Phase TR-7 — Türkiye Marketplace ve Yerel SEO
+## Phase TR-7 â€” TÃ¼rkiye Marketplace ve Yerel SEO
 
-Kullanılacak agent:
+KullanÄ±lacak agent:
 
 ```txt
 turkey-marketplace-agent
 turkey-qa-agent
 ```
 
-Türkiye kategori önerileri:
+TÃ¼rkiye kategori Ã¶nerileri:
 
 ```txt
-Kuaför
+KuafÃ¶r
 Berber
-Güzellik Salonu
+GÃ¼zellik Salonu
 Nail Art
 Diyetisyen
-Spor Eğitmeni
+Spor EÄŸitmeni
 Pilates/Yoga
-Özel Ders
-Danışmanlık
-Kurs ve Atölye
-Oto Bakım
-Pet Kuaför
+Ã–zel Ders
+DanÄ±ÅŸmanlÄ±k
+Kurs ve AtÃ¶lye
+Oto BakÄ±m
+Pet KuafÃ¶r
 ```
 
-Yapılacaklar:
+YapÄ±lacaklar:
 
 ```txt
-1. Türkçe category enum/config oluştur.
-2. Marketplace UI Türkçeleştir.
-3. İl/ilçe filtreleri ekle.
-4. Şehir bazlı landing page ekle:
+1. TÃ¼rkÃ§e category enum/config oluÅŸtur.
+2. Marketplace UI TÃ¼rkÃ§eleÅŸtir.
+3. Ä°l/ilÃ§e filtreleri ekle.
+4. Åehir bazlÄ± landing page ekle:
    - /marketplace/istanbul
    - /marketplace/izmir
    - /marketplace/ankara
-5. Kategori bazlı landing page ekle.
-6. SEO metadata Türkçe yap.
-7. Business card’da adres Türkçe göster.
-8. Booking CTA Türkçeleştir.
+5. Kategori bazlÄ± landing page ekle.
+6. SEO metadata TÃ¼rkÃ§e yap.
+7. Business cardâ€™da adres TÃ¼rkÃ§e gÃ¶ster.
+8. Booking CTA TÃ¼rkÃ§eleÅŸtir.
 9. Tests yaz.
 ```
 
 Testler:
 
 ```txt
-- marketplaceEnabled false işletme görünmez.
-- İstanbul filtresi İstanbul işletmelerini döndürür.
-- Kategori filtresi doğru çalışır.
-- Public marketplace Türkçe görünür.
-- Private customer data görünmez.
+- marketplaceEnabled false iÅŸletme gÃ¶rÃ¼nmez.
+- Ä°stanbul filtresi Ä°stanbul iÅŸletmelerini dÃ¶ndÃ¼rÃ¼r.
+- Kategori filtresi doÄŸru Ã§alÄ±ÅŸÄ±r.
+- Public marketplace TÃ¼rkÃ§e gÃ¶rÃ¼nÃ¼r.
+- Private customer data gÃ¶rÃ¼nmez.
 ```
 
 Komutlar:
@@ -1319,30 +1319,30 @@ git push
 Compact:
 
 ```txt
-TR-6 ve TR-7 tamamlandıktan sonra compact-maintainer-agent çalıştır.
-docs/COMPACT_STATE.md güncelle.
-Claude Code destekliyorsa /compact çalıştır.
+TR-6 ve TR-7 tamamlandÄ±ktan sonra compact-maintainer-agent Ã§alÄ±ÅŸtÄ±r.
+docs/COMPACT_STATE.md gÃ¼ncelle.
+Claude Code destekliyorsa /compact Ã§alÄ±ÅŸtÄ±r.
 ```
 
 ---
 
-## Phase TR-8 — e-Arşiv/e-Fatura Export Hazırlığı
+## Phase TR-8 â€” e-ArÅŸiv/e-Fatura Export HazÄ±rlÄ±ÄŸÄ±
 
-Kullanılacak agent:
+KullanÄ±lacak agent:
 
 ```txt
 turkey-invoice-agent
 turkey-qa-agent
 ```
 
-Database alanları:
+Database alanlarÄ±:
 
 ```txt
 InvoiceProfile
 InvoiceExport
 ```
 
-Invoice profile alanları:
+Invoice profile alanlarÄ±:
 
 ```txt
 invoiceType: INDIVIDUAL | COMPANY
@@ -1357,26 +1357,26 @@ email
 phone
 ```
 
-Yapılacaklar:
+YapÄ±lacaklar:
 
 ```txt
 1. InvoiceProfile modelini ekle.
-2. Business invoice settings formu oluştur.
-3. Customer invoice info formu oluştur.
-4. Export-ready CSV oluştur.
-5. Export-ready JSON oluştur.
-6. e-Arşiv/e-Fatura placeholder dokümanı yaz.
-7. GİB entegrasyonu yapılmadığını açıkça belirt.
+2. Business invoice settings formu oluÅŸtur.
+3. Customer invoice info formu oluÅŸtur.
+4. Export-ready CSV oluÅŸtur.
+5. Export-ready JSON oluÅŸtur.
+6. e-ArÅŸiv/e-Fatura placeholder dokÃ¼manÄ± yaz.
+7. GÄ°B entegrasyonu yapÄ±lmadÄ±ÄŸÄ±nÄ± aÃ§Ä±kÃ§a belirt.
 8. Tests ekle.
 ```
 
 Testler:
 
 ```txt
-- Şirket fatura bilgileri validasyon çalışır.
-- Bireysel fatura bilgileri opsiyonel alanlarla çalışır.
-- CSV export kolonları doğru.
-- JSON export schema doğru.
+- Åirket fatura bilgileri validasyon Ã§alÄ±ÅŸÄ±r.
+- Bireysel fatura bilgileri opsiyonel alanlarla Ã§alÄ±ÅŸÄ±r.
+- CSV export kolonlarÄ± doÄŸru.
+- JSON export schema doÄŸru.
 - Tenant isolation bozulmaz.
 ```
 
@@ -1402,9 +1402,9 @@ git push
 
 ---
 
-## Phase TR-9 — Türkiye Resmi Tatilleri ve Final QA
+## Phase TR-9 â€” TÃ¼rkiye Resmi Tatilleri ve Final QA
 
-Kullanılacak agent:
+KullanÄ±lacak agent:
 
 ```txt
 turkey-holiday-agent
@@ -1413,33 +1413,33 @@ github-release-agent
 compact-maintainer-agent
 ```
 
-Yapılacaklar:
+YapÄ±lacaklar:
 
 ```txt
-1. Türkiye resmi tatil data yapısı oluştur.
+1. TÃ¼rkiye resmi tatil data yapÄ±sÄ± oluÅŸtur.
 2. BusinessClosedDay modelini ekle.
-3. İşletme tatil gününü açık/kapalı override edebilsin.
+3. Ä°ÅŸletme tatil gÃ¼nÃ¼nÃ¼ aÃ§Ä±k/kapalÄ± override edebilsin.
 4. Booking engine holiday-aware hale gelsin.
-5. Public booking’de kapalı gün mesajı göster.
-6. Dashboard’da tatil günleri göster.
-7. Final Turkish QA çalıştır.
-8. README güncelle.
-9. CHANGELOG güncelle.
+5. Public bookingâ€™de kapalÄ± gÃ¼n mesajÄ± gÃ¶ster.
+6. Dashboardâ€™da tatil gÃ¼nleri gÃ¶ster.
+7. Final Turkish QA Ã§alÄ±ÅŸtÄ±r.
+8. README gÃ¼ncelle.
+9. CHANGELOG gÃ¼ncelle.
 10. GitHub push yap.
-11. Stable tag oluştur.
+11. Stable tag oluÅŸtur.
 ```
 
 Testler:
 
 ```txt
-- Resmi tatil gününde slot üretilmez.
-- İşletme override ederse slot üretilebilir.
-- BusinessClosedDay custom kapalı gün slotu engeller.
-- Public UI Türkçe kapalı gün mesajı gösterir.
+- Resmi tatil gÃ¼nÃ¼nde slot Ã¼retilmez.
+- Ä°ÅŸletme override ederse slot Ã¼retilebilir.
+- BusinessClosedDay custom kapalÄ± gÃ¼n slotu engeller.
+- Public UI TÃ¼rkÃ§e kapalÄ± gÃ¼n mesajÄ± gÃ¶sterir.
 - Existing booking flow bozulmaz.
 ```
 
-Final test komutları:
+Final test komutlarÄ±:
 
 ```bash
 npm run typecheck
@@ -1452,22 +1452,22 @@ npx prisma migrate status
 npm run test:e2e
 ```
 
-E2E final test akışı:
+E2E final test akÄ±ÅŸÄ±:
 
 ```txt
-1. Türkçe register/login.
-2. İşletme profili oluştur.
-3. İl/ilçe/adres gir.
-4. Hizmet oluştur.
-5. Çalışan oluştur.
-6. Müsaitlik ayarla.
-7. Türkçe public booking sayfasını aç.
-8. Randevu oluştururken KVKK checkboxını kontrol et.
-9. Randevu oluştur.
-10. Dashboard’da randevuyu gör.
-11. TRY fiyat görüntüsünü kontrol et.
-12. Marketplace şehir filtresini kontrol et.
-13. Kapalı/resmi tatil gününde slot çıkmadığını kontrol et.
+1. TÃ¼rkÃ§e register/login.
+2. Ä°ÅŸletme profili oluÅŸtur.
+3. Ä°l/ilÃ§e/adres gir.
+4. Hizmet oluÅŸtur.
+5. Ã‡alÄ±ÅŸan oluÅŸtur.
+6. MÃ¼saitlik ayarla.
+7. TÃ¼rkÃ§e public booking sayfasÄ±nÄ± aÃ§.
+8. Randevu oluÅŸtururken KVKK checkboxÄ±nÄ± kontrol et.
+9. Randevu oluÅŸtur.
+10. Dashboardâ€™da randevuyu gÃ¶r.
+11. TRY fiyat gÃ¶rÃ¼ntÃ¼sÃ¼nÃ¼ kontrol et.
+12. Marketplace ÅŸehir filtresini kontrol et.
+13. KapalÄ±/resmi tatil gÃ¼nÃ¼nde slot Ã§Ä±kmadÄ±ÄŸÄ±nÄ± kontrol et.
 14. Manual payment flow test et.
 15. Bildirim template preview kontrol et.
 ```
@@ -1485,16 +1485,16 @@ git push origin v1.1.0-turkiye
 Final compact:
 
 ```txt
-TR-8 ve TR-9 tamamlandıktan sonra compact-maintainer-agent çalıştır.
-docs/COMPACT_STATE.md güncelle.
-Final summary oluştur.
+TR-8 ve TR-9 tamamlandÄ±ktan sonra compact-maintainer-agent Ã§alÄ±ÅŸtÄ±r.
+docs/COMPACT_STATE.md gÃ¼ncelle.
+Final summary oluÅŸtur.
 ```
 
 ---
 
-# 12. Güncellenmiş Environment Variables
+# 12. GÃ¼ncellenmiÅŸ Environment Variables
 
-`.env.example` içine eklenecek alanlar:
+`.env.example` iÃ§ine eklenecek alanlar:
 
 ```env
 # Locale
@@ -1520,7 +1520,7 @@ BANK_TRANSFER_ENABLED=true
 BANK_TRANSFER_IBAN=
 BANK_TRANSFER_ACCOUNT_HOLDER=
 BANK_TRANSFER_BANK_NAME=
-BANK_TRANSFER_DESCRIPTION_PREFIX=SLOTPILOT
+BANK_TRANSFER_DESCRIPTION_PREFIX=RANDEVO
 
 # KVKK / Consent
 KVKK_NOTICE_VERSION=2026-01
@@ -1540,9 +1540,9 @@ MARKETPLACE_DEFAULT_LOCALE=tr
 
 ---
 
-# 13. Yeni / Güncellenen Database Modelleri
+# 13. Yeni / GÃ¼ncellenen Database Modelleri
 
-Olası yeni modeller:
+OlasÄ± yeni modeller:
 
 ```txt
 Province
@@ -1557,7 +1557,7 @@ PaymentProviderConfig
 ManualPaymentInstruction
 ```
 
-Güncellenecek modeller:
+GÃ¼ncellenecek modeller:
 
 ```txt
 Organization
@@ -1570,55 +1570,55 @@ Reminder
 MarketplaceProfile
 ```
 
-Önemli kural:
+Ã–nemli kural:
 
 ```txt
-Tenant-owned tüm tablolarda organizationId bulunmalı.
-KVKK/consent kayıtları audit amaçlı silinmeden önce anonymization stratejisi düşünülmeli.
+Tenant-owned tÃ¼m tablolarda organizationId bulunmalÄ±.
+KVKK/consent kayÄ±tlarÄ± audit amaÃ§lÄ± silinmeden Ã¶nce anonymization stratejisi dÃ¼ÅŸÃ¼nÃ¼lmeli.
 ```
 
 ---
 
-# 14. Türkçe UI Copy Guide
+# 14. TÃ¼rkÃ§e UI Copy Guide
 
-Kullanılacak temel çeviriler:
+KullanÄ±lacak temel Ã§eviriler:
 
 ```txt
 Dashboard -> Kontrol Paneli
 Appointments -> Randevular
 Services -> Hizmetler
-Staff -> Çalışanlar
-Customers -> Müşteriler
-Availability -> Müsaitlik
+Staff -> Ã‡alÄ±ÅŸanlar
+Customers -> MÃ¼ÅŸteriler
+Availability -> MÃ¼saitlik
 Billing -> Abonelik
 Settings -> Ayarlar
-Marketplace -> İşletme Rehberi
+Marketplace -> Ä°ÅŸletme Rehberi
 Book Appointment -> Randevu Al
 Available Slots -> Uygun Saatler
-No Slots Available -> Uygun saat bulunamadı
-Payment Pending -> Ödeme Bekleniyor
-Confirmed -> Onaylandı
-Cancelled -> İptal Edildi
-Completed -> Tamamlandı
+No Slots Available -> Uygun saat bulunamadÄ±
+Payment Pending -> Ã–deme Bekleniyor
+Confirmed -> OnaylandÄ±
+Cancelled -> Ä°ptal Edildi
+Completed -> TamamlandÄ±
 No Show -> Gelmedi
 ```
 
-Validation mesajları:
+Validation mesajlarÄ±:
 
 ```txt
 Bu alan zorunludur.
-Geçerli bir e-posta adresi girin.
-Geçerli bir telefon numarası girin.
-Lütfen il seçin.
-Lütfen ilçe seçin.
-KVKK Aydınlatma Metni’ni okuyup onaylamanız gerekir.
+GeÃ§erli bir e-posta adresi girin.
+GeÃ§erli bir telefon numarasÄ± girin.
+LÃ¼tfen il seÃ§in.
+LÃ¼tfen ilÃ§e seÃ§in.
+KVKK AydÄ±nlatma Metniâ€™ni okuyup onaylamanÄ±z gerekir.
 ```
 
 ---
 
-# 15. Türkiye Telefon Formatı
+# 15. TÃ¼rkiye Telefon FormatÄ±
 
-Input kabul örnekleri:
+Input kabul Ã¶rnekleri:
 
 ```txt
 0532 123 45 67
@@ -1643,34 +1643,34 @@ Test edge case:
 
 ```txt
 - Eksik numara reddedilir.
-- Harf içeren numara reddedilir.
-- +90 tekrarları temizlenir.
-- Başındaki 0 doğru ele alınır.
+- Harf iÃ§eren numara reddedilir.
+- +90 tekrarlarÄ± temizlenir.
+- BaÅŸÄ±ndaki 0 doÄŸru ele alÄ±nÄ±r.
 ```
 
 ---
 
-# 16. Türkiye Şehir Datası
+# 16. TÃ¼rkiye Åehir DatasÄ±
 
-İlk etapta 81 il zorunludur.
+Ä°lk etapta 81 il zorunludur.
 
-Seed data minimum alanları:
+Seed data minimum alanlarÄ±:
 
 ```ts
 {
   plateCode: "35",
-  name: "İzmir",
+  name: "Ä°zmir",
   slug: "izmir",
   region: "Ege"
 }
 ```
 
-Büyükşehir ilçe desteği önceliği:
+BÃ¼yÃ¼kÅŸehir ilÃ§e desteÄŸi Ã¶nceliÄŸi:
 
 ```txt
-İstanbul
+Ä°stanbul
 Ankara
-İzmir
+Ä°zmir
 Bursa
 Antalya
 Kocaeli
@@ -1679,15 +1679,15 @@ Adana
 Gaziantep
 Kayseri
 Mersin
-Eskişehir
-Diyarbakır
+EskiÅŸehir
+DiyarbakÄ±r
 Samsun
-Muğla
+MuÄŸla
 ```
 
 ---
 
-# 17. GitHub Push Politikası
+# 17. GitHub Push PolitikasÄ±
 
 Her phase sonunda:
 
@@ -1698,36 +1698,36 @@ git commit -m "meaningful message"
 git push
 ```
 
-Ama sadece şu şartlarda push yapılır:
+Ama sadece ÅŸu ÅŸartlarda push yapÄ±lÄ±r:
 
 ```txt
-- Typecheck geçti.
-- Lint geçti.
-- Testler geçti.
-- Build geçti.
-- Prisma validation geçti.
+- Typecheck geÃ§ti.
+- Lint geÃ§ti.
+- Testler geÃ§ti.
+- Build geÃ§ti.
+- Prisma validation geÃ§ti.
 - Migration status temiz.
 ```
 
 Test fail olursa:
 
 ```txt
-1. Fail raporu oluştur.
+1. Fail raporu oluÅŸtur.
 2. Bug fix yap.
-3. Testleri tekrar çalıştır.
+3. Testleri tekrar Ã§alÄ±ÅŸtÄ±r.
 4. Sonra commit + push yap.
 ```
 
 ---
 
-# 18. Claude Code Ana Prompt’u
+# 18. Claude Code Ana Promptâ€™u
 
-Bu dosyayı Claude Code’a verdikten sonra şu prompt kullanılabilir:
+Bu dosyayÄ± Claude Codeâ€™a verdikten sonra ÅŸu prompt kullanÄ±labilir:
 
 ```txt
-Read SLOTPILOT_TURKIYE_LOCALIZATION_PLAN.md carefully.
+Read RANDEVO_TURKIYE_LOCALIZATION_PLAN.md carefully.
 
-This is a Turkey localization update plan for SlotPilot. Do not implement all features at once.
+This is a Turkey localization update plan for Randevo. Do not implement all features at once.
 
 Start with Phase TR-0 only:
 - Run baseline tests.
@@ -1751,17 +1751,17 @@ Important:
 
 ---
 
-# 19. Antigravity Ana Prompt’u
+# 19. Antigravity Ana Promptâ€™u
 
-Antigravity için:
+Antigravity iÃ§in:
 
 ```txt
-Read SLOTPILOT_TURKIYE_LOCALIZATION_PLAN.md.
+Read RANDEVO_TURKIYE_LOCALIZATION_PLAN.md.
 
 Create the new Turkey localization agents first.
 
 Then start with Phase TR-0 only.
-Use browser automation to verify the current SlotPilot MVP before localization:
+Use browser automation to verify the current Randevo MVP before localization:
 1. Register/login.
 2. Create organization.
 3. Add service.
@@ -1780,46 +1780,46 @@ Commit and push only if tests pass.
 
 # 20. Final Definition of Done
 
-Türkiye adaptasyonu bitmiş sayılması için:
+TÃ¼rkiye adaptasyonu bitmiÅŸ sayÄ±lmasÄ± iÃ§in:
 
 ```txt
-- UI Türkçe.
-- Tarih/saat tr-TR formatında.
+- UI TÃ¼rkÃ§e.
+- Tarih/saat tr-TR formatÄ±nda.
 - Para birimi TRY.
-- Başlangıç planı 40 TL.
-- Pro planı 249 TL.
-- 81 il datası var.
-- Büyükşehir ilçe desteği var.
+- BaÅŸlangÄ±Ã§ planÄ± 40 TL.
+- Pro planÄ± 249 TL.
+- 81 il datasÄ± var.
+- BÃ¼yÃ¼kÅŸehir ilÃ§e desteÄŸi var.
 - +90 telefon normalizasyonu var.
-- Türkiye adres formatı var.
-- KVKK aydınlatma checkbox yapısı var.
-- Marketing consent ayrı.
-- Appointment notification consent ayrı.
-- Türkçe bildirim şablonları var.
-- Türkiye marketplace kategori/şehir filtreleri var.
-- Yerel ödeme provider abstraction var.
+- TÃ¼rkiye adres formatÄ± var.
+- KVKK aydÄ±nlatma checkbox yapÄ±sÄ± var.
+- Marketing consent ayrÄ±.
+- Appointment notification consent ayrÄ±.
+- TÃ¼rkÃ§e bildirim ÅŸablonlarÄ± var.
+- TÃ¼rkiye marketplace kategori/ÅŸehir filtreleri var.
+- Yerel Ã¶deme provider abstraction var.
 - Manuel havale/EFT flow var.
-- e-Arşiv/e-Fatura export hazırlığı var.
-- Türkiye resmi tatil/kapalı gün desteği var.
+- e-ArÅŸiv/e-Fatura export hazÄ±rlÄ±ÄŸÄ± var.
+- TÃ¼rkiye resmi tatil/kapalÄ± gÃ¼n desteÄŸi var.
 - Her phase test edildi.
 - Her phase commit + push edildi.
-- Her 2 phase sonrası compact state güncellendi.
-- Final README ve CHANGELOG güncel.
+- Her 2 phase sonrasÄ± compact state gÃ¼ncellendi.
+- Final README ve CHANGELOG gÃ¼ncel.
 ```
 
 ---
 
-# 21. Final Kontrol Prompt’u
+# 21. Final Kontrol Promptâ€™u
 
-Tüm phase’ler bittikten sonra:
+TÃ¼m phaseâ€™ler bittikten sonra:
 
 ```txt
-Review the whole SlotPilot Turkey localization update.
+Review the whole Randevo Turkey localization update.
 
 Check:
 1. Is the customer-facing UI fully Turkish?
 2. Are TRY prices displayed correctly?
-3. Is the Başlangıç plan exactly 40 TL/month?
+3. Is the BaÅŸlangÄ±Ã§ plan exactly 40 TL/month?
 4. Is the Pro plan 249 TL/month?
 5. Are Turkey provinces available?
 6. Does phone normalization work for +90 numbers?
@@ -1828,7 +1828,7 @@ Check:
 9. Does manual bank transfer payment flow work?
 10. Are iyzico/PayTR adapters safely stubbed?
 11. Does marketplace city/category filtering work?
-12. Is invoice export clearly marked as export-ready, not official GİB integration?
+12. Is invoice export clearly marked as export-ready, not official GÄ°B integration?
 13. Do all tests pass?
 14. Does build pass?
 15. Has everything been committed and pushed to GitHub?
@@ -1837,3 +1837,4 @@ Check:
 Fix small issues only. Do not add new major features.
 Create final release notes.
 ```
+

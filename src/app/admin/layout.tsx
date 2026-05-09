@@ -12,7 +12,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     <div className="min-h-screen bg-gray-50">
       <header className="bg-gray-900 text-white px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-6">
-          <span className="font-bold text-lg">SlotPilot Yönetim</span>
+          <span className="font-bold text-lg">Randevo Yönetim</span>
           <nav className="flex gap-4 text-sm">
             <Link href="/admin" className="hover:text-gray-300">Genel Bakış</Link>
             <Link href="/admin/organizations" className="hover:text-gray-300">İşletmeler</Link>

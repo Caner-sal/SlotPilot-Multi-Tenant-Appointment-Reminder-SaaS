@@ -9,7 +9,7 @@ async function main() {
   // Superadmin user
   const superadminHash = await bcrypt.hash("superadmin1234", 12);
   await prisma.user.upsert({
-    where: { email: "admin@slotpilot.app" },
+    where: { email: "admin@randevo.app" },
     update: {
       name: "Platform Yöneticisi",
       passwordHash: superadminHash,
@@ -18,7 +18,7 @@ async function main() {
     },
     create: {
       name: "Platform Yöneticisi",
-      email: "admin@slotpilot.app",
+      email: "admin@randevo.app",
       passwordHash: superadminHash,
       platformRole: "SUPERADMIN",
       appRole: "OWNER",
@@ -28,7 +28,7 @@ async function main() {
   // Demo user
   const passwordHash = await bcrypt.hash("demo1234", 12);
   const user = await prisma.user.upsert({
-    where: { email: "demo@slotpilot.app" },
+    where: { email: "demo@randevo.app" },
     update: {
       name: "Demo İşletme Sahibi",
       passwordHash,
@@ -36,7 +36,7 @@ async function main() {
     },
     create: {
       name: "Demo İşletme Sahibi",
-      email: "demo@slotpilot.app",
+      email: "demo@randevo.app",
       passwordHash,
       appRole: "OWNER",
     },
@@ -47,7 +47,7 @@ async function main() {
     where: { slug: "barber-demo" },
     update: {
       name: "Berber Demo",
-      description: "SlotPilot için demo berber işletmesi",
+      description: "Randevo için demo berber işletmesi",
       phone: "+90 555 000 0000",
       email: "hello@barberdemo.com",
       address: "İstanbul, Türkiye",
@@ -57,7 +57,7 @@ async function main() {
     create: {
       name: "Berber Demo",
       slug: "barber-demo",
-      description: "SlotPilot için demo berber işletmesi",
+      description: "Randevo için demo berber işletmesi",
       phone: "+90 555 000 0000",
       email: "hello@barberdemo.com",
       address: "İstanbul, Türkiye",
@@ -268,7 +268,7 @@ async function main() {
 
   console.log("Seed complete!");
   console.log(`\nDemo credentials:`);
-  console.log(`  Email: demo@slotpilot.app`);
+  console.log(`  Email: demo@randevo.app`);
   console.log(`  Password: demo1234`);
   console.log(`\nPublic booking URL:`);
   console.log(`  /booking/barber-demo`);

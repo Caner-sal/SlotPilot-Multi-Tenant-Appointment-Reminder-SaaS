@@ -1,4 +1,4 @@
-# Türkiye District Audit — SlotPilot
+# Türkiye District Audit — Randevo
 
 > Generated template based on the current state of `src/data/turkey-provinces.ts`.
 > Re-run `npm run audit:districts` at any time for a live report.

@@ -1,7 +1,7 @@
-# slotpilot-payment-safety
+# randevo-payment-safety
 
 ## name
-slotpilot-payment-safety
+randevo-payment-safety
 
 ## description
 Review payment integration for security issues after any Stripe, billing, or webhook changes.

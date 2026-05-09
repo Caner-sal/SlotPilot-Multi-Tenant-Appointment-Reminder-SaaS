@@ -1,8 +1,8 @@
-# SlotPilot — Product Requirements
+# Randevo — Product Requirements
 
 ## Product Summary
 
-SlotPilot is a multi-tenant SaaS platform that enables local service businesses to manage appointments, staff, customers, and automated reminders. It provides a public booking page for each business so customers can self-book without calling or messaging.
+Randevo is a multi-tenant SaaS platform that enables local service businesses to manage appointments, staff, customers, and automated reminders. It provides a public booking page for each business so customers can self-book without calling or messaging.
 
 ## Target Customers
 
@@ -25,7 +25,7 @@ Small businesses manage appointments via WhatsApp, phone calls, notebooks, or Ex
 
 ## Solution
 
-SlotPilot provides:
+Randevo provides:
 1. A unique public booking URL per business (`/booking/[slug]`)
 2. Real-time slot availability based on staff schedules
 3. Automated email reminders 24h before appointments

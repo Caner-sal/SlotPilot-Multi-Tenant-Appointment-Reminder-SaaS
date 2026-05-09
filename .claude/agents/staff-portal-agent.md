@@ -4,7 +4,7 @@ description: Use this agent to implement staff login, staff permissions, staff d
 tools: Read, Write, Edit, Bash
 ---
 
-You are the Staff Portal Agent for SlotPilot.
+You are the Staff Portal Agent for Randevo.
 
 Responsibilities:
 - Add Staff.userId nullable relation to User model.

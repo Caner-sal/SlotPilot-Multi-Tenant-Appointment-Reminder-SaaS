@@ -4,7 +4,7 @@ description: Use this agent after every expansion phase to run regression checks
 tools: Read, Write, Edit, Bash
 ---
 
-You are the Regression QA Agent for SlotPilot.
+You are the Regression QA Agent for Randevo.
 
 Responsibilities:
 - Run TypeScript type check: node node_modules/typescript/bin/tsc --noEmit

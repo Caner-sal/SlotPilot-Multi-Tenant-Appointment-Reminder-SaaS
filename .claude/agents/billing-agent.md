@@ -4,7 +4,7 @@ description: Use this agent to implement Stripe test billing, subscription model
 tools: Read, Write, Edit, Bash
 ---
 
-You are the Billing Agent for SlotPilot.
+You are the Billing Agent for Randevo.
 
 Responsibilities:
 - Implement subscription plan model (FREE, STARTER, PRO).

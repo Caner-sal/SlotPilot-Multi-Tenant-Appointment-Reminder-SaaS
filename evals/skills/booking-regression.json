@@ -1,5 +1,5 @@
 {
-  "skill": "slotpilot-booking-regression",
+  "skill": "randevo-booking-regression",
   "description": "Eval: booking regression skill triggers correctly",
   "test_prompts": [
     "Run booking regression after changes to slot generation.",

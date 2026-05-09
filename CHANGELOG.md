@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to SlotPilot are documented here.
+All notable changes to Randevo are documented here.
 
 ## [1.3.0-whatsapp-auto-reply] — 2026-05-09
 
@@ -44,7 +44,7 @@ All notable changes to SlotPilot are documented here.
 ## [1.2.0-district-skills-mcp] — 2026-05-09
 
 ### Phase DS-0 — Baseline, Repo Scan ve Risk Raporu
-- 10 new agent files added to `.claude/agents/`: turkey-district-auditor-agent, turkey-district-fixer-agent, slotpilot-skill-architect-agent, slotpilot-skill-builder-agent, mcp-research-agent, mcp-integration-agent, mcp-security-agent, regression-merge-agent, compact-state-agent, github-push-agent
+- 10 new agent files added to `.claude/agents/`: turkey-district-auditor-agent, turkey-district-fixer-agent, randevo-skill-architect-agent, randevo-skill-builder-agent, mcp-research-agent, mcp-integration-agent, mcp-security-agent, regression-merge-agent, compact-state-agent, github-push-agent
 - `docs/repo-scan-report.md`: anthropics/skills and modelcontextprotocol/servers analysis
 - `docs/qa/ds-0-baseline.md`: 188-test baseline QA report
 
@@ -63,14 +63,14 @@ All notable changes to SlotPilot are documented here.
 - Booking form province/district dropdowns already use `getDistrictsByProvince()` — now fully functional for all 81 provinces with no code changes required
 
 ### Phase DS-4 — Skills Mimari Planı
-- `docs/slotpilot-skills-architecture.md`: 5-skill catalog with triggers, workflows, and eval strategy
+- `docs/randevo-skills-architecture.md`: 5-skill catalog with triggers, workflows, and eval strategy
 
-### Phase DS-5 — SlotPilot Skills Implementasyonu
-- `.claude/skills/slotpilot-booking-regression/SKILL.md`
-- `.claude/skills/slotpilot-turkey-data/SKILL.md`
-- `.claude/skills/slotpilot-mcp-integration/SKILL.md`
-- `.claude/skills/slotpilot-payment-safety/SKILL.md`
-- `.claude/skills/slotpilot-release-manager/SKILL.md`
+### Phase DS-5 — Randevo Skills Implementasyonu
+- `.claude/skills/randevo-booking-regression/SKILL.md`
+- `.claude/skills/randevo-turkey-data/SKILL.md`
+- `.claude/skills/randevo-mcp-integration/SKILL.md`
+- `.claude/skills/randevo-payment-safety/SKILL.md`
+- `.claude/skills/randevo-release-manager/SKILL.md`
 - `evals/skills/`: 5 JSON eval prompt files
 - `scripts/validate-skills.js`: skill validation script
 - `package.json`: `validate:skills` script added

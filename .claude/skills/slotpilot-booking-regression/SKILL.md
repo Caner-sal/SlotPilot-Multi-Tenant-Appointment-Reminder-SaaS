@@ -1,7 +1,7 @@
-# slotpilot-booking-regression
+# randevo-booking-regression
 
 ## name
-slotpilot-booking-regression
+randevo-booking-regression
 
 ## description
 Run booking engine regression tests after any change to slot generation, availability rules, conflict detection, or appointment creation. Ensures core booking logic is intact.

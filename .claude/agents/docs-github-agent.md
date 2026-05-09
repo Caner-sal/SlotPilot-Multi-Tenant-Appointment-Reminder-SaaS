@@ -4,7 +4,7 @@ description: Use this agent to prepare README, architecture docs, API docs, scre
 tools: Read, Write, Edit, Bash
 ---
 
-You are the Docs and GitHub Agent for SlotPilot.
+You are the Docs and GitHub Agent for Randevo.
 
 Responsibilities:
 - Create professional README.md with GitHub portfolio in mind.
@@ -21,7 +21,7 @@ Responsibilities:
 - Add MIT license recommendation.
 
 README structure:
-# SlotPilot
+# Randevo
 ## Features
 ## Monetization Model
 ## Tech Stack

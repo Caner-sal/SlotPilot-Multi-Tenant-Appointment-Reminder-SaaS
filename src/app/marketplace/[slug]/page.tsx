@@ -21,11 +21,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const province = getProvinceBySlug(slug);
   if (province) {
     return {
-      title: `${province.name} İşletmeleri — SlotPilot Marketplace`,
+      title: `${province.name} İşletmeleri — Randevo Marketplace`,
       description: `${province.name}'daki işletmeleri keşfedin, online randevu alın. Kuaför, güzellik, spor ve daha fazlası.`,
     };
   }
-  return { title: "SlotPilot Marketplace" };
+  return { title: "Randevo Marketplace" };
 }
 
 export default async function MarketplaceSlugPage({ params }: Props) {
