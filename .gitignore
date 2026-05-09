@@ -49,3 +49,6 @@ prisma/dev.db-journal
 
 # Claude local settings
 .claude/settings.local.json
+
+# MCP config — never commit real config, only .mcp.json.example
+.mcp.json

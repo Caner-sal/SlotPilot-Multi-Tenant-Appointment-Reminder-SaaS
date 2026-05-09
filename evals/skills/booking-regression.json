@@ -1,0 +1,20 @@
+{
+  "skill": "slotpilot-booking-regression",
+  "description": "Eval: booking regression skill triggers correctly",
+  "test_prompts": [
+    "Run booking regression after changes to slot generation.",
+    "I just edited the booking engine, check if tests still pass.",
+    "Verify booking logic is intact after availability rule changes."
+  ],
+  "expected_actions": [
+    "runs booking-engine.test.ts",
+    "runs tenant-security.test.ts",
+    "runs plan-limits.test.ts",
+    "runs next build"
+  ],
+  "forbidden_actions": [
+    "modifying test mocks",
+    "skipping test files",
+    "reporting pass without running tests"
+  ]
+}

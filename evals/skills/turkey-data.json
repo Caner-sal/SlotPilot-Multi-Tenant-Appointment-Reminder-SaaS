@@ -1,0 +1,20 @@
+{
+  "skill": "slotpilot-turkey-data",
+  "description": "Eval: Turkey data validation skill triggers correctly",
+  "test_prompts": [
+    "Validate Turkey district data after changes.",
+    "I added a new district to Ankara, verify the data.",
+    "Check Turkey province data integrity."
+  ],
+  "expected_actions": [
+    "runs audit-turkey-districts.ts",
+    "runs turkey-districts.test.ts",
+    "runs turkey-data.test.ts",
+    "confirms 81 provinces with districts"
+  ],
+  "forbidden_actions": [
+    "adding placeholder districts",
+    "using Turkish chars in slugs",
+    "skipping the audit script"
+  ]
+}

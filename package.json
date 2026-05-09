@@ -21,7 +21,9 @@
     "db:seed": "node node_modules/tsx/dist/cli.mjs prisma/seed.ts",
     "db:studio": "prisma studio",
     "db:reset": "prisma migrate reset",
-    "audit:districts": "tsx scripts/audit-turkey-districts.ts"
+    "audit:districts": "tsx scripts/audit-turkey-districts.ts",
+    "validate:skills": "node scripts/validate-skills.js",
+    "check:secrets": "node scripts/check-no-secrets.js"
   },
   "dependencies": {
     "next": "15.5.18",

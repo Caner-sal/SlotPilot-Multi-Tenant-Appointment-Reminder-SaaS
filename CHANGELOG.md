@@ -2,6 +2,63 @@
 
 All notable changes to SlotPilot are documented here.
 
+## [1.2.0-district-skills-mcp] — 2026-05-09
+
+### Phase DS-0 — Baseline, Repo Scan ve Risk Raporu
+- 10 new agent files added to `.claude/agents/`: turkey-district-auditor-agent, turkey-district-fixer-agent, slotpilot-skill-architect-agent, slotpilot-skill-builder-agent, mcp-research-agent, mcp-integration-agent, mcp-security-agent, regression-merge-agent, compact-state-agent, github-push-agent
+- `docs/repo-scan-report.md`: anthropics/skills and modelcontextprotocol/servers analysis
+- `docs/qa/ds-0-baseline.md`: 188-test baseline QA report
+
+### Phase DS-1 — Türkiye İlçe Data Audit
+- `scripts/audit-turkey-districts.ts`: audit script for 81 provinces + all districts
+- `docs/turkiye-district-audit.md`: audit findings (7 provinces had data, 74 missing)
+- `package.json`: `audit:districts` script added
+
+### Phase DS-2 — Eksik İlçeleri Tamamlama
+- `src/data/turkey-provinces.ts`: complete district data for all 81 Turkish provinces (~970+ districts)
+- Previously only 7 provinces had district data; now 81/81 complete
+- `src/tests/turkey-districts.test.ts`: 15 new tests (province count, district completeness, slug validation)
+- Audit result: PASS — all 81 provinces have districts, no duplicate slugs within provinces
+
+### Phase DS-3 — İl/İlçe UI Validation
+- Booking form province/district dropdowns already use `getDistrictsByProvince()` — now fully functional for all 81 provinces with no code changes required
+
+### Phase DS-4 — Skills Mimari Planı
+- `docs/slotpilot-skills-architecture.md`: 5-skill catalog with triggers, workflows, and eval strategy
+
+### Phase DS-5 — SlotPilot Skills Implementasyonu
+- `.claude/skills/slotpilot-booking-regression/SKILL.md`
+- `.claude/skills/slotpilot-turkey-data/SKILL.md`
+- `.claude/skills/slotpilot-mcp-integration/SKILL.md`
+- `.claude/skills/slotpilot-payment-safety/SKILL.md`
+- `.claude/skills/slotpilot-release-manager/SKILL.md`
+- `evals/skills/`: 5 JSON eval prompt files
+- `scripts/validate-skills.js`: skill validation script
+- `package.json`: `validate:skills` script added
+
+### Phase DS-6 — MCP Servers Araştırma ve Güvenlik Tasarımı
+- `docs/mcp-research-report.md`: 6 safe + 6 risky MCP server classifications
+- `docs/mcp-security-checklist.md`: pre-commit security checklist for MCP integrations
+
+### Phase DS-7 — Güvenli MCP Local Dev Entegrasyonu
+- `.mcp.json.example`: safe local-dev MCP config (filesystem/git/time/fetch/memory/sequential-thinking)
+- `docs/mcp-local-setup.md`: setup guide for Mac/Linux/Windows
+- `scripts/check-no-secrets.js`: secret scanner (skips test files, checks for Stripe/GitHub/AWS keys)
+- `package.json`: `check:secrets` script added
+- `.gitignore`: `.mcp.json` added (example file committed; real config never should be)
+
+### Phase DS-8 — Güvenlik Testleri
+- `src/tests/security.test.ts`: 24 new security tests covering:
+  - bookingSchema: rejects invalid email, malformed datetime, missing KVKK consent, short name
+  - loginSchema: rejects SQL injection attempt in email, invalid email format, empty password
+  - registerSchema: rejects short password, invalid email, short name
+  - serviceSchema: rejects empty name, negative price, zero duration
+  - OWASP posture: Prisma ORM SQL injection prevention, KVKK consent bypass prevention
+- All 227 tests passing (188 original + 15 district tests + 24 security tests)
+- Secret scan: PASS
+
+---
+
 ## [1.1.0-turkiye] — 2026-05-09
 
 ### Phase TR-0 — Türkiye Baseline

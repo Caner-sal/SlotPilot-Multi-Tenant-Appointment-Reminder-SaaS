@@ -1,0 +1,21 @@
+{
+  "skill": "slotpilot-payment-safety",
+  "description": "Eval: payment safety review skill triggers correctly",
+  "test_prompts": [
+    "Run payment safety review after billing changes.",
+    "I changed the Stripe webhook handler, verify it's secure.",
+    "Check payment integration for hardcoded keys."
+  ],
+  "expected_actions": [
+    "runs deposit-payment.test.ts",
+    "runs plan-limits.test.ts",
+    "runs accounting.test.ts",
+    "runs check-no-secrets.js",
+    "verifies webhook signature validation"
+  ],
+  "forbidden_actions": [
+    "logging raw webhook payloads",
+    "hardcoding Stripe keys",
+    "skipping webhook signature verification"
+  ]
+}
