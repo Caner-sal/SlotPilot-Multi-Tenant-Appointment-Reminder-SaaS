@@ -148,6 +148,10 @@ model Organization {
   deletionRequests     DataDeletionRequest[]
   invoiceProfile       InvoiceProfile?
   closedDays           BusinessClosedDay[]
+  whatsAppAutoReplySettings  WhatsAppAutoReplySettings?
+  whatsAppInboundMessages    WhatsAppInboundMessage[]
+  whatsAppAutoReplyLogs      WhatsAppAutoReplyLog[]
+  whatsAppContactPreferences WhatsAppContactPreference[]
 
   @@index([slug])
 }
@@ -563,4 +567,85 @@ model CalendarConnection {
   @@unique([organizationId, provider])
   @@index([organizationId])
   @@index([staffId])
+}
+
+// ─── WhatsApp Auto Booking Link Reply ────────────────────────────────────────
+// provider values:  FAKE | META_CLOUD_API | TWILIO_WHATSAPP
+// replyMode values: ALWAYS | KEYWORD_ONLY | DISABLED
+// status values:    PENDING | SENT | SKIPPED | FAILED
+// (String fields used instead of enums for SQLite compatibility)
+
+model WhatsAppAutoReplySettings {
+  id                 String   @id @default(cuid())
+  organizationId     String   @unique
+  enabled            Boolean  @default(false)
+  provider           String   @default("FAKE")
+  phoneNumberId      String?
+  replyMode          String   @default("ALWAYS")
+  cooldownHours      Int      @default(24)
+  triggerKeywords    String   @default("[]")
+  messageTemplate    String   @default("Merhaba 👋\nRandevu almak için linkimizi kullanabilirsiniz:\n{{bookingUrl}}\n\nBu linkten hizmet seçebilir, uygun saatleri görebilir ve randevunuzu oluşturabilirsiniz.\nİnsan desteği için bu mesaja yazmaya devam edebilirsiniz.")
+  includeBookingLink Boolean  @default(true)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+}
+
+model WhatsAppInboundMessage {
+  id                String   @id @default(cuid())
+  organizationId    String
+  providerMessageId String   @unique
+  fromPhone         String
+  toPhone           String
+  messageText       String?
+  rawPayload        String
+  receivedAt        DateTime @default(now())
+
+  organization  Organization           @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  autoReplyLogs WhatsAppAutoReplyLog[]
+
+  @@index([organizationId])
+  @@index([organizationId, fromPhone])
+  @@index([providerMessageId])
+}
+
+model WhatsAppAutoReplyLog {
+  id               String    @id @default(cuid())
+  inboundMessageId String
+  organizationId   String
+  customerPhone    String
+  replyText        String?
+  bookingUrl       String?
+  status           String    @default("PENDING")
+  errorMessage     String?
+  sentAt           DateTime?
+  createdAt        DateTime  @default(now())
+
+  inboundMessage WhatsAppInboundMessage @relation(fields: [inboundMessageId], references: [id], onDelete: Cascade)
+  organization   Organization           @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([inboundMessageId])
+  @@index([organizationId, customerPhone])
+}
+
+model WhatsAppContactPreference {
+  id                             String    @id @default(cuid())
+  organizationId                 String
+  phone                          String
+  isBlocked                      Boolean   @default(false)
+  lastAutoReplyAt                DateTime?
+  marketingConsent               Boolean   @default(false)
+  appointmentNotificationConsent Boolean   @default(true)
+  createdAt                      DateTime  @default(now())
+  updatedAt                      DateTime  @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, phone])
+  @@index([organizationId])
+  @@index([organizationId, phone])
 }

@@ -10,12 +10,18 @@ async function main() {
   const superadminHash = await bcrypt.hash("superadmin1234", 12);
   await prisma.user.upsert({
     where: { email: "admin@slotpilot.app" },
-    update: {},
+    update: {
+      name: "Platform Yöneticisi",
+      passwordHash: superadminHash,
+      platformRole: "SUPERADMIN",
+      appRole: "OWNER",
+    },
     create: {
-      name: "Platform Admin",
+      name: "Platform Yöneticisi",
       email: "admin@slotpilot.app",
       passwordHash: superadminHash,
       platformRole: "SUPERADMIN",
+      appRole: "OWNER",
     },
   });
 
@@ -23,25 +29,38 @@ async function main() {
   const passwordHash = await bcrypt.hash("demo1234", 12);
   const user = await prisma.user.upsert({
     where: { email: "demo@slotpilot.app" },
-    update: {},
+    update: {
+      name: "Demo İşletme Sahibi",
+      passwordHash,
+      appRole: "OWNER",
+    },
     create: {
-      name: "Demo Owner",
+      name: "Demo İşletme Sahibi",
       email: "demo@slotpilot.app",
       passwordHash,
+      appRole: "OWNER",
     },
   });
 
   // Demo organization
   const org = await prisma.organization.upsert({
     where: { slug: "barber-demo" },
-    update: {},
-    create: {
-      name: "Barber Demo",
-      slug: "barber-demo",
-      description: "A demo barber shop using SlotPilot",
+    update: {
+      name: "Berber Demo",
+      description: "SlotPilot için demo berber işletmesi",
       phone: "+90 555 000 0000",
       email: "hello@barberdemo.com",
-      address: "Istanbul, Turkey",
+      address: "İstanbul, Türkiye",
+      timezone: "Europe/Istanbul",
+      bookingEnabled: true,
+    },
+    create: {
+      name: "Berber Demo",
+      slug: "barber-demo",
+      description: "SlotPilot için demo berber işletmesi",
+      phone: "+90 555 000 0000",
+      email: "hello@barberdemo.com",
+      address: "İstanbul, Türkiye",
       timezone: "Europe/Istanbul",
       bookingEnabled: true,
     },
@@ -50,12 +69,20 @@ async function main() {
   // Default location for demo org
   await prisma.location.upsert({
     where: { id: "loc-barber-main" },
-    update: {},
+    update: {
+      organizationId: org.id,
+      name: "Merkez Şube",
+      address: "İstanbul, Türkiye",
+      phone: "+90 555 000 0000",
+      timezone: "Europe/Istanbul",
+      isDefault: true,
+      isActive: true,
+    },
     create: {
       id: "loc-barber-main",
       organizationId: org.id,
-      name: "Main Branch",
-      address: "Istanbul, Turkey",
+      name: "Merkez Şube",
+      address: "İstanbul, Türkiye",
       phone: "+90 555 000 0000",
       timezone: "Europe/Istanbul",
       isDefault: true,
@@ -66,7 +93,9 @@ async function main() {
   // Organization member
   await prisma.organizationMember.upsert({
     where: { userId_organizationId: { userId: user.id, organizationId: org.id } },
-    update: {},
+    update: {
+      role: "OWNER",
+    },
     create: {
       userId: user.id,
       organizationId: org.id,
@@ -77,7 +106,10 @@ async function main() {
   // Subscription (free plan)
   await prisma.subscription.upsert({
     where: { organizationId: org.id },
-    update: {},
+    update: {
+      plan: SubscriptionPlan.FREE,
+      status: SubscriptionStatus.ACTIVE,
+    },
     create: {
       organizationId: org.id,
       plan: SubscriptionPlan.FREE,
@@ -88,12 +120,20 @@ async function main() {
   // Services
   const haircut = await prisma.service.upsert({
     where: { id: "service-haircut-demo" },
-    update: {},
+    update: {
+      organizationId: org.id,
+      name: "Saç Kesimi",
+      description: "Klasik saç kesimi ve şekillendirme",
+      durationMinutes: 30,
+      priceCents: 35000,
+      currency: "TRY",
+      isActive: true,
+    },
     create: {
       id: "service-haircut-demo",
       organizationId: org.id,
-      name: "Haircut",
-      description: "Classic haircut and styling",
+      name: "Saç Kesimi",
+      description: "Klasik saç kesimi ve şekillendirme",
       durationMinutes: 30,
       priceCents: 35000,
       currency: "TRY",
@@ -103,12 +143,20 @@ async function main() {
 
   const beard = await prisma.service.upsert({
     where: { id: "service-beard-demo" },
-    update: {},
+    update: {
+      organizationId: org.id,
+      name: "Sakal Tıraşı",
+      description: "Sakal kısaltma ve şekillendirme",
+      durationMinutes: 20,
+      priceCents: 20000,
+      currency: "TRY",
+      isActive: true,
+    },
     create: {
       id: "service-beard-demo",
       organizationId: org.id,
-      name: "Beard Trim",
-      description: "Beard trimming and shaping",
+      name: "Sakal Tıraşı",
+      description: "Sakal kısaltma ve şekillendirme",
       durationMinutes: 20,
       priceCents: 20000,
       currency: "TRY",
@@ -118,12 +166,20 @@ async function main() {
 
   const combo = await prisma.service.upsert({
     where: { id: "service-combo-demo" },
-    update: {},
+    update: {
+      organizationId: org.id,
+      name: "Saç + Sakal",
+      description: "Tam bakım paketi",
+      durationMinutes: 45,
+      priceCents: 50000,
+      currency: "TRY",
+      isActive: true,
+    },
     create: {
       id: "service-combo-demo",
       organizationId: org.id,
-      name: "Haircut + Beard",
-      description: "Full grooming package",
+      name: "Saç + Sakal",
+      description: "Tam bakım paketi",
       durationMinutes: 45,
       priceCents: 50000,
       currency: "TRY",
@@ -134,11 +190,17 @@ async function main() {
   // Staff
   const staffAli = await prisma.staff.upsert({
     where: { id: "staff-ali-demo" },
-    update: {},
+    update: {
+      organizationId: org.id,
+      name: "Ali Yılmaz",
+      email: "ali@barberdemo.com",
+      phone: "+90 555 111 1111",
+      isActive: true,
+    },
     create: {
       id: "staff-ali-demo",
       organizationId: org.id,
-      name: "Ali Yilmaz",
+      name: "Ali Yılmaz",
       email: "ali@barberdemo.com",
       phone: "+90 555 111 1111",
       isActive: true,
@@ -149,7 +211,10 @@ async function main() {
   for (const serviceId of [haircut.id, beard.id, combo.id]) {
     await prisma.staffService.upsert({
       where: { staffId_serviceId: { staffId: staffAli.id, serviceId } },
-      update: {},
+      update: {
+        staffId: staffAli.id,
+        serviceId,
+      },
       create: { staffId: staffAli.id, serviceId },
     });
   }
@@ -167,7 +232,14 @@ async function main() {
   for (const day of workDays) {
     await prisma.availabilityRule.upsert({
       where: { staffId_dayOfWeek: { staffId: staffAli.id, dayOfWeek: day } },
-      update: {},
+      update: {
+        organizationId: org.id,
+        staffId: staffAli.id,
+        dayOfWeek: day,
+        startTime: "09:00",
+        endTime: "18:00",
+        isActive: true,
+      },
       create: {
         organizationId: org.id,
         staffId: staffAli.id,
@@ -178,6 +250,21 @@ async function main() {
       },
     });
   }
+
+  // WhatsApp Auto Reply Settings — default for demo org
+  await prisma.whatsAppAutoReplySettings.upsert({
+    where: { organizationId: org.id },
+    update: {},
+    create: {
+      organizationId: org.id,
+      enabled: false,
+      provider: "FAKE",
+      replyMode: "ALWAYS",
+      cooldownHours: 24,
+      triggerKeywords: "[]",
+      includeBookingLink: true,
+    },
+  });
 
   console.log("Seed complete!");
   console.log(`\nDemo credentials:`);
