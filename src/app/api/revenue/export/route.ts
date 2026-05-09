@@ -26,15 +26,37 @@ export async function GET(req: Request) {
     };
   }
 
-  const entries = await db.revenueLedger.findMany({
-    where,
-    orderBy: { recordedAt: "asc" },
-  });
+  const [entries, invoiceProfile] = await Promise.all([
+    db.revenueLedger.findMany({ where, orderBy: { recordedAt: "asc" } }),
+    db.invoiceProfile.findUnique({ where: { organizationId: org.id } }),
+  ]);
+
+  const format = searchParams.get("format") ?? "csv";
+
+  if (format === "json") {
+    return NextResponse.json({
+      data: entries,
+      invoiceProfile: invoiceProfile ?? null,
+      organization: { id: org.id, name: org.name },
+      exportedAt: new Date().toISOString(),
+    });
+  }
+
+  // CSV export with invoice profile columns
+  const invoiceType = invoiceProfile?.invoiceType ?? "";
+  const companyTitle = invoiceProfile?.companyTitle ?? "";
+  const taxOffice = invoiceProfile?.taxOffice ?? "";
+  const taxNumber = invoiceProfile?.taxNumber ?? "";
 
   const lines = [
-    "id,type,amountCents,currency,appointmentId,paymentId,recordedAt",
+    "id,type,amountCents,currency,appointmentId,paymentId,recordedAt,invoiceType,companyTitle,taxOffice,taxNumber",
     ...entries.map((e) =>
-      [e.id, e.type, e.amountCents, e.currency, e.appointmentId ?? "", e.paymentId ?? "", e.recordedAt.toISOString()].join(",")
+      [
+        e.id, e.type, e.amountCents, e.currency,
+        e.appointmentId ?? "", e.paymentId ?? "",
+        e.recordedAt.toISOString(),
+        invoiceType, `"${companyTitle}"`, `"${taxOffice}"`, `"${taxNumber}"`,
+      ].join(",")
     ),
   ];
 

@@ -146,6 +146,7 @@ model Organization {
   accountingConnection AccountingConnection?
   consentLogs          ConsentLog[]
   deletionRequests     DataDeletionRequest[]
+  invoiceProfile       InvoiceProfile?
 
   @@index([slug])
 }
@@ -461,6 +462,25 @@ model InvoiceRecord {
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 
   @@index([organizationId])
+}
+
+model InvoiceProfile {
+  id                 String   @id @default(cuid())
+  organizationId     String   @unique
+  invoiceType        String   @default("INDIVIDUAL")
+  companyTitle       String?
+  taxOffice          String?
+  taxNumber          String?
+  identityNumber     String?
+  invoiceProvince    String?
+  invoiceDistrict    String?
+  invoiceAddressLine String?
+  invoiceEmail       String?
+  invoicePhone       String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 }
 
 model ConsentLog {
