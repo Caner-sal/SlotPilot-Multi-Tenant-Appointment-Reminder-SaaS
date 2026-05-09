@@ -62,20 +62,20 @@ describe("Marketplace API", () => {
 
     expect(mockFindMany).toHaveBeenCalledWith(
       expect.objectContaining({
-        where: expect.objectContaining({ category: "salon" }),
+        where: expect.objectContaining({ category: { contains: "salon" } }),
       })
     );
   });
 
-  it("passes city filter to db query", async () => {
+  it("passes province filter to db query", async () => {
     mockFindMany.mockResolvedValue([]);
 
-    const req = new Request("http://localhost/api/marketplace?city=Istanbul");
+    const req = new Request("http://localhost/api/marketplace?province=istanbul");
     await GET(req);
 
     expect(mockFindMany).toHaveBeenCalledWith(
       expect.objectContaining({
-        where: expect.objectContaining({ city: "Istanbul" }),
+        where: expect.objectContaining({ province: "istanbul" }),
       })
     );
   });

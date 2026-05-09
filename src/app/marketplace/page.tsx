@@ -3,6 +3,8 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { TURKEY_CATEGORIES } from "@/data/turkey-categories";
+import { TURKEY_PROVINCES } from "@/data/turkey-provinces";
 
 interface Business {
   id: string;
@@ -11,6 +13,7 @@ interface Business {
   description: string | null;
   category: string | null;
   city: string | null;
+  province: string | null;
   coverImageUrl: string | null;
   logoUrl: string | null;
   _count: { services: number };
@@ -20,7 +23,7 @@ export default function MarketplacePage() {
   const [businesses, setBusinesses] = useState<Business[]>([]);
   const [q, setQ] = useState("");
   const [category, setCategory] = useState("");
-  const [city, setCity] = useState("");
+  const [province, setProvince] = useState("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -28,14 +31,14 @@ export default function MarketplacePage() {
     const params = new URLSearchParams();
     if (q) params.set("q", q);
     if (category) params.set("category", category);
-    if (city) params.set("city", city);
+    if (province) params.set("province", province);
 
     fetch(`/api/marketplace?${params.toString()}`)
       .then((r) => r.json())
       .then((res) => setBusinesses(res.data ?? []))
       .catch(() => setBusinesses([]))
       .finally(() => setLoading(false));
-  }, [q, category, city]);
+  }, [q, category, province]);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -55,20 +58,26 @@ export default function MarketplacePage() {
             onChange={(e) => setQ(e.target.value)}
             className="border rounded-lg px-3 py-2 text-sm flex-1 min-w-48"
           />
-          <input
-            type="text"
-            placeholder="Kategori (ör. kuaför)"
+          <select
             value={category}
             onChange={(e) => setCategory(e.target.value)}
             className="border rounded-lg px-3 py-2 text-sm w-48"
-          />
-          <input
-            type="text"
-            placeholder="Şehir"
-            value={city}
-            onChange={(e) => setCity(e.target.value)}
-            className="border rounded-lg px-3 py-2 text-sm w-36"
-          />
+          >
+            <option value="">Tüm Kategoriler</option>
+            {TURKEY_CATEGORIES.map((cat) => (
+              <option key={cat.slug} value={cat.nameTR}>{cat.icon} {cat.nameTR}</option>
+            ))}
+          </select>
+          <select
+            value={province}
+            onChange={(e) => setProvince(e.target.value)}
+            className="border rounded-lg px-3 py-2 text-sm w-40"
+          >
+            <option value="">Tüm İller</option>
+            {TURKEY_PROVINCES.map((p) => (
+              <option key={p.slug} value={p.slug}>{p.name}</option>
+            ))}
+          </select>
         </div>
 
         {loading ? (

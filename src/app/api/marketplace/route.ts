@@ -6,6 +6,7 @@ export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const category = searchParams.get("category");
   const city = searchParams.get("city");
+  const province = searchParams.get("province");
   const q = searchParams.get("q");
 
   const orgs = await db.organization.findMany({
@@ -13,8 +14,8 @@ export async function GET(req: Request) {
       marketplaceEnabled: true,
       bookingEnabled: true,
       suspended: false,
-      ...(category ? { category } : {}),
-      ...(city ? { city } : {}),
+      ...(category ? { category: { contains: category } } : {}),
+      ...(province ? { province } : city ? { city: { contains: city } } : {}),
       ...(q ? { name: { contains: q } } : {}),
     },
     select: {
@@ -24,6 +25,7 @@ export async function GET(req: Request) {
       description: true,
       category: true,
       city: true,
+      province: true,
       coverImageUrl: true,
       logoUrl: true,
       phone: true,
