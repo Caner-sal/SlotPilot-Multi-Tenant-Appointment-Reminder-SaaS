@@ -32,7 +32,8 @@ const buildOrg = (overrides = {}) => ({
 
 describe("Marketplace API", () => {
   it("returns organizations with marketplaceEnabled", async () => {
-    mockFindMany.mockResolvedValue([buildOrg()]);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    mockFindMany.mockResolvedValue([buildOrg()] as any);
 
     const req = new Request("http://localhost/api/marketplace");
     const res = await GET(req);

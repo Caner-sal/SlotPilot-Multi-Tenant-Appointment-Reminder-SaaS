@@ -77,7 +77,8 @@ describe("Accounting — RevenueLedger", () => {
     mockFindUnique.mockResolvedValue(null);
 
     let capturedTxFn: ((tx: unknown) => Promise<void>) | null = null;
-    mockTransaction.mockImplementation(async (fn: (tx: unknown) => Promise<void>) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    mockTransaction.mockImplementation(async (fn: any) => {
       capturedTxFn = fn;
       const txMock = {
         payment: { create: vi.fn().mockResolvedValue({ id: "pay1" }) },
