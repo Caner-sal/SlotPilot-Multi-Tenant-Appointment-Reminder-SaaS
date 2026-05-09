@@ -4,6 +4,7 @@ import {
   getExistingAppointmentsForStaff,
   timeToMinutes,
 } from "./availability.service";
+import { isTurkeyHoliday } from "@/data/turkey-holidays";
 
 export interface TimeSlot {
   startTime: Date;
@@ -25,6 +26,16 @@ export async function generateAvailableSlots(params: {
     select: { bookingEnabled: true },
   });
   if (!org?.bookingEnabled) return [];
+
+  // Check Turkey public holidays
+  const dateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+  if (isTurkeyHoliday(dateStr)) return [];
+
+  // Check business-specific closed days
+  const closedDay = await db.businessClosedDay.findUnique({
+    where: { organizationId_date: { organizationId, date: dateStr } },
+  });
+  if (closedDay) return [];
 
   // Validate service belongs to org and is active
   const service = await db.service.findFirst({

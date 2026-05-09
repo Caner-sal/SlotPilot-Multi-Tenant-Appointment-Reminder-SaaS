@@ -9,6 +9,7 @@ const mockDb = db as unknown as {
   staffService: { findUnique: ReturnType<typeof vi.fn> };
   availabilityRule: { findUnique: ReturnType<typeof vi.fn> };
   appointment: { findMany: ReturnType<typeof vi.fn> };
+  businessClosedDay: { findUnique: ReturnType<typeof vi.fn> };
 };
 
 const BASE_PARAMS = {
@@ -37,6 +38,7 @@ beforeEach(() => {
     isActive: true,
   });
   mockDb.appointment.findMany.mockResolvedValue([]);
+  mockDb.businessClosedDay.findUnique.mockResolvedValue(null);
 });
 
 describe("generateAvailableSlots", () => {

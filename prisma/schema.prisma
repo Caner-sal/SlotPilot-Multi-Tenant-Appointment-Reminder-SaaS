@@ -147,6 +147,7 @@ model Organization {
   consentLogs          ConsentLog[]
   deletionRequests     DataDeletionRequest[]
   invoiceProfile       InvoiceProfile?
+  closedDays           BusinessClosedDay[]
 
   @@index([slug])
 }
@@ -461,6 +462,20 @@ model InvoiceRecord {
 
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 
+  @@index([organizationId])
+}
+
+model BusinessClosedDay {
+  id                String   @id @default(cuid())
+  organizationId    String
+  date              String
+  reason            String?
+  isHolidayOverride Boolean  @default(false)
+  createdAt         DateTime @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, date])
   @@index([organizationId])
 }
 
