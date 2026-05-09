@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+﻿import { db } from "@/lib/db";
 import { requireAuth, TenantError } from "@/lib/tenant";
 import { createAuditLog } from "@/services/audit.service";
 import { organizationSchema } from "@/lib/validators";
@@ -20,7 +20,7 @@ export async function GET() {
       return NextResponse.json({ error: err.message }, { status: 403 });
     }
     console.error(err);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json({ error: "Sunucu hatası" }, { status: 500 });
   }
 }
 
@@ -35,7 +35,7 @@ export async function PATCH(req: Request) {
         where: { slug: parsed.slug, id: { not: org.id } },
       });
       if (slugTaken) {
-        return NextResponse.json({ error: "This slug is already taken" }, { status: 409 });
+        return NextResponse.json({ error: "Bu kısa ad zaten kullanımda" }, { status: 409 });
       }
     }
 
@@ -62,6 +62,7 @@ export async function PATCH(req: Request) {
       return NextResponse.json({ error: err.issues }, { status: 400 });
     }
     console.error(err);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json({ error: "Sunucu hatası" }, { status: 500 });
   }
 }
+

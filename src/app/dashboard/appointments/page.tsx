@@ -39,6 +39,14 @@ const STATUS_COLORS: Record<string, string> = {
 
 const STATUSES = ["PENDING", "CONFIRMED", "COMPLETED", "CANCELLED", "NO_SHOW"];
 
+const STATUS_LABELS: Record<string, string> = {
+  PENDING: "Beklemede",
+  CONFIRMED: "Onaylandı",
+  COMPLETED: "Tamamlandı",
+  CANCELLED: "İptal",
+  NO_SHOW: "Gelmedi",
+};
+
 export default function AppointmentsPage() {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [meta, setMeta] = useState<Meta | null>(null);
@@ -150,7 +158,7 @@ export default function AppointmentsPage() {
             <option value="">Tüm Durumlar</option>
             {STATUSES.map((s) => (
               <option key={s} value={s}>
-                {s.charAt(0) + s.slice(1).toLowerCase().replace("_", "-")}
+                {STATUS_LABELS[s] ?? s}
               </option>
             ))}
           </select>
@@ -220,9 +228,10 @@ export default function AppointmentsPage() {
                   </td>
                   <td className="px-5 py-3.5 text-gray-700">{appt.staff.name}</td>
                   <td className="px-5 py-3.5 text-gray-700">
-                    {new Date(appt.startTime).toLocaleDateString()}{" "}
+                    {new Date(appt.startTime).toLocaleDateString("tr-TR", { timeZone: "Europe/Istanbul" })}{" "}
                     <span className="text-gray-500">
-                      {new Date(appt.startTime).toLocaleTimeString([], {
+                      {new Date(appt.startTime).toLocaleTimeString("tr-TR", {
+                        timeZone: "Europe/Istanbul",
                         hour: "2-digit",
                         minute: "2-digit",
                       })}
@@ -234,7 +243,7 @@ export default function AppointmentsPage() {
                         STATUS_COLORS[appt.status] ?? "bg-gray-100 text-gray-600"
                       }`}
                     >
-                      {appt.status}
+                      {STATUS_LABELS[appt.status] ?? appt.status}
                     </span>
                   </td>
                   <td className="px-5 py-3.5 text-gray-500 max-w-[160px]">
@@ -248,7 +257,7 @@ export default function AppointmentsPage() {
                     >
                       {STATUSES.map((s) => (
                         <option key={s} value={s}>
-                          {s}
+                          {STATUS_LABELS[s] ?? s}
                         </option>
                       ))}
                     </select>

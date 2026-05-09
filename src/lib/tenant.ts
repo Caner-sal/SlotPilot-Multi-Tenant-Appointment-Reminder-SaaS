@@ -12,7 +12,7 @@ export class TenantError extends Error {
 export async function getCurrentUser() {
   const session = await auth();
   if (!session?.user?.id) {
-    throw new TenantError("Not authenticated");
+    throw new TenantError("Oturum doğrulanamadı");
   }
   return session.user;
 }
@@ -36,11 +36,11 @@ export async function assertMembership(
   });
 
   if (!membership) {
-    throw new TenantError("Access denied: not a member of this organization");
+    throw new TenantError("Erişim reddedildi: bu işletmenin üyesi değilsiniz");
   }
 
   if (allowedRoles && !allowedRoles.includes(membership.role)) {
-    throw new TenantError("Access denied: insufficient role");
+    throw new TenantError("Erişim reddedildi: yetki seviyesi yetersiz");
   }
 
   return membership;
@@ -49,7 +49,7 @@ export async function assertMembership(
 export async function requireOrganization(userId: string) {
   const org = await getOrganizationForUser(userId);
   if (!org) {
-    throw new TenantError("No organization found for this user");
+    throw new TenantError("Bu kullanıcı için işletme bulunamadı");
   }
   return org;
 }

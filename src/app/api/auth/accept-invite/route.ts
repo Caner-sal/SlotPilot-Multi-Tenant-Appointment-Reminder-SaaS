@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+﻿import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import bcrypt from "bcryptjs";
@@ -23,19 +23,19 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Invalid invite token" }, { status: 400 });
     }
     if (invite.usedAt) {
-      return NextResponse.json({ error: "Invite already used" }, { status: 400 });
+      return NextResponse.json({ error: "Davet daha önce kullanılmış" }, { status: 400 });
     }
     if (invite.expiresAt < new Date()) {
-      return NextResponse.json({ error: "Invite has expired" }, { status: 400 });
+      return NextResponse.json({ error: "Davetin süresi dolmuş" }, { status: 400 });
     }
     if (invite.staff.userId) {
-      return NextResponse.json({ error: "Staff account already linked" }, { status: 400 });
+      return NextResponse.json({ error: "Çalışan hesabı zaten bağlanmış" }, { status: 400 });
     }
 
     // Check if user with this email already exists
     const existingUser = await db.user.findUnique({ where: { email: invite.email } });
     if (existingUser) {
-      return NextResponse.json({ error: "An account with this email already exists" }, { status: 409 });
+      return NextResponse.json({ error: "Bu e-posta ile kayıtlı bir hesap zaten var" }, { status: 409 });
     }
 
     const passwordHash = await bcrypt.hash(password, 12);
@@ -71,7 +71,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: err.issues }, { status: 400 });
     }
     console.error(err);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json({ error: "Sunucu hatası" }, { status: 500 });
   }
 }
 
@@ -80,7 +80,7 @@ export async function GET(req: Request) {
   const token = searchParams.get("token");
 
   if (!token) {
-    return NextResponse.json({ error: "Token required" }, { status: 400 });
+    return NextResponse.json({ error: "Token gerekli" }, { status: 400 });
   }
 
   const invite = await db.staffInvite.findUnique({
@@ -89,8 +89,9 @@ export async function GET(req: Request) {
   });
 
   if (!invite || invite.usedAt || invite.expiresAt < new Date()) {
-    return NextResponse.json({ error: "Invalid or expired invite" }, { status: 400 });
+    return NextResponse.json({ error: "Geçersiz veya süresi dolmuş davet" }, { status: 400 });
   }
 
   return NextResponse.json({ data: { email: invite.email, expiresAt: invite.expiresAt } });
 }
+

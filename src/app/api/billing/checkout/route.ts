@@ -1,4 +1,4 @@
-import { requireAuth, TenantError } from "@/lib/tenant";
+﻿import { requireAuth, TenantError } from "@/lib/tenant";
 import { stripe } from "@/lib/stripe";
 import { NextResponse } from "next/server";
 import { z } from "zod";
@@ -58,6 +58,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: err.issues }, { status: 400 });
     }
     console.error(err);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json({ error: "Sunucu hatası" }, { status: 500 });
   }
 }
+

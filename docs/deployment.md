@@ -28,7 +28,7 @@ npm run db:seed
 npm run dev
 ```
 
-### Demo credentials (after seed)
+### Demo giriş bilgileri (seed sonrası)
 - Email: `demo@slotpilot.app`
 - Password: `demo1234`
 - Public booking: `http://localhost:3000/booking/barber-demo`
@@ -79,7 +79,7 @@ Set `CALENDAR_PROVIDER=GOOGLE` and fill in:
 ### AI Booking Assistant (Anthropic)
 Set `AI_PROVIDER=ANTHROPIC` and fill in:
 - `ANTHROPIC_API_KEY` from [console.anthropic.com](https://console.anthropic.com)
-- Enable per-organization in dashboard → Settings → AI Chatbot.
+- Enable per-organization in dashboard -> Settings -> AI Chatbot.
 
 ## Production Checklist
 

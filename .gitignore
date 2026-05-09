@@ -52,3 +52,5 @@ prisma/dev.db-journal
 
 # MCP config — never commit real config, only .mcp.json.example
 .mcp.json
+*.log
+next-*.log

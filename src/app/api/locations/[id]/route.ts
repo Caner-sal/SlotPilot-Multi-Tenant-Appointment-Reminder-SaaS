@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+﻿import { db } from "@/lib/db";
 import { requireAuth, TenantError } from "@/lib/tenant";
 import { NextResponse } from "next/server";
 import { z } from "zod";
@@ -26,7 +26,7 @@ export async function PATCH(
       where: { id, organizationId: org.id },
     });
     if (!existing) {
-      return NextResponse.json({ error: "Location not found" }, { status: 404 });
+      return NextResponse.json({ error: "Şube bulunamadı" }, { status: 404 });
     }
 
     if (data.isDefault) {
@@ -46,7 +46,7 @@ export async function PATCH(
       return NextResponse.json({ error: err.issues }, { status: 400 });
     }
     console.error(err);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json({ error: "Sunucu hatası" }, { status: 500 });
   }
 }
 
@@ -62,7 +62,7 @@ export async function DELETE(
       where: { id, organizationId: org.id },
     });
     if (!existing) {
-      return NextResponse.json({ error: "Location not found" }, { status: 404 });
+      return NextResponse.json({ error: "Şube bulunamadı" }, { status: 404 });
     }
     if (existing.isDefault) {
       return NextResponse.json({ error: "Cannot delete the default location" }, { status: 400 });
@@ -75,6 +75,7 @@ export async function DELETE(
       return NextResponse.json({ error: err.message }, { status: 403 });
     }
     console.error(err);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json({ error: "Sunucu hatası" }, { status: 500 });
   }
 }
+

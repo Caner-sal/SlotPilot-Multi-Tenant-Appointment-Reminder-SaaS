@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+﻿import { db } from "@/lib/db";
 import { canCreateAppointment } from "@/lib/billing";
 import { createAuditLog } from "@/services/audit.service";
 import { createBooking } from "@/services/booking.service";
@@ -20,7 +20,7 @@ export async function POST(
     });
 
     if (!org) {
-      return NextResponse.json({ error: "Business not found" }, { status: 404 });
+      return NextResponse.json({ error: "İşletme bulunamadı" }, { status: 404 });
     }
 
     if (!org.bookingEnabled) {
@@ -87,6 +87,7 @@ export async function POST(
       return NextResponse.json({ error: err.message }, { status: 409 });
     }
     console.error(err);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json({ error: "Sunucu hatası" }, { status: 500 });
   }
 }
+

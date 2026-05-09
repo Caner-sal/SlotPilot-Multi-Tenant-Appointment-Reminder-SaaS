@@ -27,23 +27,23 @@ export default async function AdminAuditLogsPage({
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Audit Logs ({total})</h1>
+      <h1 className="text-2xl font-bold text-gray-900 mb-6">İşlem Kayıtları ({total})</h1>
       <div className="bg-white rounded-lg border overflow-hidden">
         <table className="w-full text-sm">
           <thead className="bg-gray-50 border-b">
             <tr>
-              <th className="text-left px-4 py-3 font-medium text-gray-600">Time</th>
-              <th className="text-left px-4 py-3 font-medium text-gray-600">Action</th>
-              <th className="text-left px-4 py-3 font-medium text-gray-600">Organization</th>
-              <th className="text-left px-4 py-3 font-medium text-gray-600">Actor</th>
-              <th className="text-left px-4 py-3 font-medium text-gray-600">Entity</th>
+              <th className="text-left px-4 py-3 font-medium text-gray-600">Zaman</th>
+              <th className="text-left px-4 py-3 font-medium text-gray-600">Aksiyon</th>
+              <th className="text-left px-4 py-3 font-medium text-gray-600">İşletme</th>
+              <th className="text-left px-4 py-3 font-medium text-gray-600">Kullanıcı</th>
+              <th className="text-left px-4 py-3 font-medium text-gray-600">Varlık</th>
             </tr>
           </thead>
           <tbody className="divide-y">
             {logs.map((log) => (
               <tr key={log.id} className="hover:bg-gray-50">
                 <td className="px-4 py-3 text-gray-500 whitespace-nowrap">
-                  {new Date(log.createdAt).toLocaleString()}
+                  {new Date(log.createdAt).toLocaleString("tr-TR", { timeZone: "Europe/Istanbul" })}
                 </td>
                 <td className="px-4 py-3">
                   <span className="font-mono text-xs bg-gray-100 px-2 py-0.5 rounded">{log.action}</span>
@@ -57,18 +57,20 @@ export default async function AdminAuditLogsPage({
             ))}
           </tbody>
         </table>
-        {logs.length === 0 && (
-          <div className="text-center py-8 text-gray-500">No audit logs yet.</div>
-        )}
+        {logs.length === 0 && <div className="text-center py-8 text-gray-500">Henüz işlem kaydı yok.</div>}
       </div>
       {totalPages > 1 && (
         <div className="flex gap-2 mt-4 justify-end text-sm">
           {page > 1 && (
-            <a href={`?page=${page - 1}`} className="px-3 py-1 border rounded hover:bg-gray-50">Previous</a>
+            <a href={`?page=${page - 1}`} className="px-3 py-1 border rounded hover:bg-gray-50">
+              Önceki
+            </a>
           )}
-          <span className="px-3 py-1 text-gray-500">Page {page} of {totalPages}</span>
+          <span className="px-3 py-1 text-gray-500">Sayfa {page} / {totalPages}</span>
           {page < totalPages && (
-            <a href={`?page=${page + 1}`} className="px-3 py-1 border rounded hover:bg-gray-50">Next</a>
+            <a href={`?page=${page + 1}`} className="px-3 py-1 border rounded hover:bg-gray-50">
+              Sonraki
+            </a>
           )}
         </div>
       )}

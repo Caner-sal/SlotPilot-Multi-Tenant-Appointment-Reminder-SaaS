@@ -1,5 +1,7 @@
+export type TurkeyPlanId = "FREE" | "STARTER" | "PRO" | "ENTERPRISE";
+
 export interface TurkeyPlan {
-  id: string;
+  id: TurkeyPlanId;
   nameTR: string;
   priceCentsMonthly: number | null;
   maxStaff: number;
@@ -8,7 +10,7 @@ export interface TurkeyPlan {
   stripePriceIdEnvVar: string | null;
 }
 
-export const TURKEY_PLANS: Record<string, TurkeyPlan> = {
+export const TURKEY_PLANS: Record<TurkeyPlanId, TurkeyPlan> = {
   FREE: {
     id: "FREE",
     nameTR: "Ücretsiz",
@@ -19,7 +21,7 @@ export const TURKEY_PLANS: Record<string, TurkeyPlan> = {
       "1 çalışan",
       "Ayda 20 randevu",
       "Online rezervasyon sayfası",
-      "E-posta hatırlatmaları",
+      "Temel kontrol paneli",
     ],
     stripePriceIdEnvVar: null,
   },
@@ -32,8 +34,9 @@ export const TURKEY_PLANS: Record<string, TurkeyPlan> = {
     features: [
       "3 çalışan",
       "Ayda 300 randevu",
+      "E-posta hatırlatmaları",
       "SMS hatırlatmaları",
-      "Marketplace listesi",
+      "Marketplace görünürlüğü",
       "Analitik paneli",
     ],
     stripePriceIdEnvVar: "STRIPE_TR_STARTER_PRICE_ID",
@@ -72,15 +75,21 @@ export const TURKEY_PLANS: Record<string, TurkeyPlan> = {
 };
 
 export function getPlanTR(planId: string): TurkeyPlan {
-  return TURKEY_PLANS[planId] ?? TURKEY_PLANS.FREE;
+  if (planId in TURKEY_PLANS) {
+    return TURKEY_PLANS[planId as TurkeyPlanId];
+  }
+  return TURKEY_PLANS.FREE;
 }
 
 export function formatPlanPriceTR(plan: TurkeyPlan): string {
   if (plan.priceCentsMonthly === null) return "İletişime Geçin";
   if (plan.priceCentsMonthly === 0) return "Ücretsiz";
-  return new Intl.NumberFormat("tr-TR", {
-    style: "currency",
-    currency: "TRY",
-    maximumFractionDigits: 0,
-  }).format(plan.priceCentsMonthly / 100) + "/ay";
+
+  return (
+    new Intl.NumberFormat("tr-TR", {
+      style: "currency",
+      currency: "TRY",
+      maximumFractionDigits: 0,
+    }).format(plan.priceCentsMonthly / 100) + "/ay"
+  );
 }

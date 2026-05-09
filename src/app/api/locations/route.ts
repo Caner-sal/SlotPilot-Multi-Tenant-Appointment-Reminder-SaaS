@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+﻿import { db } from "@/lib/db";
 import { requireAuth, TenantError } from "@/lib/tenant";
 import { NextResponse } from "next/server";
 import { z } from "zod";
@@ -27,7 +27,7 @@ export async function GET() {
       return NextResponse.json({ error: err.message }, { status: 403 });
     }
     console.error(err);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json({ error: "Sunucu hatası" }, { status: 500 });
   }
 }
 
@@ -57,6 +57,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: err.issues }, { status: 400 });
     }
     console.error(err);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json({ error: "Sunucu hatası" }, { status: 500 });
   }
 }
+

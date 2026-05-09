@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+﻿import { db } from "@/lib/db";
 import { requireAuth, TenantError } from "@/lib/tenant";
 import { NextResponse } from "next/server";
 import { z } from "zod";
@@ -19,7 +19,7 @@ export async function POST(req: Request) {
       where: { id: staffId, organizationId: org.id },
     });
     if (!staff) {
-      return NextResponse.json({ error: "Staff not found" }, { status: 404 });
+      return NextResponse.json({ error: "Çalışan bulunamadı" }, { status: 404 });
     }
 
     // Mark any previous unused invites as used (invalidate old invites)
@@ -38,7 +38,7 @@ export async function POST(req: Request) {
     const inviteUrl = `${process.env.NEXTAUTH_URL ?? "http://localhost:3000"}/staff/accept-invite?token=${token}`;
 
     // In production: send via email. For now: return in response (and log)
-    console.log(`[STAFF INVITE] ${email} → ${inviteUrl}`);
+    console.log(`[STAFF INVITE] ${email} -> ${inviteUrl}`);
 
     return NextResponse.json({ data: { id: invite.id, email, inviteUrl, expiresAt } }, { status: 201 });
   } catch (err) {
@@ -49,6 +49,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: err.issues }, { status: 400 });
     }
     console.error(err);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json({ error: "Sunucu hatası" }, { status: 500 });
   }
 }
+

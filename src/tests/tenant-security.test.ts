@@ -27,7 +27,7 @@ describe("assertMembership", () => {
     mockDb.organizationMember.findUnique.mockResolvedValue(null);
 
     await expect(assertMembership("user-A", "org-B")).rejects.toThrow(TenantError);
-    await expect(assertMembership("user-A", "org-B")).rejects.toThrow("Access denied");
+    await expect(assertMembership("user-A", "org-B")).rejects.toThrow(/(Erişim reddedildi|Access denied)/);
   });
 
   it("returns membership when user is a valid member", async () => {
@@ -51,7 +51,7 @@ describe("assertMembership", () => {
     });
 
     await expect(assertMembership("user-A", "org-A", ["OWNER"])).rejects.toThrow(TenantError);
-    await expect(assertMembership("user-A", "org-A", ["OWNER"])).rejects.toThrow("insufficient role");
+    await expect(assertMembership("user-A", "org-A", ["OWNER"])).rejects.toThrow(/(yetki seviyesi yetersiz|insufficient role)/i);
   });
 });
 
@@ -78,7 +78,7 @@ describe("requireOrganization", () => {
     mockDb.organizationMember.findFirst.mockResolvedValue(null);
 
     await expect(requireOrganization("user-no-org")).rejects.toThrow(TenantError);
-    await expect(requireOrganization("user-no-org")).rejects.toThrow("No organization found");
+    await expect(requireOrganization("user-no-org")).rejects.toThrow(/(işletme bulunamadı|No organization found)/i);
   });
 });
 

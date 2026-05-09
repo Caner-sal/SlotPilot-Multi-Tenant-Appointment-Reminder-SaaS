@@ -12,11 +12,11 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     <div className="min-h-screen bg-gray-50">
       <header className="bg-gray-900 text-white px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-6">
-          <span className="font-bold text-lg">SlotPilot Admin</span>
+          <span className="font-bold text-lg">SlotPilot Yönetim</span>
           <nav className="flex gap-4 text-sm">
-            <Link href="/admin" className="hover:text-gray-300">Overview</Link>
-            <Link href="/admin/organizations" className="hover:text-gray-300">Organizations</Link>
-            <Link href="/admin/audit-logs" className="hover:text-gray-300">Audit Logs</Link>
+            <Link href="/admin" className="hover:text-gray-300">Genel Bakış</Link>
+            <Link href="/admin/organizations" className="hover:text-gray-300">İşletmeler</Link>
+            <Link href="/admin/audit-logs" className="hover:text-gray-300">İşlem Kayıtları</Link>
           </nav>
         </div>
         <div className="text-sm text-gray-400">{session.user.email}</div>

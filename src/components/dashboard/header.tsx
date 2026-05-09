@@ -12,18 +12,19 @@ interface Organization {
 
 function getPageTitle(pathname: string): string {
   const segments = pathname.split("/").filter(Boolean);
-  if (segments.length === 1 && segments[0] === "dashboard") return "Overview";
+  if (segments.length === 1 && segments[0] === "dashboard") return "Genel Bakış";
   const last = segments[segments.length - 1];
   const titles: Record<string, string> = {
-    appointments: "Appointments",
-    services: "Services",
-    staff: "Staff",
-    availability: "Availability",
-    analytics: "Analytics",
-    billing: "Billing",
-    reminders: "Reminders",
-    "audit-logs": "Audit Logs",
-    settings: "Settings",
+    appointments: "Randevular",
+    services: "Hizmetler",
+    staff: "Çalışanlar",
+    availability: "Müsaitlik",
+    analytics: "Analitik",
+    billing: "Abonelik",
+    reminders: "Hatırlatmalar",
+    "audit-logs": "İşlem Kayıtları",
+    settings: "Ayarlar",
+    locations: "Şubeler",
   };
   return titles[last] ?? last.charAt(0).toUpperCase() + last.slice(1);
 }

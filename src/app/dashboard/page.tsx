@@ -192,7 +192,7 @@ export default async function DashboardPage() {
                     </span>
                     <span className="text-gray-400 ml-1">· {log.entityType}</span>
                     <p className="text-gray-400 text-xs">
-                      {new Date(log.createdAt).toLocaleString()}
+                      {new Date(log.createdAt).toLocaleString("tr-TR", { timeZone: "Europe/Istanbul" })}
                     </p>
                   </div>
                 </div>

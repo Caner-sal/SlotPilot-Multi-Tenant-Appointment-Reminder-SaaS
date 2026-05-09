@@ -1,6 +1,21 @@
 import { db } from "@/lib/db";
 import Link from "next/link";
 
+function formatPlan(plan: string | undefined): string {
+  switch (plan) {
+    case "FREE":
+      return "ÜCRETSİZ";
+    case "STARTER":
+      return "BAŞLANGIÇ";
+    case "PRO":
+      return "PRO";
+    case "ENTERPRISE":
+      return "KURUMSAL";
+    default:
+      return plan ?? "ÜCRETSİZ";
+  }
+}
+
 export default async function AdminOrganizationsPage() {
   const organizations = await db.organization.findMany({
     select: {
@@ -19,17 +34,17 @@ export default async function AdminOrganizationsPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Organizations ({organizations.length})</h1>
+      <h1 className="text-2xl font-bold text-gray-900 mb-6">İşletmeler ({organizations.length})</h1>
       <div className="bg-white rounded-lg border overflow-hidden">
         <table className="w-full text-sm">
           <thead className="bg-gray-50 border-b">
             <tr>
-              <th className="text-left px-4 py-3 font-medium text-gray-600">Organization</th>
+              <th className="text-left px-4 py-3 font-medium text-gray-600">İşletme</th>
               <th className="text-left px-4 py-3 font-medium text-gray-600">Plan</th>
-              <th className="text-left px-4 py-3 font-medium text-gray-600">Appointments</th>
-              <th className="text-left px-4 py-3 font-medium text-gray-600">Staff</th>
-              <th className="text-left px-4 py-3 font-medium text-gray-600">Status</th>
-              <th className="text-left px-4 py-3 font-medium text-gray-600">Actions</th>
+              <th className="text-left px-4 py-3 font-medium text-gray-600">Randevu</th>
+              <th className="text-left px-4 py-3 font-medium text-gray-600">Çalışan</th>
+              <th className="text-left px-4 py-3 font-medium text-gray-600">Durum</th>
+              <th className="text-left px-4 py-3 font-medium text-gray-600">İşlemler</th>
             </tr>
           </thead>
           <tbody className="divide-y">
@@ -40,22 +55,22 @@ export default async function AdminOrganizationsPage() {
                   <div className="text-gray-500 text-xs">{org.slug}</div>
                 </td>
                 <td className="px-4 py-3">
-                  <span className="font-medium">{org.subscription?.plan ?? "FREE"}</span>
+                  <span className="font-medium">{formatPlan(org.subscription?.plan)}</span>
                 </td>
                 <td className="px-4 py-3">{org._count.appointments}</td>
                 <td className="px-4 py-3">{org._count.staff}</td>
                 <td className="px-4 py-3">
                   {org.suspended ? (
-                    <span className="px-2 py-1 bg-red-100 text-red-700 rounded text-xs font-medium">Suspended</span>
+                    <span className="px-2 py-1 bg-red-100 text-red-700 rounded text-xs font-medium">Askıda</span>
                   ) : org.bookingEnabled ? (
-                    <span className="px-2 py-1 bg-green-100 text-green-700 rounded text-xs font-medium">Active</span>
+                    <span className="px-2 py-1 bg-green-100 text-green-700 rounded text-xs font-medium">Aktif</span>
                   ) : (
-                    <span className="px-2 py-1 bg-yellow-100 text-yellow-700 rounded text-xs font-medium">Booking Off</span>
+                    <span className="px-2 py-1 bg-yellow-100 text-yellow-700 rounded text-xs font-medium">Rezervasyon Kapalı</span>
                   )}
                 </td>
                 <td className="px-4 py-3">
                   <Link href={`/admin/organizations/${org.id}`} className="text-blue-600 hover:underline text-xs">
-                    View
+                    Görüntüle
                   </Link>
                 </td>
               </tr>
@@ -63,7 +78,7 @@ export default async function AdminOrganizationsPage() {
           </tbody>
         </table>
         {organizations.length === 0 && (
-          <div className="text-center py-8 text-gray-500">No organizations yet.</div>
+          <div className="text-center py-8 text-gray-500">Henüz işletme yok.</div>
         )}
       </div>
     </div>

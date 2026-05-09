@@ -1,4 +1,4 @@
-import { requireAuth, TenantError } from "@/lib/tenant";
+﻿import { requireAuth, TenantError } from "@/lib/tenant";
 import { processPendingReminders } from "@/services/reminder.service";
 import { NextResponse } from "next/server";
 
@@ -21,6 +21,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: err.message }, { status: 403 });
     }
     console.error(err);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json({ error: "Sunucu hatası" }, { status: 500 });
   }
 }
+

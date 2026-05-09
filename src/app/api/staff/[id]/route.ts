@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+﻿import { db } from "@/lib/db";
 import { requireAuth, TenantError } from "@/lib/tenant";
 import { createAuditLog } from "@/services/audit.service";
 import { staffSchema } from "@/lib/validators";
@@ -19,7 +19,7 @@ export async function PATCH(
       where: { id, organizationId: org.id },
     });
     if (!existing) {
-      return NextResponse.json({ error: "Staff member not found" }, { status: 404 });
+      return NextResponse.json({ error: "Çalışan bulunamadı" }, { status: 404 });
     }
 
     const { serviceIds, ...staffData } = parsed;
@@ -60,7 +60,7 @@ export async function PATCH(
       return NextResponse.json({ error: err.issues }, { status: 400 });
     }
     console.error(err);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json({ error: "Sunucu hatası" }, { status: 500 });
   }
 }
 
@@ -76,7 +76,7 @@ export async function DELETE(
       where: { id, organizationId: org.id },
     });
     if (!existing) {
-      return NextResponse.json({ error: "Staff member not found" }, { status: 404 });
+      return NextResponse.json({ error: "Çalışan bulunamadı" }, { status: 404 });
     }
 
     const updated = await db.staff.update({
@@ -99,6 +99,7 @@ export async function DELETE(
       return NextResponse.json({ error: err.message }, { status: 403 });
     }
     console.error(err);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json({ error: "Sunucu hatası" }, { status: 500 });
   }
 }
+

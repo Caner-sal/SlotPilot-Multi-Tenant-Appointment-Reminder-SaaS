@@ -136,6 +136,6 @@ describe("Accept invite", () => {
     const res = await postAcceptInvite(req);
     expect(res.status).toBe(400);
     const body = await res.json();
-    expect(body.error).toContain("expired");
+    expect(body.error).toMatch(/(süresi dolmuş|expired)/i);
   });
 });

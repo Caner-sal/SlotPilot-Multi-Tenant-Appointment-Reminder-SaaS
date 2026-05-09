@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+﻿import { db } from "@/lib/db";
 import { requireAuth, TenantError } from "@/lib/tenant";
 import { availabilitySchema } from "@/lib/validators";
 import { NextResponse } from "next/server";
@@ -24,7 +24,7 @@ export async function GET(req: Request) {
       return NextResponse.json({ error: err.message }, { status: 403 });
     }
     console.error(err);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json({ error: "Sunucu hatası" }, { status: 500 });
   }
 }
 
@@ -38,7 +38,7 @@ export async function POST(req: Request) {
       where: { id: parsed.staffId, organizationId: org.id },
     });
     if (!staffBelongsToOrg) {
-      return NextResponse.json({ error: "Staff member not found" }, { status: 404 });
+      return NextResponse.json({ error: "Çalışan bulunamadı" }, { status: 404 });
     }
 
     const [startH, startM] = parsed.startTime.split(":").map(Number);
@@ -81,6 +81,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: err.issues }, { status: 400 });
     }
     console.error(err);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json({ error: "Sunucu hatası" }, { status: 500 });
   }
 }
+

@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { Suspense } from "react";
+import { TURKEY_PLANS, formatPlanPriceTR, getPlanTR, type TurkeyPlanId } from "@/config/pricing.tr";
 
 interface PlanLimits {
   maxStaff: number;
@@ -12,54 +12,26 @@ interface PlanLimits {
 }
 
 interface SubscriptionData {
-  plan: string;
+  plan: TurkeyPlanId;
   limits: PlanLimits;
   subscription: { status: string } | null;
 }
 
-const PLAN_FEATURES: Record<string, { label: string; features: string[]; price: string; highlight: boolean }> = {
-  FREE: {
-    label: "Ücretsiz",
-    price: "₺0/ay",
-    highlight: false,
-    features: ["1 Çalışan", "Ayda 20 randevu", "Genel rezervasyon sayfası", "Temel kontrol paneli"],
-  },
-  STARTER: {
-    label: "Başlangıç",
-    price: "₺40/ay",
-    highlight: true,
-    features: [
-      "3 Çalışan",
-      "Ayda 300 randevu",
-      "E-posta hatırlatmaları",
-      "Analitik kontrol paneli",
-      "Ücretsiz plan özellikleri",
-    ],
-  },
-  PRO: {
-    label: "Pro",
-    price: "₺249/ay",
-    highlight: false,
-    features: [
-      "Sınırsız çalışan",
-      "Sınırsız randevu",
-      "Gelişmiş analitik",
-      "Öncelikli destek",
-      "Başlangıç plan özellikleri",
-    ],
-  },
-};
-
-const PLAN_BADGE_COLORS: Record<string, string> = {
+const PLAN_BADGE_COLORS: Record<TurkeyPlanId, string> = {
   FREE: "bg-gray-100 text-gray-600",
   STARTER: "bg-blue-100 text-blue-700",
   PRO: "bg-purple-100 text-purple-700",
+  ENTERPRISE: "bg-slate-100 text-slate-700",
 };
+
+function isUpgradablePlan(planId: TurkeyPlanId): planId is "STARTER" | "PRO" {
+  return planId === "STARTER" || planId === "PRO";
+}
 
 function BillingContent() {
   const [data, setData] = useState<SubscriptionData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [upgrading, setUpgrading] = useState<string | null>(null);
+  const [upgrading, setUpgrading] = useState<"STARTER" | "PRO" | null>(null);
   const [demoMessage, setDemoMessage] = useState("");
   const searchParams = useSearchParams();
 
@@ -86,81 +58,89 @@ function BillingContent() {
       if (json.data?.url) {
         window.location.href = json.data.url;
       } else if (json.data?.mode === "test") {
-        setDemoMessage(json.data.message ?? "Demo modu — Stripe yapılandırılmamış.");
+        setDemoMessage(json.data.message ?? "Demo modu: Stripe yapılandırılmamış.");
       }
     } finally {
       setUpgrading(null);
     }
   }
 
+  const planCards = useMemo(() => {
+    return (["FREE", "STARTER", "PRO"] as const).map((id) => {
+      const plan = TURKEY_PLANS[id];
+      return {
+        id,
+        label: plan.nameTR,
+        price: id === "FREE" ? "₺0/ay" : formatPlanPriceTR(plan),
+        highlight: id === "STARTER",
+        features: plan.features,
+      };
+    });
+  }, []);
+
   if (loading) {
     return <div className="p-10 text-center text-gray-400">Abonelik bilgileri yükleniyor...</div>;
   }
 
-  const currentPlan = data?.plan ?? "FREE";
+  const currentPlan: TurkeyPlanId = data?.plan ?? "FREE";
+  const currentPlanInfo = getPlanTR(currentPlan);
   const limits = data?.limits;
 
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-gray-900">Abonelik</h1>
-        <p className="text-sm text-gray-500 mt-1">Abonelik planınızı yönetin.</p>
+        <p className="mt-1 text-sm text-gray-500">Abonelik planınızı yönetin.</p>
       </div>
 
       {success && (
-        <div className="bg-green-50 border border-green-200 text-green-700 text-sm rounded-lg px-4 py-3">
-          Aboneliğiniz başarıyla güncellendi. Teşekkürler!
+        <div className="rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
+          Aboneliğiniz başarıyla güncellendi.
         </div>
       )}
 
       {cancelled && (
-        <div className="bg-yellow-50 border border-yellow-200 text-yellow-700 text-sm rounded-lg px-4 py-3">
+        <div className="rounded-lg border border-yellow-200 bg-yellow-50 px-4 py-3 text-sm text-yellow-700">
           Ödeme iptal edildi. Planınız değişmedi.
         </div>
       )}
 
       {demoMessage && (
-        <div className="bg-amber-50 border border-amber-200 text-amber-700 text-sm rounded-lg px-4 py-3">
+        <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700">
           <strong>Demo Modu:</strong> {demoMessage}
         </div>
       )}
 
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-        <div className="flex items-center justify-between mb-4">
+      <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+        <div className="mb-4 flex items-center justify-between">
           <div>
-            <p className="text-xs text-gray-400 uppercase tracking-wider font-semibold mb-1">
-              Mevcut Plan
-            </p>
+            <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-gray-400">Mevcut Plan</p>
             <div className="flex items-center gap-3">
-              <h2 className="text-2xl font-bold text-gray-900">{PLAN_FEATURES[currentPlan]?.label}</h2>
-              <span
-                className={`px-2.5 py-0.5 rounded-full text-xs font-medium ${PLAN_BADGE_COLORS[currentPlan] ?? "bg-gray-100 text-gray-600"}`}
-              >
+              <h2 className="text-2xl font-bold text-gray-900">{currentPlanInfo.nameTR}</h2>
+              <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${PLAN_BADGE_COLORS[currentPlan]}`}>
                 {currentPlan}
               </span>
             </div>
           </div>
         </div>
         {limits && (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
-            <div className="bg-gray-50 rounded-lg p-3">
-              <p className="text-xs text-gray-400 mb-1">Maks. Çalışan</p>
-              <p className="font-semibold text-gray-900">
-                {limits.maxStaff === Infinity ? "Sınırsız" : limits.maxStaff}
-              </p>
+          <div className="mt-4 grid grid-cols-2 gap-4 md:grid-cols-4">
+            <div className="rounded-lg bg-gray-50 p-3">
+              <p className="mb-1 text-xs text-gray-400">Maks. Çalışan</p>
+              <p className="font-semibold text-gray-900">{limits.maxStaff === Infinity ? "Sınırsız" : limits.maxStaff}</p>
             </div>
-            <div className="bg-gray-50 rounded-lg p-3">
-              <p className="text-xs text-gray-400 mb-1">Randevu/ay</p>
+            <div className="rounded-lg bg-gray-50 p-3">
+              <p className="mb-1 text-xs text-gray-400">Randevu / ay</p>
               <p className="font-semibold text-gray-900">
                 {limits.maxAppointmentsPerMonth === Infinity ? "Sınırsız" : limits.maxAppointmentsPerMonth}
               </p>
             </div>
-            <div className="bg-gray-50 rounded-lg p-3">
-              <p className="text-xs text-gray-400 mb-1">E-posta Hatırlatma</p>
+            <div className="rounded-lg bg-gray-50 p-3">
+              <p className="mb-1 text-xs text-gray-400">E-posta Hatırlatma</p>
               <p className="font-semibold text-gray-900">{limits.emailReminders ? "Evet" : "Hayır"}</p>
             </div>
-            <div className="bg-gray-50 rounded-lg p-3">
-              <p className="text-xs text-gray-400 mb-1">Gelişmiş Analitik</p>
+            <div className="rounded-lg bg-gray-50 p-3">
+              <p className="mb-1 text-xs text-gray-400">Gelişmiş Analitik</p>
               <p className="font-semibold text-gray-900">{limits.advancedAnalytics ? "Evet" : "Hayır"}</p>
             </div>
           </div>
@@ -168,61 +148,62 @@ function BillingContent() {
       </div>
 
       <div>
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Mevcut Planlar</h2>
-        <div className="grid md:grid-cols-3 gap-4">
-          {Object.entries(PLAN_FEATURES).map(([planKey, plan]) => {
-            const isCurrent = planKey === currentPlan;
+        <h2 className="mb-4 text-lg font-semibold text-gray-900">Planlar</h2>
+        <div className="grid gap-4 md:grid-cols-3">
+          {planCards.map((plan) => {
+            const isCurrent = plan.id === currentPlan;
+            const paidPlan = isUpgradablePlan(plan.id) ? plan.id : null;
             return (
               <div
-                key={planKey}
-                className={`bg-white rounded-xl border shadow-sm p-6 flex flex-col ${
+                key={plan.id}
+                className={`flex flex-col rounded-xl border bg-white p-6 shadow-sm ${
                   plan.highlight ? "border-blue-400" : "border-gray-200"
                 } ${isCurrent ? "ring-2 ring-blue-500" : ""}`}
               >
                 {plan.highlight && (
-                  <div className="text-blue-600 text-xs font-semibold uppercase tracking-wider mb-2">
-                    En Çok Tercih Edilen
-                  </div>
+                  <div className="mb-2 text-xs font-semibold uppercase tracking-wider text-blue-600">En Çok Tercih Edilen</div>
                 )}
                 {isCurrent && (
-                  <div className="text-green-600 text-xs font-semibold uppercase tracking-wider mb-2">
-                    Mevcut Plan
-                  </div>
+                  <div className="mb-2 text-xs font-semibold uppercase tracking-wider text-green-600">Mevcut Plan</div>
                 )}
                 <h3 className="text-xl font-bold text-gray-900">{plan.label}</h3>
-                <p className="text-2xl font-bold text-gray-900 mt-1">{plan.price}</p>
-                <ul className="mt-4 space-y-2 flex-1">
-                  {plan.features.map((f) => (
-                    <li key={f} className="flex items-center gap-2 text-sm text-gray-600">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className="text-green-500 shrink-0">
+                <p className="mt-1 text-2xl font-bold text-gray-900">{plan.price}</p>
+                <ul className="mt-4 flex-1 space-y-2">
+                  {plan.features.map((feature) => (
+                    <li key={feature} className="flex items-center gap-2 text-sm text-gray-600">
+                      <svg
+                        width="14"
+                        height="14"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="3"
+                        className="shrink-0 text-green-500"
+                      >
                         <polyline points="20 6 9 17 4 12" />
                       </svg>
-                      {f}
+                      {feature}
                     </li>
                   ))}
                 </ul>
                 <div className="mt-5">
                   {isCurrent ? (
-                    <div className="text-center text-sm text-gray-500 py-2 border border-gray-200 rounded-lg">
-                      Aktif Plan
-                    </div>
-                  ) : planKey === "FREE" ? (
-                    <div className="text-center text-sm text-gray-400 py-2">
-                      Düşürmek için destek ile iletişime geçin
-                    </div>
-                  ) : (
+                    <div className="rounded-lg border border-gray-200 py-2 text-center text-sm text-gray-500">Aktif Plan</div>
+                  ) : plan.id === "FREE" ? (
+                    <div className="py-2 text-center text-sm text-gray-400">Düşürmek için destek ile iletişime geçin</div>
+                  ) : paidPlan ? (
                     <button
-                      onClick={() => handleUpgrade(planKey as "STARTER" | "PRO")}
+                      onClick={() => handleUpgrade(paidPlan)}
                       disabled={!!upgrading}
-                      className={`w-full py-2 rounded-lg text-sm font-semibold transition-colors disabled:opacity-60 ${
+                      className={`w-full rounded-lg py-2 text-sm font-semibold transition-colors disabled:opacity-60 ${
                         plan.highlight
-                          ? "bg-blue-600 hover:bg-blue-700 text-white"
-                          : "border border-gray-300 hover:border-gray-400 text-gray-700 hover:bg-gray-50"
+                          ? "bg-blue-600 text-white hover:bg-blue-700"
+                          : "border border-gray-300 text-gray-700 hover:border-gray-400 hover:bg-gray-50"
                       }`}
                     >
-                      {upgrading === planKey ? "Yönlendiriliyor..." : `${plan.label} planına geç`}
+                      {upgrading === plan.id ? "Yönlendiriliyor..." : `${plan.label} planına geç`}
                     </button>
-                  )}
+                  ) : null}
                 </div>
               </div>
             );

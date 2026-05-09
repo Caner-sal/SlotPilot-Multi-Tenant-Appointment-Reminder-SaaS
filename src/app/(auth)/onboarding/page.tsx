@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,31 +12,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 const TIMEZONES = [
-  "America/New_York",
-  "America/Chicago",
-  "America/Denver",
-  "America/Los_Angeles",
-  "America/Anchorage",
-  "Pacific/Honolulu",
+  "Europe/Istanbul",
   "Europe/London",
   "Europe/Paris",
   "Europe/Berlin",
-  "Europe/Istanbul",
+  "America/New_York",
+  "America/Chicago",
+  "America/Los_Angeles",
   "Asia/Tokyo",
-  "Asia/Shanghai",
-  "Asia/Kolkata",
   "Asia/Dubai",
-  "Australia/Sydney",
-  "Pacific/Auckland",
 ];
 
 function slugify(value: string): string {
@@ -57,14 +44,12 @@ export default function OnboardingPage() {
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
-  const [timezone, setTimezone] = useState("America/New_York");
+  const [timezone, setTimezone] = useState("Europe/Istanbul");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (!slugEdited) {
-      setSlug(slugify(businessName));
-    }
+    if (!slugEdited) setSlug(slugify(businessName));
   }, [businessName, slugEdited]);
 
   function handleSlugChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -92,14 +77,11 @@ export default function OnboardingPage() {
     });
 
     const data = await res.json();
-
     if (!res.ok) {
       if (res.status === 409 || data.message?.toLowerCase().includes("slug")) {
-        setError(
-          "That URL slug is already taken. Please choose a different one."
-        );
+        setError("Bu URL kısa adı kullanımda. Lütfen farklı bir kısa ad seçin.");
       } else {
-        setError(data.message ?? "Something went wrong. Please try again.");
+        setError(data.message ?? "Bir hata oluştu. Lütfen tekrar deneyin.");
       }
       setLoading(false);
       return;
@@ -110,38 +92,30 @@ export default function OnboardingPage() {
 
   return (
     <div className="w-full max-w-2xl px-4 py-8">
-      <div className="text-center mb-8">
-        <div className="flex items-center justify-center gap-2 mb-2">
+      <div className="mb-8 text-center">
+        <div className="mb-2 flex items-center justify-center gap-2">
           <span className="text-3xl">✈️</span>
-          <span className="text-3xl font-bold text-white tracking-tight">
-            SlotPilot
-          </span>
+          <span className="text-3xl font-bold tracking-tight text-white">SlotPilot</span>
         </div>
-        <p className="text-blue-300 text-sm">
-          Set up your business — you&apos;re almost there!
-        </p>
+        <p className="text-sm text-blue-300">İşletmenizi kurun, son adımdasınız.</p>
       </div>
 
       <Card className="border-0 shadow-2xl">
         <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold">
-            Set up your organization
-          </CardTitle>
-          <CardDescription>
-            Tell us about your business so clients can find and book with you.
-          </CardDescription>
+          <CardTitle className="text-2xl font-bold">İşletme Kurulumu</CardTitle>
+          <CardDescription>Müşterilerinizin sizi bulabilmesi için işletme bilgilerinizi girin.</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-5">
             {error && (
-              <div className="rounded-md bg-destructive/10 border border-destructive/20 px-4 py-3 text-sm text-destructive">
+              <div className="rounded-md border border-destructive/20 bg-destructive/10 px-4 py-3 text-sm text-destructive">
                 {error}
               </div>
             )}
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="businessName">Business name *</Label>
+                <Label htmlFor="businessName">İşletme adı *</Label>
                 <Input
                   id="businessName"
                   type="text"
@@ -153,9 +127,9 @@ export default function OnboardingPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="slug">URL slug *</Label>
+                <Label htmlFor="slug">URL kısa adı *</Label>
                 <div className="flex items-center gap-0">
-                  <span className="flex items-center h-10 px-3 text-xs text-muted-foreground bg-muted border border-r-0 border-input rounded-l-md whitespace-nowrap">
+                  <span className="flex h-10 items-center whitespace-nowrap rounded-l-md border border-r-0 border-input bg-muted px-3 text-xs text-muted-foreground">
                     slotpilot.com/
                   </span>
                   <Input
@@ -172,34 +146,34 @@ export default function OnboardingPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="description">Description</Label>
+              <Label htmlFor="description">Açıklama</Label>
               <Input
                 id="description"
                 type="text"
-                placeholder="A short description of your business"
+                placeholder="İşletmeniz için kısa bir açıklama"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
               />
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="phone">Phone number</Label>
+                <Label htmlFor="phone">Telefon</Label>
                 <Input
                   id="phone"
                   type="tel"
-                  placeholder="+1 (555) 000-0000"
+                  placeholder="+90 555 000 00 00"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="orgEmail">Business email</Label>
+                <Label htmlFor="orgEmail">İşletme e-postası</Label>
                 <Input
                   id="orgEmail"
                   type="email"
-                  placeholder="hello@yourbusiness.com"
+                  placeholder="merhaba@isletmeniz.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
@@ -207,21 +181,21 @@ export default function OnboardingPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="address">Address</Label>
+              <Label htmlFor="address">Adres</Label>
               <Input
                 id="address"
                 type="text"
-                placeholder="123 Main St, City, State 00000"
+                placeholder="Cadde/Sokak, İlçe, İl"
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="timezone">Timezone *</Label>
+              <Label htmlFor="timezone">Saat dilimi *</Label>
               <Select value={timezone} onValueChange={setTimezone}>
                 <SelectTrigger id="timezone">
-                  <SelectValue placeholder="Select a timezone" />
+                  <SelectValue placeholder="Saat dilimi seçin" />
                 </SelectTrigger>
                 <SelectContent>
                   {TIMEZONES.map((tz) => (
@@ -234,7 +208,7 @@ export default function OnboardingPage() {
             </div>
 
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Creating organization…" : "Create organization"}
+              {loading ? "İşletme oluşturuluyor..." : "İşletmeyi Oluştur"}
             </Button>
           </form>
         </CardContent>

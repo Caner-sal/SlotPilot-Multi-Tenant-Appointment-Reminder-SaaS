@@ -2,6 +2,14 @@ import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { redirect } from "next/navigation";
 
+const STATUS_LABELS: Record<string, string> = {
+  PENDING: "Bekliyor",
+  CONFIRMED: "Onaylandı",
+  COMPLETED: "Tamamlandı",
+  CANCELLED: "İptal Edildi",
+  NO_SHOW: "Gelmedi",
+};
+
 const STATUS_COLORS: Record<string, string> = {
   PENDING: "bg-yellow-100 text-yellow-700",
   CONFIRMED: "bg-blue-100 text-blue-700",
@@ -28,15 +36,15 @@ export default async function StaffAppointmentsPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">My Appointments</h1>
-      <div className="bg-white rounded-lg border overflow-hidden">
+      <h1 className="mb-6 text-2xl font-bold text-gray-900">Randevularım</h1>
+      <div className="overflow-hidden rounded-lg border bg-white">
         <table className="w-full text-sm">
-          <thead className="bg-gray-50 border-b">
+          <thead className="border-b bg-gray-50">
             <tr>
-              <th className="text-left px-4 py-3 font-medium text-gray-600">Customer</th>
-              <th className="text-left px-4 py-3 font-medium text-gray-600">Service</th>
-              <th className="text-left px-4 py-3 font-medium text-gray-600">Date & Time</th>
-              <th className="text-left px-4 py-3 font-medium text-gray-600">Status</th>
+              <th className="px-4 py-3 text-left font-medium text-gray-600">Müşteri</th>
+              <th className="px-4 py-3 text-left font-medium text-gray-600">Hizmet</th>
+              <th className="px-4 py-3 text-left font-medium text-gray-600">Tarih / Saat</th>
+              <th className="px-4 py-3 text-left font-medium text-gray-600">Durum</th>
             </tr>
           </thead>
           <tbody className="divide-y">
@@ -44,30 +52,32 @@ export default async function StaffAppointmentsPage() {
               <tr key={apt.id} className="hover:bg-gray-50">
                 <td className="px-4 py-3">
                   <div className="font-medium text-gray-900">{apt.customer.fullName}</div>
-                  <div className="text-gray-500 text-xs">{apt.customer.phone ?? apt.customer.email ?? ""}</div>
+                  <div className="text-xs text-gray-500">{apt.customer.phone ?? apt.customer.email ?? ""}</div>
                 </td>
                 <td className="px-4 py-3">
                   <div>{apt.service.name}</div>
-                  <div className="text-gray-500 text-xs">{apt.service.durationMinutes} min</div>
+                  <div className="text-xs text-gray-500">{apt.service.durationMinutes} dk</div>
                 </td>
                 <td className="px-4 py-3">
-                  <div>{new Date(apt.startTime).toLocaleDateString()}</div>
-                  <div className="text-gray-500 text-xs">
-                    {new Date(apt.startTime).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                  <div>{new Date(apt.startTime).toLocaleDateString("tr-TR", { timeZone: "Europe/Istanbul" })}</div>
+                  <div className="text-xs text-gray-500">
+                    {new Date(apt.startTime).toLocaleTimeString("tr-TR", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      timeZone: "Europe/Istanbul",
+                    })}
                   </div>
                 </td>
                 <td className="px-4 py-3">
-                  <span className={`px-2 py-1 rounded text-xs font-medium ${STATUS_COLORS[apt.status] ?? "bg-gray-100 text-gray-700"}`}>
-                    {apt.status}
+                  <span className={`rounded px-2 py-1 text-xs font-medium ${STATUS_COLORS[apt.status] ?? "bg-gray-100 text-gray-700"}`}>
+                    {STATUS_LABELS[apt.status] ?? apt.status}
                   </span>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
-        {appointments.length === 0 && (
-          <div className="text-center py-8 text-gray-500">No appointments yet.</div>
-        )}
+        {appointments.length === 0 && <div className="py-8 text-center text-gray-500">Henüz randevu yok.</div>}
       </div>
     </div>
   );

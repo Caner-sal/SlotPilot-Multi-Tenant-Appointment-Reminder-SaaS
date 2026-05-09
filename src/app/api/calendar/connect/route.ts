@@ -1,4 +1,4 @@
-import { auth } from "@/lib/auth";
+﻿import { auth } from "@/lib/auth";
 import { getOrganizationForUser } from "@/lib/tenant";
 import { getCalendarProvider } from "@/services/calendar/calendar.factory";
 import { NextResponse } from "next/server";
@@ -6,12 +6,12 @@ import { NextResponse } from "next/server";
 export async function GET() {
   const session = await auth();
   if (!session?.user?.id) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    return NextResponse.json({ error: "Yetkisiz erişim" }, { status: 401 });
   }
 
   const org = await getOrganizationForUser(session.user.id);
   if (!org) {
-    return NextResponse.json({ error: "Organization not found" }, { status: 404 });
+    return NextResponse.json({ error: "İşletme bulunamadı" }, { status: 404 });
   }
 
   try {
@@ -22,3 +22,4 @@ export async function GET() {
     return NextResponse.json({ error: String(err) }, { status: 500 });
   }
 }
+

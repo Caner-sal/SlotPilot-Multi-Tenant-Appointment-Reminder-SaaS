@@ -37,7 +37,7 @@ export async function canCreateStaff(organizationId: string): Promise<{ allowed:
   if (count >= limits.maxStaff) {
     return {
       allowed: false,
-      reason: `Your ${plan} plan allows up to ${limits.maxStaff} staff member(s). Upgrade to add more.`,
+      reason: `${plan} planınız en fazla ${limits.maxStaff} aktif çalışan destekler. Daha fazla çalışan için plan yükseltin.`,
     };
   }
 
@@ -65,7 +65,7 @@ export async function canCreateAppointment(organizationId: string): Promise<{ al
   if (count >= limits.maxAppointmentsPerMonth) {
     return {
       allowed: false,
-      reason: `Your ${plan} plan allows up to ${limits.maxAppointmentsPerMonth} appointments per month. Upgrade to continue.`,
+      reason: `${plan} planınız aylık en fazla ${limits.maxAppointmentsPerMonth} randevu destekler. Devam etmek için plan yükseltin.`,
     };
   }
 

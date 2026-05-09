@@ -1,8 +1,18 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
-const DAYS = ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"];
+const DAYS = ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"] as const;
+
+const DAY_LABELS: Record<(typeof DAYS)[number], string> = {
+  MONDAY: "Pazartesi",
+  TUESDAY: "Salı",
+  WEDNESDAY: "Çarşamba",
+  THURSDAY: "Perşembe",
+  FRIDAY: "Cuma",
+  SATURDAY: "Cumartesi",
+  SUNDAY: "Pazar",
+};
 
 interface AvailabilityRule {
   dayOfWeek: string;
@@ -27,9 +37,7 @@ export default function StaffAvailabilityPage() {
   function updateRule(day: string, field: keyof AvailabilityRule, value: string | boolean) {
     setRules((prev) => {
       const existing = prev.find((r) => r.dayOfWeek === day);
-      if (existing) {
-        return prev.map((r) => r.dayOfWeek === day ? { ...r, [field]: value } : r);
-      }
+      if (existing) return prev.map((r) => (r.dayOfWeek === day ? { ...r, [field]: value } : r));
       return [...prev, { dayOfWeek: day, startTime: "09:00", endTime: "17:00", isActive: true, [field]: value }];
     });
   }
@@ -55,34 +63,34 @@ export default function StaffAvailabilityPage() {
       body: JSON.stringify(rules),
     });
     setSaving(false);
-    setMessage(res.ok ? "Availability saved!" : "Failed to save.");
+    setMessage(res.ok ? "Müsaitlik kaydedildi." : "Kaydetme işlemi başarısız oldu.");
   }
 
   return (
     <div className="max-w-lg">
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">My Availability</h1>
-      <div className="bg-white rounded-lg border divide-y">
+      <h1 className="mb-6 text-2xl font-bold text-gray-900">Müsaitliğim</h1>
+      <div className="divide-y rounded-lg border bg-white">
         {DAYS.map((day) => {
           const rule = rules.find((r) => r.dayOfWeek === day);
           const enabled = !!rule;
           return (
-            <div key={day} className="px-4 py-3 flex items-center gap-4">
-              <input type="checkbox" checked={enabled} onChange={() => toggleDay(day)} className="w-4 h-4" />
-              <span className="w-24 text-sm font-medium text-gray-700">{day.charAt(0) + day.slice(1).toLowerCase()}</span>
+            <div key={day} className="flex items-center gap-4 px-4 py-3">
+              <input type="checkbox" checked={enabled} onChange={() => toggleDay(day)} className="h-4 w-4" />
+              <span className="w-24 text-sm font-medium text-gray-700">{DAY_LABELS[day]}</span>
               {enabled && (
-                <div className="flex gap-2 items-center text-sm">
+                <div className="flex items-center gap-2 text-sm">
                   <input
                     type="time"
                     value={rule?.startTime ?? "09:00"}
                     onChange={(e) => updateRule(day, "startTime", e.target.value)}
-                    className="border rounded px-2 py-1"
+                    className="rounded border px-2 py-1"
                   />
                   <span className="text-gray-500">—</span>
                   <input
                     type="time"
                     value={rule?.endTime ?? "17:00"}
                     onChange={(e) => updateRule(day, "endTime", e.target.value)}
-                    className="border rounded px-2 py-1"
+                    className="rounded border px-2 py-1"
                   />
                 </div>
               )}
@@ -94,11 +102,11 @@ export default function StaffAvailabilityPage() {
         <button
           onClick={save}
           disabled={saving}
-          className="px-4 py-2 bg-blue-600 text-white rounded text-sm font-medium hover:bg-blue-700 disabled:opacity-50"
+          className="rounded bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
         >
-          {saving ? "Saving..." : "Save Availability"}
+          {saving ? "Kaydediliyor..." : "Müsaitliği Kaydet"}
         </button>
-        {message && <span className={`text-sm ${message.includes("Failed") ? "text-red-600" : "text-green-600"}`}>{message}</span>}
+        {message && <span className={`text-sm ${message.includes("başarısız") ? "text-red-600" : "text-green-600"}`}>{message}</span>}
       </div>
     </div>
   );

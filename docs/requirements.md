@@ -33,11 +33,11 @@ SlotPilot provides:
 
 ## Monetization Model
 
-| Plan | Price | Staff | Appts/month | Email Reminders |
-|------|-------|-------|-------------|-----------------|
-| Free | $0 | 1 | 20 | No |
-| Starter | $9/mo | 3 | 300 | Yes |
-| Pro | $19/mo | Unlimited | Unlimited | Yes |
+| Plan | Fiyat | Çalışan | Randevu/Ay | E-posta Hatırlatma |
+|------|-------|----------|------------|-------------------|
+| Ücretsiz | ₺0/ay | 1 | 20 | Hayır |
+| Başlangıç | ₺40/ay | 3 | 300 | Evet |
+| Pro | ₺249/ay | Sınırsız | 2000 | Evet |
 
 ## User Stories
 

@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+﻿import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
 
 export async function GET(
@@ -26,6 +26,7 @@ export async function GET(
     return NextResponse.json({ data: locations });
   } catch (err) {
     console.error(err);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json({ error: "Sunucu hatası" }, { status: 500 });
   }
 }
+

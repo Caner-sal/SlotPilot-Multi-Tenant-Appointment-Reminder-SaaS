@@ -61,7 +61,7 @@ describe("Deposit payment — checkout session", () => {
     (mockDb.appointment.findFirst as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
       id: "apt1",
       paymentStatus: "NOT_REQUIRED",
-      service: { depositRequired: false, depositAmountCents: 0, name: "Haircut", currency: "TRY" },
+      service: { depositRequired: false, depositAmountCents: 0, name: "Saç Kesimi", currency: "TRY" },
       customer: { email: "c@test.com" },
     });
 
@@ -72,7 +72,7 @@ describe("Deposit payment — checkout session", () => {
     const res = await postCheckout(req, { params: Promise.resolve({ slug: "test" }) });
     expect(res.status).toBe(400);
     const body = await res.json();
-    expect(body.error).toContain("No deposit");
+    expect(body.error).toMatch(/(kapora gerekmiyor|No deposit)/i);
   });
 
   it("returns 400 when deposit already paid", async () => {
@@ -82,7 +82,7 @@ describe("Deposit payment — checkout session", () => {
     (mockDb.appointment.findFirst as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
       id: "apt1",
       paymentStatus: "PAID",
-      service: { depositRequired: true, depositAmountCents: 5000, name: "Haircut", currency: "TRY" },
+      service: { depositRequired: true, depositAmountCents: 5000, name: "Saç Kesimi", currency: "TRY" },
       customer: { email: "c@test.com" },
     });
 
@@ -93,7 +93,7 @@ describe("Deposit payment — checkout session", () => {
     const res = await postCheckout(req, { params: Promise.resolve({ slug: "test" }) });
     expect(res.status).toBe(400);
     const body = await res.json();
-    expect(body.error).toContain("already paid");
+    expect(body.error).toMatch(/(zaten ödendi|already paid)/i);
   });
 
   it("returns mock session when Stripe key is placeholder", async () => {
@@ -103,7 +103,7 @@ describe("Deposit payment — checkout session", () => {
     (mockDb.appointment.findFirst as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
       id: "apt1",
       paymentStatus: "NOT_REQUIRED",
-      service: { depositRequired: true, depositAmountCents: 5000, name: "Haircut", currency: "TRY" },
+      service: { depositRequired: true, depositAmountCents: 5000, name: "Saç Kesimi", currency: "TRY" },
       customer: { email: "c@test.com" },
     });
     (mockDb.appointment.update as ReturnType<typeof vi.fn>).mockResolvedValueOnce({});

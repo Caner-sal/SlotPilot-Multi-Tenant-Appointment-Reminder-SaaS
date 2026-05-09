@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+﻿import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import Stripe from "stripe";
@@ -37,15 +37,15 @@ export async function POST(
     });
 
     if (!appointment) {
-      return NextResponse.json({ error: "Appointment not found" }, { status: 404 });
+      return NextResponse.json({ error: "Randevu bulunamadı" }, { status: 404 });
     }
 
     if (!appointment.service.depositRequired) {
-      return NextResponse.json({ error: "No deposit required for this service" }, { status: 400 });
+      return NextResponse.json({ error: "Bu hizmet için kapora gerekmiyor" }, { status: 400 });
     }
 
     if (appointment.paymentStatus === "PAID") {
-      return NextResponse.json({ error: "Deposit already paid" }, { status: 400 });
+      return NextResponse.json({ error: "Kapora zaten ödendi" }, { status: 400 });
     }
 
     const stripe = getStripe();
@@ -75,7 +75,7 @@ export async function POST(
           price_data: {
             currency: appointment.service.currency.toLowerCase(),
             product_data: {
-              name: `Deposit — ${appointment.service.name}`,
+              name: `Deposit - ${appointment.service.name}`,
               description: `${org.name} appointment deposit`,
             },
             unit_amount: appointment.service.depositAmountCents,
@@ -99,6 +99,7 @@ export async function POST(
       return NextResponse.json({ error: err.issues }, { status: 400 });
     }
     console.error(err);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json({ error: "Sunucu hatası" }, { status: 500 });
   }
 }
+

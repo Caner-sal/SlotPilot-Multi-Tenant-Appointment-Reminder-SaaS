@@ -52,7 +52,7 @@ describe("AI Chatbot API", () => {
     const json = await res.json() as { error: string };
 
     expect(res.status).toBe(404);
-    expect(json.error).toMatch(/not enabled/i);
+    expect(json.error).toMatch(/(aktif|enabled)/i);
   });
 
   it("returns mock reply when AI_PROVIDER is DISABLED", async () => {
@@ -76,6 +76,6 @@ describe("AI Chatbot API", () => {
     const json = await res.json() as { error: string };
 
     expect(res.status).toBe(400);
-    expect(json.error).toMatch(/message/i);
+    expect(json.error).toMatch(/(mesaj|message)/i);
   });
 });

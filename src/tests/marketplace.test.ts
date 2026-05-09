@@ -19,11 +19,11 @@ beforeEach(() => {
 
 const buildOrg = (overrides = {}) => ({
   id: "org1",
-  name: "Demo Barber",
+  name: "Berber Demo",
   slug: "demo-barber",
-  description: "A great barber",
+  description: "Örnek berber işletmesi",
   category: "salon",
-  city: "Istanbul",
+  city: "İstanbul",
   coverImageUrl: null,
   logoUrl: null,
   _count: { services: 3 },
@@ -41,7 +41,7 @@ describe("Marketplace API", () => {
 
     expect(res.status).toBe(200);
     expect(json.data).toHaveLength(1);
-    expect(json.data[0]).toMatchObject({ name: "Demo Barber", slug: "demo-barber" });
+    expect(json.data[0]).toMatchObject({ name: "Berber Demo", slug: "demo-barber" });
   });
 
   it("returns empty array when no businesses match", async () => {

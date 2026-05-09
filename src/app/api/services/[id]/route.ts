@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+﻿import { db } from "@/lib/db";
 import { requireAuth, TenantError } from "@/lib/tenant";
 import { createAuditLog } from "@/services/audit.service";
 import { serviceSchema } from "@/lib/validators";
@@ -19,7 +19,7 @@ export async function PATCH(
       where: { id, organizationId: org.id },
     });
     if (!existing) {
-      return NextResponse.json({ error: "Service not found" }, { status: 404 });
+      return NextResponse.json({ error: "Hizmet bulunamadı" }, { status: 404 });
     }
 
     const updated = await db.service.update({ where: { id }, data: parsed });
@@ -42,7 +42,7 @@ export async function PATCH(
       return NextResponse.json({ error: err.issues }, { status: 400 });
     }
     console.error(err);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json({ error: "Sunucu hatası" }, { status: 500 });
   }
 }
 
@@ -58,7 +58,7 @@ export async function DELETE(
       where: { id, organizationId: org.id },
     });
     if (!existing) {
-      return NextResponse.json({ error: "Service not found" }, { status: 404 });
+      return NextResponse.json({ error: "Hizmet bulunamadı" }, { status: 404 });
     }
 
     const updated = await db.service.update({
@@ -81,6 +81,7 @@ export async function DELETE(
       return NextResponse.json({ error: err.message }, { status: 403 });
     }
     console.error(err);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json({ error: "Sunucu hatası" }, { status: 500 });
   }
 }
+

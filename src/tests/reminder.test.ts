@@ -60,9 +60,9 @@ describe("processPendingReminders", () => {
         appointment: {
           organizationId: "org-1",
           customer: { fullName: "Test User", email: "test@example.com" },
-          service: { name: "Haircut" },
+          service: { name: "Saç Kesimi" },
           staff: { name: "Ali" },
-          organization: { name: "Demo Barber", slug: "demo-barber" },
+          organization: { name: "Berber Demo", slug: "demo-barber" },
           startTime: new Date(Date.now() + 24 * 60 * 60 * 1000),
         },
       },
@@ -81,9 +81,9 @@ describe("processPendingReminders", () => {
         appointment: {
           organizationId: "org-1",
           customer: { fullName: "No Email", email: null },
-          service: { name: "Haircut" },
+          service: { name: "Saç Kesimi" },
           staff: { name: "Ali" },
-          organization: { name: "Demo Barber", slug: "demo-barber" },
+          organization: { name: "Berber Demo", slug: "demo-barber" },
           startTime: new Date(Date.now() + 24 * 60 * 60 * 1000),
         },
       },

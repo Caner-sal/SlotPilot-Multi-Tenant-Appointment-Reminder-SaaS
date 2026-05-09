@@ -31,6 +31,13 @@ const STATUS_COLORS: Record<string, string> = {
   SKIPPED: "bg-gray-100 text-gray-500",
 };
 
+const STATUS_LABELS: Record<string, string> = {
+  PENDING: "Beklemede",
+  SENT: "Gönderildi",
+  FAILED: "Başarısız",
+  SKIPPED: "Atlandı",
+};
+
 export default function RemindersPage() {
   const [reminders, setReminders] = useState<Reminder[]>([]);
   const [meta, setMeta] = useState<Meta | null>(null);
@@ -124,12 +131,12 @@ export default function RemindersPage() {
                     <div className="font-medium text-gray-900">{reminder.appointment.customer.fullName}</div>
                     <div className="text-xs text-gray-400">
                       {reminder.appointment.service.name} ·{" "}
-                      {new Date(reminder.appointment.startTime).toLocaleString("tr-TR")}
+                      {new Date(reminder.appointment.startTime).toLocaleString("tr-TR", { timeZone: "Europe/Istanbul" })}
                     </div>
                   </td>
                   <td className="px-5 py-3.5 text-gray-600">{reminder.type}</td>
                   <td className="px-5 py-3.5 text-gray-600">
-                    {new Date(reminder.scheduledAt).toLocaleString("tr-TR")}
+                    {new Date(reminder.scheduledAt).toLocaleString("tr-TR", { timeZone: "Europe/Istanbul" })}
                   </td>
                   <td className="px-5 py-3.5">
                     <span
@@ -137,11 +144,11 @@ export default function RemindersPage() {
                         STATUS_COLORS[reminder.status] ?? "bg-gray-100 text-gray-600"
                       }`}
                     >
-                      {reminder.status}
+                      {STATUS_LABELS[reminder.status] ?? reminder.status}
                     </span>
                   </td>
                   <td className="px-5 py-3.5 text-gray-600">
-                    {reminder.sentAt ? new Date(reminder.sentAt).toLocaleString("tr-TR") : "—"}
+                    {reminder.sentAt ? new Date(reminder.sentAt).toLocaleString("tr-TR", { timeZone: "Europe/Istanbul" }) : "—"}
                   </td>
                   <td className="px-5 py-3.5 text-red-500 max-w-[200px]">
                     <span className="line-clamp-1 text-xs">{reminder.errorMessage ?? "—"}</span>

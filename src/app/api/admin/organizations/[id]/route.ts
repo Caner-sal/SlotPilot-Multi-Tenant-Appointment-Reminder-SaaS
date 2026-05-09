@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+﻿import { db } from "@/lib/db";
 import { requireSuperAdmin, SuperAdminError } from "@/lib/superadmin";
 import { NextResponse } from "next/server";
 
@@ -33,7 +33,7 @@ export async function GET(
     });
 
     if (!org) {
-      return NextResponse.json({ error: "Organization not found" }, { status: 404 });
+      return NextResponse.json({ error: "İşletme bulunamadı" }, { status: 404 });
     }
 
     return NextResponse.json({ data: org });
@@ -42,7 +42,7 @@ export async function GET(
       return NextResponse.json({ error: err.message }, { status: 403 });
     }
     console.error(err);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json({ error: "Sunucu hatası" }, { status: 500 });
   }
 }
 
@@ -75,6 +75,7 @@ export async function PATCH(
       return NextResponse.json({ error: err.message }, { status: 403 });
     }
     console.error(err);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json({ error: "Sunucu hatası" }, { status: 500 });
   }
 }
+

@@ -8,8 +8,8 @@ beforeEach(() => {
 });
 
 const sampleEvent = {
-  title: "Haircut with Ahmet",
-  description: "Appointment at Demo Barber",
+  title: "Ahmet ile Saç Kesimi",
+  description: "Berber Demo randevusu",
   startTime: new Date("2026-05-10T14:00:00Z"),
   endTime: new Date("2026-05-10T14:30:00Z"),
 };

@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+﻿import { db } from "@/lib/db";
 import { requireAuth, TenantError } from "@/lib/tenant";
 import { createAuditLog } from "@/services/audit.service";
 import { organizationSchema } from "@/lib/validators";
@@ -13,7 +13,7 @@ export async function POST(req: Request) {
 
     const slugTaken = await db.organization.findUnique({ where: { slug: parsed.slug } });
     if (slugTaken) {
-      return NextResponse.json({ error: "This slug is already taken" }, { status: 409 });
+      return NextResponse.json({ error: "Bu kısa ad zaten kullanımda" }, { status: 409 });
     }
 
     const org = await db.$transaction(async (tx) => {
@@ -48,6 +48,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: err.issues }, { status: 400 });
     }
     console.error(err);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json({ error: "Sunucu hatası" }, { status: 500 });
   }
 }
+

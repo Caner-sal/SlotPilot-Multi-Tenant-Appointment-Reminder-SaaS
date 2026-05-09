@@ -41,7 +41,7 @@ describe("Locations — tenant isolation", () => {
   it("returns locations for authenticated org", async () => {
     mockRequireAuth.mockResolvedValueOnce({ user: { id: "u1" }, org: { id: "org1" } } as never);
     (mockDb.location.findMany as ReturnType<typeof vi.fn>).mockResolvedValueOnce([
-      { id: "loc1", name: "Main Branch", organizationId: "org1", isDefault: true },
+      { id: "loc1", name: "Merkez Şube", organizationId: "org1", isDefault: true },
     ]);
 
     const res = await getLocations();
@@ -99,7 +99,7 @@ describe("Public booking — locations", () => {
       id: "org1", bookingEnabled: true, suspended: false,
     });
     (mockDb.location.findMany as ReturnType<typeof vi.fn>).mockResolvedValueOnce([
-      { id: "loc1", name: "Main Branch", isDefault: true },
+      { id: "loc1", name: "Merkez Şube", isDefault: true },
     ]);
 
     const req = new Request("http://localhost/api/booking/barber-demo/locations");

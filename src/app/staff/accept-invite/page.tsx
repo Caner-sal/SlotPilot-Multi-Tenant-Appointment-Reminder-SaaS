@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { Suspense, useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 
 function AcceptInviteForm() {
   const searchParams = useSearchParams();
@@ -15,20 +15,32 @@ function AcceptInviteForm() {
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    if (!token) { setError("Invalid invite link"); setLoading(false); return; }
+    if (!token) {
+      setError("Geçersiz davet bağlantısı.");
+      setLoading(false);
+      return;
+    }
+
     fetch(`/api/auth/accept-invite?token=${token}`)
       .then((r) => r.json())
       .then((d) => {
         if (d.data) setInviteInfo(d.data);
-        else setError(d.error ?? "Invalid invite");
+        else setError(d.error ?? "Davet geçersiz.");
         setLoading(false);
       })
-      .catch(() => { setError("Failed to load invite"); setLoading(false); });
+      .catch(() => {
+        setError("Davet bilgisi yüklenemedi.");
+        setLoading(false);
+      });
   }, [token]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (form.password !== form.confirmPassword) { setError("Passwords do not match"); return; }
+    if (form.password !== form.confirmPassword) {
+      setError("Şifreler eşleşmiyor.");
+      return;
+    }
+
     setSubmitting(true);
     setError(null);
     const res = await fetch("/api/auth/accept-invite", {
@@ -36,64 +48,64 @@ function AcceptInviteForm() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ token, name: form.name, password: form.password }),
     });
+
     const data = await res.json();
     if (res.ok) {
       router.push("/login?invited=1");
     } else {
-      setError(data.error ?? "Failed to create account");
+      setError(data.error ?? "Hesap oluşturulamadı.");
       setSubmitting(false);
     }
   }
 
-  if (loading) return <div className="text-gray-500">Loading invite...</div>;
+  if (loading) return <div className="text-gray-500">Davet bilgisi yükleniyor...</div>;
   if (error && !inviteInfo) return <div className="text-red-600">{error}</div>;
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
+      <p className="mb-4 text-sm text-gray-600">
+        Çalışan olarak davet edildiniz. E-posta adresiniz: <strong>{inviteInfo?.email}</strong>
+      </p>
+
       <div>
-        <p className="text-sm text-gray-600 mb-4">
-          You have been invited to join as a staff member. Your email: <strong>{inviteInfo?.email}</strong>
-        </p>
-      </div>
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Your Name</label>
+        <label className="mb-1 block text-sm font-medium text-gray-700">Ad Soyad</label>
         <input
           type="text"
           required
           value={form.name}
           onChange={(e) => setForm({ ...form, name: e.target.value })}
-          className="w-full border rounded px-3 py-2 text-sm"
-          placeholder="Full name"
+          className="w-full rounded border px-3 py-2 text-sm"
+          placeholder="Ad Soyad"
         />
       </div>
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+        <label className="mb-1 block text-sm font-medium text-gray-700">Şifre</label>
         <input
           type="password"
           required
           minLength={8}
           value={form.password}
           onChange={(e) => setForm({ ...form, password: e.target.value })}
-          className="w-full border rounded px-3 py-2 text-sm"
+          className="w-full rounded border px-3 py-2 text-sm"
         />
       </div>
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+        <label className="mb-1 block text-sm font-medium text-gray-700">Şifre (Tekrar)</label>
         <input
           type="password"
           required
           value={form.confirmPassword}
           onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })}
-          className="w-full border rounded px-3 py-2 text-sm"
+          className="w-full rounded border px-3 py-2 text-sm"
         />
       </div>
       {error && <p className="text-sm text-red-600">{error}</p>}
       <button
         type="submit"
         disabled={submitting}
-        className="w-full py-2 bg-blue-600 text-white rounded font-medium text-sm hover:bg-blue-700 disabled:opacity-50"
+        className="w-full rounded bg-blue-600 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
       >
-        {submitting ? "Creating account..." : "Create Staff Account"}
+        {submitting ? "Hesap oluşturuluyor..." : "Çalışan Hesabını Oluştur"}
       </button>
     </form>
   );
@@ -101,10 +113,10 @@ function AcceptInviteForm() {
 
 export default function AcceptInvitePage() {
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-      <div className="bg-white rounded-lg border p-8 w-full max-w-md">
-        <h1 className="text-2xl font-bold text-gray-900 mb-6">Staff Invite</h1>
-        <Suspense fallback={<div className="text-gray-500">Loading...</div>}>
+    <div className="flex min-h-screen items-center justify-center bg-gray-50">
+      <div className="w-full max-w-md rounded-lg border bg-white p-8">
+        <h1 className="mb-6 text-2xl font-bold text-gray-900">Çalışan Daveti</h1>
+        <Suspense fallback={<div className="text-gray-500">Yükleniyor...</div>}>
           <AcceptInviteForm />
         </Suspense>
       </div>

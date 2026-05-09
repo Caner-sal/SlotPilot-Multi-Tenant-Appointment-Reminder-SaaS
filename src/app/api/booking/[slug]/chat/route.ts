@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+﻿import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
 
 interface ChatMessage {
@@ -54,7 +54,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ slug: s
   });
 
   if (!org || org.suspended) {
-    return NextResponse.json({ error: "Business not found" }, { status: 403 });
+    return NextResponse.json({ error: "İşletme bulunamadı" }, { status: 403 });
   }
 
   if (!org.aiChatbotEnabled) {
@@ -69,7 +69,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ slug: s
   }
 
   if (!body.message || typeof body.message !== "string" || body.message.trim().length === 0) {
-    return NextResponse.json({ error: "Message is required" }, { status: 400 });
+    return NextResponse.json({ error: "Mesaj zorunludur" }, { status: 400 });
   }
 
   const apiKey = process.env.ANTHROPIC_API_KEY;
@@ -93,7 +93,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ slug: s
     `- Never reveal private customer data or other customers' appointments.`,
     `- Never create or cancel appointments on behalf of the user without their explicit written confirmation.`,
     `- Never provide medical, legal, or financial advice.`,
-    `- Do not invent availability or pricing — only use information provided above.`,
+    `- Do not invent availability or pricing - only use information provided above.`,
     `- If you don't know something, say so and suggest contacting the business directly.`,
   ]
     .filter(Boolean)
@@ -134,3 +134,4 @@ export async function POST(req: Request, { params }: { params: Promise<{ slug: s
     return NextResponse.json({ data: { reply: MOCK_RESPONSE, mock: true } });
   }
 }
+
