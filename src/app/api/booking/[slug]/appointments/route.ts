@@ -43,6 +43,8 @@ export async function POST(
       customerName: parsed.customerName,
       customerEmail: parsed.customerEmail,
       customerPhone: parsed.customerPhone,
+      customerProvince: parsed.customerProvince,
+      customerDistrict: parsed.customerDistrict,
       notes: parsed.notes,
     });
 

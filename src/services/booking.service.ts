@@ -103,9 +103,11 @@ export async function createBooking(params: {
   customerName: string;
   customerEmail: string;
   customerPhone?: string;
+  customerProvince?: string;
+  customerDistrict?: string;
   notes?: string;
 }) {
-  const { organizationId, serviceId, staffId, startTime, customerName, customerEmail, customerPhone, notes } = params;
+  const { organizationId, serviceId, staffId, startTime, customerName, customerEmail, customerPhone, customerProvince, customerDistrict, notes } = params;
 
   const service = await db.service.findFirst({
     where: { id: serviceId, organizationId, isActive: true },
@@ -138,6 +140,8 @@ export async function createBooking(params: {
         fullName: customerName,
         email: customerEmail,
         phone: customerPhone,
+        province: customerProvince,
+        district: customerDistrict,
       },
     });
   }

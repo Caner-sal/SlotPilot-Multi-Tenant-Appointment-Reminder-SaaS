@@ -106,6 +106,9 @@ model Organization {
   phone          String?
   email          String?
   address        String?
+  province       String?
+  district       String?
+  postalCode     String?
   timezone       String   @default("UTC")
   bookingEnabled Boolean  @default(true)
   suspended      Boolean  @default(false)
@@ -228,6 +231,9 @@ model Location {
   organizationId String
   name           String
   address        String?
+  province       String?
+  district       String?
+  postalCode     String?
   phone          String?
   timezone       String   @default("UTC")
   isActive       Boolean  @default(true)
@@ -295,6 +301,8 @@ model Customer {
   fullName       String
   email          String?
   phone          String?
+  province       String?
+  district       String?
   smsOptIn       Boolean  @default(true)
   whatsappOptIn  Boolean  @default(true)
   createdAt      DateTime @default(now())

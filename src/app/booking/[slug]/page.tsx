@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useParams } from "next/navigation";
+import { TURKEY_PROVINCES, getDistrictsByProvince } from "@/data/turkey-provinces";
 
 interface BusinessProfile {
   name: string;
@@ -96,6 +97,8 @@ export default function BookingPage() {
     name: "",
     email: "",
     phone: "",
+    province: "",
+    district: "",
     notes: "",
   });
   const [submitting, setSubmitting] = useState(false);
@@ -211,6 +214,8 @@ export default function BookingPage() {
           customerName: customerForm.name,
           customerEmail: customerForm.email,
           customerPhone: customerForm.phone || undefined,
+          customerProvince: customerForm.province || undefined,
+          customerDistrict: customerForm.district || undefined,
           notes: customerForm.notes || undefined,
         }),
       });
@@ -260,7 +265,7 @@ export default function BookingPage() {
     setSelectedStaff(null);
     setSelectedDate(null);
     setSelectedSlot(null);
-    setCustomerForm({ name: "", email: "", phone: "", notes: "" });
+    setCustomerForm({ name: "", email: "", phone: "", province: "", district: "", notes: "" });
     setSubmitError(null);
     setConfirmation(null);
   }
@@ -635,6 +640,41 @@ export default function BookingPage() {
                   className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="+90 555 000 0000"
                 />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    İl{" "}
+                    <span className="text-gray-400 font-normal">(opsiyonel)</span>
+                  </label>
+                  <select
+                    value={customerForm.province}
+                    onChange={(e) => setCustomerForm({ ...customerForm, province: e.target.value, district: "" })}
+                    className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="">İl seçin</option>
+                    {TURKEY_PROVINCES.map((p) => (
+                      <option key={p.slug} value={p.slug}>{p.name}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    İlçe{" "}
+                    <span className="text-gray-400 font-normal">(opsiyonel)</span>
+                  </label>
+                  <select
+                    value={customerForm.district}
+                    onChange={(e) => setCustomerForm({ ...customerForm, district: e.target.value })}
+                    disabled={!customerForm.province}
+                    className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-400"
+                  >
+                    <option value="">İlçe seçin</option>
+                    {getDistrictsByProvince(customerForm.province).map((d) => (
+                      <option key={d.slug} value={d.slug}>{d.name}</option>
+                    ))}
+                  </select>
+                </div>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">

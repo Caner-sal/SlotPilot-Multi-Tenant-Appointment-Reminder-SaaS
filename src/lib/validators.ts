@@ -70,6 +70,8 @@ export const bookingSchema = z.object({
   customerName: z.string().min(2, "Name must be at least 2 characters"),
   customerEmail: z.string().email("Invalid email address"),
   customerPhone: z.string().optional(),
+  customerProvince: z.string().optional(),
+  customerDistrict: z.string().optional(),
   notes: z.string().optional(),
 });
 
