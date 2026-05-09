@@ -25,6 +25,13 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: npm
 
+      - name: Debug environment
+        run: |
+          node --version
+          npm --version
+          npx --version || true
+          echo "corepack: $(corepack --version 2>/dev/null || echo 'not found')"
+
       - name: Disable corepack enforcement
         run: corepack disable || true
 
@@ -32,6 +39,11 @@ jobs:
         run: npm ci
         env:
           PRISMA_SKIP_POSTINSTALL_GENERATE: "true"
+
+      - name: Debug after install
+        run: |
+          ls node_modules/.bin/prisma || echo "prisma binary missing"
+          ls node_modules/@prisma/engines/ || echo "engines dir missing"
 
       - name: Generate Prisma client
         run: npx prisma generate
