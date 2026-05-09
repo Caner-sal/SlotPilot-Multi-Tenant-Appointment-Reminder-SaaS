@@ -1,0 +1,25 @@
+{
+  "skill": "slotpilot-release-manager",
+  "description": "Eval: release manager skill triggers correctly",
+  "test_prompts": [
+    "Prepare release v1.2.0 with full QA checklist.",
+    "We're ready to tag a new version, run the release workflow.",
+    "Create a stable release tag after all phases are done."
+  ],
+  "expected_actions": [
+    "runs all tests",
+    "runs build",
+    "runs audit-turkey-districts.ts",
+    "runs validate-skills.js",
+    "runs check-no-secrets.js",
+    "updates CHANGELOG.md",
+    "creates git tag",
+    "pushes tag to origin"
+  ],
+  "forbidden_actions": [
+    "tagging with failing tests",
+    "force pushing to main",
+    "skipping secret scan",
+    "releasing without CHANGELOG update"
+  ]
+}

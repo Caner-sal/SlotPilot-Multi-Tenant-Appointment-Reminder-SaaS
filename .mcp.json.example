@@ -1,0 +1,63 @@
+{
+  "mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "/REPLACE/WITH/YOUR/PROJECT/ROOT/PATH"
+      ],
+      "comment": "Filesystem MCP — replace path with your project root. NEVER use / or C:\\"
+    },
+    "git": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-git",
+        "--repository",
+        "/REPLACE/WITH/YOUR/PROJECT/ROOT/PATH"
+      ],
+      "comment": "Git MCP — read-heavy. No force-push or destructive tools should be used."
+    },
+    "time": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-time",
+        "--default-timezone",
+        "Europe/Istanbul"
+      ],
+      "comment": "Time MCP — Europe/Istanbul timezone for Turkey appointment slot testing."
+    },
+    "fetch": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-fetch"
+      ],
+      "comment": "Fetch MCP — public documentation only. Do not use for authenticated APIs."
+    },
+    "memory": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-memory"
+      ],
+      "comment": "Memory MCP — local working notes. No sensitive data."
+    },
+    "sequential-thinking": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-sequential-thinking"
+      ],
+      "comment": "Sequential Thinking MCP — plan complex migrations and debug flows."
+    }
+  },
+  "_instructions": {
+    "warning": "This is an EXAMPLE file only. Copy to .mcp.json for local use. Never commit .mcp.json with real credentials.",
+    "filesystem_path": "Replace /REPLACE/WITH/YOUR/PROJECT/ROOT/PATH with your actual project root. Windows users: use forward slashes.",
+    "gitignore": "Add .mcp.json to your .gitignore to prevent committing real config.",
+    "production": "This config is for LOCAL DEVELOPMENT ONLY. Do not deploy MCP servers to production."
+  }
+}

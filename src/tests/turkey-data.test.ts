@@ -47,8 +47,9 @@ describe("TURKEY_DISTRICTS", () => {
     expect(districts.length).toBeGreaterThan(0);
   });
 
-  it("getDistrictsByProvince returns empty array for province without districts", () => {
-    expect(getDistrictsByProvince("adana")).toEqual([]);
+  it("getDistrictsByProvince returns districts for adana", () => {
+    const districts = getDistrictsByProvince("adana");
+    expect(districts.length).toBeGreaterThan(0);
   });
 });
 
