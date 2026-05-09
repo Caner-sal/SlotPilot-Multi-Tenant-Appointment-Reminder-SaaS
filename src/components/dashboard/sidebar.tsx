@@ -125,6 +125,14 @@ function IconX() {
   );
 }
 
+function IconWhatsApp() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+    </svg>
+  );
+}
+
 function IconLogOut() {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -136,15 +144,16 @@ function IconLogOut() {
 }
 
 const navItems: NavItem[] = [
-  { href: "/dashboard", label: "Overview", icon: <IconOverview /> },
-  { href: "/dashboard/appointments", label: "Appointments", icon: <IconCalendar /> },
-  { href: "/dashboard/services", label: "Services", icon: <IconScissors /> },
-  { href: "/dashboard/staff", label: "Staff", icon: <IconUsers /> },
-  { href: "/dashboard/availability", label: "Availability", icon: <IconClock /> },
-  { href: "/dashboard/analytics", label: "Analytics", icon: <IconBarChart /> },
-  { href: "/dashboard/billing", label: "Billing", icon: <IconCreditCard /> },
-  { href: "/dashboard/reminders", label: "Reminders", icon: <IconBell /> },
-  { href: "/dashboard/audit-logs", label: "Audit Logs", icon: <IconList /> },
+  { href: "/dashboard", label: "Genel Bakış", icon: <IconOverview /> },
+  { href: "/dashboard/appointments", label: "Randevular", icon: <IconCalendar /> },
+  { href: "/dashboard/services", label: "Hizmetler", icon: <IconScissors /> },
+  { href: "/dashboard/staff", label: "Çalışanlar", icon: <IconUsers /> },
+  { href: "/dashboard/availability", label: "Müsaitlik", icon: <IconClock /> },
+  { href: "/dashboard/analytics", label: "Analitik", icon: <IconBarChart /> },
+  { href: "/dashboard/billing", label: "Abonelik", icon: <IconCreditCard /> },
+  { href: "/dashboard/reminders", label: "Hatırlatmalar", icon: <IconBell /> },
+  { href: "/dashboard/whatsapp", label: "WhatsApp", icon: <IconWhatsApp /> },
+  { href: "/dashboard/audit-logs", label: "İşlem Kayıtları", icon: <IconList /> },
 ];
 
 function NavLink({ item, active, onClick }: { item: NavItem; active: boolean; onClick?: () => void }) {
@@ -198,7 +207,7 @@ export function Sidebar() {
           className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
         >
           <IconLogOut />
-          Sign out
+          Çıkış Yap
         </button>
       </div>
     </div>
@@ -214,7 +223,7 @@ export function Sidebar() {
         <button
           onClick={() => setMobileOpen(true)}
           className="fixed top-4 left-4 z-40 rounded-md bg-card border border-border p-2 shadow-sm"
-          aria-label="Open navigation"
+          aria-label="Menüyü aç"
         >
           <IconMenu />
         </button>
@@ -229,7 +238,7 @@ export function Sidebar() {
               <button
                 onClick={() => setMobileOpen(false)}
                 className="absolute top-4 right-4 p-1 text-muted-foreground hover:text-foreground"
-                aria-label="Close navigation"
+                aria-label="Menüyü kapat"
               >
                 <IconX />
               </button>

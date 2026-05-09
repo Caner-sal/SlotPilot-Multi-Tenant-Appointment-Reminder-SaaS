@@ -2,6 +2,45 @@
 
 All notable changes to SlotPilot are documented here.
 
+## [1.3.0-whatsapp-auto-reply] — 2026-05-09
+
+### Phase WA-0 — Baseline, Policy Docs, Feature Branch
+- 6 new agent files: `whatsapp-auto-link-agent`, `whatsapp-webhook-agent`, `whatsapp-policy-agent`, `whatsapp-dashboard-agent`, `whatsapp-provider-agent`, `whatsapp-qa-agent`
+- `docs/whatsapp-auto-reply-policy.md`: 24-hour cooldown rule, opt-out keywords, KVKK notes
+- `.env.example`: `WHATSAPP_TEXT_PROVIDER`, `META_WHATSAPP_APP_SECRET`, `TWILIO_*`, `NEXT_PUBLIC_BOOKING_BASE_URL`
+
+### Phase WA-1 — DB Models + Provider Text Abstraction
+- `prisma/schema.prisma`: 4 new models — `WhatsAppAutoReplySettings`, `WhatsAppInboundMessage`, `WhatsAppAutoReplyLog`, `WhatsAppContactPreference`
+- Provider abstraction: `WhatsAppTextProvider` interface, Fake/Meta/Twilio implementations, factory with singleton + reset
+- `prisma/seed.ts`: `WhatsAppAutoReplySettings` demo seed
+- `src/tests/setup.ts`: 4 new model mocks
+- `src/tests/whatsapp-text-provider.test.ts`: 10 tests
+
+### Phase WA-2 — Webhook Receiver + Inbound Message Logging
+- `src/services/whatsapp-webhook.service.ts`: `parseMetaInboundPayload`, `storeInboundMessage` (P2002 dedup), `processInboundWebhook` (fire-and-forget)
+- `src/app/api/webhooks/whatsapp/route.ts`: POST handler extended to process inbound messages; always returns 200
+- `src/tests/whatsapp-webhook.test.ts`: 14 tests
+
+### Phase WA-3 — Auto Booking Link Reply Service
+- `src/services/booking-link.service.ts`: `getBookingUrl()` with `NEXT_PUBLIC_BOOKING_BASE_URL` support
+- `src/services/whatsapp-auto-reply.service.ts`: `processAutoReply()` with cooldown, opt-out, keyword, and provider abstraction
+- Pure functions: `buildReplyText`, `isOptOutMessage`, `matchesKeywords`, `checkCooldown`
+- `src/tests/whatsapp-auto-reply.test.ts`: 25 tests; `src/tests/booking-link.test.ts`: 4 tests
+
+### Phase WA-4 — Dashboard UI + API Routes
+- `src/app/api/whatsapp/auto-reply/settings/route.ts`: GET/PATCH with Zod validation and audit log
+- `src/app/api/whatsapp/auto-reply/logs/route.ts`: GET paginated logs
+- `src/app/api/whatsapp/auto-reply/preview/route.ts`: POST preview without DB write
+- `src/app/api/dev/fake-whatsapp/inbound/route.ts`: dev-only inbound message simulator
+- `src/app/dashboard/whatsapp/page.tsx`: Turkish dashboard with toggle, mode, cooldown, keywords, template, preview, logs table
+- `src/components/dashboard/sidebar.tsx`: WhatsApp nav item added
+- `src/lib/validators.ts`: `whatsAppAutoReplySettingsSchema` added
+
+### Phase WA-5 — Final QA + Docs
+- `docs/whatsapp-auto-link.md`: full usage guide (setup, fake testing, Meta setup, cooldown/opt-out)
+- README.md updated with WhatsApp auto booking link reply feature
+- All 280 tests pass; build clean; Prisma validate clean
+
 ## [1.2.0-district-skills-mcp] — 2026-05-09
 
 ### Phase DS-0 — Baseline, Repo Scan ve Risk Raporu

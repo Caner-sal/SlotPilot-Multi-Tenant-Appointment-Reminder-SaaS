@@ -24,5 +24,32 @@ vi.mock("@/lib/db", () => ({
     consentLog: { create: vi.fn() },
     dataDeletionRequest: { create: vi.fn() },
     invoiceProfile: { findUnique: vi.fn(), create: vi.fn(), upsert: vi.fn() },
+    whatsAppAutoReplySettings: {
+      findUnique: vi.fn(),
+      findFirst: vi.fn(),
+      upsert: vi.fn(),
+      update: vi.fn(),
+      create: vi.fn(),
+    },
+    whatsAppInboundMessage: {
+      findUnique: vi.fn(),
+      findFirst: vi.fn(),
+      create: vi.fn(),
+      findMany: vi.fn(),
+      count: vi.fn(),
+    },
+    whatsAppAutoReplyLog: {
+      create: vi.fn(),
+      findMany: vi.fn(),
+      count: vi.fn(),
+      update: vi.fn(),
+    },
+    whatsAppContactPreference: {
+      findUnique: vi.fn(),
+      findFirst: vi.fn(),
+      upsert: vi.fn(),
+      update: vi.fn(),
+      create: vi.fn(),
+    },
   },
 }));

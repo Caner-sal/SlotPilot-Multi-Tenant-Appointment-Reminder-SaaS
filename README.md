@@ -23,6 +23,7 @@ Built with Next.js 15, Prisma, SQLite/PostgreSQL, Auth.js, Stripe (test mode), a
 - **Auth** — credentials-based login, JWT sessions, protected routes
 - **SMS reminders** — Twilio integration (FAKE mode by default)
 - **WhatsApp reminders** — Meta Cloud API (FAKE mode by default)
+- **WhatsApp auto booking link reply** — inbound message → automatic booking URL reply with cooldown, opt-out, and keyword filtering
 - **Google Calendar sync** — two-way sync via OAuth 2.0 (FAKE mode by default)
 - **Public marketplace** — searchable business directory with category/city filters
 - **AI booking assistant** — per-business chatbot powered by Claude (Anthropic API)
