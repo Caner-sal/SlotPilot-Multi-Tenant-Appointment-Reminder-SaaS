@@ -1,270 +1,228 @@
 # Randevo
 
-**A full-stack multi-tenant appointment booking and reminder SaaS MVP for local businesses.**
+**Türkiye'nin akıllı randevu platformu — yerel işletmeler için çok kiracılı (multi-tenant) SaaS.**
 
-Built with Next.js 15, Prisma, SQLite/PostgreSQL, Auth.js, Stripe (test mode), and TypeScript.
-
----
-
-## Features
-
-- **Multi-tenant architecture** — each business has fully isolated data
-- **Public booking page** — `/booking/[slug]` for customer self-booking
-- **Smart slot generation** — respects staff availability, service duration, and existing bookings
-- **Double-booking prevention** — race condition-safe conflict checking
-- **Automated reminders** — email reminder scheduling (fake mode for local dev, Resend for production)
-- **Appointment dashboard** — manage, filter, and update appointment statuses
-- **Analytics dashboard** — revenue, appointment counts, top services, busiest staff
-- **Staff management** — multi-staff with service assignments
-- **Availability management** — weekly schedule per staff
-- **Subscription billing** — Free/Starter/Pro plans with Stripe test mode
-- **Plan limit enforcement** — backend-enforced limits (not client-side)
-- **Audit logs** — immutable log of all important actions
-- **Auth** — credentials-based login, JWT sessions, protected routes
-- **SMS reminders** — Twilio integration (FAKE mode by default)
-- **WhatsApp reminders** — Meta Cloud API (FAKE mode by default)
-- **WhatsApp auto booking link reply** — inbound message → automatic booking URL reply with cooldown, opt-out, and keyword filtering
-- **Google Calendar sync** — two-way sync via OAuth 2.0 (FAKE mode by default)
-- **Public marketplace** — searchable business directory with category/city filters
-- **AI booking assistant** — per-business chatbot powered by Claude (Anthropic API)
-- **Revenue accounting** — ledger tracking with CSV export
-- **Multi-location support** — multiple locations per organization
-- **Staff portal** — staff-specific login with appointment view
-- **Deposit payments** — Stripe checkout for service deposits
-- **Superadmin panel** — platform-level user and org management
-- **React Native mobile app** — Expo app for iOS/Android (staff dashboard)
+Berberler, kuaförler, güzellik salonları, koçlar ve diğer hizmet işletmeleri için 5 dakikada kurulum.
 
 ---
 
-## Monetization Model
+## Özellikler
 
-| Plan | Price | Staff | Appts/month | Email Reminders |
-|------|-------|-------|-------------|-----------------|
-| Free | $0 | 1 | 20 | No |
-| Starter | $9/mo | 3 | 300 | Yes |
-| Pro | $19/mo | Unlimited | Unlimited | Yes |
-
-Target customers: barbers, beauty salons, tutors, coaches, fitness trainers, small service businesses.
+- **Çok kiracılı mimari** — her işletme tamamen izole veriyle çalışır
+- **Herkese açık rezervasyon sayfası** — `/booking/[slug]` adresinde müşteri self-booking
+- **Akıllı slot üretimi** — personel müsaitliği, hizmet süresi ve mevcut randevulara göre
+- **Çift rezervasyon önleme** — yarış koşuluna (race condition) karşı güvenli çakışma kontrolü
+- **Otomatik hatırlatmalar** — e-posta, SMS, WhatsApp (yerel geliştirmede FAKE modu)
+- **Randevu paneli** — durum güncelleme, filtreleme ve yönetim
+- **Analitik panel** — ciro, randevu sayıları, en çok tercih edilen hizmet, en yoğun personel
+- **Personel yönetimi** — hizmet atamalı çoklu personel desteği
+- **Müsaitlik yönetimi** — personel başına haftalık program
+- **Abonelik ve faturalama** — Ücretsiz / Başlangıç / Pro planları (Stripe test modu)
+- **Plan limiti zorlama** — backend tarafında uygulanır, istemci tarafında değil
+- **Denetim günlüğü (Audit log)** — tüm önemli işlemlerin değiştirilemez kaydı
+- **Kimlik doğrulama** — credentials tabanlı giriş, JWT oturumları, korumalı rotalar
+- **SMS hatırlatmaları** — Twilio entegrasyonu (varsayılan: FAKE)
+- **WhatsApp hatırlatmaları** — Meta Cloud API (varsayılan: FAKE)
+- **WhatsApp otomatik rezervasyon linki yanıtı** — gelen mesaj → otomatik booking URL yanıtı (cooldown, opt-out, anahtar kelime filtresi)
+- **Google Takvim senkronizasyonu** — OAuth 2.0 ile çift yönlü (varsayılan: FAKE)
+- **Herkese açık market** — kategori/şehir filtrelemeli işletme dizini
+- **AI rezervasyon asistanı** — Claude (Anthropic API) ile işletme başına chatbot
+- **Gelir muhasebesi** — ledger takibi ve CSV dışa aktarma
+- **Çoklu şube desteği** — organizasyon başına birden fazla konum
+- **Personel portalı** — personele özel giriş ve randevu görünümü
+- **Depozito ödemeleri** — hizmet depozitolarında Stripe checkout
+- **Süper yönetici paneli** — platform düzeyinde kullanıcı ve organizasyon yönetimi
+- **KVKK uyumlu altyapı** — Türkiye'ye özel veri işleme yapısı
 
 ---
 
-## Tech Stack
+## Fiyatlandırma
 
-| Layer | Technology |
-|-------|-----------|
+| Plan | Fiyat | Personel | Aylık Randevu | E-posta Hatırlatma |
+|------|-------|----------|---------------|--------------------|
+| Ücretsiz | ₺0 | 1 | 20 | Hayır |
+| Başlangıç | ₺40/ay | 3 | 300 | Evet |
+| Pro | ₺249/ay | Sınırsız | Sınırsız | Evet |
+
+Hedef kitle: berberler, güzellik salonları, özel ders veren öğretmenler, koçlar, fitness eğitmenleri ve küçük hizmet işletmeleri.
+
+---
+
+## Teknoloji Yığını
+
+| Katman | Teknoloji |
+|--------|-----------|
 | Framework | Next.js 15 (App Router) |
-| Language | TypeScript |
-| Database | PostgreSQL 16 |
+| Dil | TypeScript |
+| Veritabanı | SQLite (geliştirme) / PostgreSQL (üretim) |
 | ORM | Prisma 6 |
-| Auth | NextAuth v5 (Auth.js) |
-| Styling | Tailwind CSS + Radix UI |
-| Validation | Zod |
-| Billing | Stripe (test mode) |
-| Email | Resend / fake log mode |
-| Testing | Vitest |
-| Dev DB | Docker Compose |
+| Kimlik Doğrulama | NextAuth v5 (Auth.js) |
+| Stil | Tailwind CSS v4 + Inline Styles |
+| Fontlar | Outfit (başlık) + Nunito (gövde) |
+| Doğrulama | Zod |
+| Faturalama | Stripe (test modu) |
+| E-posta | Resend / fake log modu |
+| Test | Vitest |
 
 ---
 
-## Architecture
+## Mimari
 
 ```
 src/
 ├── app/
-│   ├── api/              # API route handlers (Next.js)
-│   ├── (auth)/           # Login, register, onboarding
-│   ├── dashboard/        # Protected business dashboard
-│   └── booking/[slug]/   # Public booking page
+│   ├── api/              # API route handler'ları (Next.js)
+│   ├── (auth)/           # Giriş, kayıt, onboarding
+│   ├── dashboard/        # Korumalı işletme paneli
+│   └── booking/[slug]/   # Herkese açık rezervasyon sayfası
 ├── lib/
-│   ├── auth.ts           # NextAuth config
+│   ├── auth.ts           # NextAuth yapılandırması
 │   ├── db.ts             # Prisma singleton
-│   ├── tenant.ts         # Tenant isolation helpers
-│   ├── billing.ts        # Plan limit enforcement
-│   ├── stripe.ts         # Stripe client
-│   └── email.ts          # Email abstraction (fake/Resend)
-├── services/             # Business logic layer
+│   ├── tenant.ts         # Tenant izolasyon yardımcıları
+│   ├── billing.ts        # Plan limiti zorlama
+│   ├── stripe.ts         # Stripe istemcisi
+│   └── email.ts          # E-posta soyutlaması (fake/Resend)
+├── services/             # İş mantığı katmanı
 │   ├── booking.service.ts
 │   ├── availability.service.ts
 │   ├── reminder.service.ts
 │   ├── analytics.service.ts
 │   └── audit.service.ts
-└── tests/                # Vitest unit tests
+└── tests/                # Vitest birim testleri
 ```
 
-**Tenant isolation:** `organizationId` is always resolved from the authenticated session, never trusted from client input. Every tenant-scoped query includes `{ where: { organizationId } }`.
+**Tenant izolasyonu:** `organizationId` her zaman kimlik doğrulanmış oturumdan çözümlenir, istemci girdisine güvenilmez. Her tenant kapsamlı sorgu `{ where: { organizationId } }` içerir.
 
 ---
 
-## Database Schema
+## Veritabanı Şeması
 
-19 Prisma models:
+19 Prisma modeli:
 
-- **User** — platform accounts
-- **Organization** — business tenants with unique slug
-- **OrganizationMember** — user-org relationship with roles (OWNER, ADMIN, STAFF)
-- **Service** — bookable services with duration and price
-- **Staff** — employees with assigned services
-- **StaffInvite** — invite tokens for staff onboarding
-- **StaffService** — many-to-many service assignments
-- **AvailabilityRule** — weekly schedule per staff
-- **Customer** — booking customers (upserted on email)
-- **Appointment** — bookings with status tracking
-- **Location** — physical locations per organization
-- **Reminder** — scheduled email/SMS/WhatsApp notifications
-- **Subscription** — plan and billing info
-- **AuditLog** — immutable action history
-- **Payment** — Stripe payment records (idempotent)
-- **CalendarConnection** — Google Calendar OAuth tokens
-- **RevenueLedger** — accounting entries for payments
-
+- **User** — platform hesapları
+- **Organization** — benzersiz slug'a sahip işletme kiracıları
+- **OrganizationMember** — kullanıcı-organizasyon ilişkisi (OWNER, ADMIN, STAFF rolleri)
+- **Service** — süre ve fiyat bilgisiyle rezerve edilebilir hizmetler
+- **Staff** — atanmış hizmetlere sahip çalışanlar
+- **StaffInvite** — personel onboarding için davet token'ları
+- **StaffService** — çoka-çok hizmet atamaları
+- **AvailabilityRule** — personel başına haftalık program
+- **Customer** — rezervasyon müşterileri (e-posta ile upsert)
+- **Appointment** — durum takibiyle rezervasyonlar
+- **Location** — organizasyon başına fiziksel konumlar
+- **Reminder** — zamanlanmış e-posta/SMS/WhatsApp bildirimleri
+- **Subscription** — plan ve faturalama bilgisi
+- **AuditLog** — değiştirilemez işlem geçmişi
+- **Payment** — Stripe ödeme kayıtları (idempotent)
+- **CalendarConnection** — Google Takvim OAuth token'ları
+- **RevenueLedger** — ödemeler için muhasebe girdileri
 
 ---
 
-## Getting Started
+## Kurulum
 
-### Prerequisites
+### Gereksinimler
 
-- Node.js 20+ 
-- Docker Desktop (for local PostgreSQL)
+- Node.js 20+
 - Git
 
-### 1. Clone and install
+### 1. Klonla ve yükle
 
 ```bash
-git clone https://github.com/Caner-sal/Randevo-Multi-Tenant-Appointment-Reminder-SaaS.git
-cd Randevo-Multi-Tenant-Appointment-Reminder-SaaS
-npm install --legacy-peer-deps --ignore-scripts
+git clone https://github.com/Caner-sal/Randevo.git
+cd Randevo
+npm install
 ```
 
-### 2. Set up environment variables
+### 2. Ortam değişkenlerini ayarla
 
 ```bash
 cp .env.example .env
 ```
 
-Edit `.env` — the Docker defaults work out of the box for local development.
+`.env` dosyasını düzenle — SQLite için varsayılan değerler yerel geliştirmede olduğu gibi çalışır.
 
-### 3. Start PostgreSQL
-
-```bash
-docker-compose up -d
-```
-
-### 4. Run migrations and seed
+### 3. Prisma istemcisini oluştur ve seed yükle
 
 ```bash
-npm run db:generate    # Generate Prisma client
-npm run db:migrate     # Run migrations
-npm run db:seed        # Load demo data
+npm run db:generate    # Prisma istemcisini oluştur
+npm run db:push        # Veritabanı şemasını uygula
+npm run db:seed        # Demo verilerini yükle
 ```
 
-### 5. Start the development server
+### 4. Geliştirme sunucusunu başlat
 
 ```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000)
+[http://localhost:3000](http://localhost:3000) adresini aç.
 
 ---
 
-## Environment Variables
+## Ortam Değişkenleri
 
-See [.env.example](.env.example) for all variables. Key ones:
+Tüm değişkenler için [.env.example](.env.example) dosyasına bak. Temel olanlar:
 
-| Variable | Description |
-|----------|-------------|
-| `DATABASE_URL` | SQLite (default: `file:./dev.db`) or PostgreSQL URL |
-| `AUTH_SECRET` | NextAuth secret (generate with `openssl rand -base64 32`) |
-| `STRIPE_SECRET_KEY` | Stripe test key (`sk_test_...`) |
-| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | Stripe publishable key |
-| `STRIPE_WEBHOOK_SECRET` | Stripe webhook signature secret |
-| `RESEND_API_KEY` | Leave empty for fake email mode |
-| `SMS_PROVIDER` | `FAKE` (default) or `TWILIO` |
-| `WHATSAPP_PROVIDER` | `FAKE` (default) or `META` |
-| `CALENDAR_PROVIDER` | `FAKE` (default) or `GOOGLE` |
-| `AI_PROVIDER` | `DISABLED` (default) or `ANTHROPIC` |
-| `ANTHROPIC_API_KEY` | Required when `AI_PROVIDER=ANTHROPIC` |
+| Değişken | Açıklama |
+|----------|----------|
+| `DATABASE_URL` | SQLite (varsayılan: `file:./dev.db`) veya PostgreSQL URL |
+| `AUTH_SECRET` | NextAuth secret (`openssl rand -base64 32` ile oluştur) |
+| `STRIPE_SECRET_KEY` | Stripe test anahtarı (`sk_test_...`) |
+| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | Stripe yayınlanabilir anahtar |
+| `STRIPE_WEBHOOK_SECRET` | Stripe webhook imza secret'ı |
+| `RESEND_API_KEY` | Fake e-posta modu için boş bırak |
+| `SMS_PROVIDER` | `FAKE` (varsayılan) veya `TWILIO` |
+| `WHATSAPP_PROVIDER` | `FAKE` (varsayılan) veya `META` |
+| `CALENDAR_PROVIDER` | `FAKE` (varsayılan) veya `GOOGLE` |
+| `AI_PROVIDER` | `DISABLED` (varsayılan) veya `ANTHROPIC` |
+| `ANTHROPIC_API_KEY` | `AI_PROVIDER=ANTHROPIC` olduğunda gerekli |
 
 ---
 
-## Demo Account
+## Demo Hesabı
 
-After seeding:
+Seed sonrası:
 
 ```
-Email:    demo@randevo.app
-Password: demo1234
+E-posta:  demo@randevo.app
+Şifre:    demo1234
 ```
 
-Public booking URL: `http://localhost:3000/booking/barber-demo`
+Herkese açık rezervasyon URL'i: `http://localhost:3000/booking/barber-demo`
 
 ---
 
-## Testing
+## Testler
 
 ```bash
-npm test              # Run all tests
-npm run test:watch    # Watch mode
+npm test              # Tüm testleri çalıştır
+npm run test:watch    # İzleme modu
 ```
 
-Test coverage (95 tests across 14 suites):
-- Booking engine (slot generation, conflict prevention)
-- Tenant isolation (cross-org access blocked)
-- Plan limit enforcement (FREE/STARTER/PRO)
-- Reminder scheduling and processing
-- SMS/WhatsApp provider (fake + opt-in guard)
-- Google Calendar sync (fake provider + error isolation)
-- Marketplace filtering
-- Deposit payments (Stripe idempotency)
-- Multi-location support
-- Staff portal access
-- Superadmin operations
-- AI chatbot (disabled mode, missing message, disabled org)
-- Accounting / revenue ledger (idempotency guard)
+Test kapsamı (95 test, 14 suite):
+- Rezervasyon motoru (slot üretimi, çakışma önleme)
+- Tenant izolasyonu (organizasyonlar arası erişim engelleme)
+- Plan limiti zorlama (FREE/STARTER/PRO)
+- Hatırlatma zamanlama ve işleme
+- SMS/WhatsApp sağlayıcı (fake + opt-in koruması)
+- Google Takvim senkronizasyonu (fake sağlayıcı + hata izolasyonu)
+- Market filtreleme
+- Depozito ödemeleri (Stripe idempotency)
+- Çoklu şube desteği
+- Personel portalı erişimi
+- Süper yönetici işlemleri
+- AI chatbot (devre dışı modu, eksik mesaj, devre dışı org)
+- Muhasebe / gelir ledger (idempotency koruması)
 
 ---
 
-## Screenshots
+## Yazar
 
-> Add screenshots of your running app here.
-
-- [ ] Landing page
-- [ ] Register / Login
-- [ ] Organization onboarding
-- [ ] Dashboard overview
-- [ ] Services management
-- [ ] Staff management
-- [ ] Availability settings
-- [ ] Public booking page
-- [ ] Slot selection
-- [ ] Appointment confirmation
-- [ ] Appointment dashboard
-- [ ] Analytics cards
-- [ ] Billing page
-- [ ] Reminder logs
+[Caner Sal](https://github.com/Caner-sal) tarafından full-stack SaaS portföy projesi olarak geliştirildi.
 
 ---
 
-## Future Improvements
-
-- [ ] Customer cancellation self-service link
-- [ ] Coupon/discount system
-- [ ] Email template editor
-- [ ] Calendar drag-and-drop UI
-- [ ] Custom domain per business
-- [ ] AI-powered no-show prediction
-- [ ] Push notifications in mobile app
-- [ ] Offline support in mobile app
-
----
-
-## Author
-
-Built by [Caner Sal](https://github.com/Caner-sal) as a full-stack SaaS portfolio project.
-
----
-
-## License
+## Lisans
 
 MIT

@@ -20,22 +20,60 @@ async function getDashboardData() {
   }
 }
 
-function StatCard({
-  label,
-  value,
-  color,
-}: {
-  label: string;
-  value: string | number;
-  color: string;
-}) {
+const statColors: Record<string, string> = {
+  blue:   "#7ba7f5",
+  indigo: "#a59cf0",
+  purple: "#c4a0f8",
+  green:  "#2de4a4",
+  red:    "#f43f5e",
+  orange: "#f59e0b",
+};
+
+function StatCard({ label, value, color }: { label: string; value: string | number; color: string }) {
+  const c = statColors[color] ?? "#a59cf0";
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
-      <p className={`text-3xl font-bold ${color}`}>{value}</p>
-      <p className="text-sm text-gray-500 mt-1">{label}</p>
+    <div style={{
+      background: "#111120", border: "1px solid rgba(119,104,212,0.1)",
+      borderRadius: 12, padding: "16px 14px", position: "relative", overflow: "hidden",
+    }}>
+      <p style={{ fontFamily: "var(--font-heading, Outfit, sans-serif)", fontSize: 26, fontWeight: 700, letterSpacing: "-0.02em", color: c, marginBottom: 4 }}>
+        {value}
+      </p>
+      <p style={{ fontSize: 11, color: "#8a8aaa" }}>{label}</p>
+      <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 2, background: `linear-gradient(90deg,transparent,${c},transparent)`, opacity: 0.55 }} />
     </div>
   );
 }
+
+const quickLinks = [
+  {
+    href: "/dashboard/appointments", label: "Randevuları Gör",
+    icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /></svg>,
+    ext: false,
+  },
+  {
+    href: "/dashboard/services", label: "Hizmetleri Yönet",
+    icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>,
+    ext: false,
+  },
+  {
+    href: "/dashboard/staff", label: "Çalışanları Yönet",
+    icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /></svg>,
+    ext: false,
+  },
+  {
+    href: "/dashboard/settings", label: "İşletme Ayarları",
+    icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3" /><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" /></svg>,
+    ext: false,
+  },
+];
+
+const logDotColors: Record<string, string> = {
+  APPOINTMENT_CREATED:   "#7768d4",
+  APPOINTMENT_COMPLETED: "#2de4a4",
+  APPOINTMENT_CANCELLED: "#f43f5e",
+  STAFF_UPDATED:         "#f59e0b",
+};
 
 export default async function DashboardPage() {
   const data = await getDashboardData();
@@ -50,123 +88,91 @@ export default async function DashboardPage() {
     : "—";
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
+
+      {/* Page header */}
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Kontrol Paneli</h1>
-        <p className="text-gray-500 text-sm mt-1">Kontrol panelinize hoş geldiniz.</p>
+        <h2 style={{ fontFamily: "var(--font-heading, Outfit, sans-serif)", fontSize: 22, fontWeight: 700, letterSpacing: "-0.02em" }}>
+          Genel Bakış
+        </h2>
+        <p style={{ fontSize: 13, color: "#8a8aaa", marginTop: 3 }}>Kontrol panelinize hoş geldiniz.</p>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-        <StatCard
-          label="Bugünkü Randevular"
-          value={analytics?.todayAppointments ?? "—"}
-          color="text-blue-600"
-        />
-        <StatCard
-          label="Bu Hafta"
-          value={analytics?.weekAppointments ?? "—"}
-          color="text-indigo-600"
-        />
-        <StatCard
-          label="Bu Ay"
-          value={analytics?.monthAppointments ?? "—"}
-          color="text-purple-600"
-        />
-        <StatCard
-          label="Tamamlanan"
-          value={analytics?.completedCount ?? "—"}
-          color="text-green-600"
-        />
-        <StatCard
-          label="İptal Edilen"
-          value={analytics?.cancelledCount ?? "—"}
-          color="text-red-600"
-        />
-        <StatCard
-          label="Gelmeyen"
-          value={analytics?.noShowCount ?? "—"}
-          color="text-orange-600"
-        />
+      {/* Stat grid */}
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+        <StatCard label="Bugünkü Randevular" value={analytics?.todayAppointments ?? "—"} color="blue" />
+        <StatCard label="Bu Hafta"           value={analytics?.weekAppointments  ?? "—"} color="indigo" />
+        <StatCard label="Bu Ay"              value={analytics?.monthAppointments ?? "—"} color="purple" />
+        <StatCard label="Tamamlanan"         value={analytics?.completedCount    ?? "—"} color="green" />
+        <StatCard label="İptal Edilen"       value={analytics?.cancelledCount    ?? "—"} color="red" />
+        <StatCard label="Gelmeyen"           value={analytics?.noShowCount       ?? "—"} color="orange" />
       </div>
 
-      <div className="grid md:grid-cols-3 gap-4">
-        <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
-          <p className="text-xs text-gray-400 uppercase tracking-wider font-semibold mb-1">
+      {/* Metric cards */}
+      <div className="grid md:grid-cols-3 gap-3">
+        <div style={{ background: "#111120", border: "1px solid rgba(119,104,212,0.1)", borderRadius: 12, padding: "18px 20px" }}>
+          <p style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.09em", color: "#3a3a58", fontFamily: "var(--font-heading, Outfit, sans-serif)", fontWeight: 700, marginBottom: 7 }}>
             Tahmini Ciro (Ay)
           </p>
-          <p className="text-2xl font-bold text-emerald-600">{revenue}</p>
+          <p style={{ fontFamily: "var(--font-heading, Outfit, sans-serif)", fontSize: 22, fontWeight: 700, color: "#2de4a4" }}>{revenue}</p>
         </div>
-        <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
-          <p className="text-xs text-gray-400 uppercase tracking-wider font-semibold mb-1">
+
+        <div style={{ background: "#111120", border: "1px solid rgba(119,104,212,0.1)", borderRadius: 12, padding: "18px 20px" }}>
+          <p style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.09em", color: "#3a3a58", fontFamily: "var(--font-heading, Outfit, sans-serif)", fontWeight: 700, marginBottom: 7 }}>
             En Çok Tercih Edilen Hizmet
           </p>
-          <p className="text-lg font-semibold text-gray-800">
+          <p style={{ fontFamily: "var(--font-heading, Outfit, sans-serif)", fontSize: 18, fontWeight: 600 }}>
             {analytics?.topServiceName ?? "Henüz veri yok"}
           </p>
         </div>
-        <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
-          <p className="text-xs text-gray-400 uppercase tracking-wider font-semibold mb-1">
+
+        <div style={{ background: "#111120", border: "1px solid rgba(119,104,212,0.1)", borderRadius: 12, padding: "18px 20px" }}>
+          <p style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.09em", color: "#3a3a58", fontFamily: "var(--font-heading, Outfit, sans-serif)", fontWeight: 700, marginBottom: 7 }}>
             En Yoğun Çalışan
           </p>
-          <p className="text-lg font-semibold text-gray-800">
+          <p style={{ fontFamily: "var(--font-heading, Outfit, sans-serif)", fontSize: 18, fontWeight: 600 }}>
             {analytics?.busiestStaffName ?? "Henüz veri yok"}
           </p>
         </div>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-6">
-        <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
-          <h2 className="font-semibold text-gray-900 mb-4">Hızlı Erişim</h2>
+      {/* Bottom grid */}
+      <div className="grid md:grid-cols-2 gap-5">
+
+        {/* Quick links */}
+        <div style={{ background: "#111120", border: "1px solid rgba(119,104,212,0.1)", borderRadius: 16, padding: "20px 22px" }}>
+          <h3 style={{ fontFamily: "var(--font-heading, Outfit, sans-serif)", fontSize: 14, fontWeight: 600, marginBottom: 14 }}>Hızlı Erişim</h3>
           <div className="flex flex-col gap-2">
-            <Link
-              href="/dashboard/appointments"
-              className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:border-blue-400 hover:bg-blue-50 transition-colors text-sm font-medium text-gray-700"
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-blue-600">
-                <rect x="3" y="4" width="18" height="18" rx="2" />
-                <line x1="16" y1="2" x2="16" y2="6" />
-                <line x1="8" y1="2" x2="8" y2="6" />
-                <line x1="3" y1="10" x2="21" y2="10" />
-              </svg>
-              Randevuları Gör
-            </Link>
-            <Link
-              href="/dashboard/services"
-              className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:border-blue-400 hover:bg-blue-50 transition-colors text-sm font-medium text-gray-700"
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-blue-600">
-                <line x1="12" y1="5" x2="12" y2="19" />
-                <line x1="5" y1="12" x2="19" y2="12" />
-              </svg>
-              Hizmetleri Yönet
-            </Link>
-            <Link
-              href="/dashboard/staff"
-              className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:border-blue-400 hover:bg-blue-50 transition-colors text-sm font-medium text-gray-700"
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-blue-600">
-                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-                <circle cx="9" cy="7" r="4" />
-              </svg>
-              Çalışanları Yönet
-            </Link>
-            <Link
-              href="/dashboard/settings"
-              className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:border-blue-400 hover:bg-blue-50 transition-colors text-sm font-medium text-gray-700"
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-blue-600">
-                <circle cx="12" cy="12" r="3" />
-                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
-              </svg>
-              İşletme Ayarları
-            </Link>
+            {quickLinks.map((ql) => (
+              <Link
+                key={ql.href}
+                href={ql.href}
+                style={{
+                  display: "flex", alignItems: "center", gap: 12,
+                  padding: "10px 13px", borderRadius: 9,
+                  border: "1px solid rgba(119,104,212,0.1)",
+                  fontSize: 13.5, fontWeight: 500, color: "#8a8aaa",
+                  transition: "all 0.15s", textDecoration: "none",
+                }}
+                className="hover:border-[rgba(119,104,212,0.28)] hover:bg-[rgba(119,104,212,0.06)] hover:text-[#f0eff8]"
+              >
+                <span style={{ color: "#a59cf0", flexShrink: 0 }}>{ql.icon}</span>
+                {ql.label}
+              </Link>
+            ))}
             {org && (
               <Link
                 href={`/booking/${org.slug}`}
                 target="_blank"
-                className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:border-green-400 hover:bg-green-50 transition-colors text-sm font-medium text-gray-700"
+                style={{
+                  display: "flex", alignItems: "center", gap: 12,
+                  padding: "10px 13px", borderRadius: 9,
+                  border: "1px solid rgba(45,228,164,0.18)",
+                  fontSize: 13.5, fontWeight: 500, color: "#2de4a4",
+                  transition: "all 0.15s", textDecoration: "none",
+                }}
               >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-green-600">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
                   <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
                   <polyline points="15 3 21 3 21 9" />
                   <line x1="10" y1="14" x2="21" y2="3" />
@@ -177,29 +183,34 @@ export default async function DashboardPage() {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
-          <h2 className="font-semibold text-gray-900 mb-4">Son İşlemler</h2>
+        {/* Audit log */}
+        <div style={{ background: "#111120", border: "1px solid rgba(119,104,212,0.1)", borderRadius: 16, padding: "20px 22px" }}>
+          <h3 style={{ fontFamily: "var(--font-heading, Outfit, sans-serif)", fontSize: 14, fontWeight: 600, marginBottom: 14 }}>Son İşlemler</h3>
           {auditLogs.length === 0 ? (
-            <p className="text-sm text-gray-400">Henüz işlem yok.</p>
+            <p style={{ fontSize: 13, color: "#3a3a58" }}>Henüz işlem yok.</p>
           ) : (
-            <div className="space-y-3">
-              {auditLogs.map((log) => (
-                <div key={log.id} className="flex items-start gap-3 text-sm">
-                  <div className="w-2 h-2 rounded-full bg-blue-400 mt-1.5 shrink-0" />
-                  <div>
-                    <span className="font-medium text-gray-700">
-                      {log.action.replace(/_/g, " ")}
-                    </span>
-                    <span className="text-gray-400 ml-1">· {log.entityType}</span>
-                    <p className="text-gray-400 text-xs">
-                      {new Date(log.createdAt).toLocaleString("tr-TR", { timeZone: "Europe/Istanbul" })}
-                    </p>
+            <div>
+              {auditLogs.map((log) => {
+                const dotColor = logDotColors[log.action] ?? "#7768d4";
+                return (
+                  <div key={log.id} style={{ display: "flex", alignItems: "flex-start", gap: 11, padding: "10px 0", borderBottom: "1px solid rgba(119,104,212,0.07)" }}>
+                    <div style={{ width: 7, height: 7, borderRadius: "50%", background: dotColor, marginTop: 5, flexShrink: 0 }} />
+                    <div>
+                      <div>
+                        <span style={{ fontSize: 12.5, fontWeight: 600 }}>{log.action.replace(/_/g, " ")}</span>
+                        <span style={{ fontSize: 12.5, color: "#8a8aaa", marginLeft: 4 }}>· {log.entityType}</span>
+                      </div>
+                      <p style={{ fontSize: 11, color: "#3a3a58", marginTop: 2 }}>
+                        {new Date(log.createdAt).toLocaleString("tr-TR", { timeZone: "Europe/Istanbul" })}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>
+
       </div>
     </div>
   );
