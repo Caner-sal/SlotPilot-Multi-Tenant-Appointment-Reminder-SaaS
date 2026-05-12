@@ -24,6 +24,7 @@
     "db:reset": "prisma migrate reset",
     "audit:districts": "tsx scripts/audit-turkey-districts.ts",
     "check:translations": "tsx scripts/check-translations.ts",
+    "i18n:check": "tsx scripts/check-translations.ts",
     "validate:skills": "node scripts/validate-skills.js",
     "check:secrets": "node scripts/check-no-secrets.js"
   },

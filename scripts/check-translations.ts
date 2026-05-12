@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { locales, type AppLocale } from "../src/i18n/locales";
 
 type Dict = Record<string, unknown>;
 
@@ -31,14 +32,29 @@ if (localeFiles.length === 0) {
   process.exit(1);
 }
 
-const baseFile = "tr.json";
+const baseFile = "en.json";
 if (!localeFiles.includes(baseFile)) {
-  console.error("Base locale file tr.json is required.");
+  console.error("Base locale file en.json is required.");
   process.exit(1);
 }
 
 const baseKeys = new Set(flattenKeys(readJson(path.join(messagesDir, baseFile))));
 let hasError = false;
+
+const fileLocales = localeFiles.map((file) => file.replace(".json", ""));
+const missingMessageFiles = locales.filter((locale) => !fileLocales.includes(locale));
+const extraMessageFiles = fileLocales.filter((locale) => !locales.includes(locale as AppLocale));
+
+if (missingMessageFiles.length || extraMessageFiles.length) {
+  hasError = true;
+  console.error("Locale/messages mismatch:");
+  if (missingMessageFiles.length) {
+    console.error(`  Missing message files (${missingMessageFiles.length}): ${missingMessageFiles.join(", ")}`);
+  }
+  if (extraMessageFiles.length) {
+    console.error(`  Extra message files (${extraMessageFiles.length}): ${extraMessageFiles.join(", ")}`);
+  }
+}
 
 for (const file of localeFiles) {
   const locale = file.replace(".json", "");
@@ -63,4 +79,4 @@ if (hasError) {
   process.exit(1);
 }
 
-console.log(`Translation key parity PASS (${localeFiles.join(", ")})`);
+console.log(`Translation key parity PASS (${localeFiles.join(", ")}) [base=en]`);
