@@ -10,8 +10,8 @@ Plan file: `SLOTPILOT_EXTRA_LANGUAGE_PACKS_EXPANDED_UPDATE_PLAN.md`
 |-------|--------|-------|
 | LANG-0 | Complete | Baseline audit completed, `en` set as source baseline |
 | LANG-1 | Complete | Locale list expanded to 10, web language switcher now includes new locales |
-| LANG-2 | Pending | Spanish + French translation completion |
-| LANG-3 | Pending | Italian + Persian translation completion + RTL regression checks |
+| LANG-2 | Complete | Spanish + French language packs completed and validated |
+| LANG-3 | Complete | Italian + Persian language packs completed and validated |
 | LANG-4 | Pending | Russian + Dutch translation completion + smoke checks |
 | LANG-5 | Pending | Mobile + notification locale completion + final QA + release tag |
 
