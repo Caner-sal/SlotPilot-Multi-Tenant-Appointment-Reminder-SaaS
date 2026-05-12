@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator, Alert } from "react-native";
 import { apiFetch } from "../api/client";
 import type { Appointment } from "../api/client";
+import { useI18n } from "../i18n";
 
 interface Props {
   token: string;
@@ -14,33 +15,34 @@ const STATUS_COLORS: Record<string, string> = {
   CONFIRMED: "#2563eb",
   COMPLETED: "#059669",
   CANCELLED: "#6b7280",
-  NO_SHOW: "#ef4444",
+  NO_SHOW: "#ef4444"
 };
 
 export default function AppointmentsScreen({ token, onSelectAppointment, onBack }: Props) {
+  const { locale, t } = useI18n();
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     apiFetch<{ data: Appointment[] }>("/api/appointments", {}, token)
       .then((res) => setAppointments(res.data ?? []))
-      .catch(() => Alert.alert("Error", "Could not load appointments."))
+      .catch(() => Alert.alert(t("common_error"), t("appointments_load_error")))
       .finally(() => setLoading(false));
-  }, [token]);
+  }, [t, token]);
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={onBack}>
-          <Text style={styles.back}>← Back</Text>
+          <Text style={styles.back}>{t("common_back")}</Text>
         </TouchableOpacity>
-        <Text style={styles.title}>Appointments</Text>
+        <Text style={styles.title}>{t("appointments_title")}</Text>
       </View>
 
       {loading ? (
         <ActivityIndicator style={{ marginTop: 40 }} size="large" color="#2563eb" />
       ) : appointments.length === 0 ? (
-        <Text style={styles.empty}>No appointments found.</Text>
+        <Text style={styles.empty}>{t("appointments_empty")}</Text>
       ) : (
         <FlatList
           data={appointments}
@@ -51,12 +53,12 @@ export default function AppointmentsScreen({ token, onSelectAppointment, onBack 
               <View style={styles.cardRow}>
                 <Text style={styles.customerName}>{item.customer.fullName}</Text>
                 <View style={[styles.statusBadge, { backgroundColor: STATUS_COLORS[item.status] + "22" }]}>
-                  <Text style={[styles.statusText, { color: STATUS_COLORS[item.status] }]}>{item.status}</Text>
+                  <Text style={[styles.statusText, { color: STATUS_COLORS[item.status] }]}>{t(`status_${item.status.toLowerCase()}`)}</Text>
                 </View>
               </View>
-              <Text style={styles.serviceName}>{item.service.name} • {item.staff.name}</Text>
+              <Text style={styles.serviceName}>{`${item.service.name} - ${item.staff.name}`}</Text>
               <Text style={styles.time}>
-                {new Date(item.startTime).toLocaleString([], { dateStyle: "short", timeStyle: "short" })}
+                {new Date(item.startTime).toLocaleString(locale, { dateStyle: "short", timeStyle: "short" })}
               </Text>
             </TouchableOpacity>
           )}
@@ -72,11 +74,20 @@ const styles = StyleSheet.create({
   back: { color: "#2563eb", fontSize: 15 },
   title: { fontSize: 20, fontWeight: "700", color: "#111827" },
   empty: { color: "#9ca3af", textAlign: "center", marginTop: 40 },
-  card: { backgroundColor: "#fff", borderRadius: 12, padding: 14, marginBottom: 10, shadowColor: "#000", shadowOpacity: 0.05, shadowRadius: 6, elevation: 2 },
+  card: {
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    padding: 14,
+    marginBottom: 10,
+    shadowColor: "#000",
+    shadowOpacity: 0.05,
+    shadowRadius: 6,
+    elevation: 2
+  },
   cardRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 4 },
   customerName: { fontWeight: "600", fontSize: 15, color: "#111827" },
   serviceName: { fontSize: 13, color: "#6b7280", marginBottom: 2 },
   time: { fontSize: 12, color: "#9ca3af" },
   statusBadge: { borderRadius: 20, paddingHorizontal: 8, paddingVertical: 2 },
-  statusText: { fontSize: 11, fontWeight: "600" },
+  statusText: { fontSize: 11, fontWeight: "600" }
 });

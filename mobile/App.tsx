@@ -4,6 +4,7 @@ import LoginScreen from "./src/screens/LoginScreen";
 import DashboardScreen from "./src/screens/DashboardScreen";
 import AppointmentsScreen from "./src/screens/AppointmentsScreen";
 import AppointmentDetailScreen from "./src/screens/AppointmentDetailScreen";
+import { I18nProvider } from "./src/i18n";
 
 type Screen =
   | { name: "login" }
@@ -29,7 +30,7 @@ export default function App() {
   }
 
   return (
-    <>
+    <I18nProvider>
       <StatusBar style="auto" />
       {screen.name === "login" && <LoginScreen onLogin={handleLogin} />}
       {screen.name === "dashboard" && (
@@ -54,6 +55,6 @@ export default function App() {
           onBack={() => setScreen({ name: "appointments" })}
         />
       )}
-    </>
+    </I18nProvider>
   );
 }

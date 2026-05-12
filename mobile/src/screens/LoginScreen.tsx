@@ -10,6 +10,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
+import { useI18n } from "../i18n";
 
 interface Props {
   onLogin: (token: string, email: string) => void;
@@ -18,13 +19,14 @@ interface Props {
 const API_BASE = process.env.EXPO_PUBLIC_API_URL ?? "http://localhost:3000";
 
 export default function LoginScreen({ onLogin }: Props) {
+  const { t } = useI18n();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
   async function handleLogin() {
     if (!email.trim() || !password.trim()) {
-      Alert.alert("Error", "Please enter email and password.");
+      Alert.alert(t("login_error_title"), t("login_error_missing"));
       return;
     }
 
@@ -47,10 +49,10 @@ export default function LoginScreen({ onLogin }: Props) {
         // Pass email as identifier so subsequent requests can use session
         onLogin(sessionCookie, email.trim().toLowerCase());
       } else {
-        Alert.alert("Login Failed", "Invalid email or password.");
+        Alert.alert(t("login_error_failed_title"), t("login_error_failed"));
       }
     } catch (err) {
-      Alert.alert("Error", "Could not connect to server. Check EXPO_PUBLIC_API_URL.");
+      Alert.alert(t("login_error_title"), t("login_error_connection"));
     } finally {
       setLoading(false);
     }
@@ -62,12 +64,12 @@ export default function LoginScreen({ onLogin }: Props) {
       behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
       <View style={styles.card}>
-        <Text style={styles.title}>Randevo</Text>
-        <Text style={styles.subtitle}>Business Dashboard</Text>
+        <Text style={styles.title}>{t("login_title")}</Text>
+        <Text style={styles.subtitle}>{t("login_subtitle")}</Text>
 
         <TextInput
           style={styles.input}
-          placeholder="Email"
+          placeholder={t("login_email")}
           value={email}
           onChangeText={setEmail}
           keyboardType="email-address"
@@ -76,7 +78,7 @@ export default function LoginScreen({ onLogin }: Props) {
         />
         <TextInput
           style={styles.input}
-          placeholder="Password"
+          placeholder={t("login_password")}
           value={password}
           onChangeText={setPassword}
           secureTextEntry
@@ -90,7 +92,7 @@ export default function LoginScreen({ onLogin }: Props) {
           {loading ? (
             <ActivityIndicator color="#fff" />
           ) : (
-            <Text style={styles.buttonText}>Sign In</Text>
+            <Text style={styles.buttonText}>{t("login_sign_in")}</Text>
           )}
         </TouchableOpacity>
       </View>

@@ -1,4 +1,9 @@
 const API_BASE = process.env.EXPO_PUBLIC_API_URL ?? "http://localhost:3000";
+let apiLocale = "tr";
+
+export function setApiLocale(locale: string) {
+  apiLocale = locale;
+}
 
 export class ApiError extends Error {
   constructor(public status: number, message: string) {
@@ -13,6 +18,7 @@ export async function apiFetch<T>(
 ): Promise<T> {
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
+    "Accept-Language": apiLocale,
     ...(options.headers as Record<string, string>),
   };
 
