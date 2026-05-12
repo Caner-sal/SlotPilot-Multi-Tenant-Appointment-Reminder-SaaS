@@ -1,0 +1,19 @@
+{
+  "common": {
+    "language": "اللغة",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "loading": "جارٍ التحميل..."
+  },
+  "nav": {
+    "dashboard": "لوحة التحكم",
+    "appointments": "المواعيد",
+    "services": "الخدمات",
+    "staff": "الموظفون"
+  },
+  "booking": {
+    "title": "حجز موعد",
+    "selectService": "اختر الخدمة",
+    "selectDate": "اختر التاريخ"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "common": {
+    "language": "Dil",
+    "save": "Kaydet",
+    "cancel": "İptal",
+    "loading": "Yükleniyor..."
+  },
+  "nav": {
+    "dashboard": "Kontrol Paneli",
+    "appointments": "Randevular",
+    "services": "Hizmetler",
+    "staff": "Çalışanlar"
+  },
+  "booking": {
+    "title": "Randevu Al",
+    "selectService": "Hizmet Seçin",
+    "selectDate": "Tarih Seçin"
+  }
+}

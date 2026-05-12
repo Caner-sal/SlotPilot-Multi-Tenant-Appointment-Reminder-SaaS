@@ -1,0 +1,19 @@
+{
+  "common": {
+    "language": "Sprache",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "loading": "Wird geladen..."
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "appointments": "Termine",
+    "services": "Leistungen",
+    "staff": "Mitarbeiter"
+  },
+  "booking": {
+    "title": "Termin buchen",
+    "selectService": "Leistung auswählen",
+    "selectDate": "Datum auswählen"
+  }
+}

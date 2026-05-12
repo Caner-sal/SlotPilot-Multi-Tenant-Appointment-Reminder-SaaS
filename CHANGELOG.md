@@ -2,6 +2,27 @@
 
 All notable changes to Randevo are documented here.
 
+## [1.3.2-global-i18n-phase-1] — 2026-05-12
+
+### Phase I18N-1 — Web Locale Routing ve Message Yapýsý
+- Added `next-intl` dependency and plugin wiring in `next.config.ts`
+- Added i18n configuration files:
+  - `src/i18n/locales.ts`
+  - `src/i18n/routing.ts`
+  - `src/i18n/navigation.ts`
+  - `src/i18n/request.ts`
+  - `src/i18n/pathing.ts`
+- Added bootstrap message dictionaries:
+  - `src/messages/tr.json`
+  - `src/messages/en.json`
+  - `src/messages/de.json`
+  - `src/messages/ar.json`
+- Updated root layout to load locale messages and provide `NextIntlClientProvider`
+- Extended middleware with locale prefix handling:
+  - redirects non-prefixed routes to `/{locale}/...`
+  - rewrites prefixed routes to current route tree
+  - keeps auth protection behavior locale-aware
+- Added routing helper tests: `src/tests/i18n-routing.test.ts`
 ## [1.3.1-global-i18n-phase-0] — 2026-05-12
 
 ### Phase I18N-0 — Baseline, Audit ve Mimari Karar
@@ -262,4 +283,5 @@ All notable changes to Randevo are documented here.
 - Email reminders (fake log + Resend)
 - Audit logging
 - NextAuth v5 credentials auth with JWT sessions
+
 

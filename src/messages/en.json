@@ -1,0 +1,19 @@
+{
+  "common": {
+    "language": "Language",
+    "save": "Save",
+    "cancel": "Cancel",
+    "loading": "Loading..."
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "appointments": "Appointments",
+    "services": "Services",
+    "staff": "Staff"
+  },
+  "booking": {
+    "title": "Book Appointment",
+    "selectService": "Select Service",
+    "selectDate": "Select Date"
+  }
+}
