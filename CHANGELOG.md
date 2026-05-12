@@ -2,6 +2,24 @@
 
 All notable changes to Randevo are documented here.
 
+## [1.3.9-global-i18n-phase-8] — 2026-05-12
+
+### Phase I18N-8 — SEO + QA + Release
+- Added locale SEO helpers: `src/lib/seo/i18n.ts`.
+- Added locale-aware sitemap route: `src/app/sitemap.ts`.
+- Added robots route with sitemap reference: `src/app/robots.ts`.
+- Added canonical + hreflang alternates in `src/app/layout.tsx` metadata.
+- Installed Playwright E2E stack and added config:
+  - `@playwright/test`
+  - `playwright.config.ts`
+- Added E2E flow tests:
+  - `tests/e2e/i18n-flow.spec.ts`
+  - locale switch path preservation
+  - Arabic RTL smoke
+  - dashboard auth locale redirect check
+- Added language extension documentation:
+  - `docs/adding-new-language.md`
+- Updated final compact state in `docs/COMPACT_STATE.md`.
 ## [1.3.8-global-i18n-phase-7] — 2026-05-12
 
 ### Phase I18N-7 — Notification I18N
@@ -360,6 +378,7 @@ All notable changes to Randevo are documented here.
 - Email reminders (fake log + Resend)
 - Audit logging
 - NextAuth v5 credentials auth with JWT sessions
+
 
 
 

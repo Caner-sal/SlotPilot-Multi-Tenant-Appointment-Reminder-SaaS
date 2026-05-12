@@ -4,6 +4,7 @@ import { cookies, headers } from "next/headers";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessagesForLocale } from "@/i18n/request";
 import { localeCookieName, localeMetadata, resolveLocale } from "@/i18n/locales";
+import { getBaseUrl, localeAlternates } from "@/lib/seo/i18n";
 import "./globals.css";
 
 const outfit = Outfit({
@@ -21,8 +22,13 @@ const nunito = Nunito({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(getBaseUrl()),
   title: "Randevo - Appointment and Reminder Platform",
-  description: "Affordable appointment and reminder SaaS for local service businesses"
+  description: "Affordable appointment and reminder SaaS for local service businesses",
+  alternates: {
+    canonical: "/",
+    languages: localeAlternates("/")
+  }
 };
 
 export default async function RootLayout({
