@@ -13,7 +13,32 @@
   },
   "booking": {
     "title": "Termin buchen",
-    "selectService": "Leistung auswählen",
-    "selectDate": "Datum auswählen"
+    "selectService": "Leistung auswahlen",
+    "selectDate": "Datum auswahlen"
+  },
+  "dashboardHeader": {
+    "dashboard": "Dashboard",
+    "overview": "Ubersicht",
+    "appointments": "Termine",
+    "services": "Leistungen",
+    "staff": "Mitarbeiter",
+    "availability": "Verfugbarkeit",
+    "analytics": "Analytik",
+    "billing": "Abonnement",
+    "reminders": "Erinnerungen",
+    "auditLogs": "Audit-Logs",
+    "settings": "Einstellungen",
+    "locations": "Standorte",
+    "whatsapp": "WhatsApp",
+    "bookingPage": "Buchungsseite"
+  },
+  "landing": {
+    "navSignIn": "Anmelden",
+    "navStartFree": "Kostenlos starten",
+    "heroStartFree": "Kostenlos starten",
+    "heroDemo": "Demo ansehen"
+  },
+  "bookingLayout": {
+    "poweredBy": "Powered by Randevo"
   }
 }

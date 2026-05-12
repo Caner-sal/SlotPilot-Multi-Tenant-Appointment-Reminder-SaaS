@@ -1,7 +1,10 @@
 import Link from "next/link";
 import LanguageSwitcher from "@/components/i18n/LanguageSwitcher";
+import { getTranslations } from "next-intl/server";
 
-export default function BookingLayout({ children }: { children: React.ReactNode }) {
+export default async function BookingLayout({ children }: { children: React.ReactNode }) {
+  const t = await getTranslations("bookingLayout");
+
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white border-b border-gray-200">
@@ -12,7 +15,7 @@ export default function BookingLayout({ children }: { children: React.ReactNode 
           </Link>
           <div className="flex items-center gap-3">
             <LanguageSwitcher />
-            <span className="text-xs text-gray-400">Powered by Randevo</span>
+            <span className="text-xs text-gray-400">{t("poweredBy")}</span>
           </div>
         </div>
       </header>

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { TURKEY_PLANS } from "@/config/pricing.tr";
 import LanguageSwitcher from "@/components/i18n/LanguageSwitcher";
+import { getTranslations } from "next-intl/server";
 
 const featureCards = [
   {
@@ -84,7 +85,7 @@ const plans = [
     price: "₺0",
     per: "sonsuza kadar ücretsiz",
     features: TURKEY_PLANS.FREE.features.slice(0, 3),
-    cta: "Ücretsiz Başla",
+    cta: "Ucretsiz Basla",
     featured: false,
   },
   {
@@ -124,7 +125,9 @@ const CheckIcon = ({ color = "#7768d4" }: { color?: string }) => (
   </svg>
 );
 
-export default function HomePage() {
+export default async function HomePage() {
+  const t = await getTranslations("landing");
+
   return (
     <main className="min-h-screen" style={{ background: "#09090e", color: "#f0eff8", fontFamily: "var(--font-body, Nunito, sans-serif)" }}>
 
@@ -142,10 +145,10 @@ export default function HomePage() {
           <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
             <LanguageSwitcher />
             <Link href="/login" style={{ padding: "7px 14px", borderRadius: 9, border: "1px solid rgba(119,104,212,0.18)", color: "#8a8aaa", fontSize: 14, fontWeight: 600, fontFamily: "var(--font-heading, Outfit, sans-serif)", transition: "all 0.18s" }}>
-              Giriş Yap
+              {t("navSignIn")}
             </Link>
             <Link href="/register" style={{ padding: "8px 18px", borderRadius: 10, background: "#7768d4", color: "#fff", fontSize: 14, fontWeight: 600, fontFamily: "var(--font-heading, Outfit, sans-serif)", boxShadow: "0 0 22px rgba(119,104,212,0.32)", transition: "all 0.2s" }}>
-              Ücretsiz Başla
+              {t("navStartFree")}
             </Link>
           </div>
         </div>
@@ -185,11 +188,11 @@ export default function HomePage() {
 
           <div style={{ display: "flex", justifyContent: "center", gap: 14, flexWrap: "wrap" }}>
             <Link href="/register" style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "14px 32px", borderRadius: 14, background: "#7768d4", color: "#fff", fontSize: 17, fontWeight: 700, fontFamily: "var(--font-heading, Outfit, sans-serif)", boxShadow: "0 0 28px rgba(119,104,212,0.32)" }}>
-              Ücretsiz Başla
+              {t("heroStartFree")}
               <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
             </Link>
             <Link href="/booking/barber-demo" style={{ display: "inline-flex", alignItems: "center", padding: "14px 32px", borderRadius: 14, border: "1px solid rgba(119,104,212,0.22)", color: "#8a8aaa", fontSize: 17, fontWeight: 600, fontFamily: "var(--font-heading, Outfit, sans-serif)" }}>
-              Demo İncele
+              {t("heroDemo")}
             </Link>
           </div>
 
@@ -320,3 +323,4 @@ export default function HomePage() {
     </main>
   );
 }
+

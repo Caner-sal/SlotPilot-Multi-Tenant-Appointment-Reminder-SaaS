@@ -2,18 +2,43 @@
   "common": {
     "language": "Dil",
     "save": "Kaydet",
-    "cancel": "İptal",
-    "loading": "Yükleniyor..."
+    "cancel": "Iptal",
+    "loading": "Yukleniyor..."
   },
   "nav": {
     "dashboard": "Kontrol Paneli",
     "appointments": "Randevular",
     "services": "Hizmetler",
-    "staff": "Çalışanlar"
+    "staff": "Calisanlar"
   },
   "booking": {
     "title": "Randevu Al",
-    "selectService": "Hizmet Seçin",
-    "selectDate": "Tarih Seçin"
+    "selectService": "Hizmet Secin",
+    "selectDate": "Tarih Secin"
+  },
+  "dashboardHeader": {
+    "dashboard": "Kontrol Paneli",
+    "overview": "Kontrol Paneli",
+    "appointments": "Randevular",
+    "services": "Hizmetler",
+    "staff": "Calisanlar",
+    "availability": "Musaitlik",
+    "analytics": "Analitik",
+    "billing": "Abonelik",
+    "reminders": "Hatirlatmalar",
+    "auditLogs": "Islem Kayitlari",
+    "settings": "Ayarlar",
+    "locations": "Subeler",
+    "whatsapp": "WhatsApp",
+    "bookingPage": "Rezervasyon Sayfasi"
+  },
+  "landing": {
+    "navSignIn": "Giris Yap",
+    "navStartFree": "Ucretsiz Basla",
+    "heroStartFree": "Ucretsiz Basla",
+    "heroDemo": "Demo Incele"
+  },
+  "bookingLayout": {
+    "poweredBy": "Powered by Randevo"
   }
 }

@@ -21,6 +21,20 @@ _Last updated: 2026-05-12_
   - Typecheck, lint, tests, build, Prisma validate/generate/migrate status all passed
   - Secret scan passed (`node scripts/check-no-secrets.js` + diff regex scan)
 
+### I18N-2 and I18N-3 (phase branches pushed)
+- `phase/i18n-2`:
+  - Added web `LanguageSwitcher` with flag + language label + path-preserving route replacement
+  - Integrated switcher into dashboard header, public landing nav, and booking header
+  - Extended locale path helper tests
+- `phase/i18n-3`:
+  - Migrated key UI surfaces to translation keys (`Header`, landing nav/hero CTA, booking layout header)
+  - Added translation parity script: `scripts/check-translations.ts`
+  - Added package script: `check:translations`
+- Validation snapshot:
+  - Typecheck, lint, tests, build, Prisma checks passed
+  - Translation key parity passed for `tr/en/de/ar`
+  - Secret scan + diff regex scan passed
+
 ### DS-0 through DS-9 (merged to main, commit d7d16a2)
 - 81 Turkey province/district data complete
 - Skills architecture, MCP config, security tests

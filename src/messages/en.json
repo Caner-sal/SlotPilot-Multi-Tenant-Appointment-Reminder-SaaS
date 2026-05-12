@@ -15,5 +15,30 @@
     "title": "Book Appointment",
     "selectService": "Select Service",
     "selectDate": "Select Date"
+  },
+  "dashboardHeader": {
+    "dashboard": "Dashboard",
+    "overview": "Overview",
+    "appointments": "Appointments",
+    "services": "Services",
+    "staff": "Staff",
+    "availability": "Availability",
+    "analytics": "Analytics",
+    "billing": "Billing",
+    "reminders": "Reminders",
+    "auditLogs": "Audit Logs",
+    "settings": "Settings",
+    "locations": "Locations",
+    "whatsapp": "WhatsApp",
+    "bookingPage": "Booking Page"
+  },
+  "landing": {
+    "navSignIn": "Sign In",
+    "navStartFree": "Start Free",
+    "heroStartFree": "Start Free",
+    "heroDemo": "View Demo"
+  },
+  "bookingLayout": {
+    "poweredBy": "Powered by Randevo"
   }
 }

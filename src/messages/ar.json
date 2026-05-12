@@ -3,7 +3,7 @@
     "language": "اللغة",
     "save": "حفظ",
     "cancel": "إلغاء",
-    "loading": "جارٍ التحميل..."
+    "loading": "جار التحميل..."
   },
   "nav": {
     "dashboard": "لوحة التحكم",
@@ -15,5 +15,30 @@
     "title": "حجز موعد",
     "selectService": "اختر الخدمة",
     "selectDate": "اختر التاريخ"
+  },
+  "dashboardHeader": {
+    "dashboard": "لوحة التحكم",
+    "overview": "نظرة عامة",
+    "appointments": "المواعيد",
+    "services": "الخدمات",
+    "staff": "الموظفون",
+    "availability": "التوفر",
+    "analytics": "التحليلات",
+    "billing": "الاشتراك",
+    "reminders": "التذكيرات",
+    "auditLogs": "سجلات التدقيق",
+    "settings": "الإعدادات",
+    "locations": "الفروع",
+    "whatsapp": "واتساب",
+    "bookingPage": "صفحة الحجز"
+  },
+  "landing": {
+    "navSignIn": "تسجيل الدخول",
+    "navStartFree": "ابدأ مجانا",
+    "heroStartFree": "ابدأ مجانا",
+    "heroDemo": "عرض النسخة التجريبية"
+  },
+  "bookingLayout": {
+    "poweredBy": "Powered by Randevo"
   }
 }
