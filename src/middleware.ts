@@ -1,7 +1,7 @@
 import { auth } from "@/lib/auth";
 import { NextResponse } from "next/server";
 
-const protectedRoutes = ["/dashboard"];
+const protectedRoutes = ["/dashboard", "/onboarding"];
 const adminRoutes = ["/admin"];
 const staffRoutes = ["/staff/dashboard", "/staff/appointments", "/staff/availability"];
 const authRoutes = ["/login", "/register"];

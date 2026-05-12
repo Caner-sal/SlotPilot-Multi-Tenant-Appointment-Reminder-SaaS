@@ -1,15 +1,14 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import { db } from "@/lib/db";
-import bcrypt from "bcryptjs";
 import { z } from "zod";
 
 const loginSchema = z.object({
   email: z.string().email(),
-  password: z.string().min(6),
+  password: z.string().min(1),
 });
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
+  secret: process.env.AUTH_SECRET,
   providers: [
     Credentials({
       async authorize(credentials) {
@@ -17,6 +16,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         if (!parsed.success) return null;
 
         const { email, password } = parsed.data;
+
+        // Dinamik import: Edge Runtime'da middleware derleme aşamasında
+        // PrismaClient yüklenmez, sadece gerçek authorize çağrısında yüklenir
+        const { db } = await import("@/lib/db");
+        const bcrypt = (await import("bcryptjs")).default;
 
         const user = await db.user.findUnique({
           where: { email },
@@ -56,8 +60,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (token.id) session.user.id = token.id as string;
       if (token.platformRole) session.user.platformRole = token.platformRole as string;
       if (token.appRole) session.user.appRole = token.appRole as string;
-      if (token.staffId) session.user.staffId = token.staffId as string;
-      if (token.staffOrgId) session.user.staffOrgId = token.staffOrgId as string;
+      // staffId ve staffOrgId null olabilir — undefined yerine açıkça atanmalı
+      session.user.staffId = (token.staffId as string) ?? undefined;
+      session.user.staffOrgId = (token.staffOrgId as string) ?? undefined;
       return session;
     },
   },

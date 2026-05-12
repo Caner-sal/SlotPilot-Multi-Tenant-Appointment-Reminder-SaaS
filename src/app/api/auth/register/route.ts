@@ -1,4 +1,4 @@
-﻿import { db } from "@/lib/db";
+import { db } from "@/lib/db";
 import { registerSchema } from "@/lib/validators";
 import { NextResponse } from "next/server";
 import { z } from "zod";
@@ -11,7 +11,7 @@ export async function POST(req: Request) {
 
     const existing = await db.user.findUnique({ where: { email: parsed.email } });
     if (existing) {
-      return NextResponse.json({ error: "Bu e-posta zaten kullanımda" }, { status: 409 });
+      return NextResponse.json({ error: "Bu e-posta zaten kullanımda", message: "Bu e-posta zaten kullanımda" }, { status: 409 });
     }
 
     const hashedPassword = await bcrypt.hash(parsed.password, 12);
@@ -28,10 +28,10 @@ export async function POST(req: Request) {
     return NextResponse.json({ data: { user } }, { status: 201 });
   } catch (err) {
     if (err instanceof z.ZodError) {
-      return NextResponse.json({ error: err.issues }, { status: 400 });
+      return NextResponse.json({ error: err.issues, message: "Geçersiz form verisi" }, { status: 400 });
     }
     console.error(err);
-    return NextResponse.json({ error: "Sunucu hatası" }, { status: 500 });
+    return NextResponse.json({ error: "Sunucu hatası", message: "Sunucu hatası" }, { status: 500 });
   }
 }
 

@@ -53,7 +53,8 @@ export default function RegisterPage() {
     const data = await res.json();
 
     if (!res.ok) {
-      setError(data.message ?? "Kayıt başarısız. Lütfen tekrar deneyin.");
+      const errorMsg = typeof data.error === "string" ? data.error : (data.message ?? "Kayıt başarısız. Lütfen tekrar deneyin.");
+      setError(errorMsg);
       setLoading(false);
       return;
     }
