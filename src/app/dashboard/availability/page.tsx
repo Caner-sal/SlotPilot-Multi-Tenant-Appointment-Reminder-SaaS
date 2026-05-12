@@ -1,18 +1,19 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
 
-const DAYS = [
-  { key: "MONDAY", label: "Pazartesi" },
-  { key: "TUESDAY", label: "Salı" },
-  { key: "WEDNESDAY", label: "Çarşamba" },
-  { key: "THURSDAY", label: "Perşembe" },
-  { key: "FRIDAY", label: "Cuma" },
-  { key: "SATURDAY", label: "Cumartesi" },
-  { key: "SUNDAY", label: "Pazar" },
-] as const;
+type DayKey = "MONDAY" | "TUESDAY" | "WEDNESDAY" | "THURSDAY" | "FRIDAY" | "SATURDAY" | "SUNDAY";
 
-type DayKey = (typeof DAYS)[number]["key"];
+const DAY_KEYS: DayKey[] = [
+  "MONDAY",
+  "TUESDAY",
+  "WEDNESDAY",
+  "THURSDAY",
+  "FRIDAY",
+  "SATURDAY",
+  "SUNDAY",
+];
 
 interface Staff {
   id: string;
@@ -38,6 +39,19 @@ const defaultSchedule: Schedule = {
 };
 
 export default function AvailabilityPage() {
+  const t = useTranslations("availability");
+  const tCommon = useTranslations("common");
+
+  const DAY_LABELS: Record<DayKey, string> = {
+    MONDAY: tCommon("monday"),
+    TUESDAY: tCommon("tuesday"),
+    WEDNESDAY: tCommon("wednesday"),
+    THURSDAY: tCommon("thursday"),
+    FRIDAY: tCommon("friday"),
+    SATURDAY: tCommon("saturday"),
+    SUNDAY: tCommon("sunday"),
+  };
+
   const [staff, setStaff] = useState<Staff[]>([]);
   const [selectedStaffId, setSelectedStaffId] = useState<string>("");
   const [schedule, setSchedule] = useState<Schedule>(defaultSchedule);
@@ -89,7 +103,7 @@ export default function AvailabilityPage() {
     setError("");
     setSaved(false);
     try {
-      const promises = DAYS.map(({ key }) =>
+      const promises = DAY_KEYS.map((key) =>
         fetch("/api/availability", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -106,7 +120,7 @@ export default function AvailabilityPage() {
       const failed = results.find((r) => !r.ok);
       if (failed) {
         const j = await failed.json();
-        setError(typeof j.error === "string" ? j.error : "Bazı kurallar kaydedilemedi.");
+        setError(typeof j.error === "string" ? j.error : t("partialError"));
         return;
       }
       setSaved(true);
@@ -118,25 +132,25 @@ export default function AvailabilityPage() {
 
   if (loading) {
     return (
-      <div className="p-10 text-center text-gray-400">Yükleniyor...</div>
+      <div className="p-10 text-center text-gray-400">{tCommon("loading")}</div>
     );
   }
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Müsaitlik</h1>
-        <p className="text-sm text-gray-500 mt-1">Her çalışan için haftalık çalışma saatlerini ayarlayın.</p>
+        <h1 className="text-2xl font-bold text-gray-900">{t("title")}</h1>
+        <p className="text-sm text-gray-500 mt-1">{t("subtitle")}</p>
       </div>
 
       {staff.length === 0 ? (
         <div className="bg-white rounded-xl border border-gray-200 p-10 text-center text-gray-400">
-          Çalışan bulunamadı. Müsaitliği yönetmek için önce çalışan ekleyin.
+          {t("noStaff")}
         </div>
       ) : (
         <>
           <div className="flex items-center gap-4">
-            <label className="text-sm font-medium text-gray-700">Çalışan:</label>
+            <label className="text-sm font-medium text-gray-700">{t("staffLabel")}</label>
             <select
               value={selectedStaffId}
               onChange={(e) => setSelectedStaffId(e.target.value)}
@@ -152,10 +166,10 @@ export default function AvailabilityPage() {
 
           <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
             <div className="px-5 py-4 border-b border-gray-100 bg-gray-50">
-              <p className="text-sm font-semibold text-gray-700">Haftalık Program</p>
+              <p className="text-sm font-semibold text-gray-700">{t("weeklySchedule")}</p>
             </div>
             <div className="divide-y divide-gray-100">
-              {DAYS.map(({ key, label }) => (
+              {DAY_KEYS.map((key) => (
                 <div key={key} className="flex items-center gap-4 px-5 py-4">
                   <div className="w-28 flex items-center gap-2">
                     <input
@@ -171,7 +185,7 @@ export default function AvailabilityPage() {
                         schedule[key].isActive ? "text-gray-900" : "text-gray-400"
                       }`}
                     >
-                      {label}
+                      {DAY_LABELS[key]}
                     </label>
                   </div>
                   {schedule[key].isActive ? (
@@ -191,7 +205,7 @@ export default function AvailabilityPage() {
                       />
                     </div>
                   ) : (
-                    <span className="text-sm text-gray-400">Kapalı</span>
+                    <span className="text-sm text-gray-400">{tCommon("closed")}</span>
                   )}
                 </div>
               ))}
@@ -206,7 +220,7 @@ export default function AvailabilityPage() {
 
           {saved && (
             <div className="bg-green-50 border border-green-200 text-green-700 text-sm rounded-lg px-4 py-3">
-              Müsaitlik başarıyla kaydedildi.
+              {t("saveSuccess")}
             </div>
           )}
 
@@ -216,7 +230,7 @@ export default function AvailabilityPage() {
               disabled={saving}
               className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-60"
             >
-              {saving ? "Kaydediliyor..." : "Programı Kaydet"}
+              {saving ? tCommon("saving") : t("saveSchedule")}
             </button>
           </div>
         </>

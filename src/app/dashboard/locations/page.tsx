@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 
 interface Location {
   id: string;
@@ -13,6 +14,9 @@ interface Location {
 }
 
 export default function LocationsPage() {
+  const t = useTranslations("locations");
+  const tCommon = useTranslations("common");
+
   const [locations, setLocations] = useState<Location[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -54,7 +58,7 @@ export default function LocationsPage() {
       setForm({ name: "", address: "", phone: "", timezone: "Europe/Istanbul", isDefault: false });
       load();
     } else {
-      setError(typeof data.error === "string" ? data.error : "Şube oluşturulamadı.");
+      setError(typeof data.error === "string" ? data.error : t("createError"));
     }
     setSaving(false);
   }
@@ -77,38 +81,38 @@ export default function LocationsPage() {
     load();
   }
 
-  if (loading) return <div className="p-6 text-gray-500">Yükleniyor...</div>;
+  if (loading) return <div className="p-6 text-gray-500">{tCommon("loading")}</div>;
 
   return (
     <div className="p-6">
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900">Şubeler</h1>
+        <h1 className="text-2xl font-bold text-gray-900">{t("title")}</h1>
         <button
           onClick={() => setShowForm(true)}
           className="rounded bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
         >
-          Şube Ekle
+          {t("addLocation")}
         </button>
       </div>
 
       {showForm && (
         <form onSubmit={createLocation} className="mb-6 space-y-3 rounded-lg border bg-white p-4">
-          <h2 className="font-semibold text-gray-900">Yeni Şube</h2>
+          <h2 className="font-semibold text-gray-900">{t("newLocation")}</h2>
           <input
             required
-            placeholder="Şube Adı"
+            placeholder={t("nameLabel")}
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
             className="w-full rounded border px-3 py-2 text-sm"
           />
           <input
-            placeholder="Adres"
+            placeholder={tCommon("address")}
             value={form.address}
             onChange={(e) => setForm({ ...form, address: e.target.value })}
             className="w-full rounded border px-3 py-2 text-sm"
           />
           <input
-            placeholder="Telefon"
+            placeholder={tCommon("phone")}
             value={form.phone}
             onChange={(e) => setForm({ ...form, phone: e.target.value })}
             className="w-full rounded border px-3 py-2 text-sm"
@@ -119,7 +123,7 @@ export default function LocationsPage() {
               checked={form.isDefault}
               onChange={(e) => setForm({ ...form, isDefault: e.target.checked })}
             />
-            Varsayılan şube olarak ayarla
+            {t("setDefault")}
           </label>
           {error && <p className="text-sm text-red-600">{error}</p>}
           <div className="flex gap-2">
@@ -128,14 +132,14 @@ export default function LocationsPage() {
               disabled={saving}
               className="rounded bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
             >
-              {saving ? "Kaydediliyor..." : "Oluştur"}
+              {saving ? tCommon("saving") : tCommon("create")}
             </button>
             <button
               type="button"
               onClick={() => setShowForm(false)}
               className="rounded bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200"
             >
-              İptal
+              {tCommon("cancel")}
             </button>
           </div>
         </form>
@@ -145,10 +149,10 @@ export default function LocationsPage() {
         <table className="w-full text-sm">
           <thead className="border-b bg-gray-50">
             <tr>
-              <th className="px-4 py-3 text-left font-medium text-gray-600">Ad</th>
-              <th className="px-4 py-3 text-left font-medium text-gray-600">Adres</th>
-              <th className="px-4 py-3 text-left font-medium text-gray-600">Durum</th>
-              <th className="px-4 py-3 text-left font-medium text-gray-600">İşlemler</th>
+              <th className="px-4 py-3 text-left font-medium text-gray-600">{tCommon("name")}</th>
+              <th className="px-4 py-3 text-left font-medium text-gray-600">{tCommon("address")}</th>
+              <th className="px-4 py-3 text-left font-medium text-gray-600">{tCommon("status")}</th>
+              <th className="px-4 py-3 text-left font-medium text-gray-600">{tCommon("actions")}</th>
             </tr>
           </thead>
           <tbody className="divide-y">
@@ -156,25 +160,25 @@ export default function LocationsPage() {
               <tr key={loc.id} className="hover:bg-gray-50">
                 <td className="px-4 py-3">
                   <div className="font-medium text-gray-900">{loc.name}</div>
-                  {loc.isDefault && <span className="text-xs font-medium text-blue-600">Varsayılan</span>}
+                  {loc.isDefault && <span className="text-xs font-medium text-blue-600">{tCommon("default")}</span>}
                 </td>
                 <td className="px-4 py-3 text-gray-600">{loc.address ?? "—"}</td>
                 <td className="px-4 py-3">
                   {loc.isActive ? (
-                    <span className="rounded bg-green-100 px-2 py-1 text-xs text-green-700">Aktif</span>
+                    <span className="rounded bg-green-100 px-2 py-1 text-xs text-green-700">{tCommon("active")}</span>
                   ) : (
-                    <span className="rounded bg-gray-100 px-2 py-1 text-xs text-gray-600">Pasif</span>
+                    <span className="rounded bg-gray-100 px-2 py-1 text-xs text-gray-600">{tCommon("passive")}</span>
                   )}
                 </td>
                 <td className="px-4 py-3">
                   <div className="flex gap-2">
                     {!loc.isDefault && (
                       <button onClick={() => setDefault(loc.id)} className="text-xs text-blue-600 hover:underline">
-                        Varsayılan Yap
+                        {t("makeDefault")}
                       </button>
                     )}
                     <button onClick={() => toggleActive(loc.id, loc.isActive)} className="text-xs text-gray-600 hover:underline">
-                      {loc.isActive ? "Pasife Al" : "Aktifleştir"}
+                      {loc.isActive ? t("deactivate") : t("activate")}
                     </button>
                   </div>
                 </td>
@@ -182,7 +186,7 @@ export default function LocationsPage() {
             ))}
           </tbody>
         </table>
-        {locations.length === 0 && <div className="py-8 text-center text-gray-500">Henüz şube yok. İlk şubenizi ekleyin.</div>}
+        {locations.length === 0 && <div className="py-8 text-center text-gray-500">{t("notFound")}</div>}
       </div>
     </div>
   );

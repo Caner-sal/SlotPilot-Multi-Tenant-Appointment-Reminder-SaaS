@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
 
 interface Service {
   id: string;
@@ -30,6 +31,9 @@ const emptyForm = {
 };
 
 export default function StaffPage() {
+  const t = useTranslations("staffPage");
+  const tCommon = useTranslations("common");
+
   const [staff, setStaff] = useState<StaffMember[]>([]);
   const [services, setServices] = useState<Service[]>([]);
   const [subscription, setSubscription] = useState<Subscription | null>(null);
@@ -112,7 +116,7 @@ export default function StaffPage() {
           });
       if (!res.ok) {
         const j = await res.json();
-        setError(typeof j.error === "string" ? j.error : "Bir hata oluştu.");
+        setError(typeof j.error === "string" ? j.error : tCommon("error"));
         return;
       }
       setDialogOpen(false);
@@ -145,8 +149,8 @@ export default function StaffPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Çalışanlar</h1>
-          <p className="text-sm text-gray-500 mt-1">Ekip üyelerinizi yönetin.</p>
+          <h1 className="text-2xl font-bold text-gray-900">{t("title")}</h1>
+          <p className="text-sm text-gray-500 mt-1">{t("subtitle")}</p>
         </div>
         <button
           onClick={openAddDialog}
@@ -157,7 +161,7 @@ export default function StaffPage() {
             <line x1="12" y1="5" x2="12" y2="19" />
             <line x1="5" y1="12" x2="19" y2="12" />
           </svg>
-          Çalışan Ekle
+          {t("addStaff")}
         </button>
       </div>
 
@@ -169,28 +173,28 @@ export default function StaffPage() {
               : "bg-blue-50 border-blue-200 text-blue-700"
           }`}
         >
-          {subscription.plan} planı: {activeStaffCount}/{maxStaff === Infinity ? "∞" : maxStaff} çalışan kullanılıyor.
-          {atLimit && " Daha fazla çalışan eklemek için planınızı yükseltin."}
+          {subscription.plan} {t("planPrefix")} {activeStaffCount}/{maxStaff === Infinity ? "∞" : maxStaff} {t("planLimit")}
+          {atLimit && ` ${t("upgradePlan")}`}
         </div>
       )}
 
       <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
         {loading ? (
-          <div className="p-10 text-center text-gray-400">Yükleniyor...</div>
+          <div className="p-10 text-center text-gray-400">{tCommon("loading")}</div>
         ) : staff.length === 0 ? (
           <div className="p-10 text-center text-gray-400">
-            Henüz çalışan yok. Başlamak için ilk ekip üyenizi ekleyin.
+            {t("notFound")}
           </div>
         ) : (
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-gray-100 bg-gray-50">
-                <th className="px-5 py-3 text-left font-semibold text-gray-600">Ad</th>
-                <th className="px-5 py-3 text-left font-semibold text-gray-600">E-posta</th>
-                <th className="px-5 py-3 text-left font-semibold text-gray-600">Telefon</th>
-                <th className="px-5 py-3 text-left font-semibold text-gray-600">Hizmetler</th>
-                <th className="px-5 py-3 text-left font-semibold text-gray-600">Durum</th>
-                <th className="px-5 py-3 text-right font-semibold text-gray-600">İşlemler</th>
+                <th className="px-5 py-3 text-left font-semibold text-gray-600">{tCommon("name")}</th>
+                <th className="px-5 py-3 text-left font-semibold text-gray-600">{t("emailCol")}</th>
+                <th className="px-5 py-3 text-left font-semibold text-gray-600">{t("phoneCol")}</th>
+                <th className="px-5 py-3 text-left font-semibold text-gray-600">{t("servicesCol")}</th>
+                <th className="px-5 py-3 text-left font-semibold text-gray-600">{tCommon("status")}</th>
+                <th className="px-5 py-3 text-right font-semibold text-gray-600">{tCommon("actions")}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
@@ -202,7 +206,7 @@ export default function StaffPage() {
                   <td className="px-5 py-3.5">
                     <div className="flex flex-wrap gap-1">
                       {member.staffServices.length === 0 ? (
-                        <span className="text-gray-400">Yok</span>
+                        <span className="text-gray-400">{t("none")}</span>
                       ) : (
                         member.staffServices.map((ss) => (
                           <span
@@ -221,7 +225,7 @@ export default function StaffPage() {
                         member.isActive ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"
                       }`}
                     >
-                      {member.isActive ? "Aktif" : "Pasif"}
+                      {member.isActive ? tCommon("active") : tCommon("passive")}
                     </span>
                   </td>
                   <td className="px-5 py-3.5">
@@ -230,19 +234,19 @@ export default function StaffPage() {
                         onClick={() => openEditDialog(member)}
                         className="text-blue-600 hover:text-blue-800 text-xs font-medium px-2 py-1 rounded hover:bg-blue-50 transition-colors"
                       >
-                        Düzenle
+                        {tCommon("edit")}
                       </button>
                       <button
                         onClick={() => toggleActive(member)}
                         className="text-gray-500 hover:text-gray-700 text-xs font-medium px-2 py-1 rounded hover:bg-gray-100 transition-colors"
                       >
-                        {member.isActive ? "Pasifleştir" : "Aktifleştir"}
+                        {member.isActive ? tCommon("deactivate") : tCommon("activate")}
                       </button>
                       <button
                         onClick={() => deleteStaff(member)}
                         className="text-red-500 hover:text-red-700 text-xs font-medium px-2 py-1 rounded hover:bg-red-50 transition-colors"
                       >
-                        Sil
+                        {tCommon("delete")}
                       </button>
                     </div>
                   </td>
@@ -258,7 +262,7 @@ export default function StaffPage() {
           <div className="bg-white rounded-xl shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto">
             <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between sticky top-0 bg-white">
               <h2 className="font-semibold text-gray-900">
-                {editingStaff ? "Çalışanı Düzenle" : "Çalışan Ekle"}
+                {editingStaff ? t("editStaff") : t("addStaff")}
               </h2>
               <button onClick={() => setDialogOpen(false)} className="text-gray-400 hover:text-gray-600">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -274,7 +278,7 @@ export default function StaffPage() {
                 </div>
               )}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Ad Soyad *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t("fullNameLabel")}</label>
                 <input
                   required
                   value={form.name}
@@ -284,27 +288,27 @@ export default function StaffPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">E-posta</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t("emailCol")}</label>
                 <input
                   type="email"
                   value={form.email}
                   onChange={(e) => setForm({ ...form, email: e.target.value })}
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="calisan@ornek.com"
+                  placeholder={t("emailPlaceholder")}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Telefon</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t("phoneCol")}</label>
                 <input
                   value={form.phone}
                   onChange={(e) => setForm({ ...form, phone: e.target.value })}
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="+90 555 000 0000"
+                  placeholder={t("phonePlaceholder")}
                 />
               </div>
               {services.length > 0 && (
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Atanan Hizmetler</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">{t("assignedServices")}</label>
                   <div className="space-y-2 max-h-40 overflow-y-auto border border-gray-200 rounded-lg p-3">
                     {services.map((service) => (
                       <label key={service.id} className="flex items-center gap-2 cursor-pointer">
@@ -329,7 +333,7 @@ export default function StaffPage() {
                   className="rounded"
                 />
                 <label htmlFor="staffActive" className="text-sm text-gray-700">
-                  Aktif
+                  {tCommon("active")}
                 </label>
               </div>
               <div className="flex gap-3 pt-2">
@@ -338,14 +342,14 @@ export default function StaffPage() {
                   onClick={() => setDialogOpen(false)}
                   className="flex-1 border border-gray-300 text-gray-700 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors"
                 >
-                  İptal
+                  {tCommon("cancel")}
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
                   className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-60"
                 >
-                  {saving ? "Kaydediliyor..." : editingStaff ? "Güncelle" : "Oluştur"}
+                  {saving ? tCommon("saving") : editingStaff ? tCommon("update") : tCommon("create")}
                 </button>
               </div>
             </form>

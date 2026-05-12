@@ -1,14 +1,7 @@
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { redirect } from "next/navigation";
-
-const STATUS_LABELS: Record<string, string> = {
-  PENDING: "Bekliyor",
-  CONFIRMED: "Onaylandı",
-  COMPLETED: "Tamamlandı",
-  CANCELLED: "İptal Edildi",
-  NO_SHOW: "Gelmedi",
-};
+import { getTranslations } from "next-intl/server";
 
 const STATUS_COLORS: Record<string, string> = {
   PENDING: "bg-yellow-100 text-yellow-700",
@@ -19,6 +12,8 @@ const STATUS_COLORS: Record<string, string> = {
 };
 
 export default async function StaffAppointmentsPage() {
+  const t = await getTranslations("staffPortal");
+  const tCommon = await getTranslations("common");
   const session = await auth();
   if (!session?.user?.staffId) redirect("/login");
 
@@ -34,17 +29,25 @@ export default async function StaffAppointmentsPage() {
     take: 50,
   });
 
+  const STATUS_LABELS: Record<string, string> = {
+    PENDING: tCommon("pending"),
+    CONFIRMED: tCommon("confirmed"),
+    COMPLETED: tCommon("completed"),
+    CANCELLED: tCommon("cancelled"),
+    NO_SHOW: tCommon("noShow"),
+  };
+
   return (
     <div>
-      <h1 className="mb-6 text-2xl font-bold text-gray-900">Randevularım</h1>
+      <h1 className="mb-6 text-2xl font-bold text-gray-900">{t("myAppointments")}</h1>
       <div className="overflow-hidden rounded-lg border bg-white">
         <table className="w-full text-sm">
           <thead className="border-b bg-gray-50">
             <tr>
-              <th className="px-4 py-3 text-left font-medium text-gray-600">Müşteri</th>
-              <th className="px-4 py-3 text-left font-medium text-gray-600">Hizmet</th>
-              <th className="px-4 py-3 text-left font-medium text-gray-600">Tarih / Saat</th>
-              <th className="px-4 py-3 text-left font-medium text-gray-600">Durum</th>
+              <th className="px-4 py-3 text-left font-medium text-gray-600">{t("customerCol")}</th>
+              <th className="px-4 py-3 text-left font-medium text-gray-600">{t("serviceCol")}</th>
+              <th className="px-4 py-3 text-left font-medium text-gray-600">{t("dateTimeCol")}</th>
+              <th className="px-4 py-3 text-left font-medium text-gray-600">{tCommon("status")}</th>
             </tr>
           </thead>
           <tbody className="divide-y">
@@ -56,7 +59,7 @@ export default async function StaffAppointmentsPage() {
                 </td>
                 <td className="px-4 py-3">
                   <div>{apt.service.name}</div>
-                  <div className="text-xs text-gray-500">{apt.service.durationMinutes} dk</div>
+                  <div className="text-xs text-gray-500">{apt.service.durationMinutes} {tCommon("min")}</div>
                 </td>
                 <td className="px-4 py-3">
                   <div>{new Date(apt.startTime).toLocaleDateString("tr-TR", { timeZone: "Europe/Istanbul" })}</div>
@@ -77,7 +80,7 @@ export default async function StaffAppointmentsPage() {
             ))}
           </tbody>
         </table>
-        {appointments.length === 0 && <div className="py-8 text-center text-gray-500">Henüz randevu yok.</div>}
+        {appointments.length === 0 && <div className="py-8 text-center text-gray-500">{t("noAppointments")}</div>}
       </div>
     </div>
   );

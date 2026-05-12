@@ -2,6 +2,10 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useParams } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { usePathname } from "next/navigation";
+import { getLocaleFromPath } from "@/i18n/pathing";
+import { defaultLocale, localeMetadata } from "@/i18n/locales";
 import { TURKEY_PROVINCES, getDistrictsByProvince } from "@/data/turkey-provinces";
 
 interface BusinessProfile {
@@ -65,8 +69,8 @@ function getNext14Days() {
   return days;
 }
 
-function formatDate(d: Date) {
-  return d.toLocaleDateString("tr-TR", { weekday: "short", month: "short", day: "numeric" });
+function formatDate(d: Date, dateLocale: string) {
+  return d.toLocaleDateString(dateLocale, { weekday: "short", month: "short", day: "numeric" });
 }
 
 function toDateString(d: Date) {
@@ -76,6 +80,12 @@ function toDateString(d: Date) {
 export default function BookingPage() {
   const params = useParams();
   const slug = params.slug as string;
+
+  const t = useTranslations("booking");
+  const tCommon = useTranslations("common");
+  const pathname = usePathname();
+  const locale = getLocaleFromPath(pathname) ?? defaultLocale;
+  const dateLocale = localeMetadata[locale].dateLocale;
 
   const [step, setStep] = useState<Step>(1);
   const [profileError, setProfileError] = useState<string | null>(null);
@@ -125,7 +135,7 @@ export default function BookingPage() {
 
         if (!profileRes.ok) {
           const j = await profileRes.json();
-          setProfileError(j.error ?? "İşletme bulunamadı");
+          setProfileError(j.error ?? t("businessNotFound"));
           return;
         }
 
@@ -137,13 +147,13 @@ export default function BookingPage() {
           setServices(servicesJson.data ?? []);
         }
       } catch {
-        setProfileError("İşletme bilgileri yüklenemedi.");
+        setProfileError(t("businessLoadError"));
       } finally {
         setLoadingProfile(false);
       }
     }
     load();
-  }, [slug]);
+  }, [slug, t]);
 
   const fetchSlots = useCallback(async () => {
     if (!selectedService || !selectedStaff || !selectedDate) return;
@@ -160,20 +170,20 @@ export default function BookingPage() {
       const res = await fetch(`/api/booking/${slug}/slots?${params}`);
       if (!res.ok) {
         const j = await res.json();
-        setSlotsError(j.error ?? "Saatler yüklenemedi");
+        setSlotsError(j.error ?? t("slotsLoadError"));
         return;
       }
       const json = await res.json();
       setSlots(json.data ?? []);
       if ((json.data ?? []).length === 0) {
-        setSlotsError("Bu tarih için müsait saat yok.");
+        setSlotsError(t("noSlotsForDate"));
       }
     } catch {
-      setSlotsError("Saatler yüklenemedi.");
+      setSlotsError(t("slotsError"));
     } finally {
       setLoadingSlots(false);
     }
-  }, [slug, selectedService, selectedStaff, selectedDate]);
+  }, [slug, selectedService, selectedStaff, selectedDate, t]);
 
   useEffect(() => {
     if (step === 3 && selectedService && selectedStaff && selectedDate) {
@@ -227,7 +237,7 @@ export default function BookingPage() {
       });
       if (!res.ok) {
         const j = await res.json();
-        setSubmitError(typeof j.error === "string" ? j.error : "Rezervasyon oluşturulamadı");
+        setSubmitError(typeof j.error === "string" ? j.error : t("bookingFailed"));
         return;
       }
       const json = await res.json();
@@ -256,10 +266,10 @@ export default function BookingPage() {
         body: JSON.stringify({ message: msg, conversationHistory: chatMessages.slice(-10) }),
       });
       const json = await res.json() as { data?: { reply: string }; error?: string };
-      const reply = json.data?.reply ?? "Üzgünüm, isteğinizi işleyemedim.";
+      const reply = json.data?.reply ?? t("aiError1");
       setChatMessages([...updated, { role: "assistant", content: reply }]);
     } catch {
-      setChatMessages([...updated, { role: "assistant", content: "Üzgünüm, bir şeyler yanlış gitti. Lütfen tekrar deneyin." }]);
+      setChatMessages([...updated, { role: "assistant", content: t("aiError2") }]);
     } finally {
       setChatLoading(false);
     }
@@ -281,7 +291,7 @@ export default function BookingPage() {
       <div className="flex items-center justify-center min-h-64 p-10">
         <div className="text-center">
           <div className="w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-          <p className="text-gray-500 text-sm">Yükleniyor...</p>
+          <p className="text-gray-500 text-sm">{tCommon("loading")}</p>
         </div>
       </div>
     );
@@ -293,8 +303,8 @@ export default function BookingPage() {
         <div className="text-5xl mb-4">🚫</div>
         <h1 className="text-xl font-bold text-gray-900 mb-2">
           {profileError.includes("bulunamadı") || profileError.includes("not found")
-            ? "İşletme Bulunamadı"
-            : "Rezervasyon Mevcut Değil"}
+            ? t("businessNotFound")
+            : t("notAvailable")}
         </h1>
         <p className="text-gray-500">{profileError}</p>
       </div>
@@ -349,9 +359,9 @@ export default function BookingPage() {
 
       {step === 1 && (
         <div>
-          <h2 className="text-xl font-semibold text-gray-900 mb-5">Hizmet Seçin</h2>
+          <h2 className="text-xl font-semibold text-gray-900 mb-5">{t("step1Title")}</h2>
           {services.length === 0 ? (
-            <div className="text-center py-12 text-gray-400">Şu anda mevcut hizmet yok.</div>
+            <div className="text-center py-12 text-gray-400">{t("noServices")}</div>
           ) : (
             <div className="grid gap-3">
               {services.map((service) => (
@@ -374,11 +384,11 @@ export default function BookingPage() {
                             <circle cx="12" cy="12" r="10" />
                             <polyline points="12 6 12 12 16 14" />
                           </svg>
-                          {service.durationMinutes} dk
+                          {service.durationMinutes} {tCommon("min")}
                         </span>
                         {service.staffServices.length > 0 && (
                           <span className="text-sm text-gray-500">
-                            {service.staffServices.length} çalışan
+                            {service.staffServices.length} {tCommon("worker")}
                           </span>
                         )}
                       </div>
@@ -405,19 +415,19 @@ export default function BookingPage() {
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <polyline points="15 18 9 12 15 6" />
             </svg>
-            Hizmetlere Dön
+            {t("backToServices")}
           </button>
 
           <div>
-            <h2 className="text-xl font-semibold text-gray-900 mb-1">Çalışan ve Tarih Seçin</h2>
+            <h2 className="text-xl font-semibold text-gray-900 mb-1">{t("step2Title")}</h2>
             <div className="text-sm text-gray-500">
-              {selectedService.name} · {selectedService.durationMinutes} dk
+              {selectedService.name} · {selectedService.durationMinutes} {tCommon("min")}
             </div>
           </div>
 
           {staffList.length > 1 && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-3">Çalışan Seçin</label>
+              <label className="block text-sm font-medium text-gray-700 mb-3">{t("selectStaff")}</label>
               <div className="grid grid-cols-2 gap-3">
                 {staffList.map((staff) => (
                   <button
@@ -445,7 +455,7 @@ export default function BookingPage() {
                 {staffList[0].name.charAt(0).toUpperCase()}
               </div>
               <div>
-                <p className="text-sm text-gray-500">Randevunuz şu kişiyle:</p>
+                <p className="text-sm text-gray-500">{t("appointmentWith")}</p>
                 <p className="font-medium text-gray-900">{staffList[0].name}</p>
               </div>
             </div>
@@ -453,13 +463,13 @@ export default function BookingPage() {
 
           {staffList.length === 0 && (
             <div className="text-center py-6 text-gray-400 text-sm">
-              Bu hizmet için mevcut çalışan yok.
+              {t("noStaff")}
             </div>
           )}
 
           {selectedStaff && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-3">Tarih Seçin</label>
+              <label className="block text-sm font-medium text-gray-700 mb-3">{t("selectDate")}</label>
               <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
                 {days.map((day) => (
                   <button
@@ -472,13 +482,13 @@ export default function BookingPage() {
                     }`}
                   >
                     <div className="text-xs font-medium">
-                      {day.toLocaleDateString("tr-TR", { weekday: "short" })}
+                      {day.toLocaleDateString(dateLocale, { weekday: "short" })}
                     </div>
                     <div className="text-sm font-bold mt-0.5">
                       {day.getDate()}
                     </div>
                     <div className="text-xs opacity-70">
-                      {day.toLocaleDateString("tr-TR", { month: "short" })}
+                      {day.toLocaleDateString(dateLocale, { month: "short" })}
                     </div>
                   </button>
                 ))}
@@ -491,7 +501,7 @@ export default function BookingPage() {
               onClick={handleStaffAndDateComplete}
               className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-semibold transition-colors"
             >
-              Uygun Saatleri Görüntüle
+              {t("viewSlots")}
             </button>
           )}
         </div>
@@ -506,13 +516,13 @@ export default function BookingPage() {
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <polyline points="15 18 9 12 15 6" />
             </svg>
-            Geri
+            {tCommon("back")}
           </button>
 
           <div>
-            <h2 className="text-xl font-semibold text-gray-900 mb-1">Saat Seçin</h2>
+            <h2 className="text-xl font-semibold text-gray-900 mb-1">{t("step3Title")}</h2>
             <p className="text-sm text-gray-500">
-              {selectedStaff.name} · {formatDate(selectedDate)}
+              {selectedStaff.name} · {formatDate(selectedDate, dateLocale)}
             </p>
           </div>
 
@@ -529,7 +539,7 @@ export default function BookingPage() {
                 onClick={() => setStep(2)}
                 className="mt-4 text-blue-600 hover:underline text-sm"
               >
-                Farklı bir tarih seçin
+                {t("differentDate")}
               </button>
             </div>
           )}
@@ -537,7 +547,7 @@ export default function BookingPage() {
           {!loadingSlots && !slotsError && slots.length > 0 && (
             <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
               {slots.map((slot) => {
-                const time = new Date(slot.startTime).toLocaleTimeString("tr-TR", {
+                const time = new Date(slot.startTime).toLocaleTimeString(dateLocale, {
                   hour: "2-digit",
                   minute: "2-digit",
                 });
@@ -565,24 +575,24 @@ export default function BookingPage() {
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <polyline points="15 18 9 12 15 6" />
             </svg>
-            Geri
+            {tCommon("back")}
           </button>
 
           <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
-            <h3 className="font-semibold text-blue-900 mb-2">Rezervasyon Özeti</h3>
+            <h3 className="font-semibold text-blue-900 mb-2">{t("summaryTitle")}</h3>
             <div className="space-y-1 text-sm text-blue-700">
               <div className="flex justify-between">
-                <span>Hizmet</span>
+                <span>{t("serviceLabel")}</span>
                 <span className="font-medium">{selectedService.name}</span>
               </div>
               <div className="flex justify-between">
-                <span>Çalışan</span>
+                <span>{t("staffLabel")}</span>
                 <span className="font-medium">{selectedStaff.name}</span>
               </div>
               <div className="flex justify-between">
-                <span>Tarih & Saat</span>
+                <span>{t("dateTime")}</span>
                 <span className="font-medium">
-                  {new Date(selectedSlot.startTime).toLocaleString("tr-TR", {
+                  {new Date(selectedSlot.startTime).toLocaleString(dateLocale, {
                     weekday: "short",
                     month: "short",
                     day: "numeric",
@@ -592,7 +602,7 @@ export default function BookingPage() {
                 </span>
               </div>
               <div className="flex justify-between">
-                <span>Fiyat</span>
+                <span>{tCommon("price")}</span>
                 <span className="font-bold text-blue-800">
                   {formatPrice(selectedService.priceCents, selectedService.currency)}
                 </span>
@@ -601,7 +611,7 @@ export default function BookingPage() {
           </div>
 
           <div>
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">Bilgileriniz</h2>
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">{t("step4Title")}</h2>
             <form onSubmit={handleConfirm} className="space-y-4">
               {submitError && (
                 <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg px-4 py-3">
@@ -610,7 +620,7 @@ export default function BookingPage() {
               )}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Ad Soyad *
+                  {t("fullName")}
                 </label>
                 <input
                   required
@@ -618,12 +628,12 @@ export default function BookingPage() {
                   value={customerForm.name}
                   onChange={(e) => setCustomerForm({ ...customerForm, name: e.target.value })}
                   className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Ayşe Yılmaz"
+                  placeholder={t("namePlaceholder")}
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  E-posta *
+                  {t("emailLabel")}
                 </label>
                 <input
                   required
@@ -631,13 +641,13 @@ export default function BookingPage() {
                   value={customerForm.email}
                   onChange={(e) => setCustomerForm({ ...customerForm, email: e.target.value })}
                   className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="siz@ornek.com"
+                  placeholder={t("emailPlaceholder")}
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Telefon{" "}
-                  <span className="text-gray-400 font-normal">(opsiyonel)</span>
+                  {t("phoneLabel")}{" "}
+                  <span className="text-gray-400 font-normal">{t("phoneOptional")}</span>
                 </label>
                 <input
                   type="tel"
@@ -650,15 +660,15 @@ export default function BookingPage() {
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    İl{" "}
-                    <span className="text-gray-400 font-normal">(opsiyonel)</span>
+                    {t("province")}{" "}
+                    <span className="text-gray-400 font-normal">{t("phoneOptional")}</span>
                   </label>
                   <select
                     value={customerForm.province}
                     onChange={(e) => setCustomerForm({ ...customerForm, province: e.target.value, district: "" })}
                     className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
-                    <option value="">İl seçin</option>
+                    <option value="">{t("provincePlaceholder")}</option>
                     {TURKEY_PROVINCES.map((p) => (
                       <option key={p.slug} value={p.slug}>{p.name}</option>
                     ))}
@@ -666,8 +676,8 @@ export default function BookingPage() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    İlçe{" "}
-                    <span className="text-gray-400 font-normal">(opsiyonel)</span>
+                    {t("district")}{" "}
+                    <span className="text-gray-400 font-normal">{t("phoneOptional")}</span>
                   </label>
                   <select
                     value={customerForm.district}
@@ -675,7 +685,7 @@ export default function BookingPage() {
                     disabled={!customerForm.province}
                     className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-400"
                   >
-                    <option value="">İlçe seçin</option>
+                    <option value="">{t("districtPlaceholder")}</option>
                     {getDistrictsByProvince(customerForm.province).map((d) => (
                       <option key={d.slug} value={d.slug}>{d.name}</option>
                     ))}
@@ -684,15 +694,15 @@ export default function BookingPage() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Notlar{" "}
-                  <span className="text-gray-400 font-normal">(opsiyonel)</span>
+                  {tCommon("notes")}{" "}
+                  <span className="text-gray-400 font-normal">{t("phoneOptional")}</span>
                 </label>
                 <textarea
                   value={customerForm.notes}
                   onChange={(e) => setCustomerForm({ ...customerForm, notes: e.target.value })}
                   className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   rows={2}
-                  placeholder="Özel bir isteğiniz var mı?"
+                  placeholder={t("notesPlaceholder")}
                 />
               </div>
               <div className="space-y-3 border-t border-gray-100 pt-4">
@@ -706,7 +716,7 @@ export default function BookingPage() {
                   />
                   <span className="text-sm text-gray-700">
                     <span className="text-red-500">*</span>{" "}
-                    KVKK Aydınlatma Metni&apos;ni okudum ve kişisel verilerimin işlenmesini kabul ediyorum.
+                    {t("kvkkConsent")}
                   </span>
                 </label>
                 <label className="flex items-start gap-3 cursor-pointer">
@@ -717,7 +727,7 @@ export default function BookingPage() {
                     className="mt-0.5 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                   />
                   <span className="text-sm text-gray-600">
-                    Randevu hatırlatmaları (SMS, e-posta) almak istiyorum.
+                    {t("reminderConsent")}
                   </span>
                 </label>
                 <label className="flex items-start gap-3 cursor-pointer">
@@ -728,7 +738,7 @@ export default function BookingPage() {
                     className="mt-0.5 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                   />
                   <span className="text-sm text-gray-600">
-                    Kampanya ve duyuru mesajları almak istiyorum. (İYS kapsamında)
+                    {t("marketingConsent")}
                   </span>
                 </label>
               </div>
@@ -737,7 +747,7 @@ export default function BookingPage() {
                 disabled={submitting || !customerForm.privacyNoticeAcknowledged}
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-semibold transition-colors disabled:opacity-60 text-sm"
               >
-                {submitting ? "Onaylanıyor..." : "Randevuyu Onayla"}
+                {submitting ? t("confirming") : t("confirm")}
               </button>
             </form>
           </div>
@@ -755,7 +765,7 @@ export default function BookingPage() {
                       <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
                     </svg>
                   </div>
-                  <span className="text-white text-sm font-semibold">AI Asistan</span>
+                  <span className="text-white text-sm font-semibold">{t("aiAssistant")}</span>
                 </div>
                 <button
                   onClick={() => setChatOpen(false)}
@@ -770,7 +780,7 @@ export default function BookingPage() {
               <div className="flex-1 overflow-y-auto p-3 space-y-2 max-h-72 min-h-32">
                 {chatMessages.length === 0 && (
                   <p className="text-xs text-gray-400 text-center py-4">
-                    Merhaba! Hizmetlerimiz, fiyatlarımız veya rezervasyon süreci hakkında soru sorabilirsiniz.
+                    {t("aiGreeting")}
                   </p>
                 )}
                 {chatMessages.map((m, i) => (
@@ -803,7 +813,7 @@ export default function BookingPage() {
                 <input
                   value={chatInput}
                   onChange={(e) => setChatInput(e.target.value)}
-                  placeholder="Soru sorun..."
+                  placeholder={t("aiPlaceholder")}
                   className="flex-1 text-xs border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   disabled={chatLoading}
                 />
@@ -847,9 +857,9 @@ export default function BookingPage() {
           </div>
 
           <div>
-            <h2 className="text-2xl font-bold text-gray-900">Randevu Onaylandı!</h2>
+            <h2 className="text-2xl font-bold text-gray-900">{t("confirmed")}</h2>
             <p className="text-gray-500 mt-1">
-              Onay {confirmation.customer.email} adresine gönderilecektir.
+              {confirmation.customer.email} {t("confirmationEmail")}
             </p>
           </div>
 
@@ -857,17 +867,17 @@ export default function BookingPage() {
             <h3 className="font-semibold text-gray-900">{profile.name}</h3>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
-                <span className="text-gray-500">Hizmet</span>
+                <span className="text-gray-500">{t("serviceLabel")}</span>
                 <span className="font-medium text-gray-900">{confirmation.service.name}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-500">Çalışan</span>
+                <span className="text-gray-500">{t("staffLabel")}</span>
                 <span className="font-medium text-gray-900">{confirmation.staff.name}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-500">Tarih & Saat</span>
+                <span className="text-gray-500">{t("dateTime")}</span>
                 <span className="font-medium text-gray-900">
-                  {new Date(confirmation.startTime).toLocaleString("tr-TR", {
+                  {new Date(confirmation.startTime).toLocaleString(dateLocale, {
                     weekday: "long",
                     month: "long",
                     day: "numeric",
@@ -878,18 +888,18 @@ export default function BookingPage() {
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-500">İsim</span>
+                <span className="text-gray-500">{t("customerLabel")}</span>
                 <span className="font-medium text-gray-900">{confirmation.customer.fullName}</span>
               </div>
               {profile.address && (
                 <div className="flex justify-between">
-                  <span className="text-gray-500">Adres</span>
+                  <span className="text-gray-500">{tCommon("address")}</span>
                   <span className="font-medium text-gray-900">{profile.address}</span>
                 </div>
               )}
               {profile.phone && (
                 <div className="flex justify-between">
-                  <span className="text-gray-500">Telefon</span>
+                  <span className="text-gray-500">{tCommon("phone")}</span>
                   <span className="font-medium text-gray-900">{profile.phone}</span>
                 </div>
               )}
@@ -900,7 +910,7 @@ export default function BookingPage() {
             onClick={reset}
             className="inline-flex items-center gap-2 border border-gray-300 hover:border-blue-400 hover:bg-blue-50 text-gray-700 px-6 py-2.5 rounded-xl text-sm font-medium transition-colors"
           >
-            Yeni Randevu Al
+            {t("newBooking")}
           </button>
         </div>
       )}

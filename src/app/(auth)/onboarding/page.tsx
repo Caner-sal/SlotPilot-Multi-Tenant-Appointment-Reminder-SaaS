@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 const TIMEZONES = [
   "Europe/Istanbul",
@@ -50,10 +51,10 @@ const labelStyle: React.CSSProperties = {
   textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 6, display: "block",
 };
 
-const steps = ["İşletme Bilgileri", "İletişim", "Konum & Saat"];
-
 export default function OnboardingPage() {
+  const t = useTranslations("auth");
   const router = useRouter();
+  const steps = [t("onboardingStep1"), t("onboardingStep2"), t("onboardingStep3")];
   const [step, setStep] = useState(0);
   const [businessName, setBusinessName] = useState("");
   const [slug, setSlug] = useState("");
@@ -89,9 +90,9 @@ export default function OnboardingPage() {
     const data = await res.json();
     if (!res.ok) {
       if (res.status === 409 || data.message?.toLowerCase().includes("slug")) {
-        setError("Bu URL kısa adı kullanımda. Lütfen farklı bir kısa ad seçin.");
+        setError(t("slugTaken"));
       } else {
-        setError(data.message ?? "Bir hata oluştu. Lütfen tekrar deneyin.");
+        setError(data.message ?? t("genericError"));
       }
       setLoading(false);
       return;
@@ -149,10 +150,10 @@ export default function OnboardingPage() {
         {/* Card */}
         <div style={{ background: "#111120", border: "1px solid rgba(119,104,212,0.12)", borderRadius: 20, padding: "32px 36px" }}>
           <h2 style={{ fontFamily: "var(--font-heading, Outfit, sans-serif)", fontSize: 20, fontWeight: 700, letterSpacing: "-0.02em", marginBottom: 6 }}>
-            {step === 0 ? "İşletme Bilgileri" : step === 1 ? "İletişim Bilgileri" : "Konum ve Saat Dilimi"}
+            {step === 0 ? t("onboardingTitle1") : step === 1 ? t("onboardingTitle2") : t("onboardingTitle3")}
           </h2>
           <p style={{ fontSize: 13, color: "#8a8aaa", marginBottom: 26 }}>
-            {step === 0 ? "Müşterilerinizin sizi bulabilmesi için temel bilgileri girin." : step === 1 ? "Müşterilerinizin size ulaşabileceği iletişim bilgileri." : "İşletmenizin konumu ve çalışma saat dilimi."}
+            {step === 0 ? t("onboardingDesc1") : step === 1 ? t("onboardingDesc2") : t("onboardingDesc3")}
           </p>
 
           {error && (
@@ -168,11 +169,11 @@ export default function OnboardingPage() {
               {step === 0 && (
                 <>
                   <div>
-                    <label style={labelStyle}>İşletme Adı *</label>
+                    <label style={labelStyle}>{t("businessName")}</label>
                     <input style={inputStyle} type="text" placeholder="Bella Hair Studio" value={businessName} onChange={(e) => setBusinessName(e.target.value)} required />
                   </div>
                   <div>
-                    <label style={labelStyle}>URL Kısa Adı *</label>
+                    <label style={labelStyle}>{t("urlSlug")}</label>
                     <div style={{ display: "flex" }}>
                       <span style={{ display: "flex", alignItems: "center", background: "#181828", border: "1px solid rgba(119,104,212,0.18)", borderRight: "none", borderRadius: "10px 0 0 10px", padding: "0 12px", fontSize: 12, color: "#3a3a58", whiteSpace: "nowrap" }}>
                         randevo.com/
@@ -199,7 +200,7 @@ export default function OnboardingPage() {
                     <input style={inputStyle} type="tel" placeholder="+90 555 000 00 00" value={phone} onChange={(e) => setPhone(e.target.value)} />
                   </div>
                   <div>
-                    <label style={labelStyle}>İşletme E-postası</label>
+                    <label style={labelStyle}>{t("businessEmail")}</label>
                     <input style={inputStyle} type="email" placeholder="merhaba@isletmeniz.com" value={orgEmail} onChange={(e) => setOrgEmail(e.target.value)} />
                   </div>
                 </>
@@ -213,7 +214,7 @@ export default function OnboardingPage() {
                     <input style={inputStyle} type="text" placeholder="Cadde/Sokak, İlçe, İl" value={address} onChange={(e) => setAddress(e.target.value)} />
                   </div>
                   <div>
-                    <label style={labelStyle}>Saat Dilimi *</label>
+                    <label style={labelStyle}>{t("timezone")}</label>
                     <select
                       value={timezone}
                       onChange={(e) => setTimezone(e.target.value)}
@@ -238,7 +239,7 @@ export default function OnboardingPage() {
                   style={{ display: "flex", alignItems: "center", gap: 8, padding: "11px 22px", borderRadius: 11, border: "1px solid rgba(119,104,212,0.2)", background: "transparent", color: "#8a8aaa", fontFamily: "var(--font-heading, Outfit, sans-serif)", fontSize: 14, fontWeight: 600, cursor: "pointer" }}
                 >
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5" /><path d="m12 19-7-7 7-7" /></svg>
-                  Geri
+                  {t("back")}
                 </button>
               )}
               <button
@@ -254,8 +255,8 @@ export default function OnboardingPage() {
                 }}
               >
                 {step < 2
-                  ? <>Devam Et <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg></>
-                  : loading ? "Oluşturuluyor..." : <>İşletmeyi Oluştur <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5" /></svg></>
+                  ? <>{t("continue")} <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg></>
+                  : loading ? t("creating2") : <>{t("createBusiness")} <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5" /></svg></>
                 }
               </button>
             </div>
@@ -263,7 +264,7 @@ export default function OnboardingPage() {
         </div>
 
         <p style={{ fontSize: 12, color: "#3a3a58", textAlign: "center", marginTop: 20 }}>
-          Adım {step + 1} / {steps.length}
+          {t("stepOf", { step: step + 1, total: steps.length })}
         </p>
       </div>
     </div>

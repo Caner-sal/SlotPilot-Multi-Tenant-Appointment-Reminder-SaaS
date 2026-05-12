@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
 
 interface Service {
   id: string;
@@ -26,6 +27,9 @@ function formatPrice(cents: number, currency: string) {
 }
 
 export default function ServicesPage() {
+  const t = useTranslations("services");
+  const tCommon = useTranslations("common");
+
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -93,7 +97,7 @@ export default function ServicesPage() {
           });
       if (!res.ok) {
         const j = await res.json();
-        setError(typeof j.error === "string" ? j.error : "Bir hata oluştu.");
+        setError(typeof j.error === "string" ? j.error : tCommon("error"));
         return;
       }
       setDialogOpen(false);
@@ -122,8 +126,8 @@ export default function ServicesPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Hizmetler</h1>
-          <p className="text-sm text-gray-500 mt-1">İşletmenizin sunduğu hizmetleri yönetin.</p>
+          <h1 className="text-2xl font-bold text-gray-900">{t("title")}</h1>
+          <p className="text-sm text-gray-500 mt-1">{t("subtitle")}</p>
         </div>
         <button
           onClick={openAddDialog}
@@ -133,26 +137,26 @@ export default function ServicesPage() {
             <line x1="12" y1="5" x2="12" y2="19" />
             <line x1="5" y1="12" x2="19" y2="12" />
           </svg>
-          Hizmet Ekle
+          {t("addService")}
         </button>
       </div>
 
       <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
         {loading ? (
-          <div className="p-10 text-center text-gray-400">Yükleniyor...</div>
+          <div className="p-10 text-center text-gray-400">{tCommon("loading")}</div>
         ) : services.length === 0 ? (
           <div className="p-10 text-center text-gray-400">
-            Henüz hizmet yok. Başlamak için ilk hizmetinizi ekleyin.
+            {t("notFound")}
           </div>
         ) : (
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-gray-100 bg-gray-50">
-                <th className="px-5 py-3 text-left font-semibold text-gray-600">Ad</th>
-                <th className="px-5 py-3 text-left font-semibold text-gray-600">Süre</th>
-                <th className="px-5 py-3 text-left font-semibold text-gray-600">Fiyat</th>
-                <th className="px-5 py-3 text-left font-semibold text-gray-600">Durum</th>
-                <th className="px-5 py-3 text-right font-semibold text-gray-600">İşlemler</th>
+                <th className="px-5 py-3 text-left font-semibold text-gray-600">{t("nameCol")}</th>
+                <th className="px-5 py-3 text-left font-semibold text-gray-600">{t("durationCol")}</th>
+                <th className="px-5 py-3 text-left font-semibold text-gray-600">{t("priceCol")}</th>
+                <th className="px-5 py-3 text-left font-semibold text-gray-600">{tCommon("status")}</th>
+                <th className="px-5 py-3 text-right font-semibold text-gray-600">{tCommon("actions")}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
@@ -164,7 +168,7 @@ export default function ServicesPage() {
                       <div className="text-xs text-gray-400 mt-0.5 line-clamp-1">{service.description}</div>
                     )}
                   </td>
-                  <td className="px-5 py-3.5 text-gray-600">{service.durationMinutes} dk</td>
+                  <td className="px-5 py-3.5 text-gray-600">{service.durationMinutes} {tCommon("min")}</td>
                   <td className="px-5 py-3.5 text-gray-600">
                     {formatPrice(service.priceCents, service.currency)}
                   </td>
@@ -176,7 +180,7 @@ export default function ServicesPage() {
                           : "bg-gray-100 text-gray-500"
                       }`}
                     >
-                      {service.isActive ? "Aktif" : "Pasif"}
+                      {service.isActive ? tCommon("active") : tCommon("passive")}
                     </span>
                   </td>
                   <td className="px-5 py-3.5">
@@ -185,19 +189,19 @@ export default function ServicesPage() {
                         onClick={() => openEditDialog(service)}
                         className="text-blue-600 hover:text-blue-800 text-xs font-medium px-2 py-1 rounded hover:bg-blue-50 transition-colors"
                       >
-                        Düzenle
+                        {tCommon("edit")}
                       </button>
                       <button
                         onClick={() => toggleActive(service)}
                         className="text-gray-500 hover:text-gray-700 text-xs font-medium px-2 py-1 rounded hover:bg-gray-100 transition-colors"
                       >
-                        {service.isActive ? "Pasifleştir" : "Aktifleştir"}
+                        {service.isActive ? t("deactivate") : t("activate")}
                       </button>
                       <button
                         onClick={() => deleteService(service)}
                         className="text-red-500 hover:text-red-700 text-xs font-medium px-2 py-1 rounded hover:bg-red-50 transition-colors"
                       >
-                        Sil
+                        {tCommon("delete")}
                       </button>
                     </div>
                   </td>
@@ -213,7 +217,7 @@ export default function ServicesPage() {
           <div className="bg-white rounded-xl shadow-xl w-full max-w-md">
             <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
               <h2 className="font-semibold text-gray-900">
-                {editingService ? "Hizmeti Düzenle" : "Hizmet Ekle"}
+                {editingService ? t("editService") : t("addService")}
               </h2>
               <button
                 onClick={() => setDialogOpen(false)}
@@ -238,22 +242,22 @@ export default function ServicesPage() {
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="ör. Saç Kesimi"
+                  placeholder={t("namePlaceholder")}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Açıklama</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{tCommon("description")}</label>
                 <textarea
                   value={form.description}
                   onChange={(e) => setForm({ ...form, description: e.target.value })}
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   rows={2}
-                  placeholder="İsteğe bağlı açıklama"
+                  placeholder={t("descPlaceholder")}
                 />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Süre (dk) *</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t("durationLabel")}</label>
                   <input
                     required
                     type="number"
@@ -265,7 +269,7 @@ export default function ServicesPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Fiyat *</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t("priceLabel")}</label>
                   <input
                     required
                     type="number"
@@ -280,16 +284,16 @@ export default function ServicesPage() {
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Para Birimi</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t("currencyLabel")}</label>
                 <select
                   value={form.currency}
                   onChange={(e) => setForm({ ...form, currency: e.target.value })}
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
-                  <option value="TRY">TRY (Türk Lirası)</option>
-                  <option value="USD">USD (Amerikan Doları)</option>
-                  <option value="EUR">EUR (Euro)</option>
-                  <option value="GBP">GBP (İngiliz Sterlini)</option>
+                  <option value="TRY">{t("tryLabel")}</option>
+                  <option value="USD">{t("usdLabel")}</option>
+                  <option value="EUR">{t("eurLabel")}</option>
+                  <option value="GBP">{t("gbpLabel")}</option>
                 </select>
               </div>
               <div className="flex items-center gap-2">
@@ -301,7 +305,7 @@ export default function ServicesPage() {
                   className="rounded"
                 />
                 <label htmlFor="isActive" className="text-sm text-gray-700">
-                  Aktif (müşterilere görünür)
+                  {t("activeVisible")}
                 </label>
               </div>
               <div className="flex gap-3 pt-2">
@@ -310,14 +314,14 @@ export default function ServicesPage() {
                   onClick={() => setDialogOpen(false)}
                   className="flex-1 border border-gray-300 text-gray-700 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors"
                 >
-                  İptal
+                  {tCommon("cancel")}
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
                   className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-60"
                 >
-                  {saving ? "Kaydediliyor..." : editingService ? "Güncelle" : "Oluştur"}
+                  {saving ? tCommon("saving") : editingService ? tCommon("update") : tCommon("create")}
                 </button>
               </div>
             </form>

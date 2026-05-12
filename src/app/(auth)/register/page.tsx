@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
+import { useTranslations } from "next-intl";
 
 function RandevoLogo() {
   return (
@@ -32,6 +33,7 @@ const labelStyle: React.CSSProperties = {
 };
 
 export default function RegisterPage() {
+  const t = useTranslations("auth");
   const router = useRouter();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -138,15 +140,15 @@ export default function RegisterPage() {
             <span style={{ fontFamily: "var(--font-heading, Outfit, sans-serif)", fontSize: 20, fontWeight: 700 }}>Randevo</span>
           </div>
 
-          <h3 style={{ fontFamily: "var(--font-heading, Outfit, sans-serif)", fontSize: 22, fontWeight: 700, letterSpacing: "-0.02em", marginBottom: 6 }}>Hesap oluşturun</h3>
-          <p style={{ fontSize: 13, color: "#8a8aaa", marginBottom: 24 }}>Ücretsiz başlayın, istediğiniz zaman yükseltin.</p>
+          <h3 style={{ fontFamily: "var(--font-heading, Outfit, sans-serif)", fontSize: 22, fontWeight: 700, letterSpacing: "-0.02em", marginBottom: 6 }}>{t("registerTitle")}</h3>
+          <p style={{ fontSize: 13, color: "#8a8aaa", marginBottom: 24 }}>{t("registerSubtitle")}</p>
 
           {/* Free plan notice */}
           <div style={{ background: "rgba(119,104,212,0.1)", border: "1px solid rgba(119,104,212,0.22)", borderRadius: 10, padding: "11px 14px", marginBottom: 22, fontSize: 13, color: "#a59cf0", display: "flex", alignItems: "center", gap: 8 }}>
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
               <circle cx="12" cy="12" r="10" /><path d="M12 8v4" /><path d="M12 16h.01" />
             </svg>
-            Ücretsiz plan: 1 çalışan, ayda 20 randevu. Kart bilgisi gerekmez.
+            {t("registerFreeNote")}
           </div>
 
           <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
@@ -157,19 +159,19 @@ export default function RegisterPage() {
             )}
 
             <div>
-              <label style={labelStyle}>Ad Soyad</label>
+              <label style={labelStyle}>{t("fullName")}</label>
               <input style={inputStyle} type="text" placeholder="Ayşe Yılmaz" value={name} onChange={(e) => setName(e.target.value)} required autoComplete="name" />
             </div>
 
             <div>
-              <label style={labelStyle}>E-posta</label>
+              <label style={labelStyle}>{t("emailLabel")}</label>
               <input style={inputStyle} type="email" placeholder="siz@ornek.com" value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="email" />
             </div>
 
             <div>
-              <label style={labelStyle}>Şifre</label>
+              <label style={labelStyle}>{t("passwordLabel")}</label>
               <input style={inputStyle} type="password" placeholder="En az 8 karakter" value={password} onChange={(e) => setPassword(e.target.value)} required autoComplete="new-password" minLength={8} />
-              <p style={{ fontSize: 12, color: "#3a3a58", marginTop: 5 }}>Büyük harf, rakam ve özel karakter önerilir.</p>
+              <p style={{ fontSize: 12, color: "#3a3a58", marginTop: 5 }}>{t("passwordHint")}</p>
             </div>
 
             <button
@@ -183,7 +185,7 @@ export default function RegisterPage() {
                 marginTop: 4, transition: "all 0.2s",
               }}
             >
-              {loading ? "Hesap oluşturuluyor..." : "Ücretsiz Hesap Oluştur"}
+              {loading ? t("creating") : t("createFreeAccount")}
             </button>
           </form>
 
@@ -196,8 +198,8 @@ export default function RegisterPage() {
           </p>
 
           <p style={{ fontSize: 13, color: "#3a3a58", textAlign: "center", marginTop: 18 }}>
-            Zaten hesabınız var mı?{" "}
-            <Link href="/login" style={{ color: "#a59cf0", fontWeight: 600 }}>Giriş yapın</Link>
+            {t("alreadyHaveAccount")}{" "}
+            <Link href="/login" style={{ color: "#a59cf0", fontWeight: 600 }}>{t("signIn")}</Link>
           </p>
         </div>
       </div>

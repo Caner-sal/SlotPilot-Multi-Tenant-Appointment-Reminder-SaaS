@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
 
 interface OrgForm {
   name: string;
@@ -28,6 +29,9 @@ const TIMEZONES = [
 ];
 
 export default function SettingsPage() {
+  const t = useTranslations("settings");
+  const tCommon = useTranslations("common");
+
   const [form, setForm] = useState<OrgForm>({
     name: "",
     slug: "",
@@ -92,20 +96,20 @@ export default function SettingsPage() {
     : "";
 
   if (loading) {
-    return <div className="p-10 text-center text-gray-400">Ayarlar yükleniyor...</div>;
+    return <div className="p-10 text-center text-gray-400">{t("loading")}</div>;
   }
 
   return (
     <div className="space-y-6 max-w-2xl">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Ayarlar</h1>
-        <p className="text-sm text-gray-500 mt-1">İşletme profilinizi ve tercihlerinizi yapılandırın.</p>
+        <h1 className="text-2xl font-bold text-gray-900">{t("title")}</h1>
+        <p className="text-sm text-gray-500 mt-1">{t("subtitle")}</p>
       </div>
 
       {bookingUrl && (
         <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
           <p className="text-xs text-blue-600 font-semibold uppercase tracking-wider mb-1">
-            Genel Rezervasyon URL&apos;niz
+            {t("bookingUrl")}
           </p>
           <div className="flex items-center gap-3">
             <code className="text-sm text-blue-800 break-all flex-1">{bookingUrl}</code>
@@ -114,7 +118,7 @@ export default function SettingsPage() {
               onClick={() => navigator.clipboard.writeText(bookingUrl)}
               className="shrink-0 text-blue-600 hover:text-blue-800 text-xs font-medium px-2 py-1 rounded hover:bg-blue-100 transition-colors"
             >
-              Kopyala
+              {t("copy")}
             </button>
           </div>
         </div>
@@ -122,7 +126,7 @@ export default function SettingsPage() {
 
       <form onSubmit={handleSubmit} className="bg-white rounded-xl border border-gray-200 shadow-sm">
         <div className="px-6 py-4 border-b border-gray-100">
-          <h2 className="font-semibold text-gray-900">İşletme Bilgileri</h2>
+          <h2 className="font-semibold text-gray-900">{t("businessInfo")}</h2>
         </div>
         <div className="p-6 space-y-5">
           {error && (
@@ -132,50 +136,50 @@ export default function SettingsPage() {
           )}
           {saved && (
             <div className="bg-green-50 border border-green-200 text-green-700 text-sm rounded-lg px-4 py-3">
-              Ayarlar başarıyla kaydedildi.
+              {t("saveSuccess")}
             </div>
           )}
 
           <div className="grid md:grid-cols-2 gap-5">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">İşletme Adı *</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t("businessName")}</label>
               <input
                 required
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="İşletmem"
+                placeholder={t("namePlaceholder")}
               />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                URL Slug *
-                <span className="ml-1 text-gray-400 font-normal">(rezervasyon URL&apos;sinde kullanılır)</span>
+                {t("urlSlug")}
+                <span className="ml-1 text-gray-400 font-normal">{t("slugNote")}</span>
               </label>
               <input
                 required
                 value={form.slug}
                 onChange={(e) => setForm({ ...form, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "-") })}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono"
-                placeholder="isletmem"
+                placeholder={t("slugPlaceholder")}
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Açıklama</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{tCommon("description")}</label>
             <textarea
               value={form.description}
               onChange={(e) => setForm({ ...form, description: e.target.value })}
               rows={3}
               className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Müşterilerinize işletmeniz hakkında bilgi verin..."
+              placeholder={t("descPlaceholder")}
             />
           </div>
 
           <div className="grid md:grid-cols-2 gap-5">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Telefon</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{tCommon("phone")}</label>
               <input
                 value={form.phone}
                 onChange={(e) => setForm({ ...form, phone: e.target.value })}
@@ -184,29 +188,29 @@ export default function SettingsPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">E-posta</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{tCommon("email")}</label>
               <input
                 type="email"
                 value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="merhaba@isletmem.com"
+                placeholder={t("emailPlaceholder")}
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Adres</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{tCommon("address")}</label>
             <input
               value={form.address}
               onChange={(e) => setForm({ ...form, address: e.target.value })}
               className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Atatürk Mah. No:1, İstanbul"
+              placeholder={t("addressPlaceholder")}
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Saat Dilimi</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t("timezone")}</label>
             <select
               value={form.timezone}
               onChange={(e) => setForm({ ...form, timezone: e.target.value })}
@@ -222,9 +226,9 @@ export default function SettingsPage() {
 
           <div className="flex items-center justify-between py-3 border border-gray-200 rounded-lg px-4">
             <div>
-              <p className="text-sm font-medium text-gray-900">Online Rezervasyon</p>
+              <p className="text-sm font-medium text-gray-900">{t("onlineBooking")}</p>
               <p className="text-xs text-gray-400 mt-0.5">
-                Müşterilerin genel rezervasyon sayfanızdan randevu almasına izin verin.
+                {t("onlineBookingDesc")}
               </p>
             </div>
             <button
@@ -248,7 +252,7 @@ export default function SettingsPage() {
             disabled={saving}
             className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-60"
           >
-            {saving ? "Kaydediliyor..." : "Ayarları Kaydet"}
+            {saving ? tCommon("saving") : t("saveSettings")}
           </button>
         </div>
       </form>

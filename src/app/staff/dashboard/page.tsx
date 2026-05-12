@@ -1,8 +1,11 @@
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 
 export default async function StaffDashboardPage() {
+  const t = await getTranslations("staffPortal");
+  const tCommon = await getTranslations("common");
   const session = await auth();
   if (!session?.user?.staffId) redirect("/login");
 
@@ -31,32 +34,34 @@ export default async function StaffDashboardPage() {
     }),
   ]);
 
+  const staffName = session.user.name ?? "Çalışan";
+
   return (
     <div>
       <h1 className="mb-6 text-2xl font-bold text-gray-900">
-        Tekrar hoş geldiniz, {session.user.name ?? "Çalışan"}
+        {t("welcomeBack", { name: staffName })}
       </h1>
       <div className="mb-8 grid grid-cols-3 gap-4">
         <div className="rounded-lg border bg-white p-4">
-          <p className="text-sm text-gray-500">Bugünkü Randevular</p>
+          <p className="text-sm text-gray-500">{t("todayAppointments")}</p>
           <p className="mt-1 text-3xl font-bold text-gray-900">{todayAppts}</p>
         </div>
         <div className="rounded-lg border bg-white p-4">
-          <p className="text-sm text-gray-500">Bekleyen</p>
+          <p className="text-sm text-gray-500">{tCommon("pending")}</p>
           <p className="mt-1 text-3xl font-bold text-yellow-600">{pendingAppts}</p>
         </div>
         <div className="rounded-lg border bg-white p-4">
-          <p className="text-sm text-gray-500">Yaklaşan (5)</p>
+          <p className="text-sm text-gray-500">{t("upcoming5")}</p>
           <p className="mt-1 text-3xl font-bold text-blue-600">{upcomingAppts.length}</p>
         </div>
       </div>
 
       <div className="rounded-lg border bg-white">
         <div className="border-b px-4 py-3">
-          <h2 className="font-semibold text-gray-900">Sıradaki Randevular</h2>
+          <h2 className="font-semibold text-gray-900">{t("nextAppointments")}</h2>
         </div>
         {upcomingAppts.length === 0 ? (
-          <div className="py-8 text-center text-gray-500">Yaklaşan randevu yok.</div>
+          <div className="py-8 text-center text-gray-500">{t("noUpcoming")}</div>
         ) : (
           <ul className="divide-y">
             {upcomingAppts.map((apt) => (

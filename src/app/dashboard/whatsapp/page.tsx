@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useTranslations } from "next-intl";
 
 interface WaSettings {
   enabled: boolean;
@@ -42,29 +43,31 @@ const DEFAULT_SETTINGS: WaSettings = {
   includeBookingLink: true,
 };
 
-function StatusBadge({ status }: { status: string }) {
+function StatusBadge({ status, tCommon }: { status: string; tCommon: ReturnType<typeof useTranslations> }) {
   if (status === "SENT")
     return (
       <span className="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
-        Gönderildi
+        {tCommon("sent")}
       </span>
     );
   if (status === "SKIPPED")
     return (
       <span className="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300">
-        Atlandı
+        {tCommon("skipped")}
       </span>
     );
   if (status === "FAILED")
     return (
       <span className="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300">
-        Başarısız
+        {tCommon("failed")}
       </span>
     );
   return <span className="text-xs text-muted-foreground">{status}</span>;
 }
 
 export default function WhatsAppAutoReplyPage() {
+  const t = useTranslations("whatsapp");
+  const tCommon = useTranslations("common");
   const [settings, setSettings] = useState<WaSettings>(DEFAULT_SETTINGS);
   const [logs, setLogs] = useState<WaLog[]>([]);
   const [logsMeta, setLogsMeta] = useState<LogsMeta>({ total: 0, page: 1, limit: 20, totalPages: 0 });
@@ -132,12 +135,12 @@ export default function WhatsAppAutoReplyPage() {
         const updated = (await res.json()) as WaSettings;
         setSettings(updated);
         setKeywordsInput((updated.triggerKeywords ?? []).join(", "));
-        setSaveMsg("Ayarlar kaydedildi.");
+        setSaveMsg(t("saveSuccess"));
       } else {
-        setSaveMsg("Kaydetme başarısız oldu.");
+        setSaveMsg(t("saveFailed"));
       }
     } catch {
-      setSaveMsg("Bağlantı hatası.");
+      setSaveMsg(t("connectionError"));
     } finally {
       setSaving(false);
       setTimeout(() => setSaveMsg(null), 3000);
@@ -154,7 +157,7 @@ export default function WhatsAppAutoReplyPage() {
         setPreviewText(data.previewText);
       }
     } catch {
-      setPreviewText("Önizleme yüklenemedi.");
+      setPreviewText(t("previewError"));
     } finally {
       setLoadingPreview(false);
     }
@@ -163,7 +166,7 @@ export default function WhatsAppAutoReplyPage() {
   if (loadingSettings) {
     return (
       <div className="flex items-center justify-center min-h-[200px]">
-        <p className="text-muted-foreground text-sm">Yükleniyor...</p>
+        <p className="text-muted-foreground text-sm">{tCommon("loading")}</p>
       </div>
     );
   }
@@ -172,9 +175,9 @@ export default function WhatsAppAutoReplyPage() {
     <div className="space-y-8 max-w-3xl">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">WhatsApp Otomatik Yanıt</h1>
+        <h1 className="text-2xl font-bold tracking-tight">{t("title")}</h1>
         <p className="text-muted-foreground text-sm mt-1">
-          Müşterilerinizin mesajlarına otomatik rezervasyon linki gönderin.
+          {t("subtitle")}
         </p>
       </div>
 
@@ -183,9 +186,9 @@ export default function WhatsAppAutoReplyPage() {
         {/* Enable toggle */}
         <div className="flex items-center justify-between">
           <div>
-            <p className="font-medium">Otomatik Yanıt Aktif</p>
+            <p className="font-medium">{t("enabledLabel")}</p>
             <p className="text-sm text-muted-foreground">
-              Müşteri mesajı geldiğinde otomatik rezervasyon linki gönder
+              {t("enabledDesc")}
             </p>
           </div>
           <button
@@ -207,7 +210,7 @@ export default function WhatsAppAutoReplyPage() {
 
         {/* Reply Mode */}
         <div className="space-y-1">
-          <label className="text-sm font-medium">Yanıt Modu</label>
+          <label className="text-sm font-medium">{t("responseMode")}</label>
           <select
             value={settings.replyMode}
             onChange={(e) =>
@@ -215,17 +218,17 @@ export default function WhatsAppAutoReplyPage() {
             }
             className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-ring"
           >
-            <option value="ALWAYS">Her zaman yanıtla</option>
-            <option value="KEYWORD_ONLY">Anahtar kelimede yanıtla</option>
-            <option value="DISABLED">Kapalı</option>
+            <option value="ALWAYS">{t("modeAlways")}</option>
+            <option value="KEYWORD_ONLY">{t("modeKeyword")}</option>
+            <option value="DISABLED">{t("modeOff")}</option>
           </select>
         </div>
 
         {/* Cooldown */}
         <div className="space-y-1">
-          <label className="text-sm font-medium">Soğuma Süresi (Saat)</label>
+          <label className="text-sm font-medium">{t("cooldown")}</label>
           <p className="text-xs text-muted-foreground">
-            Aynı kişiye tekrar yanıt göndermeden önce beklenecek süre
+            {t("cooldownDesc")}
           </p>
           <input
             type="number"
@@ -242,15 +245,15 @@ export default function WhatsAppAutoReplyPage() {
         {/* Keywords (only shown in KEYWORD_ONLY mode) */}
         {settings.replyMode === "KEYWORD_ONLY" && (
           <div className="space-y-1">
-            <label className="text-sm font-medium">Anahtar Kelimeler</label>
+            <label className="text-sm font-medium">{t("keywords")}</label>
             <p className="text-xs text-muted-foreground">
-              Virgülle ayırın. Örnek: randevu, fiyat, müsaitlik
+              {t("keywordsHint")}
             </p>
             <input
               type="text"
               value={keywordsInput}
               onChange={(e) => setKeywordsInput(e.target.value)}
-              placeholder="randevu, fiyat, boş saat"
+              placeholder={t("keywordsPlaceholder")}
               className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-ring"
             />
           </div>
@@ -258,9 +261,9 @@ export default function WhatsAppAutoReplyPage() {
 
         {/* Message Template */}
         <div className="space-y-1">
-          <label className="text-sm font-medium">Mesaj Şablonu</label>
+          <label className="text-sm font-medium">{t("template")}</label>
           <p className="text-xs text-muted-foreground">
-            {"{{bookingUrl}} alanı otomatik olarak rezervasyon linkinizle doldurulur."}
+            {t("templateHint")}
           </p>
           <textarea
             rows={6}
@@ -278,7 +281,7 @@ export default function WhatsAppAutoReplyPage() {
             disabled={loadingPreview}
             className="inline-flex items-center rounded-md border border-border bg-background px-4 py-2 text-sm font-medium hover:bg-accent transition-colors disabled:opacity-50"
           >
-            {loadingPreview ? "Yükleniyor..." : "Önizleme"}
+            {loadingPreview ? tCommon("loading") : t("preview")}
           </button>
           {previewText && (
             <pre className="rounded-md bg-muted px-4 py-3 text-sm whitespace-pre-wrap font-mono border border-border">
@@ -295,12 +298,12 @@ export default function WhatsAppAutoReplyPage() {
             disabled={saving}
             className="inline-flex items-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50"
           >
-            {saving ? "Kaydediliyor..." : "Kaydet"}
+            {saving ? tCommon("saving") : tCommon("save")}
           </button>
           {saveMsg && (
             <span
               className={`text-sm ${
-                saveMsg.includes("kaydedildi") ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"
+                saveMsg === t("saveSuccess") ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"
               }`}
             >
               {saveMsg}
@@ -311,20 +314,20 @@ export default function WhatsAppAutoReplyPage() {
 
       {/* Logs Table */}
       <div>
-        <h2 className="text-lg font-semibold mb-3">Gönderim Geçmişi</h2>
+        <h2 className="text-lg font-semibold mb-3">{t("history")}</h2>
         {logs.length === 0 ? (
           <p className="text-sm text-muted-foreground py-6 text-center border border-dashed border-border rounded-lg">
-            Henüz gönderim kaydı yok.
+            {t("noHistory")}
           </p>
         ) : (
           <div className="rounded-lg border border-border overflow-hidden">
             <table className="w-full text-sm">
               <thead className="bg-muted/50">
                 <tr>
-                  <th className="px-4 py-3 text-left font-medium text-muted-foreground">Telefon</th>
-                  <th className="px-4 py-3 text-left font-medium text-muted-foreground">Durum</th>
-                  <th className="px-4 py-3 text-left font-medium text-muted-foreground">Zaman</th>
-                  <th className="px-4 py-3 text-left font-medium text-muted-foreground">Hata</th>
+                  <th className="px-4 py-3 text-left font-medium text-muted-foreground">{t("phoneCol")}</th>
+                  <th className="px-4 py-3 text-left font-medium text-muted-foreground">{t("statusCol")}</th>
+                  <th className="px-4 py-3 text-left font-medium text-muted-foreground">{t("timeCol")}</th>
+                  <th className="px-4 py-3 text-left font-medium text-muted-foreground">{t("errorCol")}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
@@ -332,7 +335,7 @@ export default function WhatsAppAutoReplyPage() {
                   <tr key={log.id} className="hover:bg-muted/30 transition-colors">
                     <td className="px-4 py-3 font-mono text-xs">{log.customerPhone}</td>
                     <td className="px-4 py-3">
-                      <StatusBadge status={log.status} />
+                      <StatusBadge status={log.status} tCommon={tCommon} />
                     </td>
                     <td className="px-4 py-3 text-muted-foreground">
                       {log.sentAt
@@ -353,7 +356,7 @@ export default function WhatsAppAutoReplyPage() {
         {logsMeta.totalPages > 1 && (
           <div className="flex items-center justify-between mt-3">
             <p className="text-sm text-muted-foreground">
-              Toplam {logsMeta.total} kayıt
+              {t("totalRecords", { total: logsMeta.total })}
             </p>
             <div className="flex gap-2">
               <button
@@ -362,7 +365,7 @@ export default function WhatsAppAutoReplyPage() {
                 onClick={() => setLogsPage((p) => Math.max(1, p - 1))}
                 className="inline-flex items-center rounded-md border border-border px-3 py-1.5 text-xs font-medium hover:bg-accent disabled:opacity-40 transition-colors"
               >
-                Önceki
+                {tCommon("previous")}
               </button>
               <span className="inline-flex items-center text-xs text-muted-foreground px-2">
                 {logsPage} / {logsMeta.totalPages}
@@ -373,7 +376,7 @@ export default function WhatsAppAutoReplyPage() {
                 onClick={() => setLogsPage((p) => Math.min(logsMeta.totalPages, p + 1))}
                 className="inline-flex items-center rounded-md border border-border px-3 py-1.5 text-xs font-medium hover:bg-accent disabled:opacity-40 transition-colors"
               >
-                Sonraki
+                {tCommon("next")}
               </button>
             </div>
           </div>

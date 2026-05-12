@@ -1,5 +1,6 @@
 import { requireAuth } from "@/lib/tenant";
 import { getAnalytics } from "@/services/analytics.service";
+import { getTranslations } from "next-intl/server";
 
 async function fetchAnalytics() {
   try {
@@ -31,6 +32,8 @@ function BigStat({
 }
 
 export default async function AnalyticsPage() {
+  const t = await getTranslations("analytics");
+  const tCommon = await getTranslations("common");
   const analytics = await fetchAnalytics();
 
   const revenue = analytics
@@ -52,71 +55,71 @@ export default async function AnalyticsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Analitik</h1>
+        <h1 className="text-2xl font-bold text-gray-900">{t("title")}</h1>
         <p className="text-sm text-gray-500 mt-1">
-          Bu aya ait işletme performans özeti.
+          {t("subtitle")}
         </p>
       </div>
 
       {!analytics ? (
         <div className="bg-white rounded-xl border border-gray-200 p-10 text-center text-gray-400">
-          Analitik verileri yüklenemedi.
+          {t("loadError")}
         </div>
       ) : (
         <>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             <BigStat
-              label="Bugün"
+              label={t("today")}
               value={analytics.todayAppointments}
-              sub="Bugünkü randevular"
+              sub={t("todayDesc")}
               color="text-blue-600"
             />
             <BigStat
-              label="Bu Hafta"
+              label={t("thisWeek")}
               value={analytics.weekAppointments}
-              sub="Bu haftaki randevular"
+              sub={t("thisWeekDesc")}
               color="text-indigo-600"
             />
             <BigStat
-              label="Bu Ay"
+              label={t("thisMonth")}
               value={analytics.monthAppointments}
-              sub="Toplam randevular"
+              sub={t("thisMonthDesc")}
               color="text-purple-600"
             />
             <BigStat
-              label="Tamamlanan"
+              label={tCommon("completed")}
               value={analytics.completedCount}
-              sub={`%${completionRate} tamamlanma oranı`}
+              sub={t("completionRate", { rate: completionRate })}
               color="text-green-600"
             />
             <BigStat
-              label="İptal Edilen"
+              label={tCommon("cancelled")}
               value={analytics.cancelledCount}
-              sub={`%${cancellationRate} iptal oranı`}
+              sub={t("cancelRate", { rate: cancellationRate })}
               color="text-red-600"
             />
             <BigStat
-              label="Gelmeyen"
+              label={tCommon("noShow")}
               value={analytics.noShowCount}
-              sub="Gelmeden iptal"
+              sub={t("noShowDesc")}
               color="text-orange-600"
             />
             <BigStat
-              label="Tahmini Ciro"
+              label={t("estimatedRevenue")}
               value={revenue}
-              sub="Tamamlanan randevulardan"
+              sub={t("revenueDesc")}
               color="text-emerald-600"
             />
           </div>
 
           <div className="grid md:grid-cols-2 gap-6">
             <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-              <h2 className="font-semibold text-gray-900 mb-4">Randevu Durum Dağılımı</h2>
+              <h2 className="font-semibold text-gray-900 mb-4">{t("statusDistribution")}</h2>
               <div className="space-y-3">
                 {[
-                  { label: "Tamamlanan", value: analytics.completedCount, color: "bg-green-500" },
-                  { label: "İptal Edilen", value: analytics.cancelledCount, color: "bg-red-500" },
-                  { label: "Gelmeyen", value: analytics.noShowCount, color: "bg-orange-500" },
+                  { label: tCommon("completed"), value: analytics.completedCount, color: "bg-green-500" },
+                  { label: tCommon("cancelled"), value: analytics.cancelledCount, color: "bg-red-500" },
+                  { label: tCommon("noShow"), value: analytics.noShowCount, color: "bg-orange-500" },
                 ].map(({ label, value, color }) => {
                   const pct =
                     analytics.monthAppointments > 0
@@ -143,16 +146,16 @@ export default async function AnalyticsPage() {
             </div>
 
             <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-              <h2 className="font-semibold text-gray-900 mb-4">Öne Çıkanlar</h2>
+              <h2 className="font-semibold text-gray-900 mb-4">{t("highlights")}</h2>
               <div className="space-y-4">
                 <div className="flex items-center gap-4 p-3 bg-blue-50 rounded-lg">
                   <div className="text-2xl">🏆</div>
                   <div>
                     <p className="text-xs text-gray-400 font-medium uppercase tracking-wider">
-                      En Çok Tercih Edilen Hizmet
+                      {t("topService")}
                     </p>
                     <p className="font-semibold text-gray-900 mt-0.5">
-                      {analytics.topServiceName ?? "Henüz veri yok"}
+                      {analytics.topServiceName ?? tCommon("noData")}
                     </p>
                   </div>
                 </div>
@@ -160,10 +163,10 @@ export default async function AnalyticsPage() {
                   <div className="text-2xl">⭐</div>
                   <div>
                     <p className="text-xs text-gray-400 font-medium uppercase tracking-wider">
-                      En Yoğun Çalışan
+                      {t("topStaff")}
                     </p>
                     <p className="font-semibold text-gray-900 mt-0.5">
-                      {analytics.busiestStaffName ?? "Henüz veri yok"}
+                      {analytics.busiestStaffName ?? tCommon("noData")}
                     </p>
                   </div>
                 </div>

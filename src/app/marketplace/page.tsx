@@ -3,6 +3,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { TURKEY_CATEGORIES } from "@/data/turkey-categories";
 import { TURKEY_PROVINCES } from "@/data/turkey-provinces";
 
@@ -20,6 +21,9 @@ interface Business {
 }
 
 export default function MarketplacePage() {
+  const t = useTranslations("marketplace");
+  const tCommon = useTranslations("common");
+
   const [businesses, setBusinesses] = useState<Business[]>([]);
   const [q, setQ] = useState("");
   const [category, setCategory] = useState("");
@@ -44,8 +48,8 @@ export default function MarketplacePage() {
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white border-b">
         <div className="max-w-6xl mx-auto px-4 py-6">
-          <h1 className="text-3xl font-bold text-gray-900">Randevo Marketplace</h1>
-          <p className="text-gray-500 mt-1">Yerel işletmeleri keşfedin ve randevu alın</p>
+          <h1 className="text-3xl font-bold text-gray-900">{t("title")}</h1>
+          <p className="text-gray-500 mt-1">{t("subtitle")}</p>
         </div>
       </header>
 
@@ -53,7 +57,7 @@ export default function MarketplacePage() {
         <div className="flex flex-wrap gap-3 mb-8">
           <input
             type="text"
-            placeholder="İşletme ara..."
+            placeholder={t("searchPlaceholder")}
             value={q}
             onChange={(e) => setQ(e.target.value)}
             className="border rounded-lg px-3 py-2 text-sm flex-1 min-w-48"
@@ -63,7 +67,7 @@ export default function MarketplacePage() {
             onChange={(e) => setCategory(e.target.value)}
             className="border rounded-lg px-3 py-2 text-sm w-48"
           >
-            <option value="">Tüm Kategoriler</option>
+            <option value="">{t("allCategories")}</option>
             {TURKEY_CATEGORIES.map((cat) => (
               <option key={cat.slug} value={cat.nameTR}>{cat.icon} {cat.nameTR}</option>
             ))}
@@ -73,7 +77,7 @@ export default function MarketplacePage() {
             onChange={(e) => setProvince(e.target.value)}
             className="border rounded-lg px-3 py-2 text-sm w-40"
           >
-            <option value="">Tüm İller</option>
+            <option value="">{t("allCities")}</option>
             {TURKEY_PROVINCES.map((p) => (
               <option key={p.slug} value={p.slug}>{p.name}</option>
             ))}
@@ -81,10 +85,10 @@ export default function MarketplacePage() {
         </div>
 
         {loading ? (
-          <p className="text-gray-500">Yükleniyor...</p>
+          <p className="text-gray-500">{tCommon("loading")}</p>
         ) : businesses.length === 0 ? (
           <div className="text-center py-16">
-            <p className="text-gray-400 text-lg">İşletme bulunamadı.</p>
+            <p className="text-gray-400 text-lg">{t("notFound")}</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -111,7 +115,7 @@ export default function MarketplacePage() {
                       <span className="bg-gray-100 text-gray-600 px-2 py-1 rounded-full">{biz.city}</span>
                     )}
                     <span className="bg-green-50 text-green-700 px-2 py-1 rounded-full">
-                      {biz._count.services} hizmet
+                      {biz._count.services} {t("service")}
                     </span>
                   </div>
                 </div>

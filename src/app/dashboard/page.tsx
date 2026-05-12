@@ -2,6 +2,7 @@ import { requireAuth } from "@/lib/tenant";
 import { getAnalytics } from "@/services/analytics.service";
 import { db } from "@/lib/db";
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 
 async function getDashboardData() {
   try {
@@ -45,24 +46,24 @@ function StatCard({ label, value, color }: { label: string; value: string | numb
   );
 }
 
-const quickLinks = [
+const quickLinkMeta = [
   {
-    href: "/dashboard/appointments", label: "Randevuları Gör",
+    href: "/dashboard/appointments", labelKey: "viewAppointments" as const,
     icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /></svg>,
     ext: false,
   },
   {
-    href: "/dashboard/services", label: "Hizmetleri Yönet",
+    href: "/dashboard/services", labelKey: "manageServices" as const,
     icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>,
     ext: false,
   },
   {
-    href: "/dashboard/staff", label: "Çalışanları Yönet",
+    href: "/dashboard/staff", labelKey: "manageStaff" as const,
     icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /></svg>,
     ext: false,
   },
   {
-    href: "/dashboard/settings", label: "İşletme Ayarları",
+    href: "/dashboard/settings", labelKey: "businessSettings" as const,
     icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3" /><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" /></svg>,
     ext: false,
   },
@@ -76,10 +77,13 @@ const logDotColors: Record<string, string> = {
 };
 
 export default async function DashboardPage() {
+  const t = await getTranslations("dashboard");
   const data = await getDashboardData();
   const analytics = data?.analytics ?? null;
   const auditLogs = data?.auditLogs ?? [];
   const org = data?.org ?? null;
+
+  const quickLinks = quickLinkMeta.map((ql) => ({ ...ql, label: t(ql.labelKey) }));
 
   const revenue = analytics
     ? new Intl.NumberFormat("tr-TR", { style: "currency", currency: "TRY" }).format(
@@ -93,45 +97,45 @@ export default async function DashboardPage() {
       {/* Page header */}
       <div>
         <h2 style={{ fontFamily: "var(--font-heading, Outfit, sans-serif)", fontSize: 22, fontWeight: 700, letterSpacing: "-0.02em" }}>
-          Genel Bakış
+          {t("overview")}
         </h2>
-        <p style={{ fontSize: 13, color: "#8a8aaa", marginTop: 3 }}>Kontrol panelinize hoş geldiniz.</p>
+        <p style={{ fontSize: 13, color: "#8a8aaa", marginTop: 3 }}>{t("welcome")}</p>
       </div>
 
       {/* Stat grid */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-        <StatCard label="Bugünkü Randevular" value={analytics?.todayAppointments ?? "—"} color="blue" />
-        <StatCard label="Bu Hafta"           value={analytics?.weekAppointments  ?? "—"} color="indigo" />
-        <StatCard label="Bu Ay"              value={analytics?.monthAppointments ?? "—"} color="purple" />
-        <StatCard label="Tamamlanan"         value={analytics?.completedCount    ?? "—"} color="green" />
-        <StatCard label="İptal Edilen"       value={analytics?.cancelledCount    ?? "—"} color="red" />
-        <StatCard label="Gelmeyen"           value={analytics?.noShowCount       ?? "—"} color="orange" />
+        <StatCard label={t("todayAppointments")} value={analytics?.todayAppointments ?? "—"} color="blue" />
+        <StatCard label={t("thisWeek")}         value={analytics?.weekAppointments  ?? "—"} color="indigo" />
+        <StatCard label={t("thisMonth")}        value={analytics?.monthAppointments ?? "—"} color="purple" />
+        <StatCard label={t("completed")}        value={analytics?.completedCount    ?? "—"} color="green" />
+        <StatCard label={t("cancelled")}        value={analytics?.cancelledCount    ?? "—"} color="red" />
+        <StatCard label={t("noShow")}           value={analytics?.noShowCount       ?? "—"} color="orange" />
       </div>
 
       {/* Metric cards */}
       <div className="grid md:grid-cols-3 gap-3">
         <div style={{ background: "#111120", border: "1px solid rgba(119,104,212,0.1)", borderRadius: 12, padding: "18px 20px" }}>
           <p style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.09em", color: "#3a3a58", fontFamily: "var(--font-heading, Outfit, sans-serif)", fontWeight: 700, marginBottom: 7 }}>
-            Tahmini Ciro (Ay)
+            {t("estimatedRevenue")}
           </p>
           <p style={{ fontFamily: "var(--font-heading, Outfit, sans-serif)", fontSize: 22, fontWeight: 700, color: "#2de4a4" }}>{revenue}</p>
         </div>
 
         <div style={{ background: "#111120", border: "1px solid rgba(119,104,212,0.1)", borderRadius: 12, padding: "18px 20px" }}>
           <p style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.09em", color: "#3a3a58", fontFamily: "var(--font-heading, Outfit, sans-serif)", fontWeight: 700, marginBottom: 7 }}>
-            En Çok Tercih Edilen Hizmet
+            {t("topService")}
           </p>
           <p style={{ fontFamily: "var(--font-heading, Outfit, sans-serif)", fontSize: 18, fontWeight: 600 }}>
-            {analytics?.topServiceName ?? "Henüz veri yok"}
+            {analytics?.topServiceName ?? t("noData")}
           </p>
         </div>
 
         <div style={{ background: "#111120", border: "1px solid rgba(119,104,212,0.1)", borderRadius: 12, padding: "18px 20px" }}>
           <p style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.09em", color: "#3a3a58", fontFamily: "var(--font-heading, Outfit, sans-serif)", fontWeight: 700, marginBottom: 7 }}>
-            En Yoğun Çalışan
+            {t("topStaff")}
           </p>
           <p style={{ fontFamily: "var(--font-heading, Outfit, sans-serif)", fontSize: 18, fontWeight: 600 }}>
-            {analytics?.busiestStaffName ?? "Henüz veri yok"}
+            {analytics?.busiestStaffName ?? t("noData")}
           </p>
         </div>
       </div>
@@ -141,7 +145,7 @@ export default async function DashboardPage() {
 
         {/* Quick links */}
         <div style={{ background: "#111120", border: "1px solid rgba(119,104,212,0.1)", borderRadius: 16, padding: "20px 22px" }}>
-          <h3 style={{ fontFamily: "var(--font-heading, Outfit, sans-serif)", fontSize: 14, fontWeight: 600, marginBottom: 14 }}>Hızlı Erişim</h3>
+          <h3 style={{ fontFamily: "var(--font-heading, Outfit, sans-serif)", fontSize: 14, fontWeight: 600, marginBottom: 14 }}>{t("quickAccess")}</h3>
           <div className="flex flex-col gap-2">
             {quickLinks.map((ql) => (
               <Link
@@ -177,7 +181,7 @@ export default async function DashboardPage() {
                   <polyline points="15 3 21 3 21 9" />
                   <line x1="10" y1="14" x2="21" y2="3" />
                 </svg>
-                Rezervasyon Sayfasını Aç
+                {t("openBookingPage")}
               </Link>
             )}
           </div>
@@ -185,9 +189,9 @@ export default async function DashboardPage() {
 
         {/* Audit log */}
         <div style={{ background: "#111120", border: "1px solid rgba(119,104,212,0.1)", borderRadius: 16, padding: "20px 22px" }}>
-          <h3 style={{ fontFamily: "var(--font-heading, Outfit, sans-serif)", fontSize: 14, fontWeight: 600, marginBottom: 14 }}>Son İşlemler</h3>
+          <h3 style={{ fontFamily: "var(--font-heading, Outfit, sans-serif)", fontSize: 14, fontWeight: 600, marginBottom: 14 }}>{t("recentTransactions")}</h3>
           {auditLogs.length === 0 ? (
-            <p style={{ fontSize: 13, color: "#3a3a58" }}>Henüz işlem yok.</p>
+            <p style={{ fontSize: 13, color: "#3a3a58" }}>{t("noTransactions")}</p>
           ) : (
             <div>
               {auditLogs.map((log) => {

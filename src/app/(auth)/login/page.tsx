@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
+import { useTranslations } from "next-intl";
 
 function RandevoLogo() {
   return (
@@ -32,6 +33,7 @@ const labelStyle: React.CSSProperties = {
 };
 
 export default function LoginPage() {
+  const t = useTranslations("auth");
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -129,8 +131,8 @@ export default function LoginPage() {
             <span style={{ fontFamily: "var(--font-heading, Outfit, sans-serif)", fontSize: 20, fontWeight: 700 }}>Randevo</span>
           </div>
 
-          <h3 style={{ fontFamily: "var(--font-heading, Outfit, sans-serif)", fontSize: 22, fontWeight: 700, letterSpacing: "-0.02em", marginBottom: 6 }}>Tekrar hoş geldiniz</h3>
-          <p style={{ fontSize: 13, color: "#8a8aaa", marginBottom: 28 }}>İşletme panelinize giriş yapın.</p>
+          <h3 style={{ fontFamily: "var(--font-heading, Outfit, sans-serif)", fontSize: 22, fontWeight: 700, letterSpacing: "-0.02em", marginBottom: 6 }}>{t("loginTitle")}</h3>
+          <p style={{ fontSize: 13, color: "#8a8aaa", marginBottom: 28 }}>{t("loginSubtitle")}</p>
 
           <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
             {error && (
@@ -140,14 +142,14 @@ export default function LoginPage() {
             )}
 
             <div>
-              <label style={labelStyle}>E-posta</label>
+              <label style={labelStyle}>{t("emailLabel")}</label>
               <input style={inputStyle} type="email" placeholder="siz@ornek.com" value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="email" />
             </div>
 
             <div>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-                <label style={{ ...labelStyle, marginBottom: 0 }}>Şifre</label>
-                <a href="#" style={{ fontSize: 12, color: "#a59cf0" }}>Şifremi unuttum</a>
+                <label style={{ ...labelStyle, marginBottom: 0 }}>{t("passwordLabel")}</label>
+                <a href="#" style={{ fontSize: 12, color: "#a59cf0" }}>{t("forgotPassword")}</a>
               </div>
               <input style={inputStyle} type="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} required autoComplete="current-password" />
             </div>
@@ -163,7 +165,7 @@ export default function LoginPage() {
                 marginTop: 4, transition: "all 0.2s",
               }}
             >
-              {loading ? "Giriş yapılıyor..." : "Giriş Yap"}
+              {loading ? t("signingIn") : t("signIn")}
             </button>
           </form>
 
@@ -172,8 +174,8 @@ export default function LoginPage() {
           </p>
 
           <p style={{ fontSize: 13, color: "#3a3a58", textAlign: "center", marginTop: 20 }}>
-            Hesabınız yok mu?{" "}
-            <Link href="/register" style={{ color: "#a59cf0", fontWeight: 600 }}>Hesap oluşturun</Link>
+            {t("noAccount")}{" "}
+            <Link href="/register" style={{ color: "#a59cf0", fontWeight: 600 }}>{t("createAccount")}</Link>
           </p>
         </div>
       </div>

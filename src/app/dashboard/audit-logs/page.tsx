@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useTranslations } from "next-intl";
 
 interface AuditLog {
   id: string;
@@ -20,6 +21,9 @@ interface Meta {
 }
 
 export default function AuditLogsPage() {
+  const t = useTranslations("auditLogs");
+  const tCommon = useTranslations("common");
+
   const [logs, setLogs] = useState<AuditLog[]>([]);
   const [meta, setMeta] = useState<Meta | null>(null);
   const [loading, setLoading] = useState(true);
@@ -50,25 +54,25 @@ export default function AuditLogsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">İşlem Geçmişi</h1>
-        <p className="text-sm text-gray-500 mt-1">Hesabınızda gerçekleştirilen tüm işlemleri takip edin.</p>
+        <h1 className="text-2xl font-bold text-gray-900">{t("title")}</h1>
+        <p className="text-sm text-gray-500 mt-1">{t("subtitle")}</p>
       </div>
 
       <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
         {loading ? (
-          <div className="p-10 text-center text-gray-400">Yükleniyor...</div>
+          <div className="p-10 text-center text-gray-400">{tCommon("loading")}</div>
         ) : logs.length === 0 ? (
-          <div className="p-10 text-center text-gray-400">Henüz işlem kaydı yok.</div>
+          <div className="p-10 text-center text-gray-400">{t("notFound")}</div>
         ) : (
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-gray-100 bg-gray-50">
-                <th className="px-5 py-3 text-left font-semibold text-gray-600">Tarih</th>
-                <th className="px-5 py-3 text-left font-semibold text-gray-600">Kullanıcı</th>
-                <th className="px-5 py-3 text-left font-semibold text-gray-600">İşlem</th>
-                <th className="px-5 py-3 text-left font-semibold text-gray-600">Tür</th>
-                <th className="px-5 py-3 text-left font-semibold text-gray-600">ID</th>
-                <th className="px-5 py-3 text-left font-semibold text-gray-600">Metadata</th>
+                <th className="px-5 py-3 text-left font-semibold text-gray-600">{t("dateCol")}</th>
+                <th className="px-5 py-3 text-left font-semibold text-gray-600">{t("userCol")}</th>
+                <th className="px-5 py-3 text-left font-semibold text-gray-600">{t("actionCol")}</th>
+                <th className="px-5 py-3 text-left font-semibold text-gray-600">{t("typeCol")}</th>
+                <th className="px-5 py-3 text-left font-semibold text-gray-600">{t("idCol")}</th>
+                <th className="px-5 py-3 text-left font-semibold text-gray-600">{t("metadataCol")}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
@@ -79,7 +83,7 @@ export default function AuditLogsPage() {
                   </td>
                   <td className="px-5 py-3.5 text-gray-600">
                     <span className="font-mono text-xs bg-gray-100 px-1.5 py-0.5 rounded">
-                      {log.actorUserId ? log.actorUserId.slice(0, 8) + "..." : "sistem"}
+                      {log.actorUserId ? log.actorUserId.slice(0, 8) + "..." : t("system")}
                     </span>
                   </td>
                   <td className="px-5 py-3.5">
@@ -118,7 +122,7 @@ export default function AuditLogsPage() {
               onClick={() => setPage((p) => p - 1)}
               className="px-3 py-1.5 border border-gray-300 rounded-lg text-sm disabled:opacity-40 hover:bg-gray-50 transition-colors"
             >
-              Önceki
+              {tCommon("previous")}
             </button>
             <span className="text-sm text-gray-600">
               {meta.page} / {meta.totalPages}
@@ -128,7 +132,7 @@ export default function AuditLogsPage() {
               onClick={() => setPage((p) => p + 1)}
               className="px-3 py-1.5 border border-gray-300 rounded-lg text-sm disabled:opacity-40 hover:bg-gray-50 transition-colors"
             >
-              Sonraki
+              {tCommon("next")}
             </button>
           </div>
         </div>
