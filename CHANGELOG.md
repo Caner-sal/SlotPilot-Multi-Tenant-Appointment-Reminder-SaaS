@@ -2,6 +2,20 @@
 
 All notable changes to Randevo are documented here.
 
+## [1.3.8-global-i18n-phase-7] — 2026-05-12
+
+### Phase I18N-7 — Notification I18N
+- Added locale preference fields to Prisma models:
+  - `User.preferredLocale`
+  - `Organization.defaultLocale` (default: `tr`)
+  - `Customer.preferredLocale`
+- Added migration: `prisma/migrations/20260512164000_add_i18n_locale_columns/migration.sql`.
+- Added locale-specific notification templates for `en/de/ar`:
+  - reminder, confirmation, marketing templates under `src/services/notifications/templates/{en,de,ar}/`
+- Refactored `src/lib/notification-templates.ts` to locale-aware resolver contract:
+  - fallback order: `customer > organization > user > tr`
+- Updated `src/services/reminder.service.ts` to render reminder emails through locale-aware template resolver.
+- Added tests: `src/tests/notification-i18n.test.ts`.
 ## [1.3.7-global-i18n-phase-6] — 2026-05-12
 
 ### Phase I18N-6 — RTL + Accessibility
@@ -346,6 +360,7 @@ All notable changes to Randevo are documented here.
 - Email reminders (fake log + Resend)
 - Audit logging
 - NextAuth v5 credentials auth with JWT sessions
+
 
 
 

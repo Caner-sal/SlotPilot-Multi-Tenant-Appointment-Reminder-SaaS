@@ -85,6 +85,7 @@ model User {
   name           String
   email          String       @unique
   passwordHash   String
+  preferredLocale String?
   platformRole   PlatformRole @default(USER)
   appRole        AppRole      @default(OWNER)
   createdAt      DateTime     @default(now())
@@ -110,6 +111,7 @@ model Organization {
   district       String?
   postalCode     String?
   timezone       String   @default("UTC")
+  defaultLocale  String   @default("tr")
   bookingEnabled Boolean  @default(true)
   suspended      Boolean  @default(false)
   smsEnabled        Boolean  @default(false)
@@ -311,6 +313,7 @@ model Customer {
   phone          String?
   province       String?
   district       String?
+  preferredLocale String?
   smsOptIn       Boolean  @default(true)
   whatsappOptIn  Boolean  @default(true)
   createdAt      DateTime @default(now())
