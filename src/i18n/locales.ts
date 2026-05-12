@@ -1,4 +1,4 @@
-export const locales = ["tr", "en", "de", "ar"] as const;
+﻿export const locales = ["tr", "en", "de", "ar"] as const;
 
 export type AppLocale = (typeof locales)[number];
 
@@ -19,36 +19,36 @@ export const localeMetadata: Record<
 > = {
   tr: {
     label: "Turkish",
-    nativeLabel: "Türkçe",
-    flag: "🇹🇷",
+    nativeLabel: "Turkce",
+    flag: "\uD83C\uDDF9\uD83C\uDDF7",
     direction: "ltr",
     currency: "TRY",
-    dateLocale: "tr-TR",
+    dateLocale: "tr-TR"
   },
   en: {
     label: "English",
     nativeLabel: "English",
-    flag: "🇬🇧",
+    flag: "\uD83C\uDDEC\uD83C\uDDE7",
     direction: "ltr",
     currency: "USD",
-    dateLocale: "en-US",
+    dateLocale: "en-US"
   },
   de: {
     label: "German",
     nativeLabel: "Deutsch",
-    flag: "🇩🇪",
+    flag: "\uD83C\uDDE9\uD83C\uDDEA",
     direction: "ltr",
     currency: "EUR",
-    dateLocale: "de-DE",
+    dateLocale: "de-DE"
   },
   ar: {
     label: "Arabic",
-    nativeLabel: "العربية",
-    flag: "🇸🇦",
+    nativeLabel: "\u0627\u0644\u0639\u0631\u0628\u064a\u0629",
+    flag: "\uD83C\uDDF8\uD83C\uDDE6",
     direction: "rtl",
     currency: "USD",
-    dateLocale: "ar-SA",
-  },
+    dateLocale: "ar-SA"
+  }
 };
 
 export function isAppLocale(value: string | null | undefined): value is AppLocale {

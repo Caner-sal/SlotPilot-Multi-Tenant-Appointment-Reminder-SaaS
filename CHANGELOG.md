@@ -2,6 +2,17 @@
 
 All notable changes to Randevo are documented here.
 
+## [1.3.7-global-i18n-phase-6] — 2026-05-12
+
+### Phase I18N-6 — RTL + Accessibility
+- Strengthened locale metadata for direction and labels in `src/i18n/locales.ts`.
+- Upgraded `src/components/i18n/LanguageSwitcher.tsx` accessibility:
+  - `aria-label`, `aria-controls`, `listbox/option` semantics
+  - keyboard navigation (`ArrowUp/Down`, `Home`, `End`, `Enter`, `Space`, `Escape`)
+  - focus management for option list
+- Passed active locale from middleware to app render via request header `x-app-locale` in `src/middleware.ts`.
+- Updated `src/app/layout.tsx` to resolve locale from middleware header first, then cookie fallback.
+- Added RTL smoke tests in `src/tests/i18n-rtl.test.ts`.
 ## [1.3.6-global-i18n-phase-5] — 2026-05-12
 
 ### Phase I18N-5 — Mobile Language Support
@@ -335,6 +346,7 @@ All notable changes to Randevo are documented here.
 - Email reminders (fake log + Resend)
 - Audit logging
 - NextAuth v5 credentials auth with JWT sessions
+
 
 
 

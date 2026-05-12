@@ -1,10 +1,6 @@
-import { auth } from "@/lib/auth";
+﻿import { auth } from "@/lib/auth";
 import { NextResponse } from "next/server";
-import {
-  defaultLocale,
-  isAppLocale,
-  localeCookieName,
-} from "@/i18n/locales";
+import { defaultLocale, isAppLocale, localeCookieName } from "@/i18n/locales";
 import { extractLocale, withLocale } from "@/i18n/pathing";
 
 const protectedRoutes = ["/dashboard"];
@@ -17,7 +13,6 @@ export default auth((req) => {
   const { pathname, search } = req.nextUrl;
   const { locale, internalPath } = extractLocale(pathname);
 
-  // Skip locale handling for APIs, static assets and framework files.
   if (
     internalPath.startsWith("/api") ||
     internalPath.startsWith("/_next") ||
@@ -69,20 +64,25 @@ export default auth((req) => {
     return NextResponse.redirect(new URL(withLocale("/dashboard", locale), req.url));
   }
 
+  const requestHeaders = new Headers(req.headers);
+  requestHeaders.set("x-app-locale", locale);
+
   const response =
     internalPath === pathname
-      ? NextResponse.next()
-      : NextResponse.rewrite(new URL(`${internalPath}${search}`, req.url));
+      ? NextResponse.next({ request: { headers: requestHeaders } })
+      : NextResponse.rewrite(new URL(`${internalPath}${search}`, req.url), {
+          request: { headers: requestHeaders }
+        });
 
   response.cookies.set(localeCookieName, locale, {
     path: "/",
     sameSite: "lax",
-    maxAge: 60 * 60 * 24 * 365,
+    maxAge: 60 * 60 * 24 * 365
   });
 
   return response;
 });
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"]
 };
