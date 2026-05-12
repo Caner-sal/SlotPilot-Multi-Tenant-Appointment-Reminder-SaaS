@@ -1,4 +1,5 @@
 import Link from "next/link";
+import LanguageSwitcher from "@/components/i18n/LanguageSwitcher";
 
 export default function BookingLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -9,7 +10,10 @@ export default function BookingLayout({ children }: { children: React.ReactNode 
             <span className="text-blue-600">✈</span>
             Randevo
           </Link>
-          <span className="text-xs text-gray-400">Powered by Randevo</span>
+          <div className="flex items-center gap-3">
+            <LanguageSwitcher />
+            <span className="text-xs text-gray-400">Powered by Randevo</span>
+          </div>
         </div>
       </header>
       <main>{children}</main>

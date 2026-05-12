@@ -1,10 +1,25 @@
 # Randevo Compact State
 
-_Last updated: 2026-05-09_
+_Last updated: 2026-05-12_
 
-## Current Branch: main
+## Current Branch: phase/i18n-2
 
 ## Completed Feature Sets
+
+### I18N-0 and I18N-1 (phase branches pushed)
+- `phase/i18n-0`:
+  - Added i18n agent set under `.claude/agents`
+  - Added `docs/i18n-architecture.md` and `docs/i18n-string-audit.md`
+  - Baseline gates locked for path-safe CLI execution
+- `phase/i18n-1`:
+  - Added `next-intl` and plugin wiring (`next.config.ts`)
+  - Added locale config + request/routing/navigation helpers (`src/i18n/*`)
+  - Added bootstrap messages: `src/messages/{tr,en,de,ar}.json`
+  - Added locale-aware middleware prefix handling (`/{locale}/...`)
+  - Added routing helper tests (`src/tests/i18n-routing.test.ts`)
+- Validation snapshot:
+  - Typecheck, lint, tests, build, Prisma validate/generate/migrate status all passed
+  - Secret scan passed (`node scripts/check-no-secrets.js` + diff regex scan)
 
 ### DS-0 through DS-9 (merged to main, commit d7d16a2)
 - 81 Turkey province/district data complete

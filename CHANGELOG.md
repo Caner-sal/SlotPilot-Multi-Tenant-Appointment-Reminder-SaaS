@@ -2,6 +2,17 @@
 
 All notable changes to Randevo are documented here.
 
+## [1.3.3-global-i18n-phase-2] — 2026-05-12
+
+### Phase I18N-2 — Web Dil + Bayrak Seçici
+- Added `src/components/i18n/LanguageSwitcher.tsx`
+- Added locale path helper functions in `src/i18n/pathing.ts` for path-preserving locale switch
+- Integrated language switcher into:
+  - `src/components/Header.tsx` (dashboard topbar)
+  - `src/app/page.tsx` (public landing nav)
+  - `src/app/booking/[slug]/layout.tsx` (public booking header)
+- Updated route helper tests (`src/tests/i18n-routing.test.ts`) with locale replacement scenarios
+- Updated `docs/COMPACT_STATE.md` after completing I18N-0 + I18N-1 compact protocol
 ## [1.3.2-global-i18n-phase-1] — 2026-05-12
 
 ### Phase I18N-1 — Web Locale Routing ve Message Yapýsý
@@ -283,5 +294,6 @@ All notable changes to Randevo are documented here.
 - Email reminders (fake log + Resend)
 - Audit logging
 - NextAuth v5 credentials auth with JWT sessions
+
 
 

@@ -3,6 +3,8 @@
 import React, { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
+import LanguageSwitcher from "@/components/i18n/LanguageSwitcher";
+import { locales } from "@/i18n/locales";
 
 interface Organization {
   id: string;
@@ -11,7 +13,11 @@ interface Organization {
 }
 
 function getPageTitle(pathname: string): string {
-  const segments = pathname.split("/").filter(Boolean);
+  const parts = pathname.split("/").filter(Boolean);
+  const segments =
+    parts.length > 0 && locales.includes(parts[0] as (typeof locales)[number])
+      ? parts.slice(1)
+      : parts;
   if (segments.length === 1 && segments[0] === "dashboard") return "Kontrol Paneli";
   const last = segments[segments.length - 1];
   const titles: Record<string, string> = {
@@ -92,6 +98,7 @@ export default function Header() {
       </div>
 
       <div className="flex items-center gap-4">
+        <LanguageSwitcher />
         {org && (
           <a
             href={`/booking/${org.slug}`}

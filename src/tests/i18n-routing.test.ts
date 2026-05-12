@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { defaultLocale, resolveLocale } from "@/i18n/locales";
-import { extractLocale, withLocale } from "@/i18n/pathing";
+import { extractLocale, getLocaleFromPath, replacePathLocale, withLocale } from "@/i18n/pathing";
 
 describe("i18n locale routing helpers", () => {
   it("extracts locale from prefixed paths", () => {
@@ -30,5 +30,13 @@ describe("i18n locale routing helpers", () => {
     expect(resolveLocale("tr")).toBe("tr");
     expect(resolveLocale("unknown")).toBe(defaultLocale);
     expect(resolveLocale(undefined)).toBe(defaultLocale);
+  });
+
+  it("detects and replaces locale in path while preserving pathname", () => {
+    expect(getLocaleFromPath("/tr/dashboard/services")).toBe("tr");
+    expect(getLocaleFromPath("/dashboard/services")).toBeNull();
+
+    expect(replacePathLocale("/tr/dashboard/services", "en")).toBe("/en/dashboard/services");
+    expect(replacePathLocale("/booking/barber-demo", "de")).toBe("/de/booking/barber-demo");
   });
 });

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { TURKEY_PLANS } from "@/config/pricing.tr";
+import LanguageSwitcher from "@/components/i18n/LanguageSwitcher";
 
 const featureCards = [
   {
@@ -139,6 +140,7 @@ export default function HomePage() {
             <span style={{ fontFamily: "var(--font-heading, Outfit, sans-serif)", fontSize: 20, fontWeight: 700, letterSpacing: "-0.4px" }}>Randevo</span>
           </Link>
           <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <LanguageSwitcher />
             <Link href="/login" style={{ padding: "7px 14px", borderRadius: 9, border: "1px solid rgba(119,104,212,0.18)", color: "#8a8aaa", fontSize: 14, fontWeight: 600, fontFamily: "var(--font-heading, Outfit, sans-serif)", transition: "all 0.18s" }}>
               Giriş Yap
             </Link>
