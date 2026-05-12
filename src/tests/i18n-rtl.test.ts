@@ -6,8 +6,12 @@ describe("i18n RTL metadata", () => {
     expect(localeMetadata.ar.direction).toBe("rtl");
   });
 
-  it("keeps non-Arabic locales as ltr", () => {
-    const ltrLocales = locales.filter((locale) => locale !== "ar");
+  it("keeps Persian as rtl", () => {
+    expect(localeMetadata.fa.direction).toBe("rtl");
+  });
+
+  it("keeps non-Arabic/non-Persian locales as ltr", () => {
+    const ltrLocales = locales.filter((locale) => locale !== "ar" && locale !== "fa");
     for (const locale of ltrLocales) {
       expect(localeMetadata[locale].direction).toBe("ltr");
     }

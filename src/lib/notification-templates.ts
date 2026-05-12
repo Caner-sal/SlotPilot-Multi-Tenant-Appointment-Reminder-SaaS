@@ -76,42 +76,78 @@ const reminderSmsByLocale: Record<NotificationLocale, (data: AppointmentReminder
   tr: buildAppointmentReminderSMSTR,
   en: buildAppointmentReminderSMSEN,
   de: buildAppointmentReminderSMSDE,
-  ar: buildAppointmentReminderSMSAR
+  ar: buildAppointmentReminderSMSAR,
+  es: buildAppointmentReminderSMSEN,
+  fr: buildAppointmentReminderSMSEN,
+  it: buildAppointmentReminderSMSEN,
+  fa: buildAppointmentReminderSMSEN,
+  ru: buildAppointmentReminderSMSEN,
+  nl: buildAppointmentReminderSMSEN
 };
 
 const reminderEmailByLocale: Record<NotificationLocale, (data: AppointmentReminderData) => EmailTemplate> = {
   tr: buildAppointmentReminderEmailTR,
   en: buildAppointmentReminderEmailEN,
   de: buildAppointmentReminderEmailDE,
-  ar: buildAppointmentReminderEmailAR
+  ar: buildAppointmentReminderEmailAR,
+  es: buildAppointmentReminderEmailEN,
+  fr: buildAppointmentReminderEmailEN,
+  it: buildAppointmentReminderEmailEN,
+  fa: buildAppointmentReminderEmailEN,
+  ru: buildAppointmentReminderEmailEN,
+  nl: buildAppointmentReminderEmailEN
 };
 
 const confirmationSmsByLocale: Record<NotificationLocale, (data: AppointmentConfirmationData) => string> = {
   tr: buildAppointmentConfirmationSMSTR,
   en: buildAppointmentConfirmationSMSEN,
   de: buildAppointmentConfirmationSMSDE,
-  ar: buildAppointmentConfirmationSMSAR
+  ar: buildAppointmentConfirmationSMSAR,
+  es: buildAppointmentConfirmationSMSEN,
+  fr: buildAppointmentConfirmationSMSEN,
+  it: buildAppointmentConfirmationSMSEN,
+  fa: buildAppointmentConfirmationSMSEN,
+  ru: buildAppointmentConfirmationSMSEN,
+  nl: buildAppointmentConfirmationSMSEN
 };
 
 const confirmationEmailByLocale: Record<NotificationLocale, (data: AppointmentConfirmationData) => EmailTemplate> = {
   tr: buildAppointmentConfirmationEmailTR,
   en: buildAppointmentConfirmationEmailEN,
   de: buildAppointmentConfirmationEmailDE,
-  ar: buildAppointmentConfirmationEmailAR
+  ar: buildAppointmentConfirmationEmailAR,
+  es: buildAppointmentConfirmationEmailEN,
+  fr: buildAppointmentConfirmationEmailEN,
+  it: buildAppointmentConfirmationEmailEN,
+  fa: buildAppointmentConfirmationEmailEN,
+  ru: buildAppointmentConfirmationEmailEN,
+  nl: buildAppointmentConfirmationEmailEN
 };
 
 const marketingSmsByLocale: Record<NotificationLocale, (data: MarketingData) => string> = {
   tr: buildMarketingSMSTR,
   en: buildMarketingSMSEN,
   de: buildMarketingSMSDE,
-  ar: buildMarketingSMSAR
+  ar: buildMarketingSMSAR,
+  es: buildMarketingSMSEN,
+  fr: buildMarketingSMSEN,
+  it: buildMarketingSMSEN,
+  fa: buildMarketingSMSEN,
+  ru: buildMarketingSMSEN,
+  nl: buildMarketingSMSEN
 };
 
 const marketingEmailByLocale: Record<NotificationLocale, (data: MarketingData) => EmailTemplate> = {
   tr: buildMarketingEmailTR,
   en: buildMarketingEmailEN,
   de: buildMarketingEmailDE,
-  ar: buildMarketingEmailAR
+  ar: buildMarketingEmailAR,
+  es: buildMarketingEmailEN,
+  fr: buildMarketingEmailEN,
+  it: buildMarketingEmailEN,
+  fa: buildMarketingEmailEN,
+  ru: buildMarketingEmailEN,
+  nl: buildMarketingEmailEN
 };
 
 export function getAppointmentReminderTemplate(

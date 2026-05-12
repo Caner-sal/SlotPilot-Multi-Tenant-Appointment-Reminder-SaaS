@@ -1,4 +1,4 @@
-﻿export const locales = ["tr", "en", "de", "ar"] as const;
+export const locales = ["tr", "en", "de", "ar", "es", "fr", "it", "fa", "ru", "nl"] as const;
 
 export type AppLocale = (typeof locales)[number];
 
@@ -48,6 +48,54 @@ export const localeMetadata: Record<
     direction: "rtl",
     currency: "USD",
     dateLocale: "ar-SA"
+  },
+  es: {
+    label: "Spanish",
+    nativeLabel: "Español",
+    flag: "\uD83C\uDDEA\uD83C\uDDF8",
+    direction: "ltr",
+    currency: "EUR",
+    dateLocale: "es-ES"
+  },
+  fr: {
+    label: "French",
+    nativeLabel: "Français",
+    flag: "\uD83C\uDDEB\uD83C\uDDF7",
+    direction: "ltr",
+    currency: "EUR",
+    dateLocale: "fr-FR"
+  },
+  it: {
+    label: "Italian",
+    nativeLabel: "Italiano",
+    flag: "\uD83C\uDDEE\uD83C\uDDF9",
+    direction: "ltr",
+    currency: "EUR",
+    dateLocale: "it-IT"
+  },
+  fa: {
+    label: "Persian",
+    nativeLabel: "فارسی",
+    flag: "\uD83C\uDDEE\uD83C\uDDF7",
+    direction: "rtl",
+    currency: "USD",
+    dateLocale: "fa-IR"
+  },
+  ru: {
+    label: "Russian",
+    nativeLabel: "Русский",
+    flag: "\uD83C\uDDF7\uD83C\uDDFA",
+    direction: "ltr",
+    currency: "RUB",
+    dateLocale: "ru-RU"
+  },
+  nl: {
+    label: "Dutch",
+    nativeLabel: "Nederlands",
+    flag: "\uD83C\uDDF3\uD83C\uDDF1",
+    direction: "ltr",
+    currency: "EUR",
+    dateLocale: "nl-NL"
   }
 };
 
