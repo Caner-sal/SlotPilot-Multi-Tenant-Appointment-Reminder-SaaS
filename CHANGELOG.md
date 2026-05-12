@@ -2,6 +2,22 @@
 
 All notable changes to Randevo are documented here.
 
+## [1.3.1-global-i18n-phase-0] — 2026-05-12
+
+### Phase I18N-0 — Baseline, Audit ve Mimari Karar
+- Added i18n-focused agent set under `.claude/agents/`:
+  - `i18n-architecture-agent.md`
+  - `web-language-switcher-agent.md`
+  - `mobile-language-switcher-agent.md`
+  - `translation-migration-agent.md`
+  - `locale-formatting-agent.md`
+  - `rtl-accessibility-agent.md`
+  - `notification-i18n-agent.md`
+  - `seo-i18n-agent.md`
+  - `i18n-qa-agent.md`
+- Added architecture baseline doc: `docs/i18n-architecture.md`
+- Added hardcoded UI text audit: `docs/i18n-string-audit.md`
+- Locked phase gates for this repo path constraint (`&`) via direct CLI commands instead of `npm run` wrappers.
 ## [1.3.0-whatsapp-auto-reply] â€” 2026-05-09
 
 ### Phase WA-0 â€” Baseline, Policy Docs, Feature Branch
@@ -246,3 +262,4 @@ All notable changes to Randevo are documented here.
 - Email reminders (fake log + Resend)
 - Audit logging
 - NextAuth v5 credentials auth with JWT sessions
+
