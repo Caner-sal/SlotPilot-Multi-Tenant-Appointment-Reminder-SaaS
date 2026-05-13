@@ -3,10 +3,12 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { TURKEY_CATEGORIES } from "@/data/turkey-categories";
-import { TURKEY_PROVINCES } from "@/data/turkey-provinces";
 import { COUNTRY_OPTIONS } from "@/data/country-options";
+import AddressAutocomplete from "@/components/address/AddressAutocomplete";
+import { getLocationOptionsForCountry } from "@/lib/address/location-options";
+import { buildMarketplaceQueryParams, isTurkeyCountry } from "@/lib/marketplace/filters";
 
 interface Business {
   id: string;
@@ -22,6 +24,7 @@ interface Business {
 }
 
 export default function MarketplacePage() {
+  const locale = useLocale();
   const t = useTranslations("marketplace");
   const tCommon = useTranslations("common");
 
@@ -32,15 +35,23 @@ export default function MarketplacePage() {
   const [countryCode, setCountryCode] = useState("");
   const [locality, setLocality] = useState("");
   const [loading, setLoading] = useState(true);
+  const trSelected = isTurkeyCountry(countryCode);
+  const locationOptions = getLocationOptionsForCountry(countryCode);
+
+  useEffect(() => {
+    setProvince("");
+    setLocality("");
+  }, [countryCode]);
 
   useEffect(() => {
     setLoading(true);
-    const params = new URLSearchParams();
-    if (q) params.set("q", q);
-    if (category) params.set("category", category);
-    if (province) params.set("province", province);
-    if (countryCode) params.set("countryCode", countryCode);
-    if (locality) params.set("locality", locality);
+    const params = buildMarketplaceQueryParams({
+      q,
+      category,
+      province,
+      countryCode,
+      locality,
+    });
 
     fetch(`/api/marketplace?${params.toString()}`)
       .then((r) => r.json())
@@ -78,16 +89,6 @@ export default function MarketplacePage() {
             ))}
           </select>
           <select
-            value={province}
-            onChange={(e) => setProvince(e.target.value)}
-            className="border rounded-lg px-3 py-2 text-sm w-40"
-          >
-            <option value="">{t("allCities")}</option>
-            {TURKEY_PROVINCES.map((p) => (
-              <option key={p.slug} value={p.slug}>{p.name}</option>
-            ))}
-          </select>
-          <select
             value={countryCode}
             onChange={(e) => setCountryCode(e.target.value)}
             className="border rounded-lg px-3 py-2 text-sm w-48"
@@ -99,13 +100,34 @@ export default function MarketplacePage() {
               </option>
             ))}
           </select>
-          <input
-            type="text"
-            placeholder={t("citySearchPlaceholder")}
-            value={locality}
-            onChange={(e) => setLocality(e.target.value)}
-            className="border rounded-lg px-3 py-2 text-sm w-48"
-          />
+          {trSelected ? (
+            <select
+              value={province}
+              onChange={(e) => setProvince(e.target.value)}
+              className="border rounded-lg px-3 py-2 text-sm w-48"
+            >
+              <option value="">{t("allCities")}</option>
+              {locationOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          ) : (
+            <div className="w-64">
+              <AddressAutocomplete
+                locale={locale}
+                countryCode={countryCode || undefined}
+                placeholder={t("citySearchPlaceholder")}
+                value={locality}
+                onChange={(nextValue) => setLocality(nextValue)}
+                onSelect={(normalized) => {
+                  const nextLocality = normalized.locality ?? normalized.adminLevel2 ?? normalized.formattedAddress;
+                  setLocality(nextLocality);
+                }}
+              />
+            </div>
+          )}
         </div>
 
         {loading ? (
