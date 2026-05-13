@@ -2,6 +2,38 @@
 
 All notable changes to Randevo are documented here.
 
+## [1.6.2-global-marketplace-localization] - 2026-05-14
+
+### GLF-0 to GLF-6
+- Added global localization audit report:
+  - `docs/global-localization-bug-report.md`
+- Added canonical country helpers:
+  - `src/config/countries.ts`
+  - `src/lib/address/location-options.ts`
+- Refactored marketplace UI filters to be country-aware:
+  - TR keeps province dropdown (`TURKEY_PROVINCES`)
+  - non-TR uses locality search/manual fallback path
+  - country change clears stale `province`/`locality` state
+- Updated marketplace API contract and filtering:
+  - `GET /api/marketplace` now supports `country` (primary) and `countryCode` (alias)
+  - province filtering applies only for `TR`
+  - non-TR uses normalized address locality matching and ignores province
+- Updated landing copy behavior:
+  - Turkey-only messaging remains in `tr`
+  - non-TR locale packs now use global copy
+  - hardcoded support metric value moved to locale key (`landing.statSupportValue`)
+- Hardened provider fallback integration:
+  - runtime fallback for `autocomplete`/`retrieve` when primary provider fails
+  - manual fallback remains usable when provider env is missing/disabled
+- Added regression tests:
+  - `src/tests/location-options.test.ts`
+  - `src/tests/marketplace-filters.test.ts`
+  - `src/tests/marketplace.test.ts` updates for TR/non-TR behavior
+  - `src/tests/landing-localization.test.ts`
+  - `src/tests/address-provider.test.ts` fallback coverage
+  - `src/tests/address-search.service.test.ts` non-TR fallback coverage
+  - `tests/e2e/marketplace-localization.spec.ts`
+
 ## [1.6.1-prod12-13-14-closeout] - 2026-05-14
 
 ### PROD-12 Completion

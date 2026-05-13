@@ -24,6 +24,30 @@ _Last updated: 2026-05-14_
   - `node ./node_modules/prisma/build/index.js validate` PASS
   - `node ./node_modules/prisma/build/index.js generate --no-engine` PASS
 
+## 2026-05-14 GLF-6 Checkpoint
+
+- GLF-6 completed:
+  - Added E2E regression file `tests/e2e/marketplace-localization.spec.ts` covering:
+    - TR selected -> `Adana` visible in province list
+    - IT selected -> no TR province option and locality search flow active (`Roma`)
+    - Non-TR landing -> does not show Turkey-only copy markers
+  - Updated `CHANGELOG.md` with `1.6.2-global-marketplace-localization` release entry.
+- E2E reliability note:
+  - Initial E2E run failed due Prisma client being generated in `--no-engine` mode while webserver process held engine lock.
+  - Resolved by stopping stale `next start` process and regenerating Prisma client with engines:
+    - `node ./node_modules/prisma/build/index.js generate`
+- Verification snapshot for GLF-6:
+  - `npm run check:node` PASS
+  - `npm run check:secrets` PASS
+  - `npm run validate:skills` PASS
+  - `npm run typecheck` PASS
+  - `npm run lint` PASS
+  - `npm test` PASS (56 files, 369 tests)
+  - `npm run build` PASS
+  - `node ./node_modules/prisma/build/index.js validate` PASS
+  - `node ./node_modules/prisma/build/index.js generate` PASS
+  - `npm run test:e2e` PASS (9 tests)
+
 ## 2026-05-14 GLF-2 / GLF-3 Checkpoint
 
 - GLF-2 completed:
