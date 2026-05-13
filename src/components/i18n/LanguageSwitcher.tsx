@@ -1,13 +1,14 @@
 ﻿"use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { defaultLocale, localeCookieName, localeMetadata, locales, type AppLocale } from "@/i18n/locales";
 import { getLocaleFromPath, replacePathLocale } from "@/i18n/pathing";
 
 export default function LanguageSwitcher() {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const router = useRouter();
   const t = useTranslations("common");
   const [open, setOpen] = useState(false);
@@ -59,8 +60,11 @@ export default function LanguageSwitcher() {
       return;
     }
     const nextPath = replacePathLocale(pathname, nextLocale);
+    const queryString = searchParams.toString();
+    const nextHref = queryString ? `${nextPath}?${queryString}` : nextPath;
     document.cookie = `${localeCookieName}=${nextLocale}; path=/; max-age=31536000; samesite=lax`;
-    router.replace(nextPath);
+    router.replace(nextHref);
+    router.refresh();
     setOpen(false);
   }
 

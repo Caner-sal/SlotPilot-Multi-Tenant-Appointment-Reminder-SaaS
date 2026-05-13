@@ -2,10 +2,8 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useParams } from "next/navigation";
-import { useTranslations } from "next-intl";
-import { usePathname } from "next/navigation";
-import { getLocaleFromPath } from "@/i18n/pathing";
-import { defaultLocale, localeMetadata } from "@/i18n/locales";
+import { useLocale, useTranslations } from "next-intl";
+import { resolveLocale, localeMetadata } from "@/i18n/locales";
 import { TURKEY_PROVINCES, getDistrictsByProvince } from "@/data/turkey-provinces";
 
 interface BusinessProfile {
@@ -53,8 +51,8 @@ interface BookingConfirmation {
 
 type Step = 1 | 2 | 3 | 4 | 5;
 
-function formatPrice(cents: number, currency: string) {
-  return new Intl.NumberFormat("tr-TR", { style: "currency", currency }).format(cents / 100);
+function formatPrice(cents: number, currency: string, dateLocale: string) {
+  return new Intl.NumberFormat(dateLocale, { style: "currency", currency }).format(cents / 100);
 }
 
 function getNext14Days() {
@@ -83,8 +81,7 @@ export default function BookingPage() {
 
   const t = useTranslations("booking");
   const tCommon = useTranslations("common");
-  const pathname = usePathname();
-  const locale = getLocaleFromPath(pathname) ?? defaultLocale;
+  const locale = resolveLocale(useLocale());
   const dateLocale = localeMetadata[locale].dateLocale;
 
   const [step, setStep] = useState<Step>(1);
@@ -395,7 +392,7 @@ export default function BookingPage() {
                     </div>
                     <div className="text-right ml-4 shrink-0">
                       <span className="font-bold text-blue-600 text-lg">
-                        {formatPrice(service.priceCents, service.currency)}
+                        {formatPrice(service.priceCents, service.currency, dateLocale)}
                       </span>
                     </div>
                   </div>
@@ -604,7 +601,7 @@ export default function BookingPage() {
               <div className="flex justify-between">
                 <span>{tCommon("price")}</span>
                 <span className="font-bold text-blue-800">
-                  {formatPrice(selectedService.priceCents, selectedService.currency)}
+                  {formatPrice(selectedService.priceCents, selectedService.currency, dateLocale)}
                 </span>
               </div>
             </div>

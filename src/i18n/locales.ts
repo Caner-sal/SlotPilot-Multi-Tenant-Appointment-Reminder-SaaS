@@ -19,7 +19,7 @@ export const localeMetadata: Record<
 > = {
   tr: {
     label: "Turkish",
-    nativeLabel: "Turkce",
+    nativeLabel: "Türkçe",
     flag: "\uD83C\uDDF9\uD83C\uDDF7",
     direction: "ltr",
     currency: "TRY",

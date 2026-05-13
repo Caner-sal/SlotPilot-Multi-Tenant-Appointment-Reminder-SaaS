@@ -1,5 +1,4 @@
-import Link from "next/link";
-import { TURKEY_PLANS } from "@/config/pricing.tr";
+import { Link } from "@/i18n/navigation";
 import LanguageSwitcher from "@/components/i18n/LanguageSwitcher";
 import { getTranslations } from "next-intl/server";
 
@@ -101,28 +100,28 @@ export default async function HomePage() {
   const plans = [
     {
       id: "FREE",
-      name: TURKEY_PLANS.FREE.nameTR,
+      name: t("ctaFree"),
       price: "₺0",
       per: t("freeForever"),
-      features: TURKEY_PLANS.FREE.features.slice(0, 3),
+      features: [t("f1Title"), t("f2Title"), t("f3Title")],
       cta: t("ctaFree"),
       featured: false,
     },
     {
       id: "STARTER",
-      name: TURKEY_PLANS.STARTER.nameTR,
+      name: t("ctaStarter"),
       price: "₺40",
       per: t("monthly"),
-      features: TURKEY_PLANS.STARTER.features.slice(0, 4),
+      features: [t("f1Title"), t("f2Title"), t("f3Title"), t("f4Title")],
       cta: t("ctaStarter"),
       featured: true,
     },
     {
       id: "PRO",
-      name: TURKEY_PLANS.PRO.nameTR,
+      name: t("ctaPro"),
       price: "₺249",
       per: t("monthly"),
-      features: ["Sınırsız çalışan", "Ayda 2.000 randevu", "Gelişmiş analitik", "Öncelikli destek"],
+      features: [t("f1Title"), t("f2Title"), t("f4Title"), t("f5Title")],
       cta: t("ctaPro"),
       featured: false,
     },
@@ -201,7 +200,7 @@ export default async function HomePage() {
             {[
               ["500+", t("statBusinesses")],
               ["12K+", t("statMonthly")],
-              ["81 İl", t("statSupport")],
+              ["81", t("statSupport")],
               ["%94", t("statCompletion")],
             ].map(([num, label]) => (
               <div key={label} style={{ textAlign: "center" }}>

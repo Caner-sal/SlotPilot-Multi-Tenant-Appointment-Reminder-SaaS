@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import LanguageSwitcher from "@/components/i18n/LanguageSwitcher";
 import { getTranslations } from "next-intl/server";
 

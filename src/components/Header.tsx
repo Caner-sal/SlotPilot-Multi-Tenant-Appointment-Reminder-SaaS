@@ -6,6 +6,7 @@ import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import LanguageSwitcher from "@/components/i18n/LanguageSwitcher";
 import { locales } from "@/i18n/locales";
+import { getLocaleFromPath, withLocale } from "@/i18n/pathing";
 
 interface Organization {
   id: string;
@@ -98,6 +99,8 @@ export default function Header() {
   }, []);
 
   const pageTitle = t(getPageTitleKey(pathname));
+  const locale = getLocaleFromPath(pathname);
+  const bookingHref = org ? (locale ? withLocale(`/booking/${org.slug}`, locale) : `/booking/${org.slug}`) : null;
 
   return (
     <header
@@ -139,9 +142,9 @@ export default function Header() {
 
       <div className="flex items-center gap-4">
         <LanguageSwitcher />
-        {org && (
+        {org && bookingHref && (
           <a
-            href={`/booking/${org.slug}`}
+            href={bookingHref}
             target="_blank"
             rel="noopener noreferrer"
             style={{
