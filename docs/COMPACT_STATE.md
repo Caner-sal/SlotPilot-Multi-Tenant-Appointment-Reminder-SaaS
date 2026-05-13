@@ -2,6 +2,27 @@
 
 _Last updated: 2026-05-14_
 
+## 2026-05-14 GLF-0 / GLF-1 Checkpoint
+
+- GLF-0 completed:
+  - Read `RANDEVO_GLOBAL_LOCALIZATION_BUGFIX_PLAN (1).md`.
+  - Audited Turkey hard-codes and created `docs/global-localization-bug-report.md`.
+  - Confirmed marketplace UI and landing copy regressions for non-TR contexts.
+- Baseline gate stabilization completed before GLF-1:
+  - Fixed failing test mock typings and enum typo in `src/tests/demo-workspace-safety.test.ts`.
+  - Added missing `auth.continue` Turkish key required by i18n test coverage.
+- GLF-1 completed:
+  - Added `src/config/countries.ts` with canonical typed country config (TR, IT, US, DE, FR, ES, GB, NL).
+  - Added `src/lib/address/location-options.ts` (`TURKEY_PROVINCES` now wrapped behind explicit TR check helper).
+  - Added `src/tests/location-options.test.ts` to lock TR/non-TR behavior.
+- Verification snapshot for GLF-1:
+  - `npm run typecheck` PASS
+  - `npm run lint` PASS
+  - `npm test` PASS (54 files, 361 tests)
+  - `npm run build` PASS
+  - `node ./node_modules/prisma/build/index.js validate` PASS
+  - `node ./node_modules/prisma/build/index.js generate --no-engine` PASS (used due Windows engine file lock on standard generate)
+
 ## 2026-05-14 PROD-12/13/14 Closeout (Current Pass)
 
 ### PROD-12 Functional Completion
