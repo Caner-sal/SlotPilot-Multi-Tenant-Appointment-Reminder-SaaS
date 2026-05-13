@@ -154,8 +154,75 @@ model Organization {
   whatsAppInboundMessages    WhatsAppInboundMessage[]
   whatsAppAutoReplyLogs      WhatsAppAutoReplyLog[]
   whatsAppContactPreferences WhatsAppContactPreference[]
+  normalizedAddresses        NormalizedAddress[]
+  addressProviderLogs        AddressProviderLog[]
 
   @@index([slug])
+}
+
+model NormalizedAddress {
+  id                     String   @id @default(cuid())
+  organizationId         String?
+  ownerType              String
+  ownerId                String
+  countryCode            String?
+  countryName            String?
+  adminLevel1            String?
+  adminLevel2            String?
+  adminLevel3            String?
+  locality               String?
+  subLocality            String?
+  postalCode             String?
+  street                 String?
+  streetNumber           String?
+  formattedAddress       String
+  latitude               Float?
+  longitude              Float?
+  provider               String
+  providerPlaceId        String
+  rawProviderPayloadSafe Json?
+  language               String?
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+
+  organization Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+
+  @@index([organizationId])
+  @@index([ownerType, ownerId])
+  @@index([countryCode])
+  @@index([provider, providerPlaceId])
+}
+
+model CountryConfig {
+  id                String   @id @default(cuid())
+  countryCode       String   @unique
+  countryName       String
+  defaultLocale     String
+  defaultCurrency   String
+  addressFormat     String?
+  phoneCountryCode  String?
+  enabled           Boolean  @default(true)
+  marketplaceEnabled Boolean @default(false)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model AddressProviderLog {
+  id             String   @id @default(cuid())
+  organizationId String?
+  provider       String
+  query          String
+  countryCode    String?
+  status         String
+  resultCount    Int      @default(0)
+  errorMessage   String?
+  createdAt      DateTime @default(now())
+
+  organization Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+
+  @@index([organizationId])
+  @@index([provider])
+  @@index([createdAt])
 }
 
 model OrganizationMember {

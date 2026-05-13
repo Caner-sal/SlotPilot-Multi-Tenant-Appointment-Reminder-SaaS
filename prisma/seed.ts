@@ -66,6 +66,42 @@ async function main() {
     },
   });
 
+  const tier1CountryConfigs = [
+    { countryCode: "TR", countryName: "Turkey", defaultLocale: "tr", defaultCurrency: "TRY", phoneCountryCode: "+90", marketplaceEnabled: true },
+    { countryCode: "US", countryName: "United States", defaultLocale: "en", defaultCurrency: "USD", phoneCountryCode: "+1", marketplaceEnabled: true },
+    { countryCode: "GB", countryName: "United Kingdom", defaultLocale: "en", defaultCurrency: "GBP", phoneCountryCode: "+44", marketplaceEnabled: true },
+    { countryCode: "DE", countryName: "Germany", defaultLocale: "de", defaultCurrency: "EUR", phoneCountryCode: "+49", marketplaceEnabled: true },
+    { countryCode: "FR", countryName: "France", defaultLocale: "fr", defaultCurrency: "EUR", phoneCountryCode: "+33", marketplaceEnabled: true },
+    { countryCode: "IT", countryName: "Italy", defaultLocale: "it", defaultCurrency: "EUR", phoneCountryCode: "+39", marketplaceEnabled: true },
+    { countryCode: "ES", countryName: "Spain", defaultLocale: "es", defaultCurrency: "EUR", phoneCountryCode: "+34", marketplaceEnabled: true },
+    { countryCode: "NL", countryName: "Netherlands", defaultLocale: "nl", defaultCurrency: "EUR", phoneCountryCode: "+31", marketplaceEnabled: true },
+    { countryCode: "CA", countryName: "Canada", defaultLocale: "en", defaultCurrency: "CAD", phoneCountryCode: "+1", marketplaceEnabled: true },
+    { countryCode: "AU", countryName: "Australia", defaultLocale: "en", defaultCurrency: "AUD", phoneCountryCode: "+61", marketplaceEnabled: true },
+  ] as const;
+
+  for (const country of tier1CountryConfigs) {
+    await prisma.countryConfig.upsert({
+      where: { countryCode: country.countryCode },
+      update: {
+        countryName: country.countryName,
+        defaultLocale: country.defaultLocale,
+        defaultCurrency: country.defaultCurrency,
+        phoneCountryCode: country.phoneCountryCode,
+        enabled: true,
+        marketplaceEnabled: country.marketplaceEnabled,
+      },
+      create: {
+        countryCode: country.countryCode,
+        countryName: country.countryName,
+        defaultLocale: country.defaultLocale,
+        defaultCurrency: country.defaultCurrency,
+        phoneCountryCode: country.phoneCountryCode,
+        enabled: true,
+        marketplaceEnabled: country.marketplaceEnabled,
+      },
+    });
+  }
+
   // Default location for demo org
   await prisma.location.upsert({
     where: { id: "loc-barber-main" },
