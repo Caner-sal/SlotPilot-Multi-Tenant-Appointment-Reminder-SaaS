@@ -21,6 +21,8 @@ describe("locale formatting helpers", () => {
     expect(formatDate(iso, "en", { weekday: "short", month: "short", day: "numeric" })).toBeTruthy();
     expect(formatDate(iso, "de", { weekday: "short", month: "short", day: "numeric" })).toBeTruthy();
     expect(formatDate(iso, "ar", { weekday: "short", month: "short", day: "numeric" })).toBeTruthy();
+    expect(formatDate(iso, "ru", { weekday: "short", month: "short", day: "numeric" })).toBeTruthy();
+    expect(formatDate(iso, "nl", { weekday: "short", month: "short", day: "numeric" })).toBeTruthy();
   });
 
   it("supports timezone-aware time rendering", () => {
