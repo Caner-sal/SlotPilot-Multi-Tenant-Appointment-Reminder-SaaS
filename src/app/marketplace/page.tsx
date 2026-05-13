@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { TURKEY_CATEGORIES } from "@/data/turkey-categories";
 import { TURKEY_PROVINCES } from "@/data/turkey-provinces";
+import { COUNTRY_OPTIONS } from "@/data/country-options";
 
 interface Business {
   id: string;
@@ -28,6 +29,8 @@ export default function MarketplacePage() {
   const [q, setQ] = useState("");
   const [category, setCategory] = useState("");
   const [province, setProvince] = useState("");
+  const [countryCode, setCountryCode] = useState("");
+  const [locality, setLocality] = useState("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -36,13 +39,15 @@ export default function MarketplacePage() {
     if (q) params.set("q", q);
     if (category) params.set("category", category);
     if (province) params.set("province", province);
+    if (countryCode) params.set("countryCode", countryCode);
+    if (locality) params.set("locality", locality);
 
     fetch(`/api/marketplace?${params.toString()}`)
       .then((r) => r.json())
       .then((res) => setBusinesses(res.data ?? []))
       .catch(() => setBusinesses([]))
       .finally(() => setLoading(false));
-  }, [q, category, province]);
+  }, [q, category, province, countryCode, locality]);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -82,6 +87,25 @@ export default function MarketplacePage() {
               <option key={p.slug} value={p.slug}>{p.name}</option>
             ))}
           </select>
+          <select
+            value={countryCode}
+            onChange={(e) => setCountryCode(e.target.value)}
+            className="border rounded-lg px-3 py-2 text-sm w-48"
+          >
+            <option value="">{t("allCountries")}</option>
+            {COUNTRY_OPTIONS.map((country) => (
+              <option key={country.code} value={country.code}>
+                {country.name}
+              </option>
+            ))}
+          </select>
+          <input
+            type="text"
+            placeholder={t("citySearchPlaceholder")}
+            value={locality}
+            onChange={(e) => setLocality(e.target.value)}
+            className="border rounded-lg px-3 py-2 text-sm w-48"
+          />
         </div>
 
         {loading ? (
