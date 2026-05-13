@@ -111,7 +111,18 @@
     "customerLabel": "Nombre",
     "newBooking": "Reservar una nueva cita",
     "backToServices": "Volver a servicios",
-    "bookingFailed": "No se pudo crear la reserva."
+    "bookingFailed": "No se pudo crear la reserva.",
+    "country": "Country",
+    "addressLine": "Address line",
+    "addressLinePlaceholder": "Street, number, district",
+    "state": "State",
+    "city": "City",
+    "region": "Region",
+    "postalCode": "Postal code",
+    "zipCode": "ZIP code",
+    "adminLevel1Placeholder": "Enter region or state",
+    "adminLevel2Placeholder": "Enter city",
+    "postalCodePlaceholder": "Enter postal code"
   },
   "dashboardHeader": {
     "dashboard": "Panel",
@@ -456,7 +467,9 @@
     "allCategories": "Todas las categorias",
     "allCities": "Todas las ciudades",
     "notFound": "No se encontraron negocios.",
-    "service": "servicio"
+    "service": "servicio",
+    "allCountries": "All countries",
+    "citySearchPlaceholder": "Search city/locality"
   },
   "staffPortal": {
     "welcomeBack": "Bienvenido de nuevo, {name}",

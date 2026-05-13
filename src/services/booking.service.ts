@@ -116,9 +116,26 @@ export async function createBooking(params: {
   customerPhone?: string;
   customerProvince?: string;
   customerDistrict?: string;
+  customerCountryCode?: string;
+  customerAddressLine?: string;
+  customerPostalCode?: string;
   notes?: string;
 }) {
-  const { organizationId, serviceId, staffId, startTime, customerName, customerEmail, customerPhone, customerProvince, customerDistrict, notes } = params;
+  const {
+    organizationId,
+    serviceId,
+    staffId,
+    startTime,
+    customerName,
+    customerEmail,
+    customerPhone,
+    customerProvince,
+    customerDistrict,
+    customerCountryCode,
+    customerAddressLine,
+    customerPostalCode,
+    notes,
+  } = params;
 
   const service = await db.service.findFirst({
     where: { id: serviceId, organizationId, isActive: true },
@@ -153,6 +170,35 @@ export async function createBooking(params: {
         phone: customerPhone,
         province: customerProvince,
         district: customerDistrict,
+      },
+    });
+  } else {
+    customer = await db.customer.update({
+      where: { id: customer.id },
+      data: {
+        fullName: customerName,
+        phone: customerPhone ?? customer.phone,
+        province: customerProvince ?? customer.province,
+        district: customerDistrict ?? customer.district,
+      },
+    });
+  }
+
+  if (customerAddressLine || customerCountryCode || customerProvince || customerDistrict || customerPostalCode) {
+    await db.normalizedAddress.create({
+      data: {
+        organizationId,
+        ownerType: "CUSTOMER",
+        ownerId: customer.id,
+        countryCode: customerCountryCode,
+        adminLevel1: customerProvince,
+        adminLevel2: customerDistrict,
+        locality: customerDistrict,
+        postalCode: customerPostalCode,
+        formattedAddress: customerAddressLine ?? [customerDistrict, customerProvince].filter(Boolean).join(", "),
+        provider: "manual",
+        providerPlaceId: `customer:${customer.id}:${Date.now()}`,
+        language: undefined,
       },
     });
   }

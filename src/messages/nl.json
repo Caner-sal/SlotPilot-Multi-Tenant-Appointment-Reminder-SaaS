@@ -111,7 +111,18 @@
     "customerLabel": "Naam",
     "newBooking": "Nieuwe afspraak boeken",
     "backToServices": "Terug naar diensten",
-    "bookingFailed": "Boeking kon niet worden aangemaakt."
+    "bookingFailed": "Boeking kon niet worden aangemaakt.",
+    "country": "Country",
+    "addressLine": "Address line",
+    "addressLinePlaceholder": "Street, number, district",
+    "state": "State",
+    "city": "City",
+    "region": "Region",
+    "postalCode": "Postal code",
+    "zipCode": "ZIP code",
+    "adminLevel1Placeholder": "Enter region or state",
+    "adminLevel2Placeholder": "Enter city",
+    "postalCodePlaceholder": "Enter postal code"
   },
   "dashboardHeader": {
     "dashboard": "Dashboard",
@@ -456,7 +467,9 @@
     "allCategories": "Alle categorieen",
     "allCities": "Alle steden",
     "notFound": "Geen bedrijven gevonden.",
-    "service": "dienst"
+    "service": "dienst",
+    "allCountries": "All countries",
+    "citySearchPlaceholder": "Search city/locality"
   },
   "staffPortal": {
     "welcomeBack": "Welkom terug, {name}",

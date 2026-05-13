@@ -111,7 +111,18 @@
     "customerLabel": "İsim",
     "newBooking": "Yeni Randevu Al",
     "backToServices": "Hizmetlere Dön",
-    "bookingFailed": "Rezervasyon oluşturulamadı."
+    "bookingFailed": "Rezervasyon oluşturulamadı.",
+    "country": "Ulke",
+    "addressLine": "Acik adres",
+    "addressLinePlaceholder": "Cadde/Sokak, bina no, semt",
+    "state": "Eyalet",
+    "city": "Sehir",
+    "region": "Bolge",
+    "postalCode": "Posta kodu",
+    "zipCode": "ZIP kodu",
+    "adminLevel1Placeholder": "Bolge/eyalet girin",
+    "adminLevel2Placeholder": "Sehir girin",
+    "postalCodePlaceholder": "Posta kodu girin"
   },
   "dashboardHeader": {
     "dashboard": "Kontrol Paneli",
@@ -456,7 +467,9 @@
     "allCategories": "Tüm Kategoriler",
     "allCities": "Tüm İller",
     "notFound": "İşletme bulunamadı.",
-    "service": "hizmet"
+    "service": "hizmet",
+    "allCountries": "Tum ulkeler",
+    "citySearchPlaceholder": "Sehir/locality ara"
   },
   "staffPortal": {
     "welcomeBack": "Tekrar hoş geldiniz, {name}",

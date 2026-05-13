@@ -111,8 +111,18 @@
     "confirmationEmail": "Eine Bestätigung wird an Ihre E-Mail-Adresse gesendet.",
     "customerLabel": "Name",
     "newBooking": "Neuen Termin buchen",
-    "backToServices": "Zurück zu Leistungen",
-    "bookingFailed": "Buchung konnte nicht erstellt werden."
+    "bookingFailed": "Buchung konnte nicht erstellt werden.",
+    "country": "Country",
+    "addressLine": "Address line",
+    "addressLinePlaceholder": "Street, number, district",
+    "state": "State",
+    "city": "City",
+    "region": "Region",
+    "postalCode": "Postal code",
+    "zipCode": "ZIP code",
+    "adminLevel1Placeholder": "Enter region or state",
+    "adminLevel2Placeholder": "Enter city",
+    "postalCodePlaceholder": "Enter postal code"
   },
   "dashboardHeader": {
     "dashboard": "Dashboard",
@@ -315,7 +325,9 @@
     "allCategories": "Alle Kategorien",
     "allCities": "Alle Städte",
     "notFound": "Keine Unternehmen gefunden.",
-    "service": "Leistung"
+    "service": "Leistung",
+    "allCountries": "All countries",
+    "citySearchPlaceholder": "Search city/locality"
   },
   "auth": {
     "loginTitle": "Willkommen zurück",

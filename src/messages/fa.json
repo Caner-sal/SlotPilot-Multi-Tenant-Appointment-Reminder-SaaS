@@ -111,7 +111,18 @@
     "customerLabel": "نام",
     "newBooking": "رزرو نوبت جدید",
     "backToServices": "بازگشت به خدمات",
-    "bookingFailed": "ایجاد رزرو انجام نشد."
+    "bookingFailed": "ایجاد رزرو انجام نشد.",
+    "country": "Country",
+    "addressLine": "Address line",
+    "addressLinePlaceholder": "Street, number, district",
+    "state": "State",
+    "city": "City",
+    "region": "Region",
+    "postalCode": "Postal code",
+    "zipCode": "ZIP code",
+    "adminLevel1Placeholder": "Enter region or state",
+    "adminLevel2Placeholder": "Enter city",
+    "postalCodePlaceholder": "Enter postal code"
   },
   "dashboardHeader": {
     "dashboard": "داشبورد",
@@ -456,7 +467,9 @@
     "allCategories": "همه دسته‌بندی‌ها",
     "allCities": "همه شهرها",
     "notFound": "هیچ کسب‌وکاری پیدا نشد.",
-    "service": "خدمت"
+    "service": "خدمت",
+    "allCountries": "All countries",
+    "citySearchPlaceholder": "Search city/locality"
   },
   "staffPortal": {
     "welcomeBack": "خوش برگشتی، {name}",

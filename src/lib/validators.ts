@@ -84,6 +84,9 @@ export const bookingSchema = z.object({
   customerPhone: z.string().optional(),
   customerProvince: z.string().optional(),
   customerDistrict: z.string().optional(),
+  customerCountryCode: z.string().length(2).optional(),
+  customerAddressLine: z.string().optional(),
+  customerPostalCode: z.string().optional(),
   notes: z.string().optional(),
   privacyNoticeAcknowledged: z.boolean().refine((v) => v === true, {
     message: "KVKK Aydınlatma Metni kabul edilmelidir.",

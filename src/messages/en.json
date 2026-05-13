@@ -111,7 +111,18 @@
     "customerLabel": "Name",
     "newBooking": "Book a New Appointment",
     "backToServices": "Back to Services",
-    "bookingFailed": "Booking could not be created."
+    "bookingFailed": "Booking could not be created.",
+    "country": "Country",
+    "addressLine": "Address line",
+    "addressLinePlaceholder": "Street, number, district",
+    "state": "State",
+    "city": "City",
+    "region": "Region",
+    "postalCode": "Postal code",
+    "zipCode": "ZIP code",
+    "adminLevel1Placeholder": "Enter region or state",
+    "adminLevel2Placeholder": "Enter city",
+    "postalCodePlaceholder": "Enter postal code"
   },
   "dashboardHeader": {
     "dashboard": "Dashboard",
@@ -456,7 +467,9 @@
     "allCategories": "All Categories",
     "allCities": "All Cities",
     "notFound": "No businesses found.",
-    "service": "service"
+    "service": "service",
+    "allCountries": "All countries",
+    "citySearchPlaceholder": "Search city/locality"
   },
   "staffPortal": {
     "welcomeBack": "Welcome back, {name}",

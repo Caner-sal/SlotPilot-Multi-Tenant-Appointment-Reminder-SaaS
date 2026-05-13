@@ -5,6 +5,9 @@ import { useParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { resolveLocale, localeMetadata } from "@/i18n/locales";
 import { TURKEY_PROVINCES, getDistrictsByProvince } from "@/data/turkey-provinces";
+import { COUNTRY_OPTIONS } from "@/data/country-options";
+import { getCountryAddressConfig } from "@/config/country-address-config";
+import AddressAutocomplete from "@/components/address/AddressAutocomplete";
 
 interface BusinessProfile {
   name: string;
@@ -104,8 +107,11 @@ export default function BookingPage() {
     name: "",
     email: "",
     phone: "",
-    province: "",
-    district: "",
+    countryCode: "TR",
+    addressLine: "",
+    adminLevel1: "",
+    adminLevel2: "",
+    postalCode: "",
     notes: "",
     privacyNoticeAcknowledged: false,
     appointmentNotificationConsent: true,
@@ -224,8 +230,11 @@ export default function BookingPage() {
           customerName: customerForm.name,
           customerEmail: customerForm.email,
           customerPhone: customerForm.phone || undefined,
-          customerProvince: customerForm.province || undefined,
-          customerDistrict: customerForm.district || undefined,
+          customerProvince: customerForm.adminLevel1 || undefined,
+          customerDistrict: customerForm.adminLevel2 || undefined,
+          customerCountryCode: customerForm.countryCode || undefined,
+          customerAddressLine: customerForm.addressLine || undefined,
+          customerPostalCode: customerForm.postalCode || undefined,
           notes: customerForm.notes || undefined,
           privacyNoticeAcknowledged: customerForm.privacyNoticeAcknowledged,
           appointmentNotificationConsent: customerForm.appointmentNotificationConsent,
@@ -278,7 +287,20 @@ export default function BookingPage() {
     setSelectedStaff(null);
     setSelectedDate(null);
     setSelectedSlot(null);
-    setCustomerForm({ name: "", email: "", phone: "", province: "", district: "", notes: "", privacyNoticeAcknowledged: false, appointmentNotificationConsent: true, marketingConsent: false });
+    setCustomerForm({
+      name: "",
+      email: "",
+      phone: "",
+      countryCode: "TR",
+      addressLine: "",
+      adminLevel1: "",
+      adminLevel2: "",
+      postalCode: "",
+      notes: "",
+      privacyNoticeAcknowledged: false,
+      appointmentNotificationConsent: true,
+      marketingConsent: false,
+    });
     setSubmitError(null);
     setConfirmation(null);
   }
@@ -309,6 +331,7 @@ export default function BookingPage() {
   }
 
   const days = getNext14Days();
+  const addressConfig = getCountryAddressConfig(customerForm.countryCode);
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
@@ -651,44 +674,142 @@ export default function BookingPage() {
                   value={customerForm.phone}
                   onChange={(e) => setCustomerForm({ ...customerForm, phone: e.target.value })}
                   className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="+90 555 000 0000"
+                  placeholder={`${addressConfig.phoneCountryCode} 555 000 0000`}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {t("country")}
+                </label>
+                <select
+                  value={customerForm.countryCode}
+                  onChange={(e) =>
+                    setCustomerForm({
+                      ...customerForm,
+                      countryCode: e.target.value,
+                      adminLevel1: "",
+                      adminLevel2: "",
+                      postalCode: "",
+                    })
+                  }
+                  className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  {COUNTRY_OPTIONS.map((country) => (
+                    <option key={country.code} value={country.code}>
+                      {country.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {t("addressLine")}{" "}
+                  <span className="text-gray-400 font-normal">{t("phoneOptional")}</span>
+                </label>
+                <AddressAutocomplete
+                  locale={locale}
+                  countryCode={customerForm.countryCode}
+                  placeholder={t("addressLinePlaceholder")}
+                  value={customerForm.addressLine}
+                  onChange={(nextValue) => setCustomerForm({ ...customerForm, addressLine: nextValue })}
+                  onSelect={(normalized) =>
+                    setCustomerForm((prev) => ({
+                      ...prev,
+                      countryCode: normalized.countryCode ?? prev.countryCode,
+                      addressLine: normalized.formattedAddress,
+                      adminLevel1: normalized.adminLevel1 ?? prev.adminLevel1,
+                      adminLevel2: normalized.adminLevel2 ?? normalized.locality ?? prev.adminLevel2,
+                      postalCode: normalized.postalCode ?? prev.postalCode,
+                    }))
+                  }
                 />
               </div>
               <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    {t("province")}{" "}
-                    <span className="text-gray-400 font-normal">{t("phoneOptional")}</span>
-                  </label>
-                  <select
-                    value={customerForm.province}
-                    onChange={(e) => setCustomerForm({ ...customerForm, province: e.target.value, district: "" })}
-                    className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="">{t("provincePlaceholder")}</option>
-                    {TURKEY_PROVINCES.map((p) => (
-                      <option key={p.slug} value={p.slug}>{p.name}</option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    {t("district")}{" "}
-                    <span className="text-gray-400 font-normal">{t("phoneOptional")}</span>
-                  </label>
-                  <select
-                    value={customerForm.district}
-                    onChange={(e) => setCustomerForm({ ...customerForm, district: e.target.value })}
-                    disabled={!customerForm.province}
-                    className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-400"
-                  >
-                    <option value="">{t("districtPlaceholder")}</option>
-                    {getDistrictsByProvince(customerForm.province).map((d) => (
-                      <option key={d.slug} value={d.slug}>{d.name}</option>
-                    ))}
-                  </select>
-                </div>
+                {customerForm.countryCode === "TR" ? (
+                  <>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        {t("province")}{" "}
+                        <span className="text-gray-400 font-normal">{t("phoneOptional")}</span>
+                      </label>
+                      <select
+                        value={customerForm.adminLevel1}
+                        onChange={(e) =>
+                          setCustomerForm({ ...customerForm, adminLevel1: e.target.value, adminLevel2: "" })
+                        }
+                        className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      >
+                        <option value="">{t("provincePlaceholder")}</option>
+                        {TURKEY_PROVINCES.map((p) => (
+                          <option key={p.slug} value={p.slug}>
+                            {p.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        {t("district")}{" "}
+                        <span className="text-gray-400 font-normal">{t("phoneOptional")}</span>
+                      </label>
+                      <select
+                        value={customerForm.adminLevel2}
+                        onChange={(e) => setCustomerForm({ ...customerForm, adminLevel2: e.target.value })}
+                        disabled={!customerForm.adminLevel1}
+                        className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-400"
+                      >
+                        <option value="">{t("districtPlaceholder")}</option>
+                        {getDistrictsByProvince(customerForm.adminLevel1).map((d) => (
+                          <option key={d.slug} value={d.slug}>
+                            {d.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        {t(addressConfig.labels.adminLevel1)}{" "}
+                        <span className="text-gray-400 font-normal">{t("phoneOptional")}</span>
+                      </label>
+                      <input
+                        value={customerForm.adminLevel1}
+                        onChange={(e) => setCustomerForm({ ...customerForm, adminLevel1: e.target.value })}
+                        className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        placeholder={t("adminLevel1Placeholder")}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        {t(addressConfig.labels.adminLevel2)}{" "}
+                        <span className="text-gray-400 font-normal">{t("phoneOptional")}</span>
+                      </label>
+                      <input
+                        value={customerForm.adminLevel2}
+                        onChange={(e) => setCustomerForm({ ...customerForm, adminLevel2: e.target.value })}
+                        className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        placeholder={t("adminLevel2Placeholder")}
+                      />
+                    </div>
+                  </>
+                )}
               </div>
+              {addressConfig.fields.postalCode ? (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    {t(addressConfig.labels.postalCode)}{" "}
+                    <span className="text-gray-400 font-normal">{t("phoneOptional")}</span>
+                  </label>
+                  <input
+                    value={customerForm.postalCode}
+                    onChange={(e) => setCustomerForm({ ...customerForm, postalCode: e.target.value })}
+                    className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder={t("postalCodePlaceholder")}
+                  />
+                </div>
+              ) : null}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   {tCommon("notes")}{" "}

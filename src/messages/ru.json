@@ -111,7 +111,18 @@
     "customerLabel": "Имя",
     "newBooking": "Сделать новую запись",
     "backToServices": "Назад к услугам",
-    "bookingFailed": "Не удалось создать бронирование."
+    "bookingFailed": "Не удалось создать бронирование.",
+    "country": "Country",
+    "addressLine": "Address line",
+    "addressLinePlaceholder": "Street, number, district",
+    "state": "State",
+    "city": "City",
+    "region": "Region",
+    "postalCode": "Postal code",
+    "zipCode": "ZIP code",
+    "adminLevel1Placeholder": "Enter region or state",
+    "adminLevel2Placeholder": "Enter city",
+    "postalCodePlaceholder": "Enter postal code"
   },
   "dashboardHeader": {
     "dashboard": "Панель",
@@ -456,7 +467,9 @@
     "allCategories": "Все категории",
     "allCities": "Все города",
     "notFound": "Бизнесы не найдены.",
-    "service": "услуга"
+    "service": "услуга",
+    "allCountries": "All countries",
+    "citySearchPlaceholder": "Search city/locality"
   },
   "staffPortal": {
     "welcomeBack": "С возвращением, {name}",

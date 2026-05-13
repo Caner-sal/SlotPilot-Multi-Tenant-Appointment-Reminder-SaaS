@@ -111,7 +111,18 @@
     "customerLabel": "Nom",
     "newBooking": "Prendre un nouveau rendez-vous",
     "backToServices": "Retour aux services",
-    "bookingFailed": "La réservation n'a pas pu être créée."
+    "bookingFailed": "La réservation n'a pas pu être créée.",
+    "country": "Country",
+    "addressLine": "Address line",
+    "addressLinePlaceholder": "Street, number, district",
+    "state": "State",
+    "city": "City",
+    "region": "Region",
+    "postalCode": "Postal code",
+    "zipCode": "ZIP code",
+    "adminLevel1Placeholder": "Enter region or state",
+    "adminLevel2Placeholder": "Enter city",
+    "postalCodePlaceholder": "Enter postal code"
   },
   "dashboardHeader": {
     "dashboard": "Tableau de bord",
@@ -456,7 +467,9 @@
     "allCategories": "Toutes les categories",
     "allCities": "Toutes les villes",
     "notFound": "Aucune entreprise trouvee.",
-    "service": "service"
+    "service": "service",
+    "allCountries": "All countries",
+    "citySearchPlaceholder": "Search city/locality"
   },
   "staffPortal": {
     "welcomeBack": "Bon retour, {name}",

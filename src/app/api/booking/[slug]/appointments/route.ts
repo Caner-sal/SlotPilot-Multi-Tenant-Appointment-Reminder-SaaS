@@ -45,6 +45,9 @@ export async function POST(
       customerPhone: parsed.customerPhone,
       customerProvince: parsed.customerProvince,
       customerDistrict: parsed.customerDistrict,
+      customerCountryCode: parsed.customerCountryCode,
+      customerAddressLine: parsed.customerAddressLine,
+      customerPostalCode: parsed.customerPostalCode,
       notes: parsed.notes,
     });
 
@@ -72,6 +75,7 @@ export async function POST(
       entityId: appointment.id,
       metadata: {
         customerEmail: parsed.customerEmail,
+        customerCountryCode: parsed.customerCountryCode,
         serviceId: parsed.serviceId,
         staffId: parsed.staffId,
         startTime: appointment.startTime,

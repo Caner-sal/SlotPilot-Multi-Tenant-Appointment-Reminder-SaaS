@@ -111,8 +111,18 @@
     "confirmationEmail": "سيتم إرسال التأكيد إلى بريدك الإلكتروني.",
     "customerLabel": "الاسم",
     "newBooking": "حجز موعد جديد",
-    "backToServices": "العودة إلى الخدمات",
-    "bookingFailed": "تعذّر إنشاء الحجز."
+    "bookingFailed": "تعذّر إنشاء الحجز.",
+    "country": "Country",
+    "addressLine": "Address line",
+    "addressLinePlaceholder": "Street, number, district",
+    "state": "State",
+    "city": "City",
+    "region": "Region",
+    "postalCode": "Postal code",
+    "zipCode": "ZIP code",
+    "adminLevel1Placeholder": "Enter region or state",
+    "adminLevel2Placeholder": "Enter city",
+    "postalCodePlaceholder": "Enter postal code"
   },
   "dashboardHeader": {
     "dashboard": "لوحة التحكم",
@@ -315,7 +325,9 @@
     "allCategories": "جميع الفئات",
     "allCities": "جميع المدن",
     "notFound": "لم يتم العثور على شركات.",
-    "service": "خدمة"
+    "service": "خدمة",
+    "allCountries": "All countries",
+    "citySearchPlaceholder": "Search city/locality"
   },
   "auth": {
     "loginTitle": "مرحباً بعودتك",
