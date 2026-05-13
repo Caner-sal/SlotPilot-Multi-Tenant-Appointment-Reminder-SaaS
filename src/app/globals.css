@@ -27,6 +27,8 @@
 
 @layer base {
   :root {
+    --font-heading: "Segoe UI", "Avenir Next", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --font-body: "Segoe UI", "Noto Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
     /* Randevo Dark Theme */
     --background:             240 20% 5%;      /* #09090e */
     --foreground:             246 60% 96%;     /* #f0eff8 */
