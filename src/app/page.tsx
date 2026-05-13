@@ -200,7 +200,7 @@ export default async function HomePage() {
             {[
               ["500+", t("statBusinesses")],
               ["12K+", t("statMonthly")],
-              ["81", t("statSupport")],
+              [t("statSupportValue"), t("statSupport")],
               ["%94", t("statCompletion")],
             ].map(([num, label]) => (
               <div key={label} style={{ textAlign: "center" }}>
@@ -317,9 +317,10 @@ export default async function HomePage() {
             <span style={{ fontFamily: "var(--font-heading, Outfit, sans-serif)", fontSize: 15, fontWeight: 600, color: "#8a8aaa" }}>Randevo</span>
           </Link>
           <div style={{ display: "flex", gap: 22 }}>
-            <a href="#" style={{ fontSize: 13, color: "#3a3a58" }}>{t("footerPrivacy")}</a>
-            <a href="#" style={{ fontSize: 13, color: "#3a3a58" }}>{t("footerKVKK")}</a>
-            <a href="#" style={{ fontSize: 13, color: "#3a3a58" }}>{t("footerTerms")}</a>
+            <Link href="/legal/privacy" style={{ fontSize: 13, color: "#3a3a58" }}>{t("footerPrivacy")}</Link>
+            <Link href="/legal/kvkk" style={{ fontSize: 13, color: "#3a3a58" }}>{t("footerKVKK")}</Link>
+            <Link href="/legal/terms" style={{ fontSize: 13, color: "#3a3a58" }}>{t("footerTerms")}</Link>
+            <Link href="/legal/cookies" style={{ fontSize: 13, color: "#3a3a58" }}>Cookies</Link>
           </div>
           <p style={{ fontSize: 13, color: "#3a3a58" }}>{t("footerCopyright")}</p>
         </div>
