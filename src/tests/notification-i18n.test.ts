@@ -60,6 +60,14 @@ describe("notification templates by locale", () => {
     expect(sms).toContain("appointment");
   });
 
+  it("renders localized russian reminder text when locale resolves to ru", () => {
+    const sms = getAppointmentReminderTemplate("sms", reminderData, {
+      customerPreferredLocale: "ru"
+    }) as string;
+
+    expect(sms).toMatch(/[\u0400-\u04FF]/);
+  });
+
   it("keeps consent gate for marketing templates", () => {
     const result = getMarketingTemplate(
       "sms",

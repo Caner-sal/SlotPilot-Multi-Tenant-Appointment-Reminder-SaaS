@@ -12,8 +12,8 @@ Plan file: `SLOTPILOT_EXTRA_LANGUAGE_PACKS_EXPANDED_UPDATE_PLAN.md`
 | LANG-1 | Complete | Locale list expanded to 10, web language switcher now includes new locales |
 | LANG-2 | Complete | Spanish + French language packs completed and validated |
 | LANG-3 | Complete | Italian + Persian language packs completed and validated |
-| LANG-4 | Pending | Russian + Dutch translation completion + smoke checks |
-| LANG-5 | Pending | Mobile + notification locale completion + final QA + release tag |
+| LANG-4 | Complete | Russian + Dutch language packs completed with locale smoke checks |
+| LANG-5 | Complete | Mobile + notifications + E2E + docs completed, release tag prepared |
 
 ## Current Branch
 - `phase/i18n-8` → ready to merge into `main`

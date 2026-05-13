@@ -36,6 +36,25 @@ Berberler, kuaförler, güzellik salonları, koçlar ve diğer hizmet işletmele
 
 ---
 
+## Dil Deste?i (I18N)
+
+Web ve mobil uygulama art?k 10 locale destekler:
+
+- `tr` (Turkce)
+- `en` (English)
+- `de` (Deutsch)
+- `ar` (???????, RTL)
+- `es` (Espa?ol)
+- `fr` (Fran?ais)
+- `it` (Italiano)
+- `fa` (?????, RTL)
+- `ru` (???????)
+- `nl` (Nederlands)
+
+Dil se?ici mevcut route'u koruyarak locale de?i?tirir ve se?im cookie/AsyncStorage ile kal?c?d?r.
+
+---
+
 ## Fiyatlandırma
 
 | Plan | Fiyat | Personel | Aylık Randevu | E-posta Hatırlatma |

@@ -28,6 +28,30 @@ import {
   buildAppointmentReminderEmailAR
 } from "@/services/notifications/templates/ar/appointment-reminder";
 import {
+  buildAppointmentReminderSMSES,
+  buildAppointmentReminderEmailES
+} from "@/services/notifications/templates/es/appointment-reminder";
+import {
+  buildAppointmentReminderSMSFR,
+  buildAppointmentReminderEmailFR
+} from "@/services/notifications/templates/fr/appointment-reminder";
+import {
+  buildAppointmentReminderSMSIT,
+  buildAppointmentReminderEmailIT
+} from "@/services/notifications/templates/it/appointment-reminder";
+import {
+  buildAppointmentReminderSMSFA,
+  buildAppointmentReminderEmailFA
+} from "@/services/notifications/templates/fa/appointment-reminder";
+import {
+  buildAppointmentReminderSMSRU,
+  buildAppointmentReminderEmailRU
+} from "@/services/notifications/templates/ru/appointment-reminder";
+import {
+  buildAppointmentReminderSMSNL,
+  buildAppointmentReminderEmailNL
+} from "@/services/notifications/templates/nl/appointment-reminder";
+import {
   buildAppointmentConfirmationSMSEN,
   buildAppointmentConfirmationEmailEN
 } from "@/services/notifications/templates/en/appointment-confirmation";
@@ -39,9 +63,39 @@ import {
   buildAppointmentConfirmationSMSAR,
   buildAppointmentConfirmationEmailAR
 } from "@/services/notifications/templates/ar/appointment-confirmation";
+import {
+  buildAppointmentConfirmationSMSES,
+  buildAppointmentConfirmationEmailES
+} from "@/services/notifications/templates/es/appointment-confirmation";
+import {
+  buildAppointmentConfirmationSMSFR,
+  buildAppointmentConfirmationEmailFR
+} from "@/services/notifications/templates/fr/appointment-confirmation";
+import {
+  buildAppointmentConfirmationSMSIT,
+  buildAppointmentConfirmationEmailIT
+} from "@/services/notifications/templates/it/appointment-confirmation";
+import {
+  buildAppointmentConfirmationSMSFA,
+  buildAppointmentConfirmationEmailFA
+} from "@/services/notifications/templates/fa/appointment-confirmation";
+import {
+  buildAppointmentConfirmationSMSRU,
+  buildAppointmentConfirmationEmailRU
+} from "@/services/notifications/templates/ru/appointment-confirmation";
+import {
+  buildAppointmentConfirmationSMSNL,
+  buildAppointmentConfirmationEmailNL
+} from "@/services/notifications/templates/nl/appointment-confirmation";
 import { buildMarketingSMSEN, buildMarketingEmailEN } from "@/services/notifications/templates/en/marketing";
 import { buildMarketingSMSDE, buildMarketingEmailDE } from "@/services/notifications/templates/de/marketing";
 import { buildMarketingSMSAR, buildMarketingEmailAR } from "@/services/notifications/templates/ar/marketing";
+import { buildMarketingSMSES, buildMarketingEmailES } from "@/services/notifications/templates/es/marketing";
+import { buildMarketingSMSFR, buildMarketingEmailFR } from "@/services/notifications/templates/fr/marketing";
+import { buildMarketingSMSIT, buildMarketingEmailIT } from "@/services/notifications/templates/it/marketing";
+import { buildMarketingSMSFA, buildMarketingEmailFA } from "@/services/notifications/templates/fa/marketing";
+import { buildMarketingSMSRU, buildMarketingEmailRU } from "@/services/notifications/templates/ru/marketing";
+import { buildMarketingSMSNL, buildMarketingEmailNL } from "@/services/notifications/templates/nl/marketing";
 
 export type NotificationChannel = "sms" | "email" | "whatsapp";
 export type NotificationCategory = "appointment_reminder" | "appointment_confirmation" | "marketing";
@@ -77,12 +131,12 @@ const reminderSmsByLocale: Record<NotificationLocale, (data: AppointmentReminder
   en: buildAppointmentReminderSMSEN,
   de: buildAppointmentReminderSMSDE,
   ar: buildAppointmentReminderSMSAR,
-  es: buildAppointmentReminderSMSEN,
-  fr: buildAppointmentReminderSMSEN,
-  it: buildAppointmentReminderSMSEN,
-  fa: buildAppointmentReminderSMSEN,
-  ru: buildAppointmentReminderSMSEN,
-  nl: buildAppointmentReminderSMSEN
+  es: buildAppointmentReminderSMSES,
+  fr: buildAppointmentReminderSMSFR,
+  it: buildAppointmentReminderSMSIT,
+  fa: buildAppointmentReminderSMSFA,
+  ru: buildAppointmentReminderSMSRU,
+  nl: buildAppointmentReminderSMSNL
 };
 
 const reminderEmailByLocale: Record<NotificationLocale, (data: AppointmentReminderData) => EmailTemplate> = {
@@ -90,12 +144,12 @@ const reminderEmailByLocale: Record<NotificationLocale, (data: AppointmentRemind
   en: buildAppointmentReminderEmailEN,
   de: buildAppointmentReminderEmailDE,
   ar: buildAppointmentReminderEmailAR,
-  es: buildAppointmentReminderEmailEN,
-  fr: buildAppointmentReminderEmailEN,
-  it: buildAppointmentReminderEmailEN,
-  fa: buildAppointmentReminderEmailEN,
-  ru: buildAppointmentReminderEmailEN,
-  nl: buildAppointmentReminderEmailEN
+  es: buildAppointmentReminderEmailES,
+  fr: buildAppointmentReminderEmailFR,
+  it: buildAppointmentReminderEmailIT,
+  fa: buildAppointmentReminderEmailFA,
+  ru: buildAppointmentReminderEmailRU,
+  nl: buildAppointmentReminderEmailNL
 };
 
 const confirmationSmsByLocale: Record<NotificationLocale, (data: AppointmentConfirmationData) => string> = {
@@ -103,12 +157,12 @@ const confirmationSmsByLocale: Record<NotificationLocale, (data: AppointmentConf
   en: buildAppointmentConfirmationSMSEN,
   de: buildAppointmentConfirmationSMSDE,
   ar: buildAppointmentConfirmationSMSAR,
-  es: buildAppointmentConfirmationSMSEN,
-  fr: buildAppointmentConfirmationSMSEN,
-  it: buildAppointmentConfirmationSMSEN,
-  fa: buildAppointmentConfirmationSMSEN,
-  ru: buildAppointmentConfirmationSMSEN,
-  nl: buildAppointmentConfirmationSMSEN
+  es: buildAppointmentConfirmationSMSES,
+  fr: buildAppointmentConfirmationSMSFR,
+  it: buildAppointmentConfirmationSMSIT,
+  fa: buildAppointmentConfirmationSMSFA,
+  ru: buildAppointmentConfirmationSMSRU,
+  nl: buildAppointmentConfirmationSMSNL
 };
 
 const confirmationEmailByLocale: Record<NotificationLocale, (data: AppointmentConfirmationData) => EmailTemplate> = {
@@ -116,12 +170,12 @@ const confirmationEmailByLocale: Record<NotificationLocale, (data: AppointmentCo
   en: buildAppointmentConfirmationEmailEN,
   de: buildAppointmentConfirmationEmailDE,
   ar: buildAppointmentConfirmationEmailAR,
-  es: buildAppointmentConfirmationEmailEN,
-  fr: buildAppointmentConfirmationEmailEN,
-  it: buildAppointmentConfirmationEmailEN,
-  fa: buildAppointmentConfirmationEmailEN,
-  ru: buildAppointmentConfirmationEmailEN,
-  nl: buildAppointmentConfirmationEmailEN
+  es: buildAppointmentConfirmationEmailES,
+  fr: buildAppointmentConfirmationEmailFR,
+  it: buildAppointmentConfirmationEmailIT,
+  fa: buildAppointmentConfirmationEmailFA,
+  ru: buildAppointmentConfirmationEmailRU,
+  nl: buildAppointmentConfirmationEmailNL
 };
 
 const marketingSmsByLocale: Record<NotificationLocale, (data: MarketingData) => string> = {
@@ -129,12 +183,12 @@ const marketingSmsByLocale: Record<NotificationLocale, (data: MarketingData) => 
   en: buildMarketingSMSEN,
   de: buildMarketingSMSDE,
   ar: buildMarketingSMSAR,
-  es: buildMarketingSMSEN,
-  fr: buildMarketingSMSEN,
-  it: buildMarketingSMSEN,
-  fa: buildMarketingSMSEN,
-  ru: buildMarketingSMSEN,
-  nl: buildMarketingSMSEN
+  es: buildMarketingSMSES,
+  fr: buildMarketingSMSFR,
+  it: buildMarketingSMSIT,
+  fa: buildMarketingSMSFA,
+  ru: buildMarketingSMSRU,
+  nl: buildMarketingSMSNL
 };
 
 const marketingEmailByLocale: Record<NotificationLocale, (data: MarketingData) => EmailTemplate> = {
@@ -142,12 +196,12 @@ const marketingEmailByLocale: Record<NotificationLocale, (data: MarketingData) =
   en: buildMarketingEmailEN,
   de: buildMarketingEmailDE,
   ar: buildMarketingEmailAR,
-  es: buildMarketingEmailEN,
-  fr: buildMarketingEmailEN,
-  it: buildMarketingEmailEN,
-  fa: buildMarketingEmailEN,
-  ru: buildMarketingEmailEN,
-  nl: buildMarketingEmailEN
+  es: buildMarketingEmailES,
+  fr: buildMarketingEmailFR,
+  it: buildMarketingEmailIT,
+  fa: buildMarketingEmailFA,
+  ru: buildMarketingEmailRU,
+  nl: buildMarketingEmailNL
 };
 
 export function getAppointmentReminderTemplate(

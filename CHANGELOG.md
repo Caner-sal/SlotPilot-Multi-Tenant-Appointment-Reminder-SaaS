@@ -2,6 +2,22 @@
 
 All notable changes to Randevo are documented here.
 
+## [1.4.0-expanded-language-packs] ? 2026-05-13
+
+### LANG-4 ? Russian + Dutch Packs
+- Added and finalized `ru` and `nl` message packs for web i18n.
+- Added locale smoke coverage:
+  - `src/tests/i18n-language-pack-smoke.test.ts`
+  - `src/tests/locale-formatting.test.ts` includes `ru`/`nl` date formatting checks.
+
+### LANG-5 ? Mobile + Notifications + Final QA
+- Expanded mobile locale coverage to 10 locales in `mobile/src/i18n/config.ts`:
+  - `tr,en,de,ar,es,fr,it,fa,ru,nl`
+- Added notification templates for new locales (`es/fr/it/fa/ru/nl`) across reminder, confirmation, and marketing categories.
+- Refactored `src/lib/notification-templates.ts` to use locale-specific builders for all 10 locales.
+- Expanded Playwright i18n E2E flow with multi-locale switch, RTL check (fa), and persistence checks.
+- Updated compact state and README language support documentation.
+
 ## [1.3.9-global-i18n-phase-8] — 2026-05-12
 
 ### Phase I18N-8 — SEO + QA + Release
