@@ -19,7 +19,6 @@ test.describe("Global i18n critical flow", () => {
       await page.getByRole("option", { name: step.optionName }).click();
       await expect(page).toHaveURL(new RegExp(`\\/${step.locale}\\/booking\\/barber-demo$`));
 
-      // Re-load once per locale to confirm server-rendered language attributes.
       await page.reload();
       await expect(page.locator("html")).toHaveAttribute("lang", step.locale);
       await expect(page.locator("html")).toHaveAttribute("dir", step.dir);
