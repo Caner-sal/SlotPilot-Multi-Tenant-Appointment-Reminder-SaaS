@@ -2,6 +2,77 @@
 
 All notable changes to Randevo are documented here.
 
+## [1.6.1-prod12-13-14-closeout] - 2026-05-14
+
+### PROD-12 Completion
+- Added owner dashboard onboarding checklist API:
+  - GET /api/dashboard/onboarding-checklist
+  - stable response with items, completedCount, totalCount, progressPercent.
+- Added dashboard onboarding checklist card integration.
+- Added superadmin product event read API:
+  - GET /api/admin/product-events?eventName=&organizationId=&limit=&cursor=
+  - superadmin guard, cursor pagination, x-request-id response header.
+- Added basic admin product events list page:
+  - /admin/product-events.
+
+### Demo Seed Hardening
+- Added deterministic demo workspace constants and safety checks in prisma/demo-workspace.ts.
+- Updated seed flow to assert payment-safe bootstrap (paymentCountDelta=0) and log smoke summary.
+- Replaced hardcoded demo credential literals with env-driven resolution:
+  - DEMO_OWNER_PASSWORD
+  - DEMO_SUPERADMIN_PASSWORD.
+
+### Test Coverage
+- Added tests:
+  - src/tests/onboarding-checklist.service.test.ts
+  - src/tests/dashboard-onboarding-checklist-route.test.ts
+  - src/tests/admin-product-events-route.test.ts
+  - src/tests/demo-workspace-safety.test.ts
+
+### Final Validation (PROD-13/14)
+- Passed:
+  - npm run check:node
+  - npm run check:secrets
+  - npm run validate:skills
+  - npm run lint
+  - npm test
+  - npm run build
+  - node ./node_modules/prisma/build/index.js validate
+  - node ./node_modules/prisma/build/index.js generate
+  - npm run test:e2e
+  - cd mobile && npm run typecheck
+
+## [1.6.0-mobile-legal-release-wave1] - 2026-05-13
+
+### Mobile Maturity (PROD-10)
+- Added Mobile JWT Bridge API endpoints for login, refresh, and logout.
+- Added refresh token rotation/revoke persistence (`MobileRefreshToken`).
+- Added React Navigation stack-based mobile flow with role-aware owner/staff behavior.
+- Added offline read-cache fallback and day/week mobile calendar view.
+- Added mobile push foundations (`/api/mobile/push/register`, `/api/mobile/push/dev-trigger`).
+
+### Legal/KVKK Completion (PROD-11)
+- Added legal pages: `/legal/privacy`, `/legal/kvkk`, `/legal/terms`, `/legal/cookies`.
+- Added GDPR export ingestion endpoint: `POST /api/gdpr/export-request`.
+- Added superadmin GDPR visibility endpoint: `GET /api/admin/gdpr/requests`.
+
+## [1.5.2-sprint3-ops-hardening] - 2026-05-13
+
+### Background Jobs + Observability
+- Added reminder retry/backoff behavior (5/15/60 mins, max retry 3) with permanent failure separation.
+- Expanded reminder process stats with `retried`, `permanentFailed`, and `skipped`.
+- Extended `GET /api/admin/health` with trend windows (`last24h`, `last7d`).
+- Added `GET /api/admin/failures` with source filter and cursor pagination.
+- Standardized structured logging fields (`requestId`, `route`, `outcome`) across critical ops routes.
+
+## [1.5.1-production-readiness-sprint2] - 2026-05-13
+
+### Sprint-2 Stabilization
+- Applied rate-limiting to critical auth/chat/webhook/internal processing paths.
+- Finalized payment status normalization compatibility layer.
+- Hardened reminder process internal contract (`x-worker-key` + `x-idempotency-key`).
+- Expanded E2E smoke coverage for critical guard and payment flows.
+
 ## [1.5.0-global-address-locale] - 2026-05-13
 
 ### COMPAT-0
@@ -54,7 +125,7 @@ All notable changes to Randevo are documented here.
   - `countryCode`
   - `locality`
 - Added global location route:
-  - `/marketplace/[country]/[city]`
+  - `/marketplace/location/[country]/[city]`
 - Added tests:
   - `src/tests/address-provider.test.ts`
   - `src/tests/address-search.service.test.ts`
@@ -452,6 +523,7 @@ All notable changes to Randevo are documented here.
 - Email reminders (fake log + Resend)
 - Audit logging
 - NextAuth v5 credentials auth with JWT sessions
+
 
 
 

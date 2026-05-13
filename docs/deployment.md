@@ -1,4 +1,4 @@
-# Randevo — Deployment Guide
+# Randevo - Deployment Guide
 
 ## Local Development
 
@@ -16,7 +16,7 @@ npm install --legacy-peer-deps --ignore-scripts
 
 # 2. Set up environment
 cp .env.example .env
-# DATABASE_URL is already set to file:./dev.db — no changes needed
+# DATABASE_URL is already set to file:./dev.db - no changes needed
 
 # 3. Run migrations (creates dev.db automatically)
 npm run db:migrate
@@ -28,9 +28,9 @@ npm run db:seed
 npm run dev
 ```
 
-### Demo giriş bilgileri (seed sonrası)
+### Demo giris bilgileri (seed sonrasi)
 - Email: `demo@randevo.app`
-- Password: `demo1234`
+- Password: `DEMO_OWNER_PASSWORD` env degeri (set edilmezse seed fallback kullanir)
 - Public booking: `http://localhost:3000/booking/barber-demo`
 
 ## Production Deployment (Vercel)
@@ -114,3 +114,60 @@ docker-compose up -d    # Start local PostgreSQL
 docker-compose down     # Stop local PostgreSQL
 docker-compose logs -f  # View DB logs
 ```
+
+## Sprint-3 / Wave Release Addendum (2026-05-13)
+
+### Mobile Auth Bridge Checklist
+- Ensure `MOBILE_JWT_SECRET` is set in all deployed environments.
+- Verify mobile auth routes are reachable:
+  - `POST /api/mobile/auth/login`
+  - `POST /api/mobile/auth/refresh`
+  - `POST /api/mobile/auth/logout`
+- Validate refresh-token revoke table growth policy (`MobileRefreshToken`) and retention policy.
+
+### GDPR + Legal Checklist
+- Verify legal routes are public and reachable:
+  - `/legal/privacy`, `/legal/kvkk`, `/legal/terms`, `/legal/cookies`
+- Keep legal pages explicitly marked as placeholders requiring lawyer review; do not claim legal compliance completeness from placeholder text.
+- Verify export/deletion request ingestion endpoints:
+  - `POST /api/gdpr/export-request`
+  - `POST /api/gdpr/deletion-request`
+- Verify superadmin status visibility endpoint:
+  - `GET /api/admin/gdpr/requests`
+
+### Staging Smoke (minimum)
+1. Mobile login with valid credentials returns access/refresh token pair.
+2. Refresh rotates token and old refresh token becomes invalid.
+3. Staff mobile token cannot update appointment status (403 expected).
+4. GDPR export request is accepted and visible in admin request list.
+5. `npm run test:e2e` and `cd mobile && npm run typecheck` pass on release branch.
+
+
+## PROD-12/13/14 Closeout Addendum (2026-05-14)
+
+### Demo Seed Invariants
+- Demo workspace remains seed-only.
+- Set `DEMO_OWNER_PASSWORD` and `DEMO_SUPERADMIN_PASSWORD` in staging/production seed jobs.
+- Verify seed smoke summary includes:
+  - `organizationSlug=barber-demo`
+  - `plan=FREE status=ACTIVE`
+  - `paymentCountDelta=0`
+  - `safety=PASS`
+
+### Onboarding Checklist Smoke
+1. Login as owner and open dashboard.
+2. Confirm onboarding card loads from `GET /api/dashboard/onboarding-checklist`.
+3. Confirm deterministic progress states:
+   - no service/booking => initial progress
+   - service created => service step completed
+   - first booking created => booking step completed
+   - plan upgrade click event => final step completed.
+
+### Product Events Read API Smoke
+1. Call `GET /api/admin/product-events?limit=20` with superadmin session and confirm 200.
+2. Call same endpoint with non-superadmin and confirm 403.
+3. Confirm filtered query works:
+   - `eventName=service_created`
+   - `organizationId=<orgId>`
+4. Confirm cursor pagination returns stable `nextCursor` behavior.
+

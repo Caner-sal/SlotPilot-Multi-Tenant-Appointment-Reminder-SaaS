@@ -1,6 +1,41 @@
 # Randevo Compact State
 
-_Last updated: 2026-05-13_
+_Last updated: 2026-05-14_
+
+## 2026-05-14 PROD-12/13/14 Closeout (Current Pass)
+
+### PROD-12 Functional Completion
+- Demo workspace remains seed-only and deterministic via `prisma/demo-workspace.ts`.
+- Demo seed safety is enforced:
+  - FREE + ACTIVE subscription only
+  - no Stripe customer/subscription ids
+  - `paymentCountDelta` must remain `0`.
+- Owner dashboard onboarding checklist completed:
+  - `GET /api/dashboard/onboarding-checklist`
+  - deterministic completion rules for org/service/first-booking/plan-click.
+- Superadmin product event read visibility completed:
+  - `GET /api/admin/product-events`
+  - filters: `eventName`, `organizationId`
+  - stable `limit/cursor` pagination.
+
+### PROD-13/14 Hardening and Validation
+- Added route/service/safety test coverage:
+  - `src/tests/onboarding-checklist.service.test.ts`
+  - `src/tests/dashboard-onboarding-checklist-route.test.ts`
+  - `src/tests/admin-product-events-route.test.ts`
+  - `src/tests/demo-workspace-safety.test.ts`
+- Updated deployment and release docs for demo seed invariants and new API smoke steps.
+- Full gate rerun completed successfully:
+  - `npm run check:node`
+  - `npm run check:secrets`
+  - `npm run validate:skills`
+  - `npm run lint`
+  - `npm test` (53 files, 358 tests)
+  - `npm run build`
+  - `node ./node_modules/prisma/build/index.js validate`
+  - `node ./node_modules/prisma/build/index.js generate`
+  - `npm run test:e2e` (7 passed)
+  - `cd mobile && npm run typecheck`
 
 ## Expanded Language Pack Status (10 Locales)
 
@@ -78,4 +113,99 @@ All phases completed and pushed:
 - Global address API endpoints added: GET /api/address/autocomplete and POST /api/address/retrieve.
 - Prisma global models added: NormalizedAddress, CountryConfig, AddressProviderLog.
 - Booking flow upgraded with country-aware form + reusable AddressAutocomplete component.
-- Marketplace API supports countryCode/locality filters and new route /marketplace/[country]/[city].
+- Marketplace API supports countryCode/locality filters and new route /marketplace/location/[country]/[city].
+
+## 2026-05-13 Production Readiness Sprint-1+ Foundations
+- Added strict CI gates in `.github/workflows/ci.yml` (no silent skip, fail-fast quality checks, e2e-smoke, mobile-quality).
+- Added root runbooks and review docs: `AGENTS.md`, `CLAUDE.md`, `docs/agent-runbook.md`, `docs/code-review.md`, `docs/phase-execution-rules.md`, `docs/ci-quality-gates.md`, `docs/product-gap-analysis.md`.
+- Added production-readiness docs: `docs/database-production-readiness.md`, `docs/security-hardening.md`, `docs/observability.md`, `docs/e2e-testing-guide.md`.
+- Introduced payment domain foundation in Prisma: `provider`, `purpose`, `providerEventId`, `externalReference`, `metadata`, `confirmedAt`, `updatedAt`, plus new models `PaymentAttempt` and `WebhookEvent`.
+- Added request correlation and observability foundation: `x-request-id` in middleware, `src/lib/logger.ts`, `src/lib/request-id.ts`, admin health API and page (`/api/admin/health`, `/admin/health`).
+- Hardened webhook/job flows with idempotency contracts and safer logging.
+- Added E2E smoke for critical guard/entry paths (`tests/e2e/critical-guards.spec.ts`).
+- Added mobile typecheck script compatible with Windows path constraints.
+
+## 2026-05-13 Sprint-3 Ops Progress (Jobs + Observability)
+- Fixed i18n onboarding warning source by moving onboarding action labels to `common` namespace usage (`back`/`next`), and added onboarding i18n coverage regression test.
+- Added reminder retry/backoff behavior (5/15/60 minutes, max retry 3) without schema change:
+  - temporary failures return to `PENDING` with incremented `retryCount`
+  - permanent failures remain `FAILED`.
+- Expanded reminder process stats contract:
+  - `processed`, `sent`, `failed`, `retried`, `permanentFailed`, `skipped`.
+- Extended admin observability:
+  - `/api/admin/health` now includes trend windows (`last24h`, `last7d`)
+  - new `/api/admin/failures` endpoint with source filter and cursor pagination
+  - `/admin/health` UI now reads health/failure APIs directly.
+- Standardized route-level logging metadata in critical ops routes:
+  - `route` and `outcome` now included consistently with `requestId`.
+- Strengthened redaction policy to include PII-oriented keys (`email`, `phone`, `fullName`).
+- Added tests:
+  - `src/tests/admin-failures-route.test.ts`
+  - extended `src/tests/reminder.test.ts` for retry/backoff
+  - updated `src/tests/reminders-process-route.test.ts`
+  - updated `src/tests/admin-health-route.test.ts`
+  - updated `src/tests/logger-redaction.test.ts`
+
+## Validation Snapshot
+- `npm run check:node` ✅
+- `npm run check:secrets` ✅
+- `npm run validate:skills` ✅
+- `npm run lint` ✅
+- `npm test` ✅ (44 files, 334 tests)
+- `npm run build` ✅
+- `node ./node_modules/prisma/build/index.js validate` ✅
+- `node ./node_modules/prisma/build/index.js generate` ✅
+- `npm run test:e2e` ✅ (7 tests)
+- `cd mobile && npm run typecheck` ✅
+
+
+## 2026-05-14 PROD-10 to PROD-14 Final Status
+
+### Wave-1 (PROD-10 Mobile + PROD-11 Legal/KVKK)
+- Mobile JWT Bridge implemented:
+  - `POST /api/mobile/auth/login`
+  - `POST /api/mobile/auth/refresh`
+  - `POST /api/mobile/auth/logout`
+- Refresh token rotation and revoke lifecycle added with Prisma model `MobileRefreshToken`.
+- Mobile app moved to React Navigation stack flow (auth/app).
+- Mobile role-aware behavior added (owner vs staff capability split).
+- Mobile appointments now use offline read-cache fallback (stale-while-revalidate style, no write queue).
+- Mobile calendar day/week view added (`CalendarScreen`).
+- Push foundation added:
+  - `POST /api/mobile/push/register`
+  - `POST /api/mobile/push/dev-trigger` (non-production only)
+- Legal pages added and footer links are now real routes:
+  - `/legal/privacy`
+  - `/legal/kvkk`
+  - `/legal/terms`
+  - `/legal/cookies`
+- GDPR export flow added:
+  - `POST /api/gdpr/export-request`
+- GDPR admin visibility added:
+  - `GET /api/admin/gdpr/requests`
+
+### Wave-2 (PROD-12 Growth + PROD-13 Release Hardening) - Complete
+- Product event foundation added via `ProductEvent` model and service.
+- Event hooks added:
+  - `signup_started`
+  - `organization_created`
+  - `service_created`
+  - `first_booking_created`
+  - `plan_upgrade_clicked`
+- Owner onboarding checklist read contract completed:
+  - `GET /api/dashboard/onboarding-checklist`
+- Superadmin product event read contract completed:
+  - `GET /api/admin/product-events?eventName=&organizationId=&limit=&cursor=`
+- Deployment/release docs aligned to final contracts and staging gate evidence.
+
+### Wave-3 (PROD-14 Final QA/Release) - Final Validation Snapshot
+- `npm run check:node` PASS
+- `npm run check:secrets` PASS
+- `npm run validate:skills` PASS
+- `npm run lint` PASS
+- `npm test` PASS (53 files, 358 tests)
+- `npm run build` PASS
+- `node ./node_modules/prisma/build/index.js validate` PASS
+- `node ./node_modules/prisma/build/index.js generate` PASS
+- `npm run test:e2e` PASS (7 tests)
+- `cd mobile && npm run typecheck` PASS
