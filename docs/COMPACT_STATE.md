@@ -2,6 +2,27 @@
 
 _Last updated: 2026-05-14_
 
+## 2026-05-14 GLF-2 / GLF-3 Checkpoint
+
+- GLF-2 completed:
+  - Refactored marketplace filter UX in `src/app/marketplace/page.tsx` to be country-aware.
+  - `TR` path keeps province dropdown sourced from `TURKEY_PROVINCES`.
+  - Non-TR path uses locality search/manual entry flow and no Turkey province list.
+  - Country change now clears stale location state (`province`, `locality`) before next query.
+  - Added `src/lib/marketplace/filters.ts` and `src/tests/marketplace-filters.test.ts` to lock request-param behavior.
+- GLF-3 completed:
+  - Updated `GET /api/marketplace` in `src/app/api/marketplace/route.ts` to accept `country` (primary) and `countryCode` (compat alias).
+  - Province filter now applies only when resolved country is `TR`.
+  - Non-TR behavior ignores province and uses normalized-address country/locality matching.
+  - Updated `src/tests/marketplace.test.ts` to cover TR province behavior, non-TR province ignore, compatibility alias, and empty normalized-address path.
+- Verification snapshot for GLF-3:
+  - `npm run typecheck` PASS
+  - `npm run lint` PASS
+  - `npm test` PASS (55 files, 364 tests)
+  - `npm run build` PASS
+  - `node ./node_modules/prisma/build/index.js validate` PASS
+  - `node ./node_modules/prisma/build/index.js generate --no-engine` PASS (Windows engine file-lock workaround)
+
 ## 2026-05-14 GLF-0 / GLF-1 Checkpoint
 
 - GLF-0 completed:

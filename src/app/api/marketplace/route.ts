@@ -8,15 +8,17 @@ export async function GET(req: Request) {
   const city = searchParams.get("city");
   const locality = searchParams.get("locality");
   const province = searchParams.get("province");
-  const countryCode = searchParams.get("countryCode");
+  const country = searchParams.get("country");
+  const countryCode = (country ?? searchParams.get("countryCode"))?.toUpperCase();
   const q = searchParams.get("q");
+  const trSelected = countryCode === "TR";
 
   let organizationIdFilter: string[] | undefined;
   if (countryCode || locality) {
     const matches = await db.normalizedAddress.findMany({
       where: {
         ownerType: "ORGANIZATION",
-        ...(countryCode ? { countryCode: countryCode.toUpperCase() } : {}),
+        ...(countryCode ? { countryCode } : {}),
         ...(locality
           ? {
               OR: [
@@ -44,7 +46,7 @@ export async function GET(req: Request) {
       suspended: false,
       ...(organizationIdFilter ? { id: { in: organizationIdFilter } } : {}),
       ...(category ? { category: { contains: category } } : {}),
-      ...(province ? { province } : city ? { city: { contains: city } } : {}),
+      ...(trSelected && province ? { province } : city ? { city: { contains: city } } : {}),
       ...(q ? { name: { contains: q } } : {}),
     },
     select: {
