@@ -26,7 +26,39 @@ describe("address provider factory", () => {
     process.env.ADDRESS_PROVIDER = "google";
     process.env.ADDRESS_PROVIDER_FALLBACK = "manual";
     const provider = getAddressProviderWithFallback();
-    expect(provider).toBeInstanceOf(GoogleAddressProvider);
+    expect(provider.name).toBe("google");
+  });
+
+  it("falls back to manual provider when primary autocomplete fails", async () => {
+    process.env.ADDRESS_PROVIDER = "google";
+    process.env.ADDRESS_PROVIDER_FALLBACK = "manual";
+    delete process.env.GOOGLE_PLACES_API_KEY;
+    delete process.env.GOOGLE_MAPS_API_KEY;
+
+    const provider = getAddressProviderWithFallback();
+    const suggestions = await provider.autocomplete({
+      query: "Roma",
+      countryCode: "IT",
+    });
+
+    expect(suggestions[0]?.provider).toBe("manual");
+    expect(suggestions[0]?.label).toBe("Roma");
+  });
+
+  it("falls back to manual provider when primary retrieve fails", async () => {
+    process.env.ADDRESS_PROVIDER = "google";
+    process.env.ADDRESS_PROVIDER_FALLBACK = "manual";
+    delete process.env.GOOGLE_PLACES_API_KEY;
+    delete process.env.GOOGLE_MAPS_API_KEY;
+
+    const provider = getAddressProviderWithFallback();
+    const result = await provider.retrieve({
+      placeId: "manual:Milano",
+      locale: "it",
+    });
+
+    expect(result.provider).toBe("manual");
+    expect(result.formattedAddress).toBe("Milano");
   });
 });
 

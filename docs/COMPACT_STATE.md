@@ -2,6 +2,28 @@
 
 _Last updated: 2026-05-14_
 
+## 2026-05-14 GLF-4 / GLF-5 Checkpoint
+
+- GLF-4 completed:
+  - Landing copy was localized for global/non-TR contexts across `en/it/de/fr/es/nl/ru/fa/ar` packs.
+  - TR-specific landing copy preserved in `tr` locale.
+  - `src/app/page.tsx` no longer hard-codes `"81"`; value now comes from locale key `landing.statSupportValue`.
+  - Added regression test `src/tests/landing-localization.test.ts` for TR-only vs non-TR copy boundaries.
+- GLF-5 completed:
+  - Strengthened address provider fallback in `src/services/address/address-provider.factory.ts`:
+    - runtime fallback now applies for `autocomplete` and `retrieve` failures (not only provider selection time).
+    - non-TR search path remains usable when primary provider is missing env config (manual fallback).
+  - Extended tests:
+    - `src/tests/address-provider.test.ts` for runtime fallback on missing Google API key.
+    - `src/tests/address-search.service.test.ts` for non-TR (`IT`) locality search fallback behavior.
+- Verification snapshot for GLF-5:
+  - `npm run typecheck` PASS
+  - `npm run lint` PASS
+  - `npm test` PASS (56 files, 369 tests)
+  - `npm run build` PASS
+  - `node ./node_modules/prisma/build/index.js validate` PASS
+  - `node ./node_modules/prisma/build/index.js generate --no-engine` PASS
+
 ## 2026-05-14 GLF-2 / GLF-3 Checkpoint
 
 - GLF-2 completed:

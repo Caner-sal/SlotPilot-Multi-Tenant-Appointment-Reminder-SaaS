@@ -25,16 +25,58 @@ export function getAddressProvider(providerName = process.env.ADDRESS_PROVIDER):
 }
 
 export function getAddressProviderWithFallback(): AddressProvider {
-  const primary = process.env.ADDRESS_PROVIDER ?? "manual";
-  const fallback = process.env.ADDRESS_PROVIDER_FALLBACK ?? "manual";
-  try {
-    return getAddressProvider(primary);
-  } catch (error) {
-    console.warn(
-      `[address] Provider "${primary}" unavailable. Falling back to "${fallback}".`,
-      error,
-    );
-    return getAddressProvider(fallback);
-  }
-}
+  const primaryName = (process.env.ADDRESS_PROVIDER ?? "manual").toLowerCase();
+  const fallbackName = (process.env.ADDRESS_PROVIDER_FALLBACK ?? "manual").toLowerCase();
+  const primary = getAddressProvider(primaryName);
+  const fallback = getAddressProvider(fallbackName);
 
+  if (primaryName === fallbackName) {
+    return primary;
+  }
+
+  return {
+    name: primary.name,
+    async autocomplete(input) {
+      try {
+        return await primary.autocomplete(input);
+      } catch (error) {
+        console.warn(
+          `[address] Provider "${primaryName}" autocomplete failed. Falling back to "${fallbackName}".`,
+          error,
+        );
+        return fallback.autocomplete(input);
+      }
+    },
+    async retrieve(input) {
+      try {
+        return await primary.retrieve(input);
+      } catch (error) {
+        console.warn(
+          `[address] Provider "${primaryName}" retrieve failed. Falling back to "${fallbackName}".`,
+          error,
+        );
+        return fallback.retrieve(input);
+      }
+    },
+    async reverseGeocode(input) {
+      if (!primary.reverseGeocode && !fallback.reverseGeocode) {
+        throw new Error("Reverse geocode is not supported by configured address providers.");
+      }
+      try {
+        if (!primary.reverseGeocode) {
+          throw new Error(`Provider "${primaryName}" does not support reverse geocode.`);
+        }
+        return await primary.reverseGeocode(input);
+      } catch (error) {
+        if (!fallback.reverseGeocode) {
+          throw error;
+        }
+        console.warn(
+          `[address] Provider "${primaryName}" reverse geocode failed. Falling back to "${fallbackName}".`,
+          error,
+        );
+        return fallback.reverseGeocode(input);
+      }
+    },
+  };
+}
