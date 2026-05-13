@@ -69,3 +69,13 @@ All phases completed and pushed:
 - Mobile app i18n sync (mobile/ folder already has i18n-js setup from phase-5)
 - New language addition (docs/adding-new-language.md guide ready)
 - Feature work: deposit payments, AI assistant expansion, marketplace enhancements
+
+## 2026-05-13 Global Address + Auto Locale Progress
+- COMPAT-0: typecheck and phase:gate scripts added; node-module bin paths used to avoid '&' path breakage.
+- LOC-0/1: request locale resolver added (src/i18n/request-locale.ts) with precedence route > cookie > user > country > accept-language > fallback(en).
+- Middleware now writes x-app-locale-source and x-app-country-code headers for telemetry.
+- Global address abstraction added: AddressProvider interface, ManualAddressProvider, GoogleAddressProvider, provider factory + normalizer.
+- Global address API endpoints added: GET /api/address/autocomplete and POST /api/address/retrieve.
+- Prisma global models added: NormalizedAddress, CountryConfig, AddressProviderLog.
+- Booking flow upgraded with country-aware form + reusable AddressAutocomplete component.
+- Marketplace API supports countryCode/locality filters and new route /marketplace/[country]/[city].

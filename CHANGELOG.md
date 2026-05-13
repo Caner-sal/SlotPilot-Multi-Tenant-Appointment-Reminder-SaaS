@@ -2,6 +2,64 @@
 
 All notable changes to Randevo are documented here.
 
+## [1.5.0-global-address-locale] - 2026-05-13
+
+### COMPAT-0
+- Added stable phase gate script: `npm run phase:gate`.
+- Added official `typecheck` script.
+- Updated npm scripts to use `node ./node_modules/...` binaries, preventing command resolution failures on Windows paths containing `&`.
+- Removed runtime dependency on Google font fetch in root layout; switched to stable local/system font variables.
+
+### LOC-0 / LOC-1
+- Added request locale resolver contract:
+  - `resolveRequestLocale(context) -> { locale, source }`
+- Added geo-locale inputs:
+  - edge country headers (`x-vercel-ip-country`, `cf-ipcountry`, etc.)
+  - `Accept-Language` fallback
+- Locale precedence now enforced:
+  - route > cookie > user > country > accept-language > fallback (`en`)
+- Middleware now emits telemetry headers:
+  - `x-app-locale-source`
+  - `x-app-country-code`
+- Added locale resolver tests:
+  - `src/tests/request-locale.test.ts`
+
+### ADDR-0 / ADDR-1 / ADDR-2
+- Added global address strategy docs:
+  - `docs/global-address-strategy.md`
+  - `docs/global-address-provider-setup.md`
+- Added address provider abstraction:
+  - `AddressProvider` interface
+  - `ManualAddressProvider`
+  - `GoogleAddressProvider` integration
+  - Mapbox/Apple/OSM skeleton providers
+  - provider factory + normalizer
+- Added API surface:
+  - `GET /api/address/autocomplete`
+  - `POST /api/address/retrieve`
+- Added provider-level logging and rate limiting safeguards.
+- Added Prisma global address models:
+  - `NormalizedAddress`
+  - `CountryConfig`
+  - `AddressProviderLog`
+- Added migration:
+  - `prisma/migrations/20260513180000_add_global_address_models`
+- Seed now includes Tier-1 `CountryConfig` rows.
+
+### ADDR-3 / ADDR-4 / ADDR-5 / ADDR-6
+- Added country-aware booking address form (TR + global variants).
+- Added reusable `AddressAutocomplete` component with debounce and manual fallback behavior.
+- Booking create flow now accepts and persists global address fields.
+- Marketplace API now supports global filters:
+  - `countryCode`
+  - `locality`
+- Added global location route:
+  - `/marketplace/[country]/[city]`
+- Added tests:
+  - `src/tests/address-provider.test.ts`
+  - `src/tests/address-search.service.test.ts`
+  - `src/tests/country-address-config.test.ts`
+
 ## [1.4.0-expanded-language-packs] ? 2026-05-13
 
 ### LANG-4 ? Russian + Dutch Packs
