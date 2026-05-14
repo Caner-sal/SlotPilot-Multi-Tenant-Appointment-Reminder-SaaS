@@ -1,4 +1,5 @@
-﻿import { db } from "@/lib/db";
+import { db } from "@/lib/db";
+import { isOrganizationPubliclyAvailable, isOrganizationSuspended } from "@/lib/organization-lifecycle";
 import { NextResponse } from "next/server";
 
 export async function GET(
@@ -19,6 +20,7 @@ export async function GET(
         address: true,
         timezone: true,
         bookingEnabled: true,
+        status: true,
         suspended: true,
         aiChatbotEnabled: true,
       },
@@ -28,16 +30,15 @@ export async function GET(
       return NextResponse.json({ error: "İşletme bulunamadı" }, { status: 404 });
     }
 
-    if (org.suspended) {
-      return NextResponse.json({ error: "This business is currently unavailable" }, { status: 403 });
-    }
-
-    if (!org.bookingEnabled) {
-      return NextResponse.json({ error: "Online booking is not available for this business" }, { status: 403 });
+    if (!isOrganizationPubliclyAvailable(org)) {
+      const error = isOrganizationSuspended(org)
+        ? "This business is currently unavailable"
+        : "Online booking is not available for this business";
+      return NextResponse.json({ error }, { status: 403 });
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { bookingEnabled, suspended, ...profile } = org;
+    const { bookingEnabled, status, suspended, ...profile } = org;
 
     return NextResponse.json({ data: profile });
   } catch (err) {
@@ -45,4 +46,3 @@ export async function GET(
     return NextResponse.json({ error: "Sunucu hatası" }, { status: 500 });
   }
 }
-

@@ -2,6 +2,50 @@
 
 _Last updated: 2026-05-14_
 
+## 2026-05-14 SAP-4 / SAP-5 Checkpoint
+
+- SAP-4 completed:
+  - Added `src/tests/staff-authorization.test.ts` coverage for staff scope isolation and admin/billing access blocks.
+  - Hardened `requireStaffAuth` checks to enforce active `Staff` linkage.
+  - Added explicit `OWNER|ADMIN` membership checks on billing APIs.
+- SAP-5 completed:
+  - Added organization lifecycle fields in Prisma:
+    - `Organization.status` (`ACTIVE|SUSPENDED|CANCELLED`)
+    - `Organization.suspendedAt`
+    - `Organization.suspendedReason`
+    - `Organization.suspendedByUserId`
+    - compatibility `suspended:boolean` preserved.
+  - Added migration:
+    - `prisma/migrations/20260514201000_organization_lifecycle_status/migration.sql`
+    - legacy `suspended` values are mapped to `status`.
+  - Added lifecycle helper:
+    - `src/lib/organization-lifecycle.ts`
+    - public availability checks now support `status` + legacy fallback.
+  - Updated superadmin organization APIs and admin pages:
+    - `/api/admin/organizations`, `/api/admin/organizations/[id]`
+    - `/admin`, `/admin/organizations`, `/admin/organizations/[id]`
+    - suspend/activate now updates lifecycle fields and writes audit logs (`ORGANIZATION_SUSPENDED` / `ORGANIZATION_ACTIVATED`).
+  - Public booking and marketplace guards are now lifecycle-aware:
+    - `/api/booking/[slug]/appointments`
+    - `/api/booking/[slug]/services`
+    - `/api/booking/[slug]/slots`
+    - `/api/booking/[slug]/profile`
+    - `/api/booking/[slug]/locations`
+    - `/api/booking/[slug]/checkout-session`
+    - `/api/booking/[slug]/chat`
+    - `/api/marketplace`
+    - `/marketplace/[slug]`
+- Verification snapshot for SAP-5:
+  - `npm run check:node` PASS
+  - `npm run check:secrets` PASS
+  - `npm run validate:skills` PASS
+  - `npm run typecheck` PASS
+  - `npm run lint` PASS
+  - `npm test` PASS (59 files, 383 tests)
+  - `npm run build` PASS
+  - `node ./node_modules/prisma/build/index.js validate` PASS
+  - `node ./node_modules/prisma/build/index.js generate` PASS
+
 ## 2026-05-14 SAP-2 / SAP-3 Checkpoint
 
 - SAP-2 completed:

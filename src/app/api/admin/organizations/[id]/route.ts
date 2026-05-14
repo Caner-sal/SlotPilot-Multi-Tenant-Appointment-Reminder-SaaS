@@ -21,7 +21,11 @@ export async function GET(
         address: true,
         timezone: true,
         bookingEnabled: true,
+        status: true,
         suspended: true,
+        suspendedAt: true,
+        suspendedReason: true,
+        suspendedByUserId: true,
         createdAt: true,
         subscription: {
           select: { plan: true, status: true, currentPeriodEnd: true },
@@ -51,16 +55,65 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    await requireSuperAdmin();
+    const { userId } = await requireSuperAdmin();
     const { id } = await params;
     const body = await req.json();
 
-    const allowedFields = ["suspended", "bookingEnabled"] as const;
-    const update: Partial<Record<(typeof allowedFields)[number], boolean>> = {};
+    const existing = await db.organization.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        status: true,
+        suspended: true,
+        bookingEnabled: true,
+      },
+    });
 
-    for (const field of allowedFields) {
-      if (typeof body[field] === "boolean") {
-        update[field] = body[field] as boolean;
+    if (!existing) {
+      return NextResponse.json({ error: "İşletme bulunamadı" }, { status: 404 });
+    }
+
+    const update: {
+      bookingEnabled?: boolean;
+      status?: "ACTIVE" | "SUSPENDED" | "CANCELLED";
+      suspended?: boolean;
+      suspendedAt?: Date | null;
+      suspendedReason?: string | null;
+      suspendedByUserId?: string | null;
+    } = {};
+
+    if (typeof body.bookingEnabled === "boolean") {
+      update.bookingEnabled = body.bookingEnabled;
+    }
+
+    const requestedStatus =
+      typeof body.status === "string" && ["ACTIVE", "SUSPENDED", "CANCELLED"].includes(body.status)
+        ? (body.status as "ACTIVE" | "SUSPENDED" | "CANCELLED")
+        : undefined;
+    const requestedSuspended = typeof body.suspended === "boolean" ? body.suspended : undefined;
+
+    let nextStatus: "ACTIVE" | "SUSPENDED" | "CANCELLED" | undefined = requestedStatus;
+    if (!nextStatus && typeof requestedSuspended === "boolean") {
+      nextStatus = requestedSuspended ? "SUSPENDED" : "ACTIVE";
+    }
+
+    if (nextStatus) {
+      update.status = nextStatus;
+      update.suspended = nextStatus !== "ACTIVE";
+
+      if (nextStatus === "ACTIVE") {
+        update.suspendedAt = null;
+        update.suspendedReason = null;
+        update.suspendedByUserId = null;
+      } else {
+        const reasonFromBody =
+          typeof body.suspendedReason === "string" && body.suspendedReason.trim().length > 0
+            ? body.suspendedReason.trim()
+            : null;
+        update.suspendedAt = new Date();
+        update.suspendedReason =
+          reasonFromBody ?? (nextStatus === "CANCELLED" ? "Cancelled by superadmin" : "Suspended by superadmin");
+        update.suspendedByUserId = userId;
       }
     }
 
@@ -69,6 +122,24 @@ export async function PATCH(
     }
 
     const org = await db.organization.update({ where: { id }, data: update });
+
+    if (nextStatus && nextStatus !== existing.status) {
+      await db.auditLog.create({
+        data: {
+          organizationId: id,
+          actorUserId: userId,
+          action: nextStatus === "ACTIVE" ? "ORGANIZATION_ACTIVATED" : "ORGANIZATION_SUSPENDED",
+          entityType: "Organization",
+          entityId: id,
+          metadata: {
+            previousStatus: existing.status,
+            nextStatus,
+            suspendedReason: update.suspendedReason,
+          },
+        },
+      });
+    }
+
     return NextResponse.json({ data: org });
   } catch (err) {
     if (err instanceof SuperAdminError) {

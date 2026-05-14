@@ -38,6 +38,7 @@ export default async function MarketplaceSlugPage({ params }: Props) {
       where: {
         marketplaceEnabled: true,
         bookingEnabled: true,
+        status: "ACTIVE",
         suspended: false,
         province: slug,
       },
@@ -120,7 +121,7 @@ export default async function MarketplaceSlugPage({ params }: Props) {
 
   // Otherwise treat slug as a business slug
   const org = await db.organization.findFirst({
-    where: { slug, marketplaceEnabled: true, bookingEnabled: true, suspended: false },
+    where: { slug, marketplaceEnabled: true, bookingEnabled: true, status: "ACTIVE", suspended: false },
     select: {
       name: true,
       slug: true,

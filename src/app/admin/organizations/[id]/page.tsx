@@ -13,7 +13,11 @@ interface OrgDetail {
   address: string | null;
   timezone: string;
   bookingEnabled: boolean;
+  status: "ACTIVE" | "SUSPENDED" | "CANCELLED";
   suspended: boolean;
+  suspendedAt: string | null;
+  suspendedReason: string | null;
+  suspendedByUserId: string | null;
   createdAt: string;
   subscription: { plan: string; status: string; currentPeriodEnd: string | null } | null;
   _count: { appointments: number; staff: number; services: number; members: number };
@@ -79,14 +83,18 @@ export default function AdminOrgDetailPage() {
   async function toggleField(field: "suspended" | "bookingEnabled") {
     if (!org) return;
     setSaving(true);
+    const payload =
+      field === "suspended"
+        ? { status: org.status === "ACTIVE" ? "SUSPENDED" : "ACTIVE" }
+        : { bookingEnabled: !org.bookingEnabled };
     const res = await fetch(`/api/admin/organizations/${params.id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ [field]: !org[field] }),
+      body: JSON.stringify(payload),
     });
     const data = await res.json();
     if (res.ok) {
-      setOrg((prev) => (prev ? { ...prev, [field]: !prev[field] } : prev));
+      setOrg(data.data);
     } else {
       setError(data.error);
     }
@@ -146,10 +154,12 @@ export default function AdminOrgDetailPage() {
             onClick={() => toggleField("suspended")}
             disabled={saving}
             className={`px-4 py-2 rounded text-sm font-medium ${
-              org.suspended ? "bg-green-600 text-white hover:bg-green-700" : "bg-red-600 text-white hover:bg-red-700"
+              org.status !== "ACTIVE" || org.suspended
+                ? "bg-green-600 text-white hover:bg-green-700"
+                : "bg-red-600 text-white hover:bg-red-700"
             }`}
           >
-            {org.suspended ? "İşletmeyi Aktifleştir" : "İşletmeyi Askıya Al"}
+            {org.status !== "ACTIVE" || org.suspended ? "İşletmeyi Aktifleştir" : "İşletmeyi Askıya Al"}
           </button>
           <button
             onClick={() => toggleField("bookingEnabled")}
@@ -159,7 +169,7 @@ export default function AdminOrgDetailPage() {
             {org.bookingEnabled ? "Rezervasyonu Kapat" : "Rezervasyonu Aç"}
           </button>
         </div>
-        {org.suspended && (
+        {(org.status !== "ACTIVE" || org.suspended) && (
           <p className="mt-2 text-sm text-red-600">
             Bu işletme askıya alındı. Genel rezervasyon istekleri 403 döner.
           </p>

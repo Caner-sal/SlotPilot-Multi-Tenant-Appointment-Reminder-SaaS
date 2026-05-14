@@ -1,4 +1,5 @@
-﻿import { db } from "@/lib/db";
+import { db } from "@/lib/db";
+import { isOrganizationPubliclyAvailable } from "@/lib/organization-lifecycle";
 import { NextResponse } from "next/server";
 
 export async function GET(
@@ -10,10 +11,10 @@ export async function GET(
 
     const org = await db.organization.findUnique({
       where: { slug },
-      select: { id: true, bookingEnabled: true, suspended: true },
+      select: { id: true, bookingEnabled: true, status: true, suspended: true },
     });
 
-    if (!org || org.suspended || !org.bookingEnabled) {
+    if (!org || !isOrganizationPubliclyAvailable(org)) {
       return NextResponse.json({ error: "Business not available" }, { status: 403 });
     }
 
@@ -29,4 +30,3 @@ export async function GET(
     return NextResponse.json({ error: "Sunucu hatası" }, { status: 500 });
   }
 }
-

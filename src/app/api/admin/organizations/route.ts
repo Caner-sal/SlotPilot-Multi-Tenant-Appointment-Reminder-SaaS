@@ -13,7 +13,10 @@ export async function GET() {
         slug: true,
         email: true,
         bookingEnabled: true,
+        status: true,
         suspended: true,
+        suspendedAt: true,
+        suspendedReason: true,
         createdAt: true,
         subscription: {
           select: { plan: true, status: true },

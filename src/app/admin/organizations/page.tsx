@@ -24,7 +24,10 @@ export default async function AdminOrganizationsPage() {
       slug: true,
       email: true,
       bookingEnabled: true,
+      status: true,
       suspended: true,
+      suspendedAt: true,
+      suspendedReason: true,
       createdAt: true,
       subscription: { select: { plan: true, status: true } },
       _count: { select: { appointments: true, staff: true } },
@@ -60,7 +63,7 @@ export default async function AdminOrganizationsPage() {
                 <td className="px-4 py-3">{org._count.appointments}</td>
                 <td className="px-4 py-3">{org._count.staff}</td>
                 <td className="px-4 py-3">
-                  {org.suspended ? (
+                  {org.status !== "ACTIVE" || org.suspended ? (
                     <span className="px-2 py-1 bg-red-100 text-red-700 rounded text-xs font-medium">Askıda</span>
                   ) : org.bookingEnabled ? (
                     <span className="px-2 py-1 bg-green-100 text-green-700 rounded text-xs font-medium">Aktif</span>

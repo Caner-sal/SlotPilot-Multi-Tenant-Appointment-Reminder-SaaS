@@ -28,7 +28,11 @@ export default async function AdminOverviewPage() {
     _count: { plan: true },
   });
 
-  const suspendedCount = await db.organization.count({ where: { suspended: true } });
+  const suspendedCount = await db.organization.count({
+    where: {
+      OR: [{ status: { not: "ACTIVE" } }, { suspended: true }],
+    },
+  });
 
   const stats = [
     { label: "Toplam İşletme", value: orgCount },

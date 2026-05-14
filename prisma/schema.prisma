@@ -27,6 +27,12 @@ enum MemberRole {
   STAFF
 }
 
+enum OrganizationStatus {
+  ACTIVE
+  SUSPENDED
+  CANCELLED
+}
+
 enum StaffInviteStatus {
   PENDING
   ACCEPTED
@@ -125,6 +131,10 @@ model Organization {
   defaultLocale  String   @default("tr")
   bookingEnabled Boolean  @default(true)
   suspended      Boolean  @default(false)
+  status         OrganizationStatus @default(ACTIVE)
+  suspendedAt    DateTime?
+  suspendedReason String?
+  suspendedByUserId String?
   smsEnabled        Boolean  @default(false)
   whatsappEnabled     Boolean  @default(false)
   marketplaceEnabled  Boolean  @default(false)
@@ -174,6 +184,7 @@ model Organization {
   addressProviderLogs        AddressProviderLog[]
 
   @@index([slug])
+  @@index([status])
 }
 
 model NormalizedAddress {

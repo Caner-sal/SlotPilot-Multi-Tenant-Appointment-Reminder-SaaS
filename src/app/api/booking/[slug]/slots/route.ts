@@ -1,4 +1,5 @@
-﻿import { db } from "@/lib/db";
+import { db } from "@/lib/db";
+import { isOrganizationPubliclyAvailable, isOrganizationSuspended } from "@/lib/organization-lifecycle";
 import { generateAvailableSlots } from "@/services/booking.service";
 import { NextResponse } from "next/server";
 
@@ -28,15 +29,18 @@ export async function GET(
 
     const org = await db.organization.findUnique({
       where: { slug },
-      select: { id: true, bookingEnabled: true },
+      select: { id: true, bookingEnabled: true, status: true, suspended: true },
     });
 
     if (!org) {
       return NextResponse.json({ error: "İşletme bulunamadı" }, { status: 404 });
     }
 
-    if (!org.bookingEnabled) {
-      return NextResponse.json({ error: "Online booking is not available for this business" }, { status: 403 });
+    if (!isOrganizationPubliclyAvailable(org)) {
+      const error = isOrganizationSuspended(org)
+        ? "This business is currently unavailable"
+        : "Online booking is not available for this business";
+      return NextResponse.json({ error }, { status: 403 });
     }
 
     const slots = await generateAvailableSlots({
@@ -52,4 +56,3 @@ export async function GET(
     return NextResponse.json({ error: "Sunucu hatası" }, { status: 500 });
   }
 }
-
