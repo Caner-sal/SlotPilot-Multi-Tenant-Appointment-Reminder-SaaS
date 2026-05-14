@@ -1,9 +1,15 @@
 import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
+import { globalRateLimiter } from "@/lib/rate-limit";
 
 export async function POST(req: Request) {
   try {
+    const ip = req.headers.get("x-forwarded-for") || "127.0.0.1";
+    if (!globalRateLimiter.isAllowed(ip, 3, 60 * 1000)) { // 3 requests per minute
+      return NextResponse.json({ error: "Çok fazla istek gönderdiniz. Lütfen daha sonra tekrar deneyin." }, { status: 429 });
+    }
+
     const { email, token, newPassword } = await req.json();
 
     if (!email || !token || !newPassword) {

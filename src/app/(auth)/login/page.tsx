@@ -307,7 +307,7 @@ export default function LoginPage() {
               <form onSubmit={handleResetPasswordSubmit} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
                 <div>
                   <label style={labelStyle}>E-posta</label>
-                  <input style={inputStyle} type="email" value={email} disabled style={{ ...inputStyle, opacity: 0.6, cursor: "not-allowed" }} />
+                  <input type="email" value={email} disabled style={{ ...inputStyle, opacity: 0.6, cursor: "not-allowed" }} />
                 </div>
 
                 <div>

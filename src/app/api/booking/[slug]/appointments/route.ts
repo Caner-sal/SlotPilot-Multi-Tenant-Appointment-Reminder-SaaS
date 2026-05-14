@@ -8,12 +8,18 @@ import { generateBookingToken, getBookingManageUrl } from "@/lib/booking-token";
 import { bookingSchema } from "@/lib/validators";
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { globalRateLimiter } from "@/lib/rate-limit";
 
 export async function POST(
   req: Request,
   { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
+    const ip = req.headers.get("x-forwarded-for") || "127.0.0.1";
+    if (!globalRateLimiter.isAllowed(ip, 10, 60 * 1000)) { // 10 requests per minute
+      return NextResponse.json({ error: "Çok fazla istek gönderdiniz. Lütfen daha sonra tekrar deneyin." }, { status: 429 });
+    }
+
     const { slug } = await params;
 
     const org = await db.organization.findUnique({

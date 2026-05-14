@@ -224,7 +224,7 @@ export function buildBookingConfirmationEmail(data: {
           </div>
 
           <p style="color: #999; font-size: 12px; text-align: center; margin: 0; line-height: 1.6;">
-            Bu e-postayı randevu aldığınız için aldınız.<br/>
+            Bu e-postayı randevu oluşturduğunuz için aldınız.<br/>
             Herhangi bir sorunuz varsa doğrudan işletme ile iletişime geçebilirsiniz.
           </p>
 

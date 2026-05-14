@@ -125,6 +125,11 @@ export async function createBooking(params: {
   });
   if (!service) throw new Error("Service not found or inactive");
 
+  const staff = await db.staff.findFirst({
+    where: { id: staffId, organizationId, isActive: true },
+  });
+  if (!staff) throw new Error("Staff not found or inactive in this organization");
+
   const endTime = new Date(startTime.getTime() + service.durationMinutes * 60 * 1000);
 
   // Use a transaction to prevent race conditions during booking
