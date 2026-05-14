@@ -2,6 +2,33 @@
 
 _Last updated: 2026-05-14_
 
+## 2026-05-14 SAP-2 / SAP-3 Checkpoint
+
+- SAP-2 completed:
+  - Staff invite flow stabilized with secure hash-first accept validation and legacy token fallback.
+  - Invite URL target moved to `/staff/invite/[token]`, while `/staff/accept-invite` compatibility remains.
+  - Added audit log events for invite create/revoke/accept/expire.
+  - Added existing-account compatibility path: invite accept now returns explicit login-required code when invited email already exists and caller is not authenticated as that user.
+- SAP-3 completed:
+  - Added new staff self-scope APIs:
+    - `GET /api/staff/me`
+    - `GET /api/staff/me/appointments`
+    - `GET /api/staff/me/appointments/[id]`
+    - `PATCH /api/staff/me/appointments/[id]/status`
+    - `GET/PATCH /api/staff/me/availability`
+  - Added `/staff/appointments/[id]` page and updated staff dashboard/appointments/availability pages to consume `/api/staff/me*` endpoints.
+  - Existing `/api/staff-portal/*` endpoints were preserved for compatibility.
+- Verification snapshot for SAP-3:
+  - `npm run check:node` PASS
+  - `npm run check:secrets` PASS
+  - `npm run validate:skills` PASS
+  - `npm run typecheck` PASS
+  - `npm run lint` PASS
+  - `npm test` PASS (58 files, 379 tests)
+  - `npm run build` PASS
+  - `node ./node_modules/prisma/build/index.js validate` PASS
+  - `node ./node_modules/prisma/build/index.js generate` PASS
+
 ## 2026-05-14 GLF-4 / GLF-5 Checkpoint
 
 - GLF-4 completed:

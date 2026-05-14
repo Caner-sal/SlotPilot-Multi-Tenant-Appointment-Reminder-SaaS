@@ -31,7 +31,7 @@ export default function StaffAvailabilityPage() {
   const [message, setMessage] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch("/api/staff-portal/availability")
+    fetch("/api/staff/me/availability")
       .then((r) => r.json())
       .then((d) => {
         if (d.data) setRules(d.data);
@@ -61,8 +61,8 @@ export default function StaffAvailabilityPage() {
   async function save() {
     setSaving(true);
     setMessage(null);
-    const res = await fetch("/api/staff-portal/availability", {
-      method: "PUT",
+    const res = await fetch("/api/staff/me/availability", {
+      method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(rules),
     });
