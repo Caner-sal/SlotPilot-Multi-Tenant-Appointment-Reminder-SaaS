@@ -1,8 +1,12 @@
-﻿import { db } from "@/lib/db";
-import { requireAuth, TenantError } from "@/lib/tenant";
+import { db } from "@/lib/db";
+import { assertMembership, requireAuth, TenantError } from "@/lib/tenant";
+import {
+  createStaffInvite,
+  markPendingInvitesAsRevokedByStaff,
+} from "@/services/staff-invite.service";
+import { MemberRole } from "@prisma/client";
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import crypto from "crypto";
 
 const inviteSchema = z.object({
   staffId: z.string().min(1),
@@ -11,7 +15,9 @@ const inviteSchema = z.object({
 
 export async function POST(req: Request) {
   try {
-    const { org } = await requireAuth();
+    const { user, org } = await requireAuth();
+    await assertMembership(user.id, org.id, [MemberRole.OWNER, MemberRole.ADMIN]);
+
     const body = await req.json();
     const { staffId, email } = inviteSchema.parse(body);
 
@@ -22,25 +28,34 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Çalışan bulunamadı" }, { status: 404 });
     }
 
-    // Mark any previous unused invites as used (invalidate old invites)
-    await db.staffInvite.updateMany({
-      where: { staffId, usedAt: null },
-      data: { usedAt: new Date() },
+    await markPendingInvitesAsRevokedByStaff(staffId);
+
+    const expiresAt = new Date(Date.now() + 72 * 60 * 60 * 1000);
+    const { invite, rawToken } = await createStaffInvite({
+      organizationId: org.id,
+      staffId,
+      invitedEmail: email,
+      invitedName: staff.name,
+      role: MemberRole.STAFF,
+      createdByUserId: user.id,
+      expiresAt,
     });
 
-    const token = crypto.randomBytes(32).toString("hex");
-    const expiresAt = new Date(Date.now() + 72 * 60 * 60 * 1000); // 72 hours
+    const inviteUrl = `${process.env.NEXTAUTH_URL ?? "http://localhost:3000"}/staff/accept-invite?token=${rawToken}`;
 
-    const invite = await db.staffInvite.create({
-      data: { organizationId: org.id, staffId, token, email, expiresAt },
-    });
-
-    const inviteUrl = `${process.env.NEXTAUTH_URL ?? "http://localhost:3000"}/staff/accept-invite?token=${token}`;
-
-    // In production: send via email. For now: return in response (and log)
     console.log(`[STAFF INVITE] ${email} -> ${inviteUrl}`);
 
-    return NextResponse.json({ data: { id: invite.id, email, inviteUrl, expiresAt } }, { status: 201 });
+    return NextResponse.json(
+      {
+        data: {
+          id: invite.id,
+          email,
+          inviteUrl,
+          expiresAt,
+        },
+      },
+      { status: 201 }
+    );
   } catch (err) {
     if (err instanceof TenantError) {
       return NextResponse.json({ error: err.message }, { status: 403 });
@@ -52,4 +67,3 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Sunucu hatası" }, { status: 500 });
   }
 }
-

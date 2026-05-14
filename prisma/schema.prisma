@@ -27,6 +27,13 @@ enum MemberRole {
   STAFF
 }
 
+enum StaffInviteStatus {
+  PENDING
+  ACCEPTED
+  EXPIRED
+  REVOKED
+}
+
 enum AppointmentStatus {
   PENDING
   CONFIRMED
@@ -94,6 +101,10 @@ model User {
   memberships  OrganizationMember[]
   auditLogs    AuditLog[]
   staffProfile Staff?
+  createdStaffInvites StaffInvite[] @relation("CreatedStaffInvites")
+  mobileRefreshTokens MobileRefreshToken[]
+  mobilePushTokens    MobilePushToken[]
+  productEvents       ProductEvent[]
 
   @@index([email])
   @@index([platformRole])
@@ -141,6 +152,7 @@ model Organization {
   staffInvites  StaffInvite[]
   locations            Location[]
   payments             Payment[]
+  webhookEvents        WebhookEvent[]
   calendarConnections  CalendarConnection[]
   revenueLedger        RevenueLedger[]
   chatConversations    ChatConversation[]
@@ -148,6 +160,10 @@ model Organization {
   accountingConnection AccountingConnection?
   consentLogs          ConsentLog[]
   deletionRequests     DataDeletionRequest[]
+  exportRequests       DataExportRequest[]
+  mobileRefreshTokens  MobileRefreshToken[]
+  mobilePushTokens     MobilePushToken[]
+  productEvents        ProductEvent[]
   invoiceProfile       InvoiceProfile?
   closedDays           BusinessClosedDay[]
   whatsAppAutoReplySettings  WhatsAppAutoReplySettings?
@@ -288,19 +304,72 @@ model Payment {
   id              String   @id @default(cuid())
   organizationId  String
   appointmentId   String
+  provider        String   @default("STRIPE")
+  purpose         String   @default("APPOINTMENT_DEPOSIT")
+  providerEventId String?
+  externalReference String?
   stripeEventId   String   @unique
   sessionId       String
   amountCents     Int
   currency        String   @default("TRY")
   status          String   @default("paid")
+  metadata        Json?
+  confirmedAt     DateTime?
   createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  appointment  Appointment  @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
+  appointment  Appointment @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
+  attempts     PaymentAttempt[]
 
   @@index([organizationId])
+  @@index([organizationId, status, createdAt])
+  @@index([provider, providerEventId])
+  @@index([externalReference])
   @@index([appointmentId])
   @@index([stripeEventId])
+}
+
+model PaymentAttempt {
+  id                String   @id @default(cuid())
+  paymentId         String
+  provider          String
+  status            String
+  idempotencyKey    String?
+  providerReference String?
+  requestId         String?
+  errorCode         String?
+  errorMessage      String?
+  rawSafe           Json?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  payment Payment @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+
+  @@index([paymentId])
+  @@index([provider, status])
+  @@index([idempotencyKey])
+}
+
+model WebhookEvent {
+  id             String   @id @default(cuid())
+  provider       String
+  eventType      String
+  eventId        String
+  organizationId String?
+  payloadSafe    Json?
+  signatureValid Boolean  @default(false)
+  status         String   @default("RECEIVED")
+  errorMessage   String?
+  processedAt    DateTime?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+
+  @@unique([provider, eventId])
+  @@index([organizationId])
+  @@index([status, createdAt])
 }
 
 model Location {
@@ -328,18 +397,29 @@ model Location {
 model StaffInvite {
   id             String    @id @default(cuid())
   organizationId String
-  staffId        String
-  token          String    @unique
-  email          String
+  staffId        String?
+  token          String?   @unique
+  tokenHash      String?   @unique
+  invitedEmail   String
+  invitedName    String?
+  role           MemberRole @default(STAFF)
+  status         StaffInviteStatus @default(PENDING)
   expiresAt      DateTime
   usedAt         DateTime?
+  acceptedAt     DateTime?
+  createdByUserId String?
   createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
 
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  staff        Staff        @relation(fields: [staffId], references: [id], onDelete: Cascade)
+  staff        Staff?       @relation(fields: [staffId], references: [id], onDelete: SetNull)
+  createdByUser User?       @relation("CreatedStaffInvites", fields: [createdByUserId], references: [id], onDelete: SetNull)
 
   @@index([token])
+  @@index([tokenHash])
   @@index([organizationId])
+  @@index([createdByUserId])
+  @@index([status, expiresAt])
 }
 
 model StaffService {
@@ -604,6 +684,83 @@ model DataDeletionRequest {
 
   @@index([organizationId])
   @@index([status])
+}
+
+model DataExportRequest {
+  id             String   @id @default(cuid())
+  organizationId String
+  customerId     String?
+  email          String
+  reason         String?
+  status         String   @default("pending")
+  format         String   @default("json")
+  downloadUrl    String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([status])
+}
+
+model MobileRefreshToken {
+  id             String   @id @default(cuid())
+  userId         String
+  organizationId String
+  tokenHash      String   @unique
+  jti            String   @unique
+  deviceId       String?
+  userAgent      String?
+  ipAddress      String?
+  expiresAt      DateTime
+  revokedAt      DateTime?
+  replacedByJti  String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([userId, organizationId])
+  @@index([organizationId, revokedAt])
+  @@index([expiresAt])
+}
+
+model MobilePushToken {
+  id             String   @id @default(cuid())
+  userId         String
+  organizationId String
+  expoPushToken  String
+  platform       String?
+  appVersion     String?
+  deviceId       String?
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  lastSeenAt     DateTime @default(now())
+
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, expoPushToken])
+  @@index([userId, organizationId])
+  @@index([organizationId, isActive])
+}
+
+model ProductEvent {
+  id             String   @id @default(cuid())
+  eventName      String
+  userId         String?
+  organizationId String?
+  payloadSafe    Json?
+  createdAt      DateTime @default(now())
+
+  user         User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
+  organization Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+
+  @@index([eventName, createdAt])
+  @@index([organizationId, createdAt])
 }
 
 model AccountingConnection {
