@@ -92,27 +92,27 @@ export default function SettingsPage() {
     : "";
 
   if (loading) {
-    return <div className="p-10 text-center text-gray-400">Ayarlar yükleniyor...</div>;
+    return <div className="p-10 text-center text-muted-foreground">Ayarlar yükleniyor...</div>;
   }
 
   return (
     <div className="space-y-6 max-w-2xl">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Ayarlar</h1>
-        <p className="text-sm text-gray-500 mt-1">İşletme profilinizi ve tercihlerinizi yapılandırın.</p>
+        <h1 className="text-2xl font-bold text-foreground">Ayarlar</h1>
+        <p className="text-sm text-muted-foreground mt-1">İşletme profilinizi ve tercihlerinizi yapılandırın.</p>
       </div>
 
       {bookingUrl && (
-        <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
-          <p className="text-xs text-blue-600 font-semibold uppercase tracking-wider mb-1">
+        <div className="bg-blue-500/10 border border-blue-500/20 rounded-xl p-4">
+          <p className="text-xs text-blue-400 font-semibold uppercase tracking-wider mb-1">
             Genel Rezervasyon URL&apos;niz
           </p>
           <div className="flex items-center gap-3">
-            <code className="text-sm text-blue-800 break-all flex-1">{bookingUrl}</code>
+            <code className="text-sm text-blue-300 break-all flex-1">{bookingUrl}</code>
             <button
               type="button"
               onClick={() => navigator.clipboard.writeText(bookingUrl)}
-              className="shrink-0 text-blue-600 hover:text-blue-800 text-xs font-medium px-2 py-1 rounded hover:bg-blue-100 transition-colors"
+              className="shrink-0 text-blue-400 hover:text-blue-300 text-xs font-medium px-2 py-1 rounded hover:bg-blue-500/10 transition-colors"
             >
               Kopyala
             </button>
@@ -120,9 +120,9 @@ export default function SettingsPage() {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="bg-white rounded-xl border border-gray-200 shadow-sm">
-        <div className="px-6 py-4 border-b border-gray-100">
-          <h2 className="font-semibold text-gray-900">İşletme Bilgileri</h2>
+      <form onSubmit={handleSubmit} className="bg-card rounded-xl border border-border shadow-sm">
+        <div className="px-6 py-4 border-b border-border">
+          <h2 className="font-semibold text-foreground">İşletme Bilgileri</h2>
         </div>
         <div className="p-6 space-y-5">
           {error && (
@@ -138,79 +138,79 @@ export default function SettingsPage() {
 
           <div className="grid md:grid-cols-2 gap-5">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">İşletme Adı *</label>
+              <label className="block text-sm font-medium text-foreground mb-1">İşletme Adı *</label>
               <input
                 required
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-border bg-muted/50 text-foreground rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="İşletmem"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-foreground mb-1">
                 URL Slug *
-                <span className="ml-1 text-gray-400 font-normal">(rezervasyon URL&apos;sinde kullanılır)</span>
+                <span className="ml-1 text-muted-foreground font-normal">(rezervasyon URL&apos;sinde kullanılır)</span>
               </label>
               <input
                 required
                 value={form.slug}
                 onChange={(e) => setForm({ ...form, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "-") })}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono"
+                className="w-full border border-border bg-muted/50 text-foreground rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono"
                 placeholder="isletmem"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Açıklama</label>
+            <label className="block text-sm font-medium text-foreground mb-1">Açıklama</label>
             <textarea
               value={form.description}
               onChange={(e) => setForm({ ...form, description: e.target.value })}
               rows={3}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-border bg-muted/50 text-foreground rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Müşterilerinize işletmeniz hakkında bilgi verin..."
             />
           </div>
 
           <div className="grid md:grid-cols-2 gap-5">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Telefon</label>
+              <label className="block text-sm font-medium text-foreground mb-1">Telefon</label>
               <input
                 value={form.phone}
                 onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-border bg-muted/50 text-foreground rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="+90 555 000 0000"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">E-posta</label>
+              <label className="block text-sm font-medium text-foreground mb-1">E-posta</label>
               <input
                 type="email"
                 value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-border bg-muted/50 text-foreground rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="merhaba@isletmem.com"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Adres</label>
+            <label className="block text-sm font-medium text-foreground mb-1">Adres</label>
             <input
               value={form.address}
               onChange={(e) => setForm({ ...form, address: e.target.value })}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-border bg-muted/50 text-foreground rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Atatürk Mah. No:1, İstanbul"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Saat Dilimi</label>
+            <label className="block text-sm font-medium text-foreground mb-1">Saat Dilimi</label>
             <select
               value={form.timezone}
               onChange={(e) => setForm({ ...form, timezone: e.target.value })}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-border bg-muted/50 text-foreground rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               {TIMEZONES.map((tz) => (
                 <option key={tz} value={tz}>
@@ -220,10 +220,10 @@ export default function SettingsPage() {
             </select>
           </div>
 
-          <div className="flex items-center justify-between py-3 border border-gray-200 rounded-lg px-4">
+          <div className="flex items-center justify-between py-3 border border-border rounded-lg px-4">
             <div>
-              <p className="text-sm font-medium text-gray-900">Online Rezervasyon</p>
-              <p className="text-xs text-gray-400 mt-0.5">
+              <p className="text-sm font-medium text-foreground">Online Rezervasyon</p>
+              <p className="text-xs text-muted-foreground mt-0.5">
                 Müşterilerin genel rezervasyon sayfanızdan randevu almasına izin verin.
               </p>
             </div>
@@ -231,7 +231,7 @@ export default function SettingsPage() {
               type="button"
               onClick={() => setForm({ ...form, bookingEnabled: !form.bookingEnabled })}
               className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
-                form.bookingEnabled ? "bg-blue-600" : "bg-gray-300"
+                form.bookingEnabled ? "bg-blue-600" : "bg-muted"
               }`}
             >
               <span
@@ -242,7 +242,7 @@ export default function SettingsPage() {
             </button>
           </div>
         </div>
-        <div className="px-6 py-4 border-t border-gray-100 flex justify-end">
+        <div className="px-6 py-4 border-t border-border flex justify-end">
           <button
             type="submit"
             disabled={saving}

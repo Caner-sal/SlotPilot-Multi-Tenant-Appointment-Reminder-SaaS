@@ -127,54 +127,61 @@ export async function createBooking(params: {
 
   const endTime = new Date(startTime.getTime() + service.durationMinutes * 60 * 1000);
 
-  // Re-check for conflicts at booking time (race condition prevention)
-  const conflict = await db.appointment.findFirst({
-    where: {
-      staffId,
-      status: { in: ["PENDING", "CONFIRMED"] },
-      OR: [
-        { startTime: { lt: endTime }, endTime: { gt: startTime } },
-      ],
-    },
-  });
-  if (conflict) throw new Error("This time slot is no longer available");
+  // Use a transaction to prevent race conditions during booking
+  const appointment = await db.$transaction(async (tx) => {
+    // 1. Acquire row-level lock on the staff member
+    // This ensures only one booking process can happen for a specific staff member at a time
+    await tx.$executeRaw`SELECT 1 FROM "Staff" WHERE id = ${staffId} FOR UPDATE`;
 
-  // Upsert customer
-  let customer = await db.customer.findFirst({
-    where: { organizationId, email: customerEmail },
-  });
-
-  if (!customer) {
-    customer = await db.customer.create({
-      data: {
-        organizationId,
-        fullName: customerName,
-        email: customerEmail,
-        phone: customerPhone,
-        province: customerProvince,
-        district: customerDistrict,
+    // 2. Re-check for conflicts while the lock is held
+    const conflict = await tx.appointment.findFirst({
+      where: {
+        staffId,
+        status: { in: ["PENDING", "CONFIRMED"] },
+        OR: [
+          { startTime: { lt: endTime }, endTime: { gt: startTime } },
+        ],
       },
     });
-  }
+    if (conflict) throw new Error("This time slot is no longer available");
 
-  // Create appointment
-  const appointment = await db.appointment.create({
-    data: {
-      organizationId,
-      serviceId,
-      staffId,
-      customerId: customer.id,
-      startTime,
-      endTime,
-      status: "PENDING",
-      notes,
-    },
-    include: {
-      service: true,
-      staff: true,
-      customer: true,
-      organization: true,
-    },
+    // 3. Upsert customer
+    let customer = await tx.customer.findFirst({
+      where: { organizationId, email: customerEmail },
+    });
+
+    if (!customer) {
+      customer = await tx.customer.create({
+        data: {
+          organizationId,
+          fullName: customerName,
+          email: customerEmail,
+          phone: customerPhone,
+          province: customerProvince,
+          district: customerDistrict,
+        },
+      });
+    }
+
+    // 4. Create appointment
+    return await tx.appointment.create({
+      data: {
+        organizationId,
+        serviceId,
+        staffId,
+        customerId: customer.id,
+        startTime,
+        endTime,
+        status: "PENDING",
+        notes,
+      },
+      include: {
+        service: true,
+        staff: true,
+        customer: true,
+        organization: true,
+      },
+    });
   });
 
   return appointment;

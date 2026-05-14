@@ -153,3 +153,85 @@ export function buildReminderEmail(data: {
     `,
   };
 }
+
+export function buildBookingConfirmationEmail(data: {
+  customerName: string;
+  businessName: string;
+  serviceName: string;
+  staffName: string;
+  startTime: Date;
+  priceCents: number;
+  currency: string;
+  manageUrl: string;
+}): { subject: string; html: string } {
+  const dateStr = data.startTime.toLocaleString("tr-TR", {
+    timeZone: "Europe/Istanbul",
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+
+  const priceStr = new Intl.NumberFormat("tr-TR", {
+    style: "currency",
+    currency: data.currency,
+  }).format(data.priceCents / 100);
+
+  return {
+    subject: `Randevu Onayı — ${data.businessName}`,
+    html: `
+      <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 560px; margin: 0 auto; padding: 0;">
+        <!-- Header -->
+        <div style="background: linear-gradient(135deg, #7768d4, #9b8ce8); padding: 32px 30px; border-radius: 12px 12px 0 0; text-align: center;">
+          <h1 style="color: #ffffff; font-size: 22px; margin: 0 0 6px 0; font-weight: 700;">Randevunuz Onaylandı ✓</h1>
+          <p style="color: rgba(255,255,255,0.85); font-size: 14px; margin: 0;">${data.businessName}</p>
+        </div>
+
+        <!-- Body -->
+        <div style="background: #ffffff; border: 1px solid #eaeaea; border-top: none; padding: 30px; border-radius: 0 0 12px 12px;">
+          <p style="color: #333; font-size: 15px; line-height: 1.6; margin: 0 0 24px 0;">
+            Merhaba <strong>${data.customerName}</strong>,<br/>
+            Randevunuz başarıyla oluşturuldu. İşte detaylar:
+          </p>
+
+          <!-- Details Table -->
+          <table style="width: 100%; border-collapse: collapse; margin-bottom: 24px;">
+            <tr>
+              <td style="padding: 12px 14px; background: #f8f7fc; border-bottom: 1px solid #eee; font-size: 13px; color: #666; width: 120px;">Hizmet</td>
+              <td style="padding: 12px 14px; background: #f8f7fc; border-bottom: 1px solid #eee; font-size: 14px; color: #111; font-weight: 600;">${data.serviceName}</td>
+            </tr>
+            <tr>
+              <td style="padding: 12px 14px; border-bottom: 1px solid #eee; font-size: 13px; color: #666;">Çalışan</td>
+              <td style="padding: 12px 14px; border-bottom: 1px solid #eee; font-size: 14px; color: #111; font-weight: 600;">${data.staffName}</td>
+            </tr>
+            <tr>
+              <td style="padding: 12px 14px; background: #f8f7fc; border-bottom: 1px solid #eee; font-size: 13px; color: #666;">Tarih & Saat</td>
+              <td style="padding: 12px 14px; background: #f8f7fc; border-bottom: 1px solid #eee; font-size: 14px; color: #111; font-weight: 600;">${dateStr}</td>
+            </tr>
+            <tr>
+              <td style="padding: 12px 14px; border-bottom: 1px solid #eee; font-size: 13px; color: #666;">Ücret</td>
+              <td style="padding: 12px 14px; border-bottom: 1px solid #eee; font-size: 14px; color: #7768d4; font-weight: 700;">${priceStr}</td>
+            </tr>
+          </table>
+
+          <!-- Manage Button -->
+          <div style="text-align: center; margin-bottom: 24px;">
+            <a href="${data.manageUrl}" style="display: inline-block; background: #7768d4; color: #ffffff; text-decoration: none; padding: 13px 36px; border-radius: 10px; font-size: 14px; font-weight: 600; box-shadow: 0 2px 12px rgba(119,104,212,0.3);">
+              Randevumu Görüntüle / İptal Et
+            </a>
+          </div>
+
+          <p style="color: #999; font-size: 12px; text-align: center; margin: 0; line-height: 1.6;">
+            Bu e-postayı randevu aldığınız için aldınız.<br/>
+            Herhangi bir sorunuz varsa doğrudan işletme ile iletişime geçebilirsiniz.
+          </p>
+
+          <hr style="border: none; border-top: 1px solid #eee; margin: 24px 0 16px;" />
+          <p style="color: #bbb; font-size: 11px; text-align: center; margin: 0;">Randevo Randevu Sistemi</p>
+        </div>
+      </div>
+    `,
+  };
+}

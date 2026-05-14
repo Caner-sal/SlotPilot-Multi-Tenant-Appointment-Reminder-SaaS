@@ -1,8 +1,10 @@
-﻿import { db } from "@/lib/db";
+import { db } from "@/lib/db";
 import { canCreateAppointment } from "@/lib/billing";
 import { createAuditLog } from "@/services/audit.service";
 import { createBooking } from "@/services/booking.service";
 import { scheduleReminder } from "@/services/reminder.service";
+import { sendEmail, buildBookingConfirmationEmail } from "@/lib/email";
+import { generateBookingToken, getBookingManageUrl } from "@/lib/booking-token";
 import { bookingSchema } from "@/lib/validators";
 import { NextResponse } from "next/server";
 import { z } from "zod";
@@ -77,6 +79,31 @@ export async function POST(
         startTime: appointment.startTime,
       },
     });
+
+    // Send booking confirmation email (non-blocking)
+    generateBookingToken(appointment.id)
+      .then((token) => {
+        const manageUrl = getBookingManageUrl(token);
+        const { subject, html } = buildBookingConfirmationEmail({
+          customerName: appointment.customer.fullName,
+          businessName: appointment.organization.name,
+          serviceName: appointment.service.name,
+          staffName: appointment.staff.name,
+          startTime: appointment.startTime,
+          priceCents: appointment.service.priceCents,
+          currency: appointment.service.currency,
+          manageUrl,
+        });
+        return sendEmail({ to: appointment.customer.email!, subject, html });
+      })
+      .then((result) => {
+        if (!result.success) {
+          console.error("[BOOKING CONFIRMATION EMAIL] Failed:", result.error);
+        }
+      })
+      .catch((err) => {
+        console.error("[BOOKING CONFIRMATION EMAIL] Error:", err);
+      });
 
     return NextResponse.json({ data: appointment }, { status: 201 });
   } catch (err) {

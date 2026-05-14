@@ -22,10 +22,10 @@ function BigStat({
   color: string;
 }) {
   return (
-    <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-      <p className="text-xs text-gray-400 uppercase tracking-wider font-semibold mb-2">{label}</p>
+    <div className="bg-card rounded-xl border border-border shadow-sm p-6">
+      <p className="text-xs text-muted-foreground uppercase tracking-wider font-semibold mb-2">{label}</p>
       <p className={`text-4xl font-bold ${color}`}>{value}</p>
-      {sub && <p className="text-xs text-gray-400 mt-2">{sub}</p>}
+      {sub && <p className="text-xs text-muted-foreground mt-2">{sub}</p>}
     </div>
   );
 }
@@ -52,14 +52,14 @@ export default async function AnalyticsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Analitik</h1>
-        <p className="text-sm text-gray-500 mt-1">
+        <h1 className="text-2xl font-bold text-foreground">Analitik</h1>
+        <p className="text-sm text-muted-foreground mt-1">
           Bu aya ait işletme performans özeti.
         </p>
       </div>
 
       {!analytics ? (
-        <div className="bg-white rounded-xl border border-gray-200 p-10 text-center text-gray-400">
+        <div className="bg-card rounded-xl border border-border p-10 text-center text-muted-foreground">
           Analitik verileri yüklenemedi.
         </div>
       ) : (
@@ -110,8 +110,8 @@ export default async function AnalyticsPage() {
           </div>
 
           <div className="grid md:grid-cols-2 gap-6">
-            <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-              <h2 className="font-semibold text-gray-900 mb-4">Randevu Durum Dağılımı</h2>
+            <div className="bg-card rounded-xl border border-border shadow-sm p-6">
+              <h2 className="font-semibold text-foreground mb-4">Randevu Durum Dağılımı</h2>
               <div className="space-y-3">
                 {[
                   { label: "Tamamlanan", value: analytics.completedCount, color: "bg-green-500" },
@@ -125,12 +125,12 @@ export default async function AnalyticsPage() {
                   return (
                     <div key={label}>
                       <div className="flex items-center justify-between mb-1">
-                        <span className="text-sm text-gray-600">{label}</span>
-                        <span className="text-sm font-medium text-gray-900">
+                        <span className="text-sm text-muted-foreground">{label}</span>
+                        <span className="text-sm font-medium text-foreground">
                           {value} (%{pct})
                         </span>
                       </div>
-                      <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                      <div className="h-2 bg-muted rounded-full overflow-hidden">
                         <div
                           className={`h-full ${color} rounded-full transition-all`}
                           style={{ width: `${pct}%` }}
@@ -142,27 +142,27 @@ export default async function AnalyticsPage() {
               </div>
             </div>
 
-            <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-              <h2 className="font-semibold text-gray-900 mb-4">Öne Çıkanlar</h2>
+            <div className="bg-card rounded-xl border border-border shadow-sm p-6">
+              <h2 className="font-semibold text-foreground mb-4">Öne Çıkanlar</h2>
               <div className="space-y-4">
-                <div className="flex items-center gap-4 p-3 bg-blue-50 rounded-lg">
+                <div className="flex items-center gap-4 p-3 bg-blue-500/10 rounded-lg">
                   <div className="text-2xl">🏆</div>
                   <div>
-                    <p className="text-xs text-gray-400 font-medium uppercase tracking-wider">
+                    <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">
                       En Çok Tercih Edilen Hizmet
                     </p>
-                    <p className="font-semibold text-gray-900 mt-0.5">
+                    <p className="font-semibold text-foreground mt-0.5">
                       {analytics.topServiceName ?? "Henüz veri yok"}
                     </p>
                   </div>
                 </div>
-                <div className="flex items-center gap-4 p-3 bg-indigo-50 rounded-lg">
+                <div className="flex items-center gap-4 p-3 bg-indigo-500/10 rounded-lg">
                   <div className="text-2xl">⭐</div>
                   <div>
-                    <p className="text-xs text-gray-400 font-medium uppercase tracking-wider">
+                    <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">
                       En Yoğun Çalışan
                     </p>
-                    <p className="font-semibold text-gray-900 mt-0.5">
+                    <p className="font-semibold text-foreground mt-0.5">
                       {analytics.busiestStaffName ?? "Henüz veri yok"}
                     </p>
                   </div>
