@@ -1,11 +1,13 @@
-﻿import { db } from "@/lib/db";
-import { requireAuth, TenantError } from "@/lib/tenant";
 import { getPlanLimits } from "@/lib/billing";
+import { db } from "@/lib/db";
+import { assertMembership, requireAuth, TenantError } from "@/lib/tenant";
+import { MemberRole } from "@prisma/client";
 import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
-    const { org } = await requireAuth();
+    const { user, org } = await requireAuth();
+    await assertMembership(user.id, org.id, [MemberRole.OWNER, MemberRole.ADMIN]);
 
     const subscription = await db.subscription.findUnique({
       where: { organizationId: org.id },
@@ -26,7 +28,6 @@ export async function GET() {
       return NextResponse.json({ error: err.message }, { status: 403 });
     }
     console.error(err);
-    return NextResponse.json({ error: "Sunucu hatası" }, { status: 500 });
+    return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }
-

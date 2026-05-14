@@ -13,10 +13,26 @@ const staffRoutes = ["/staff/dashboard", "/staff/appointments", "/staff/availabi
 const authRoutes = ["/login", "/register"];
 const publicFilePattern = /\.[^/]+$/;
 
+function resolveRequestId(headers: Headers): string {
+  const existing = headers.get("x-request-id");
+  if (existing && existing.trim().length > 0) return existing;
+  try {
+    return crypto.randomUUID();
+  } catch {
+    return `req_${Date.now()}`;
+  }
+}
+
+function withRequestId(response: NextResponse, requestId: string): NextResponse {
+  response.headers.set("x-request-id", requestId);
+  return response;
+}
+
 export default auth((req) => {
   const { pathname, search } = req.nextUrl;
   const { locale, internalPath } = extractLocale(pathname);
   const countryCode = getCountryCodeFromHeaders(req.headers);
+  const requestId = resolveRequestId(req.headers);
 
   if (
     internalPath.startsWith("/api") ||
@@ -24,7 +40,9 @@ export default auth((req) => {
     internalPath === "/favicon.ico" ||
     publicFilePattern.test(internalPath)
   ) {
-    return NextResponse.next();
+    const requestHeaders = new Headers(req.headers);
+    requestHeaders.set("x-request-id", requestId);
+    return withRequestId(NextResponse.next({ request: { headers: requestHeaders } }), requestId);
   }
 
   if (!locale) {
@@ -46,11 +64,12 @@ export default auth((req) => {
     if (countryCode) {
       response.headers.set("x-app-country-code", countryCode);
     }
-    return response;
+    return withRequestId(response, requestId);
   }
 
   const isLoggedIn = !!req.auth;
   const platformRole = req.auth?.user?.platformRole;
+  const appRole = req.auth?.user?.appRole;
 
   const isProtected = protectedRoutes.some((r) => internalPath.startsWith(r));
   const isAdminRoute = adminRoutes.some((r) => internalPath.startsWith(r));
@@ -76,6 +95,10 @@ export default auth((req) => {
     return NextResponse.redirect(new URL(withLocale("/admin", locale), req.url));
   }
 
+  if (isProtected && isLoggedIn && appRole === "STAFF_MEMBER") {
+    return NextResponse.redirect(new URL(withLocale("/staff/dashboard", locale), req.url));
+  }
+
   if (isAuthRoute && isLoggedIn) {
     if (platformRole === "SUPERADMIN") {
       return NextResponse.redirect(new URL(withLocale("/admin", locale), req.url));
@@ -86,6 +109,7 @@ export default auth((req) => {
   const requestHeaders = new Headers(req.headers);
   requestHeaders.set("x-app-locale", locale);
   requestHeaders.set("x-app-locale-source", "route");
+  requestHeaders.set("x-request-id", requestId);
   if (countryCode) {
     requestHeaders.set("x-app-country-code", countryCode);
   }
@@ -107,10 +131,9 @@ export default auth((req) => {
     response.headers.set("x-app-country-code", countryCode);
   }
 
-  return response;
+  return withRequestId(response, requestId);
 });
 
 export const config = {
   matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
 };
-

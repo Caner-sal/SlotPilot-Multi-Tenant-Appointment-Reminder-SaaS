@@ -1,5 +1,7 @@
-﻿import { requireAuth, TenantError } from "@/lib/tenant";
+import { requireAuth, TenantError, assertMembership } from "@/lib/tenant";
 import { stripe } from "@/lib/stripe";
+import { trackProductEvent } from "@/services/product-event.service";
+import { MemberRole } from "@prisma/client";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
@@ -15,6 +17,8 @@ const PLAN_PRICE_IDS: Record<string, string> = {
 export async function POST(req: Request) {
   try {
     const { user, org } = await requireAuth();
+    await assertMembership(user.id, org.id, [MemberRole.OWNER, MemberRole.ADMIN]);
+
     const body = await req.json();
     const { plan } = checkoutSchema.parse(body);
 
@@ -30,11 +34,15 @@ export async function POST(req: Request) {
 
     const priceId = PLAN_PRICE_IDS[plan];
     if (!priceId) {
-      return NextResponse.json(
-        { error: `No price ID configured for plan: ${plan}` },
-        { status: 500 }
-      );
+      return NextResponse.json({ error: `No price ID configured for plan: ${plan}` }, { status: 500 });
     }
+
+    await trackProductEvent({
+      eventName: "plan_upgrade_clicked",
+      userId: user.id,
+      organizationId: org.id,
+      payloadSafe: { plan, channel: "billing_checkout" },
+    });
 
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",
@@ -58,7 +66,6 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: err.issues }, { status: 400 });
     }
     console.error(err);
-    return NextResponse.json({ error: "Sunucu hatası" }, { status: 500 });
+    return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }
-
