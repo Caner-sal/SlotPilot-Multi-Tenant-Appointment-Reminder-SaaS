@@ -235,3 +235,33 @@ export function buildBookingConfirmationEmail(data: {
     `,
   };
 }
+
+export function buildCustomerPortalMagicLinkEmail(data: {
+  customerName: string;
+  businessName: string;
+  magicLink: string;
+}): { subject: string; html: string } {
+  return {
+    subject: `${data.businessName} Müşteri Portalı Girişi`,
+    html: `
+      <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 500px; margin: 0 auto; padding: 30px; border: 1px solid #eaeaea; border-radius: 12px; background-color: #ffffff;">
+        <div style="text-align: center; margin-bottom: 30px;">
+          <h1 style="color: #111120; font-size: 24px; margin: 0;">${data.businessName}</h1>
+        </div>
+        <h2 style="color: #333333; font-size: 20px; text-align: center; margin-bottom: 20px;">Hoş Geldiniz, ${data.customerName}!</h2>
+        <p style="color: #555555; font-size: 15px; line-height: 1.6; text-align: center; margin-bottom: 30px;">
+          Geçmiş ve yaklaşan randevularınızı yönetmek için aşağıdaki butona tıklayarak giriş yapabilirsiniz. Bu bağlantı tek kullanımlıktır ve 30 dakika geçerlidir.
+        </p>
+        <div style="text-align: center; margin-bottom: 30px;">
+          <a href="${data.magicLink}" style="display: inline-block; background: #7768d4; color: #ffffff; text-decoration: none; padding: 13px 36px; border-radius: 10px; font-size: 14px; font-weight: 600; box-shadow: 0 2px 12px rgba(119,104,212,0.3);">
+            Giriş Yap
+          </a>
+        </div>
+        <p style="color: #888888; font-size: 13px; text-align: center; margin-top: 30px; border-top: 1px solid #eaeaea; padding-top: 20px;">
+          Eğer bu isteği siz yapmadıysanız lütfen bu e-postayı görmezden gelin.<br/><br/>
+          Randevo Randevu Sistemi
+        </p>
+      </div>
+    `,
+  };
+}
