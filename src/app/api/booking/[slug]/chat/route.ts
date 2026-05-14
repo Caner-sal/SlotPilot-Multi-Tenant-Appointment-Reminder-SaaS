@@ -47,7 +47,6 @@ export async function POST(req: Request, { params }: { params: Promise<{ slug: s
       description: true,
       faqText: true,
       aiChatbotEnabled: true,
-      status: true,
       suspended: true,
       phone: true,
       address: true,
@@ -131,3 +130,4 @@ export async function POST(req: Request, { params }: { params: Promise<{ slug: s
     return NextResponse.json({ data: { reply: MOCK_RESPONSE, mock: true } }, { headers: baseHeaders });
   }
 }
+

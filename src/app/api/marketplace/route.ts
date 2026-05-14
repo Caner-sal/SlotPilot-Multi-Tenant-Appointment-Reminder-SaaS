@@ -43,7 +43,6 @@ export async function GET(req: Request) {
     where: {
       marketplaceEnabled: true,
       bookingEnabled: true,
-      status: "ACTIVE",
       suspended: false,
       ...(organizationIdFilter ? { id: { in: organizationIdFilter } } : {}),
       ...(category ? { category: { contains: category } } : {}),

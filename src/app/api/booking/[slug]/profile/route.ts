@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+﻿import { db } from "@/lib/db";
 import { isOrganizationPubliclyAvailable, isOrganizationSuspended } from "@/lib/organization-lifecycle";
 import { NextResponse } from "next/server";
 
@@ -20,7 +20,6 @@ export async function GET(
         address: true,
         timezone: true,
         bookingEnabled: true,
-        status: true,
         suspended: true,
         aiChatbotEnabled: true,
       },
@@ -38,7 +37,7 @@ export async function GET(
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { bookingEnabled, status, suspended, ...profile } = org;
+    const { bookingEnabled, suspended, ...profile } = org;
 
     return NextResponse.json({ data: profile });
   } catch (err) {
@@ -46,3 +45,4 @@ export async function GET(
     return NextResponse.json({ error: "Sunucu hatası" }, { status: 500 });
   }
 }
+

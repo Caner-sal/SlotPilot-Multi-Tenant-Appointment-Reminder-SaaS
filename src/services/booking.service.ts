@@ -219,7 +219,19 @@ export async function createBooking(params: {
       service: true,
       staff: true,
       customer: true,
-      organization: true,
+      organization: {
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+          bookingEnabled: true,
+          suspended: true,
+          timezone: true,
+          phone: true,
+          email: true,
+          address: true,
+        },
+      },
     },
   });
 

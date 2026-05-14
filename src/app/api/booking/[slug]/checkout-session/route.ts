@@ -29,7 +29,7 @@ export async function POST(
 
     const org = await db.organization.findUnique({
       where: { slug },
-      select: { id: true, bookingEnabled: true, status: true, suspended: true, name: true },
+      select: { id: true, bookingEnabled: true, suspended: true, name: true },
     });
 
     if (!org || !isOrganizationPubliclyAvailable(org)) {
@@ -162,3 +162,4 @@ export async function POST(
     return NextResponse.json({ error: "Sunucu hatasi" }, { status: 500, headers: { "x-request-id": requestId } });
   }
 }
+

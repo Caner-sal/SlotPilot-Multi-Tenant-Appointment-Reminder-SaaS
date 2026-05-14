@@ -18,7 +18,7 @@ export async function POST(
 
     const org = await db.organization.findUnique({
       where: { slug },
-      select: { id: true, bookingEnabled: true, status: true, suspended: true },
+      select: { id: true, bookingEnabled: true, suspended: true },
     });
 
     if (!org) {
@@ -113,4 +113,5 @@ export async function POST(
     return NextResponse.json({ error: "Sunucu hatası" }, { status: 500 });
   }
 }
+
 
