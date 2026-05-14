@@ -1,5 +1,6 @@
-import { db } from "@/lib/db";
+﻿import { db } from "@/lib/db";
 import { assertMembership, requireAuth, TenantError } from "@/lib/tenant";
+import { createAuditLog } from "@/services/audit.service";
 import {
   createStaffInvite,
   markPendingInvitesAsRevokedByStaff,
@@ -25,10 +26,20 @@ export async function POST(req: Request) {
       where: { id: staffId, organizationId: org.id },
     });
     if (!staff) {
-      return NextResponse.json({ error: "Çalışan bulunamadı" }, { status: 404 });
+      return NextResponse.json({ error: "Staff not found" }, { status: 404 });
     }
 
-    await markPendingInvitesAsRevokedByStaff(staffId);
+    const revoked = await markPendingInvitesAsRevokedByStaff(staffId);
+    if (revoked.count > 0) {
+      await createAuditLog({
+        organizationId: org.id,
+        actorUserId: user.id,
+        action: "STAFF_INVITE_REVOKED",
+        entityType: "Staff",
+        entityId: staffId,
+        metadata: { revokedCount: revoked.count },
+      });
+    }
 
     const expiresAt = new Date(Date.now() + 72 * 60 * 60 * 1000);
     const { invite, rawToken } = await createStaffInvite({
@@ -41,7 +52,20 @@ export async function POST(req: Request) {
       expiresAt,
     });
 
-    const inviteUrl = `${process.env.NEXTAUTH_URL ?? "http://localhost:3000"}/staff/accept-invite?token=${rawToken}`;
+    await createAuditLog({
+      organizationId: org.id,
+      actorUserId: user.id,
+      action: "STAFF_INVITE_CREATED",
+      entityType: "StaffInvite",
+      entityId: invite.id,
+      metadata: {
+        staffId,
+        invitedEmail: email,
+        expiresAt: invite.expiresAt.toISOString(),
+      },
+    });
+
+    const inviteUrl = `${process.env.NEXTAUTH_URL ?? "http://localhost:3000"}/staff/invite/${rawToken}`;
 
     console.log(`[STAFF INVITE] ${email} -> ${inviteUrl}`);
 
@@ -64,6 +88,6 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: err.issues }, { status: 400 });
     }
     console.error(err);
-    return NextResponse.json({ error: "Sunucu hatası" }, { status: 500 });
+    return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }

@@ -21,6 +21,10 @@ vi.mock("@/lib/tenant", () => ({
   },
 }));
 
+vi.mock("@/lib/auth", () => ({
+  auth: vi.fn(),
+}));
+
 vi.mock("@/services/staff-invite.service", () => ({
   createStaffInvite: vi.fn(),
   findInviteByRawToken: vi.fn(),
@@ -35,11 +39,12 @@ vi.mock("@/lib/db", () => ({
     availabilityRule: { findMany: vi.fn(), deleteMany: vi.fn(), createMany: vi.fn() },
     staffInvite: { findUnique: vi.fn(), create: vi.fn(), updateMany: vi.fn(), update: vi.fn() },
     staff: { findFirst: vi.fn(), findUnique: vi.fn(), update: vi.fn() },
-    user: { findUnique: vi.fn(), create: vi.fn() },
+    user: { findUnique: vi.fn(), create: vi.fn(), update: vi.fn() },
     $transaction: vi.fn(),
   },
 }));
 
+import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { requireStaffAuth, StaffAuthError } from "@/lib/staff-auth";
 import { assertMembership, requireAuth, TenantError } from "@/lib/tenant";
@@ -61,6 +66,7 @@ const mockCreateStaffInvite = vi.mocked(createStaffInvite);
 const mockFindInviteByRawToken = vi.mocked(findInviteByRawToken);
 const mockMarkInviteAccepted = vi.mocked(markInviteAccepted);
 const mockMarkPendingInvitesAsRevokedByStaff = vi.mocked(markPendingInvitesAsRevokedByStaff);
+const mockAuth = vi.mocked(auth);
 const mockDb = vi.mocked(db);
 
 beforeEach(() => vi.clearAllMocks());
@@ -156,7 +162,7 @@ describe("Staff invite", () => {
     });
     mockMarkPendingInvitesAsRevokedByStaff.mockResolvedValueOnce({ count: 0 } as never);
     mockCreateStaffInvite.mockResolvedValueOnce({
-      invite: { id: "inv1" },
+      invite: { id: "inv1", expiresAt: new Date(Date.now() + 1000 * 60 * 60) },
       rawToken: "raw-token-1",
     } as never);
 
@@ -168,7 +174,7 @@ describe("Staff invite", () => {
 
     expect(res.status).toBe(201);
     const body = await res.json();
-    expect(body.data.inviteUrl).toContain("raw-token-1");
+    expect(body.data.inviteUrl).toContain("/staff/invite/raw-token-1");
     expect(mockCreateStaffInvite).toHaveBeenCalled();
   });
 });
@@ -186,6 +192,7 @@ describe("Accept invite", () => {
       id: "inv1",
       token: null,
       tokenHash: "h1",
+      organizationId: "org1",
       invitedEmail: "staff@test.com",
       status: "PENDING",
       usedAt: null,
@@ -201,10 +208,59 @@ describe("Accept invite", () => {
     expect(res.status).toBe(400);
   });
 
+  it("returns 400 for revoked invite via POST", async () => {
+    mockFindInviteByRawToken.mockResolvedValueOnce({
+      id: "inv2",
+      staffId: "s1",
+      organizationId: "org1",
+      invitedEmail: "staff@test.com",
+      status: "REVOKED",
+      usedAt: null,
+      expiresAt: new Date(Date.now() + 1000 * 60),
+    } as never);
+    const req = new Request("http://localhost/api/auth/accept-invite", {
+      method: "POST",
+      body: JSON.stringify({ token: "tok", name: "Staff User", password: "password123" }),
+    });
+    const res = await postAcceptInvite(req);
+    expect(res.status).toBe(400);
+  });
+
+  it("returns 409 when invite email already has account but caller is not logged in", async () => {
+    mockFindInviteByRawToken.mockResolvedValueOnce({
+      id: "inv3",
+      staffId: "s1",
+      organizationId: "org1",
+      invitedEmail: "staff@test.com",
+      status: "PENDING",
+      usedAt: null,
+      expiresAt: new Date(Date.now() + 1000 * 60 * 60),
+    } as never);
+    (mockDb.staff.findUnique as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+      id: "s1",
+      userId: null,
+      organizationId: "org1",
+    });
+    (mockDb.user.findUnique as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+      id: "u-existing",
+      email: "staff@test.com",
+      appRole: "OWNER",
+    });
+    mockAuth.mockResolvedValueOnce(null as never);
+
+    const req = new Request("http://localhost/api/auth/accept-invite", {
+      method: "POST",
+      body: JSON.stringify({ token: "tok", name: "Staff", password: "password123" }),
+    });
+    const res = await postAcceptInvite(req);
+    expect(res.status).toBe(409);
+  });
+
   it("accepts valid invite and marks accepted", async () => {
     mockFindInviteByRawToken.mockResolvedValueOnce({
       id: "inv1",
       staffId: "s1",
+      organizationId: "org1",
       invitedEmail: "staff@test.com",
       status: "PENDING",
       usedAt: null,
