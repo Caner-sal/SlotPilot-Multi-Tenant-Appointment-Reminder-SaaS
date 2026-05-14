@@ -404,3 +404,86 @@ All phases completed and pushed:
 - `node ./node_modules/prisma/build/index.js generate` PASS
 - `npm run test:e2e` PASS (7 tests)
 - `cd mobile && npm run typecheck` PASS
+
+## 2026-05-14 GLF-Final Checkpoint
+
+- Completed global localization hardening across data model, marketplace filtering, and legacy routing.
+- Added persistent geo fields to core models:
+  - `Organization`: `countryCode`, `locality`, `formattedAddress`, `latitude`, `longitude`
+  - `Location`: `countryCode`, `locality`, `formattedAddress`, `latitude`, `longitude`
+- Added migration:
+  - `prisma/migrations/20260514235500_add_org_location_geo_fields/migration.sql`
+  - Includes legacy backfill (`countryCode=TR`, `formattedAddress` fallback from `address`) and organization normalized-address bootstrap.
+- Added organization normalized-address sync service:
+  - `src/services/address/organization-address-sync.service.ts`
+  - Deterministic `provider="manual"`, `providerPlaceId="organization:<orgId>"`.
+- Organization write paths updated to sync normalized address on create/update:
+  - `POST /api/organizations`
+  - `PATCH /api/organizations/current`
+- Marketplace API finalized for country-aware filtering with fallback:
+  - `country` / `countryCode` supported
+  - `province` applied only when `country=TR`
+  - non-TR `locality` filtering uses normalized addresses and organization geo fallback.
+- Legacy route split completed:
+  - `/marketplace/[slug]` now business-detail only.
+  - Legacy province slug requests are redirected to `/marketplace/location/tr/[slug]`.
+- Category globalization completed:
+  - Added locale-aware canonical category source: `src/data/marketplace-categories.ts`
+  - Marketplace category select now uses canonical slugs with locale labels.
+- UI forms updated for country-aware organization geo capture:
+  - `src/app/(auth)/onboarding/page.tsx`
+  - `src/app/dashboard/settings/page.tsx`
+- Added/updated tests:
+  - `src/tests/marketplace.test.ts`
+  - `src/tests/marketplace-categories.test.ts`
+  - `src/tests/marketplace-slug-route-contract.test.ts`
+  - `src/tests/organization-address-sync.service.test.ts`
+
+### Verification Snapshot (GLF-Final)
+
+- `npm run check:node` PASS
+- `npm run check:secrets` PASS
+- `npm run validate:skills` PASS
+- `npm run lint` PASS
+- `npm test` PASS (64 files, 396 tests)
+- `npm run build` PASS
+- `npm run test:e2e` PASS (9 tests)
+- `npx prisma validate` FAIL in this workspace due Windows path `&` shell parsing
+- `npx prisma generate` FAIL in this workspace due Windows path `&` shell parsing
+- Equivalent Prisma CLI commands PASS:
+  - `node .\\node_modules\\prisma\\build\\index.js validate`
+  - `node .\\node_modules\\prisma\\build\\index.js generate`
+- Applied migrations locally after network-approved run:
+  - `node .\\node_modules\\prisma\\build\\index.js migrate deploy` PASS
+
+## 2026-05-15 GLF-6 Release Closeout (v1.6.2)
+
+- Added deterministic screenshot artifact capture to e2e regression:
+  - `tests/e2e/marketplace-localization.spec.ts`
+- Artifact output directory:
+  - `test-results/marketplace-localization/`
+- Expected artifact files:
+  - `v1.6.2-tr-province-dropdown.png`
+  - `v1.6.2-it-locality-input.png`
+  - `v1.6.2-en-landing-no-turkey-copy.png`
+- Added detailed README section:
+  - `Global Address & Marketplace Localization`
+  - includes marketplace query contract, TR/non-TR flow, provider fallback, legacy redirect, migration summary, and Windows Prisma command note.
+- Release tag finalized:
+  - `v1.6.2-global-marketplace-localization`
+  - pushed to `origin`
+
+### Verification Snapshot (Release Closeout)
+
+- `npm run check:node` PASS
+- `npm run check:secrets` PASS
+- `npm run validate:skills` PASS
+- `npm run lint` PASS
+- `npm test` PASS
+- `npm run build` PASS
+- `npm run test:e2e` PASS
+- `npx prisma validate` fails in this workspace path context (`&` parsing)
+- `npx prisma generate` fails in this workspace path context (`&` parsing)
+- Equivalent commands PASS:
+  - `node .\\node_modules\\prisma\\build\\index.js validate`
+  - `node .\\node_modules\\prisma\\build\\index.js generate`

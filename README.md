@@ -245,3 +245,74 @@ Test kapsamı (95 test, 14 suite):
 ## Lisans
 
 MIT
+
+---
+
+## Global Address & Marketplace Localization
+
+Randevo marketplace global localization akışı ülke bazlı filtre davranışı ile çalışır.
+
+### Marketplace Query Contract
+
+`GET /api/marketplace` aşağıdaki parametreleri destekler:
+
+- `country` (primary)
+- `countryCode` (backward-compatible alias)
+- `province` (TR-only)
+- `locality` (non-TR)
+- `city`
+- `category`
+- `q`
+
+Davranış kuralları:
+
+- `country=TR` ise `province` filtresi uygulanır.
+- `country!=TR` ise `province` yok sayılır.
+- `country!=TR` için `locality` araması `normalizedAddress` + organization geo alanları üzerinden çalışır.
+- `countryCode` query parametresi mevcut client compatibility için korunur.
+
+### TR vs Non-TR Location Flow
+
+- TR seçiliyse marketplace location filtresi Türkiye il dropdown'u gösterir (`TURKEY_PROVINCES`).
+- Non-TR seçiliyse city/locality autocomplete + manual input akışı açılır.
+- Ülke değişiminde eski `province/locality` state temizlenir.
+
+### Address Provider + Manual Fallback
+
+Address provider abstraction autocomplete/retrieve akışında runtime fallback içerir:
+
+- Primary provider hata verirse fallback provider çalışır.
+- Provider env eksikse manuel provider devreye girer.
+- Marketplace non-TR locality filtresi provider kapalıyken de kullanılabilir kalır.
+
+### Legacy Route Redirect
+
+Legacy province slug uyumluluğu korunur:
+
+- `/marketplace/[slug]` artık business detail route olarak kullanılır.
+- Province slug geldiğinde canonical route'a redirect uygulanır:
+  - `/marketplace/location/tr/[provinceSlug]`
+
+### Geo Migration / Backfill Summary
+
+Global address kalıcılığı için model alanları eklendi:
+
+- `Organization`: `countryCode`, `locality`, `formattedAddress`, `latitude`, `longitude`
+- `Location`: `countryCode`, `locality`, `formattedAddress`, `latitude`, `longitude`
+
+Backfill davranışı:
+
+- Legacy kayıtlar için `countryCode` default/backfill `TR`
+- `formattedAddress` yoksa `address` üzerinden doldurma
+- Organization için `NormalizedAddress(ownerType="ORGANIZATION")` bootstrap
+
+### Windows Prisma Command Note
+
+Bu workspace path içinde `&` bulunduğundan bazı PowerShell çağrılarında `npx prisma ...` komutu parse hatası verebilir.
+
+Bu durumda eşdeğer Prisma CLI çağrıları kullanılmalıdır:
+
+```powershell
+node .\node_modules\prisma\build\index.js validate
+node .\node_modules\prisma\build\index.js generate
+```
