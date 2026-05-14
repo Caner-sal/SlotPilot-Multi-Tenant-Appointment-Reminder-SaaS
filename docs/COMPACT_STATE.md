@@ -2,6 +2,42 @@
 
 _Last updated: 2026-05-14_
 
+## 2026-05-14 SAP-6 / SAP-7 Checkpoint
+
+- SAP-6 completed:
+  - Added superadmin subscriptions surface:
+    - API: `GET /api/admin/subscriptions`
+    - UI: `/admin/subscriptions`
+  - Added superadmin usage surface:
+    - API: `GET /api/admin/usage`
+    - UI: `/admin/usage`
+  - Updated `/admin` overview metrics to include:
+    - total organizations
+    - active/suspended split
+    - current-month appointment total
+    - active subscriptions
+    - payment-pending accounts
+    - plan distribution
+    - recent audit logs
+  - Updated admin navigation links in `src/app/admin/layout.tsx`.
+  - Added route coverage:
+    - `src/tests/admin-subscriptions-route.test.ts`
+    - `src/tests/admin-usage-route.test.ts`
+  - Added public booking regression sequence for suspend/activate compatibility:
+    - `src/tests/multi-location.test.ts`
+  - Normalized `src/lib/superadmin.ts` error messages (UTF-8).
+- Verification snapshot for SAP-6:
+  - `npm run check:node` PASS
+  - `npm run check:secrets` PASS
+  - `npm run validate:skills` PASS
+  - `npm run typecheck` PASS
+  - `npm run lint` PASS
+  - `npm test` PASS (61 files, 390 tests)
+  - `npm run build` PASS (non-blocking local warning remains for legacy DB without `Organization.status`)
+  - `node ./node_modules/prisma/build/index.js validate` PASS
+  - `node ./node_modules/prisma/build/index.js generate` PASS
+  - `npm run test:e2e` PASS (9 tests)
+
 ## 2026-05-14 SAP-4 / SAP-5 Checkpoint
 
 - SAP-4 completed:

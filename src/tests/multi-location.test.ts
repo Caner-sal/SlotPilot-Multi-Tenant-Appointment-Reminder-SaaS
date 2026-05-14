@@ -1,9 +1,12 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("@/lib/tenant", () => ({
   requireAuth: vi.fn(),
   TenantError: class TenantError extends Error {
-    constructor(msg = "Unauthorized") { super(msg); this.name = "TenantError"; }
+    constructor(msg = "Unauthorized") {
+      super(msg);
+      this.name = "TenantError";
+    }
   },
 }));
 
@@ -31,7 +34,7 @@ const mockDb = vi.mocked(db);
 
 beforeEach(() => vi.clearAllMocks());
 
-describe("Locations — tenant isolation", () => {
+describe("Locations - tenant isolation", () => {
   it("returns 403 for unauthenticated user", async () => {
     mockRequireAuth.mockRejectedValueOnce(new TenantError("Unauthorized"));
     const res = await getLocations();
@@ -41,7 +44,7 @@ describe("Locations — tenant isolation", () => {
   it("returns locations for authenticated org", async () => {
     mockRequireAuth.mockResolvedValueOnce({ user: { id: "u1" }, org: { id: "org1" } } as never);
     (mockDb.location.findMany as ReturnType<typeof vi.fn>).mockResolvedValueOnce([
-      { id: "loc1", name: "Merkez Şube", organizationId: "org1", isDefault: true },
+      { id: "loc1", name: "Merkez Sube", organizationId: "org1", isDefault: true },
     ]);
 
     const res = await getLocations();
@@ -56,7 +59,9 @@ describe("Locations — tenant isolation", () => {
   it("creates a location with correct org", async () => {
     mockRequireAuth.mockResolvedValueOnce({ user: { id: "u1" }, org: { id: "org1" } } as never);
     (mockDb.location.create as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
-      id: "loc2", name: "Branch 2", organizationId: "org1",
+      id: "loc2",
+      name: "Branch 2",
+      organizationId: "org1",
     });
 
     const req = new Request("http://localhost/api/locations", {
@@ -73,7 +78,9 @@ describe("Locations — tenant isolation", () => {
   it("cannot delete default location", async () => {
     mockRequireAuth.mockResolvedValueOnce({ user: { id: "u1" }, org: { id: "org1" } } as never);
     (mockDb.location.findFirst as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
-      id: "loc1", isDefault: true, organizationId: "org1",
+      id: "loc1",
+      isDefault: true,
+      organizationId: "org1",
     });
 
     const req = new Request("http://localhost/api/locations/loc1", { method: "DELETE" });
@@ -87,19 +94,24 @@ describe("Locations — tenant isolation", () => {
     mockRequireAuth.mockResolvedValueOnce({ user: { id: "u1" }, org: { id: "org1" } } as never);
     (mockDb.location.findFirst as ReturnType<typeof vi.fn>).mockResolvedValueOnce(null);
 
-    const req = new Request("http://localhost/api/locations/loc-other", { method: "PATCH", body: JSON.stringify({ name: "X" }) });
+    const req = new Request("http://localhost/api/locations/loc-other", {
+      method: "PATCH",
+      body: JSON.stringify({ name: "X" }),
+    });
     const res = await patchLocation(req, { params: Promise.resolve({ id: "loc-other" }) });
     expect(res.status).toBe(404);
   });
 });
 
-describe("Public booking — locations", () => {
+describe("Public booking - locations", () => {
   it("returns active locations for valid business", async () => {
     (mockDb.organization.findUnique as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
-      id: "org1", bookingEnabled: true, suspended: false,
+      id: "org1",
+      bookingEnabled: true,
+      suspended: false,
     });
     (mockDb.location.findMany as ReturnType<typeof vi.fn>).mockResolvedValueOnce([
-      { id: "loc1", name: "Merkez Şube", isDefault: true },
+      { id: "loc1", name: "Merkez Sube", isDefault: true },
     ]);
 
     const req = new Request("http://localhost/api/booking/barber-demo/locations");
@@ -111,10 +123,31 @@ describe("Public booking — locations", () => {
 
   it("returns 403 for suspended business", async () => {
     (mockDb.organization.findUnique as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
-      id: "org1", bookingEnabled: true, suspended: true,
+      id: "org1",
+      bookingEnabled: true,
+      suspended: true,
     });
     const req = new Request("http://localhost/api/booking/barber-demo/locations");
     const res = await getPublicLocations(req, { params: Promise.resolve({ slug: "barber-demo" }) });
     expect(res.status).toBe(403);
+  });
+
+  it("returns 200 again after business is re-activated", async () => {
+    const req = new Request("http://localhost/api/booking/barber-demo/locations");
+    (mockDb.organization.findUnique as ReturnType<typeof vi.fn>)
+      .mockResolvedValueOnce({ id: "org1", bookingEnabled: true, suspended: true })
+      .mockResolvedValueOnce({ id: "org1", bookingEnabled: true, suspended: false });
+
+    (mockDb.location.findMany as ReturnType<typeof vi.fn>).mockResolvedValueOnce([
+      { id: "loc1", name: "Merkez Sube", isDefault: true },
+    ]);
+
+    const suspendedRes = await getPublicLocations(req, { params: Promise.resolve({ slug: "barber-demo" }) });
+    expect(suspendedRes.status).toBe(403);
+
+    const reactivatedRes = await getPublicLocations(req, { params: Promise.resolve({ slug: "barber-demo" }) });
+    expect(reactivatedRes.status).toBe(200);
+    const body = await reactivatedRes.json();
+    expect(body.data).toHaveLength(1);
   });
 });
