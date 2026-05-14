@@ -122,8 +122,8 @@ export default function ServicesPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Hizmetler</h1>
-          <p className="text-sm text-gray-500 mt-1">İşletmenizin sunduğu hizmetleri yönetin.</p>
+          <h1 className="text-2xl font-bold text-foreground">Hizmetler</h1>
+          <p className="text-sm text-muted-foreground mt-1">İşletmenizin sunduğu hizmetleri yönetin.</p>
         </div>
         <button
           onClick={openAddDialog}
@@ -137,43 +137,43 @@ export default function ServicesPage() {
         </button>
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+      <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
         {loading ? (
-          <div className="p-10 text-center text-gray-400">Yükleniyor...</div>
+          <div className="p-10 text-center text-muted-foreground">Yükleniyor...</div>
         ) : services.length === 0 ? (
-          <div className="p-10 text-center text-gray-400">
+          <div className="p-10 text-center text-muted-foreground">
             Henüz hizmet yok. Başlamak için ilk hizmetinizi ekleyin.
           </div>
         ) : (
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-gray-100 bg-gray-50">
-                <th className="px-5 py-3 text-left font-semibold text-gray-600">Ad</th>
-                <th className="px-5 py-3 text-left font-semibold text-gray-600">Süre</th>
-                <th className="px-5 py-3 text-left font-semibold text-gray-600">Fiyat</th>
-                <th className="px-5 py-3 text-left font-semibold text-gray-600">Durum</th>
-                <th className="px-5 py-3 text-right font-semibold text-gray-600">İşlemler</th>
+              <tr className="border-b border-border bg-muted/50">
+                <th className="px-5 py-3 text-left font-semibold text-muted-foreground">Ad</th>
+                <th className="px-5 py-3 text-left font-semibold text-muted-foreground">Süre</th>
+                <th className="px-5 py-3 text-left font-semibold text-muted-foreground">Fiyat</th>
+                <th className="px-5 py-3 text-left font-semibold text-muted-foreground">Durum</th>
+                <th className="px-5 py-3 text-right font-semibold text-muted-foreground">İşlemler</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-50">
+            <tbody className="divide-y divide-border">
               {services.map((service) => (
-                <tr key={service.id} className="hover:bg-gray-50 transition-colors">
+                <tr key={service.id} className="hover:bg-muted/30 transition-colors">
                   <td className="px-5 py-3.5">
-                    <div className="font-medium text-gray-900">{service.name}</div>
+                    <div className="font-medium text-foreground">{service.name}</div>
                     {service.description && (
-                      <div className="text-xs text-gray-400 mt-0.5 line-clamp-1">{service.description}</div>
+                      <div className="text-xs text-muted-foreground mt-0.5 line-clamp-1">{service.description}</div>
                     )}
                   </td>
-                  <td className="px-5 py-3.5 text-gray-600">{service.durationMinutes} dk</td>
-                  <td className="px-5 py-3.5 text-gray-600">
+                  <td className="px-5 py-3.5 text-muted-foreground">{service.durationMinutes} dk</td>
+                  <td className="px-5 py-3.5 text-muted-foreground">
                     {formatPrice(service.priceCents, service.currency)}
                   </td>
                   <td className="px-5 py-3.5">
                     <span
                       className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                         service.isActive
-                          ? "bg-green-100 text-green-700"
-                          : "bg-gray-100 text-gray-500"
+                          ? "bg-green-500/20 text-green-400"
+                          : "bg-muted text-muted-foreground"
                       }`}
                     >
                       {service.isActive ? "Aktif" : "Pasif"}
@@ -189,7 +189,7 @@ export default function ServicesPage() {
                       </button>
                       <button
                         onClick={() => toggleActive(service)}
-                        className="text-gray-500 hover:text-gray-700 text-xs font-medium px-2 py-1 rounded hover:bg-gray-100 transition-colors"
+                        className="text-muted-foreground hover:text-foreground text-xs font-medium px-2 py-1 rounded hover:bg-muted transition-colors"
                       >
                         {service.isActive ? "Pasifleştir" : "Aktifleştir"}
                       </button>
@@ -210,14 +210,14 @@ export default function ServicesPage() {
 
       {dialogOpen && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-md">
-            <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
-              <h2 className="font-semibold text-gray-900">
+          <div className="bg-card rounded-xl shadow-xl w-full max-w-md border border-border">
+            <div className="px-6 py-4 border-b border-border flex items-center justify-between">
+              <h2 className="font-semibold text-foreground">
                 {editingService ? "Hizmeti Düzenle" : "Hizmet Ekle"}
               </h2>
               <button
                 onClick={() => setDialogOpen(false)}
-                className="text-gray-400 hover:text-gray-600"
+                className="text-muted-foreground hover:text-foreground"
               >
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <line x1="18" y1="6" x2="6" y2="18" />
@@ -232,28 +232,28 @@ export default function ServicesPage() {
                 </div>
               )}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Ad *</label>
+                <label className="block text-sm font-medium text-foreground mb-1">Ad *</label>
                 <input
                   required
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-border bg-input rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-foreground"
                   placeholder="ör. Saç Kesimi"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Açıklama</label>
+                <label className="block text-sm font-medium text-foreground mb-1">Açıklama</label>
                 <textarea
                   value={form.description}
                   onChange={(e) => setForm({ ...form, description: e.target.value })}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-border bg-input rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-foreground"
                   rows={2}
                   placeholder="İsteğe bağlı açıklama"
                 />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Süre (dk) *</label>
+                  <label className="block text-sm font-medium text-foreground mb-1">Süre (dk) *</label>
                   <input
                     required
                     type="number"
@@ -261,11 +261,11 @@ export default function ServicesPage() {
                     max={480}
                     value={form.durationMinutes}
                     onChange={(e) => setForm({ ...form, durationMinutes: Number(e.target.value) })}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-border bg-input rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-foreground"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Fiyat *</label>
+                  <label className="block text-sm font-medium text-foreground mb-1">Fiyat *</label>
                   <input
                     required
                     type="number"
@@ -275,16 +275,16 @@ export default function ServicesPage() {
                     onChange={(e) =>
                       setForm({ ...form, priceCents: Math.round(Number(e.target.value) * 100) })
                     }
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-border bg-input rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-foreground"
                   />
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Para Birimi</label>
+                <label className="block text-sm font-medium text-foreground mb-1">Para Birimi</label>
                 <select
                   value={form.currency}
                   onChange={(e) => setForm({ ...form, currency: e.target.value })}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-border bg-input rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-foreground"
                 >
                   <option value="TRY">TRY (Türk Lirası)</option>
                   <option value="USD">USD (Amerikan Doları)</option>
@@ -298,9 +298,9 @@ export default function ServicesPage() {
                   id="isActive"
                   checked={form.isActive}
                   onChange={(e) => setForm({ ...form, isActive: e.target.checked })}
-                  className="rounded"
+                  className="rounded border-border bg-background"
                 />
-                <label htmlFor="isActive" className="text-sm text-gray-700">
+                <label htmlFor="isActive" className="text-sm text-foreground">
                   Aktif (müşterilere görünür)
                 </label>
               </div>
@@ -308,7 +308,7 @@ export default function ServicesPage() {
                 <button
                   type="button"
                   onClick={() => setDialogOpen(false)}
-                  className="flex-1 border border-gray-300 text-gray-700 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors"
+                  className="flex-1 border border-border text-foreground py-2 rounded-lg text-sm font-medium hover:bg-muted transition-colors"
                 >
                   İptal
                 </button>

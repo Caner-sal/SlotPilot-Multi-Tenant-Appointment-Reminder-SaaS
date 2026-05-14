@@ -50,54 +50,54 @@ export default function AuditLogsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">İşlem Geçmişi</h1>
-        <p className="text-sm text-gray-500 mt-1">Hesabınızda gerçekleştirilen tüm işlemleri takip edin.</p>
+        <h1 className="text-2xl font-bold text-foreground">İşlem Geçmişi</h1>
+        <p className="text-sm text-muted-foreground mt-1">Hesabınızda gerçekleştirilen tüm işlemleri takip edin.</p>
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+      <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
         {loading ? (
-          <div className="p-10 text-center text-gray-400">Yükleniyor...</div>
+          <div className="p-10 text-center text-muted-foreground">Yükleniyor...</div>
         ) : logs.length === 0 ? (
-          <div className="p-10 text-center text-gray-400">Henüz işlem kaydı yok.</div>
+          <div className="p-10 text-center text-muted-foreground">Henüz işlem kaydı yok.</div>
         ) : (
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-gray-100 bg-gray-50">
-                <th className="px-5 py-3 text-left font-semibold text-gray-600">Tarih</th>
-                <th className="px-5 py-3 text-left font-semibold text-gray-600">Kullanıcı</th>
-                <th className="px-5 py-3 text-left font-semibold text-gray-600">İşlem</th>
-                <th className="px-5 py-3 text-left font-semibold text-gray-600">Tür</th>
-                <th className="px-5 py-3 text-left font-semibold text-gray-600">ID</th>
-                <th className="px-5 py-3 text-left font-semibold text-gray-600">Metadata</th>
+              <tr className="border-b border-border bg-muted/50">
+                <th className="px-5 py-3 text-left font-semibold text-muted-foreground">Tarih</th>
+                <th className="px-5 py-3 text-left font-semibold text-muted-foreground">Kullanıcı</th>
+                <th className="px-5 py-3 text-left font-semibold text-muted-foreground">İşlem</th>
+                <th className="px-5 py-3 text-left font-semibold text-muted-foreground">Tür</th>
+                <th className="px-5 py-3 text-left font-semibold text-muted-foreground">ID</th>
+                <th className="px-5 py-3 text-left font-semibold text-muted-foreground">Metadata</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-50">
+            <tbody className="divide-y divide-border">
               {logs.map((log) => (
-                <tr key={log.id} className="hover:bg-gray-50 transition-colors">
-                  <td className="px-5 py-3.5 text-gray-600 whitespace-nowrap">
+                <tr key={log.id} className="hover:bg-muted/30 transition-colors">
+                  <td className="px-5 py-3.5 text-muted-foreground whitespace-nowrap">
                     {new Date(log.createdAt).toLocaleString("tr-TR", { timeZone: "Europe/Istanbul" })}
                   </td>
-                  <td className="px-5 py-3.5 text-gray-600">
-                    <span className="font-mono text-xs bg-gray-100 px-1.5 py-0.5 rounded">
+                  <td className="px-5 py-3.5 text-muted-foreground">
+                    <span className="font-mono text-xs bg-muted px-1.5 py-0.5 rounded text-foreground">
                       {log.actorUserId ? log.actorUserId.slice(0, 8) + "..." : "sistem"}
                     </span>
                   </td>
                   <td className="px-5 py-3.5">
-                    <span className="font-medium text-gray-800">
+                    <span className="font-medium text-foreground">
                       {log.action.replace(/_/g, " ")}
                     </span>
                   </td>
                   <td className="px-5 py-3.5">
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700">
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-500/20 text-blue-400">
                       {log.entityType}
                     </span>
                   </td>
                   <td className="px-5 py-3.5">
-                    <span className="font-mono text-xs text-gray-500">
+                    <span className="font-mono text-xs text-muted-foreground">
                       {log.entityId.slice(0, 8)}...
                     </span>
                   </td>
-                  <td className="px-5 py-3.5 text-gray-500 max-w-[260px]">
+                  <td className="px-5 py-3.5 text-muted-foreground max-w-[260px]">
                     <span className="text-xs line-clamp-1">{metaPreview(log.metadata)}</span>
                   </td>
                 </tr>
@@ -109,24 +109,24 @@ export default function AuditLogsPage() {
 
       {meta && meta.totalPages > 1 && (
         <div className="flex items-center justify-between">
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-muted-foreground">
             {(meta.page - 1) * meta.limit + 1}–{Math.min(meta.page * meta.limit, meta.total)} / {meta.total} kayıt
           </p>
           <div className="flex items-center gap-2">
             <button
               disabled={page <= 1}
               onClick={() => setPage((p) => p - 1)}
-              className="px-3 py-1.5 border border-gray-300 rounded-lg text-sm disabled:opacity-40 hover:bg-gray-50 transition-colors"
+              className="px-3 py-1.5 border border-border bg-card text-foreground rounded-lg text-sm disabled:opacity-40 hover:bg-muted transition-colors"
             >
               Önceki
             </button>
-            <span className="text-sm text-gray-600">
+            <span className="text-sm text-muted-foreground">
               {meta.page} / {meta.totalPages}
             </span>
             <button
               disabled={page >= meta.totalPages}
               onClick={() => setPage((p) => p + 1)}
-              className="px-3 py-1.5 border border-gray-300 rounded-lg text-sm disabled:opacity-40 hover:bg-gray-50 transition-colors"
+              className="px-3 py-1.5 border border-border bg-card text-foreground rounded-lg text-sm disabled:opacity-40 hover:bg-muted transition-colors"
             >
               Sonraki
             </button>

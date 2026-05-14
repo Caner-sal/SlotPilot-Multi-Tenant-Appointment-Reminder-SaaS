@@ -33,8 +33,11 @@ const labelStyle: React.CSSProperties = {
 
 export default function LoginPage() {
   const router = useRouter();
+  const [view, setView] = useState<"login" | "forgotPassword" | "resetPassword">("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [resetToken, setResetToken] = useState("");
+  const [newPassword, setNewPassword] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
@@ -75,6 +78,57 @@ export default function LoginPage() {
       router.push("/admin");
     } else {
       router.push("/dashboard");
+    }
+  }
+
+  async function handleForgotPasswordSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError("");
+    setSuccess("");
+    setLoading(true);
+
+    try {
+      const res = await fetch("/api/auth/forgot-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Bir hata oluştu");
+      
+      setSuccess(data.message);
+      setView("resetPassword");
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleResetPasswordSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError("");
+    setSuccess("");
+    setLoading(true);
+
+    try {
+      const res = await fetch("/api/auth/reset-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, token: resetToken, newPassword }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Bir hata oluştu");
+
+      setSuccess(data.message);
+      setView("login");
+      setPassword("");
+      setResetToken("");
+      setNewPassword("");
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -147,57 +201,156 @@ export default function LoginPage() {
             <span style={{ fontFamily: "var(--font-heading, Outfit, sans-serif)", fontSize: 20, fontWeight: 700 }}>Randevo</span>
           </div>
 
-          <h3 style={{ fontFamily: "var(--font-heading, Outfit, sans-serif)", fontSize: 22, fontWeight: 700, letterSpacing: "-0.02em", marginBottom: 6 }}>Tekrar hoş geldiniz</h3>
-          <p style={{ fontSize: 13, color: "#8a8aaa", marginBottom: 28 }}>İşletme panelinize giriş yapın.</p>
-
-          <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-            {error && (
-              <div style={{ background: "rgba(244,63,94,0.08)", border: "1px solid rgba(244,63,94,0.25)", borderRadius: 10, padding: "11px 14px", fontSize: 13, color: "#f43f5e" }}>
-                {error}
-              </div>
-            )}
-            {success && (
-              <div style={{ background: "rgba(34,197,94,0.08)", border: "1px solid rgba(34,197,94,0.25)", borderRadius: 10, padding: "11px 14px", fontSize: 13, color: "#22c55e" }}>
-                {success}
-              </div>
-            )}
-
-            <div>
-              <label style={labelStyle}>E-posta</label>
-              <input style={inputStyle} type="email" placeholder="siz@ornek.com" value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="email" />
+          {error && (
+            <div style={{ background: "rgba(244,63,94,0.08)", border: "1px solid rgba(244,63,94,0.25)", borderRadius: 10, padding: "11px 14px", fontSize: 13, color: "#f43f5e", marginBottom: 14 }}>
+              {error}
             </div>
-
-            <div>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-                <label style={{ ...labelStyle, marginBottom: 0 }}>Şifre</label>
-                <a href="#" style={{ fontSize: 12, color: "#a59cf0" }}>Şifremi unuttum</a>
-              </div>
-              <input style={inputStyle} type="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} required autoComplete="current-password" />
+          )}
+          {success && (
+            <div style={{ background: "rgba(34,197,94,0.08)", border: "1px solid rgba(34,197,94,0.25)", borderRadius: 10, padding: "11px 14px", fontSize: 13, color: "#22c55e", marginBottom: 14 }}>
+              {success}
             </div>
+          )}
 
-            <button
-              type="submit"
-              disabled={loading}
-              style={{
-                width: "100%", padding: 13, borderRadius: 11, border: "none",
-                fontFamily: "var(--font-heading, Outfit, sans-serif)", fontSize: 15, fontWeight: 700,
-                background: loading ? "rgba(119,104,212,0.5)" : "#7768d4", color: "#fff",
-                boxShadow: "0 0 24px rgba(119,104,212,0.28)", cursor: loading ? "default" : "pointer",
-                marginTop: 4, transition: "all 0.2s",
-              }}
-            >
-              {loading ? "Giriş yapılıyor..." : "Giriş Yap"}
-            </button>
-          </form>
+          {view === "login" && (
+            <>
+              <h3 style={{ fontFamily: "var(--font-heading, Outfit, sans-serif)", fontSize: 22, fontWeight: 700, letterSpacing: "-0.02em", marginBottom: 6 }}>Tekrar hoş geldiniz</h3>
+              <p style={{ fontSize: 13, color: "#8a8aaa", marginBottom: 28 }}>İşletme panelinize giriş yapın.</p>
 
-          <p style={{ fontSize: 13, color: "#3a3a58", textAlign: "center", marginTop: 18 }}>
-            Demo: <span style={{ color: "#8a8aaa", fontWeight: 600 }}>demo@randevo.app</span> / <span style={{ color: "#8a8aaa", fontWeight: 600 }}>demo1234</span>
-          </p>
+              <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+                <div>
+                  <label style={labelStyle}>E-posta</label>
+                  <input style={inputStyle} type="email" placeholder="siz@ornek.com" value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="email" />
+                </div>
 
-          <p style={{ fontSize: 13, color: "#3a3a58", textAlign: "center", marginTop: 20 }}>
-            Hesabınız yok mu?{" "}
-            <Link href="/register" style={{ color: "#a59cf0", fontWeight: 600 }}>Hesap oluşturun</Link>
-          </p>
+                <div>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+                    <label style={{ ...labelStyle, marginBottom: 0 }}>Şifre</label>
+                    <button type="button" onClick={() => { setView("forgotPassword"); setError(""); setSuccess(""); }} style={{ background: "none", border: "none", fontSize: 12, color: "#a59cf0", cursor: "pointer", padding: 0 }}>Şifremi unuttum</button>
+                  </div>
+                  <input style={inputStyle} type="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} required autoComplete="current-password" />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={loading}
+                  style={{
+                    width: "100%", padding: 13, borderRadius: 11, border: "none",
+                    fontFamily: "var(--font-heading, Outfit, sans-serif)", fontSize: 15, fontWeight: 700,
+                    background: loading ? "rgba(119,104,212,0.5)" : "#7768d4", color: "#fff",
+                    boxShadow: "0 0 24px rgba(119,104,212,0.28)", cursor: loading ? "default" : "pointer",
+                    marginTop: 4, transition: "all 0.2s",
+                  }}
+                >
+                  {loading ? "Giriş yapılıyor..." : "Giriş Yap"}
+                </button>
+              </form>
+
+              <p style={{ fontSize: 13, color: "#3a3a58", textAlign: "center", marginTop: 18 }}>
+                Demo: <span style={{ color: "#8a8aaa", fontWeight: 600 }}>demo@randevo.app</span> / <span style={{ color: "#8a8aaa", fontWeight: 600 }}>demo1234</span>
+              </p>
+
+              <p style={{ fontSize: 13, color: "#3a3a58", textAlign: "center", marginTop: 20 }}>
+                Hesabınız yok mu?{" "}
+                <Link href="/register" style={{ color: "#a59cf0", fontWeight: 600 }}>Hesap oluşturun</Link>
+              </p>
+            </>
+          )}
+
+          {view === "forgotPassword" && (
+            <>
+              <h3 style={{ fontFamily: "var(--font-heading, Outfit, sans-serif)", fontSize: 22, fontWeight: 700, letterSpacing: "-0.02em", marginBottom: 6 }}>Şifremi Unuttum</h3>
+              <p style={{ fontSize: 13, color: "#8a8aaa", marginBottom: 28 }}>E-posta adresinizi girin, size bir sıfırlama kodu gönderelim.</p>
+
+              <form onSubmit={handleForgotPasswordSubmit} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+                <div>
+                  <label style={labelStyle}>E-posta</label>
+                  <input style={inputStyle} type="email" placeholder="siz@ornek.com" value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="email" />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={loading}
+                  style={{
+                    width: "100%", padding: 13, borderRadius: 11, border: "none",
+                    fontFamily: "var(--font-heading, Outfit, sans-serif)", fontSize: 15, fontWeight: 700,
+                    background: loading ? "rgba(119,104,212,0.5)" : "#7768d4", color: "#fff",
+                    boxShadow: "0 0 24px rgba(119,104,212,0.28)", cursor: loading ? "default" : "pointer",
+                    marginTop: 4, transition: "all 0.2s",
+                  }}
+                >
+                  {loading ? "Gönderiliyor..." : "Kod Gönder"}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => { setView("login"); setError(""); setSuccess(""); }}
+                  disabled={loading}
+                  style={{
+                    width: "100%", padding: 13, borderRadius: 11, border: "1px solid rgba(119,104,212,0.3)",
+                    fontFamily: "var(--font-heading, Outfit, sans-serif)", fontSize: 15, fontWeight: 700,
+                    background: "transparent", color: "#a59cf0", cursor: loading ? "default" : "pointer",
+                    transition: "all 0.2s",
+                  }}
+                >
+                  Giriş Ekranına Dön
+                </button>
+              </form>
+            </>
+          )}
+
+          {view === "resetPassword" && (
+            <>
+              <h3 style={{ fontFamily: "var(--font-heading, Outfit, sans-serif)", fontSize: 22, fontWeight: 700, letterSpacing: "-0.02em", marginBottom: 6 }}>Şifre Yenileme</h3>
+              <p style={{ fontSize: 13, color: "#8a8aaa", marginBottom: 28 }}>E-postanıza gönderilen 6 haneli kodu ve yeni şifrenizi girin.</p>
+
+              <form onSubmit={handleResetPasswordSubmit} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+                <div>
+                  <label style={labelStyle}>E-posta</label>
+                  <input style={inputStyle} type="email" value={email} disabled style={{ ...inputStyle, opacity: 0.6, cursor: "not-allowed" }} />
+                </div>
+
+                <div>
+                  <label style={labelStyle}>6 Haneli Kod</label>
+                  <input style={{ ...inputStyle, letterSpacing: "0.2em", textAlign: "center", fontSize: 18, fontWeight: "bold" }} type="text" maxLength={6} placeholder="000000" value={resetToken} onChange={(e) => setResetToken(e.target.value.replace(/[^0-9]/g, ""))} required />
+                </div>
+
+                <div>
+                  <label style={labelStyle}>Yeni Şifre</label>
+                  <input style={inputStyle} type="password" placeholder="••••••••" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} required minLength={6} />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={loading}
+                  style={{
+                    width: "100%", padding: 13, borderRadius: 11, border: "none",
+                    fontFamily: "var(--font-heading, Outfit, sans-serif)", fontSize: 15, fontWeight: 700,
+                    background: loading ? "rgba(119,104,212,0.5)" : "#7768d4", color: "#fff",
+                    boxShadow: "0 0 24px rgba(119,104,212,0.28)", cursor: loading ? "default" : "pointer",
+                    marginTop: 4, transition: "all 0.2s",
+                  }}
+                >
+                  {loading ? "İşleniyor..." : "Şifremi Yenile"}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => { setView("login"); setError(""); setSuccess(""); }}
+                  disabled={loading}
+                  style={{
+                    width: "100%", padding: 13, borderRadius: 11, border: "1px solid rgba(119,104,212,0.3)",
+                    fontFamily: "var(--font-heading, Outfit, sans-serif)", fontSize: 15, fontWeight: 700,
+                    background: "transparent", color: "#a59cf0", cursor: loading ? "default" : "pointer",
+                    transition: "all 0.2s",
+                  }}
+                >
+                  İptal Et
+                </button>
+              </form>
+            </>
+          )}
+
         </div>
       </div>
 

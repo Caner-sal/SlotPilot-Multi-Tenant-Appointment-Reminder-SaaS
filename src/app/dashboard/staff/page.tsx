@@ -145,8 +145,8 @@ export default function StaffPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Çalışanlar</h1>
-          <p className="text-sm text-gray-500 mt-1">Ekip üyelerinizi yönetin.</p>
+          <h1 className="text-2xl font-bold text-foreground">Çalışanlar</h1>
+          <p className="text-sm text-muted-foreground mt-1">Ekip üyelerinizi yönetin.</p>
         </div>
         <button
           onClick={openAddDialog}
@@ -174,35 +174,35 @@ export default function StaffPage() {
         </div>
       )}
 
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+      <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
         {loading ? (
-          <div className="p-10 text-center text-gray-400">Yükleniyor...</div>
+          <div className="p-10 text-center text-muted-foreground">Yükleniyor...</div>
         ) : staff.length === 0 ? (
-          <div className="p-10 text-center text-gray-400">
+          <div className="p-10 text-center text-muted-foreground">
             Henüz çalışan yok. Başlamak için ilk ekip üyenizi ekleyin.
           </div>
         ) : (
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-gray-100 bg-gray-50">
-                <th className="px-5 py-3 text-left font-semibold text-gray-600">Ad</th>
-                <th className="px-5 py-3 text-left font-semibold text-gray-600">E-posta</th>
-                <th className="px-5 py-3 text-left font-semibold text-gray-600">Telefon</th>
-                <th className="px-5 py-3 text-left font-semibold text-gray-600">Hizmetler</th>
-                <th className="px-5 py-3 text-left font-semibold text-gray-600">Durum</th>
-                <th className="px-5 py-3 text-right font-semibold text-gray-600">İşlemler</th>
+              <tr className="border-b border-border bg-muted/50">
+                <th className="px-5 py-3 text-left font-semibold text-muted-foreground">Ad</th>
+                <th className="px-5 py-3 text-left font-semibold text-muted-foreground">E-posta</th>
+                <th className="px-5 py-3 text-left font-semibold text-muted-foreground">Telefon</th>
+                <th className="px-5 py-3 text-left font-semibold text-muted-foreground">Hizmetler</th>
+                <th className="px-5 py-3 text-left font-semibold text-muted-foreground">Durum</th>
+                <th className="px-5 py-3 text-right font-semibold text-muted-foreground">İşlemler</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-50">
+            <tbody className="divide-y divide-border">
               {staff.map((member) => (
-                <tr key={member.id} className="hover:bg-gray-50 transition-colors">
-                  <td className="px-5 py-3.5 font-medium text-gray-900">{member.name}</td>
-                  <td className="px-5 py-3.5 text-gray-600">{member.email ?? "—"}</td>
-                  <td className="px-5 py-3.5 text-gray-600">{member.phone ?? "—"}</td>
+                <tr key={member.id} className="hover:bg-muted/30 transition-colors">
+                  <td className="px-5 py-3.5 font-medium text-foreground">{member.name}</td>
+                  <td className="px-5 py-3.5 text-muted-foreground">{member.email ?? "—"}</td>
+                  <td className="px-5 py-3.5 text-muted-foreground">{member.phone ?? "—"}</td>
                   <td className="px-5 py-3.5">
                     <div className="flex flex-wrap gap-1">
                       {member.staffServices.length === 0 ? (
-                        <span className="text-gray-400">Yok</span>
+                        <span className="text-muted-foreground">Yok</span>
                       ) : (
                         member.staffServices.map((ss) => (
                           <span
@@ -218,7 +218,7 @@ export default function StaffPage() {
                   <td className="px-5 py-3.5">
                     <span
                       className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        member.isActive ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"
+                        member.isActive ? "bg-green-500/20 text-green-400" : "bg-muted text-muted-foreground"
                       }`}
                     >
                       {member.isActive ? "Aktif" : "Pasif"}
@@ -234,7 +234,7 @@ export default function StaffPage() {
                       </button>
                       <button
                         onClick={() => toggleActive(member)}
-                        className="text-gray-500 hover:text-gray-700 text-xs font-medium px-2 py-1 rounded hover:bg-gray-100 transition-colors"
+                        className="text-muted-foreground hover:text-foreground text-xs font-medium px-2 py-1 rounded hover:bg-muted transition-colors"
                       >
                         {member.isActive ? "Pasifleştir" : "Aktifleştir"}
                       </button>
@@ -255,12 +255,12 @@ export default function StaffPage() {
 
       {dialogOpen && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto">
-            <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between sticky top-0 bg-white">
-              <h2 className="font-semibold text-gray-900">
+          <div className="bg-card rounded-xl shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto border border-border">
+            <div className="px-6 py-4 border-b border-border flex items-center justify-between sticky top-0 bg-card">
+              <h2 className="font-semibold text-foreground">
                 {editingStaff ? "Çalışanı Düzenle" : "Çalışan Ekle"}
               </h2>
-              <button onClick={() => setDialogOpen(false)} className="text-gray-400 hover:text-gray-600">
+              <button onClick={() => setDialogOpen(false)} className="text-muted-foreground hover:text-foreground">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <line x1="18" y1="6" x2="6" y2="18" />
                   <line x1="6" y1="6" x2="18" y2="18" />
@@ -274,47 +274,47 @@ export default function StaffPage() {
                 </div>
               )}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Ad Soyad *</label>
+                <label className="block text-sm font-medium text-foreground mb-1">Ad Soyad *</label>
                 <input
                   required
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-border bg-input rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-foreground"
                   placeholder="Ad Soyad"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">E-posta</label>
+                <label className="block text-sm font-medium text-foreground mb-1">E-posta</label>
                 <input
                   type="email"
                   value={form.email}
                   onChange={(e) => setForm({ ...form, email: e.target.value })}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-border bg-input rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-foreground"
                   placeholder="calisan@ornek.com"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Telefon</label>
+                <label className="block text-sm font-medium text-foreground mb-1">Telefon</label>
                 <input
                   value={form.phone}
                   onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-border bg-input rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-foreground"
                   placeholder="+90 555 000 0000"
                 />
               </div>
               {services.length > 0 && (
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Atanan Hizmetler</label>
-                  <div className="space-y-2 max-h-40 overflow-y-auto border border-gray-200 rounded-lg p-3">
+                  <label className="block text-sm font-medium text-foreground mb-2">Atanan Hizmetler</label>
+                  <div className="space-y-2 max-h-40 overflow-y-auto border border-border bg-input rounded-lg p-3">
                     {services.map((service) => (
                       <label key={service.id} className="flex items-center gap-2 cursor-pointer">
                         <input
                           type="checkbox"
                           checked={form.serviceIds.includes(service.id)}
                           onChange={() => toggleService(service.id)}
-                          className="rounded"
+                          className="rounded border-border bg-background"
                         />
-                        <span className="text-sm text-gray-700">{service.name}</span>
+                        <span className="text-sm text-foreground">{service.name}</span>
                       </label>
                     ))}
                   </div>
@@ -326,9 +326,9 @@ export default function StaffPage() {
                   id="staffActive"
                   checked={form.isActive}
                   onChange={(e) => setForm({ ...form, isActive: e.target.checked })}
-                  className="rounded"
+                  className="rounded border-border bg-background"
                 />
-                <label htmlFor="staffActive" className="text-sm text-gray-700">
+                <label htmlFor="staffActive" className="text-sm text-foreground">
                   Aktif
                 </label>
               </div>
@@ -336,7 +336,7 @@ export default function StaffPage() {
                 <button
                   type="button"
                   onClick={() => setDialogOpen(false)}
-                  className="flex-1 border border-gray-300 text-gray-700 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors"
+                  className="flex-1 border border-border text-foreground py-2 rounded-lg text-sm font-medium hover:bg-muted transition-colors"
                 >
                   İptal
                 </button>

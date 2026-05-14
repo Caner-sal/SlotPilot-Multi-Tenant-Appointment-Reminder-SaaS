@@ -86,8 +86,8 @@ export default function RemindersPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Hatırlatmalar</h1>
-          <p className="text-sm text-gray-500 mt-1">Hatırlatma günlüklerini görüntüleyin ve manuel işlem başlatın.</p>
+          <h1 className="text-2xl font-bold text-foreground">Hatırlatmalar</h1>
+          <p className="text-sm text-muted-foreground mt-1">Hatırlatma günlüklerini görüntüleyin ve manuel işlem başlatın.</p>
         </div>
         <button
           onClick={processReminders}
@@ -107,47 +107,47 @@ export default function RemindersPage() {
         </div>
       )}
 
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+      <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
         {loading ? (
-          <div className="p-10 text-center text-gray-400">Yükleniyor...</div>
+          <div className="p-10 text-center text-muted-foreground">Yükleniyor...</div>
         ) : reminders.length === 0 ? (
-          <div className="p-10 text-center text-gray-400">Hatırlatma bulunamadı.</div>
+          <div className="p-10 text-center text-muted-foreground">Hatırlatma bulunamadı.</div>
         ) : (
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-gray-100 bg-gray-50">
-                <th className="px-5 py-3 text-left font-semibold text-gray-600">Randevu</th>
-                <th className="px-5 py-3 text-left font-semibold text-gray-600">Tür</th>
-                <th className="px-5 py-3 text-left font-semibold text-gray-600">Planlandı</th>
-                <th className="px-5 py-3 text-left font-semibold text-gray-600">Durum</th>
-                <th className="px-5 py-3 text-left font-semibold text-gray-600">Gönderildi</th>
-                <th className="px-5 py-3 text-left font-semibold text-gray-600">Hata</th>
+              <tr className="border-b border-border bg-muted/50">
+                <th className="px-5 py-3 text-left font-semibold text-muted-foreground">Randevu</th>
+                <th className="px-5 py-3 text-left font-semibold text-muted-foreground">Tür</th>
+                <th className="px-5 py-3 text-left font-semibold text-muted-foreground">Planlandı</th>
+                <th className="px-5 py-3 text-left font-semibold text-muted-foreground">Durum</th>
+                <th className="px-5 py-3 text-left font-semibold text-muted-foreground">Gönderildi</th>
+                <th className="px-5 py-3 text-left font-semibold text-muted-foreground">Hata</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-50">
+            <tbody className="divide-y divide-border">
               {reminders.map((reminder) => (
-                <tr key={reminder.id} className="hover:bg-gray-50 transition-colors">
+                <tr key={reminder.id} className="hover:bg-muted/30 transition-colors">
                   <td className="px-5 py-3.5">
-                    <div className="font-medium text-gray-900">{reminder.appointment.customer.fullName}</div>
-                    <div className="text-xs text-gray-400">
+                    <div className="font-medium text-foreground">{reminder.appointment.customer.fullName}</div>
+                    <div className="text-xs text-muted-foreground">
                       {reminder.appointment.service.name} ·{" "}
                       {new Date(reminder.appointment.startTime).toLocaleString("tr-TR", { timeZone: "Europe/Istanbul" })}
                     </div>
                   </td>
-                  <td className="px-5 py-3.5 text-gray-600">{reminder.type}</td>
-                  <td className="px-5 py-3.5 text-gray-600">
+                  <td className="px-5 py-3.5 text-muted-foreground">{reminder.type}</td>
+                  <td className="px-5 py-3.5 text-muted-foreground">
                     {new Date(reminder.scheduledAt).toLocaleString("tr-TR", { timeZone: "Europe/Istanbul" })}
                   </td>
                   <td className="px-5 py-3.5">
                     <span
                       className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        STATUS_COLORS[reminder.status] ?? "bg-gray-100 text-gray-600"
+                        STATUS_COLORS[reminder.status] ?? "bg-muted text-muted-foreground"
                       }`}
                     >
                       {STATUS_LABELS[reminder.status] ?? reminder.status}
                     </span>
                   </td>
-                  <td className="px-5 py-3.5 text-gray-600">
+                  <td className="px-5 py-3.5 text-muted-foreground">
                     {reminder.sentAt ? new Date(reminder.sentAt).toLocaleString("tr-TR", { timeZone: "Europe/Istanbul" }) : "—"}
                   </td>
                   <td className="px-5 py-3.5 text-red-500 max-w-[200px]">
@@ -162,24 +162,24 @@ export default function RemindersPage() {
 
       {meta && meta.totalPages > 1 && (
         <div className="flex items-center justify-between">
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-muted-foreground">
             {(meta.page - 1) * meta.limit + 1}–{Math.min(meta.page * meta.limit, meta.total)} / {meta.total} hatırlatma
           </p>
           <div className="flex items-center gap-2">
             <button
               disabled={page <= 1}
               onClick={() => setPage((p) => p - 1)}
-              className="px-3 py-1.5 border border-gray-300 rounded-lg text-sm disabled:opacity-40 hover:bg-gray-50 transition-colors"
+              className="px-3 py-1.5 border border-border bg-card text-foreground rounded-lg text-sm disabled:opacity-40 hover:bg-muted transition-colors"
             >
               Önceki
             </button>
-            <span className="text-sm text-gray-600">
+            <span className="text-sm text-muted-foreground">
               {meta.page} / {meta.totalPages}
             </span>
             <button
               disabled={page >= meta.totalPages}
               onClick={() => setPage((p) => p + 1)}
-              className="px-3 py-1.5 border border-gray-300 rounded-lg text-sm disabled:opacity-40 hover:bg-gray-50 transition-colors"
+              className="px-3 py-1.5 border border-border bg-card text-foreground rounded-lg text-sm disabled:opacity-40 hover:bg-muted transition-colors"
             >
               Sonraki
             </button>

@@ -118,29 +118,29 @@ export default function AvailabilityPage() {
 
   if (loading) {
     return (
-      <div className="p-10 text-center text-gray-400">Yükleniyor...</div>
+      <div className="p-10 text-center text-muted-foreground">Yükleniyor...</div>
     );
   }
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Müsaitlik</h1>
-        <p className="text-sm text-gray-500 mt-1">Her çalışan için haftalık çalışma saatlerini ayarlayın.</p>
+        <h1 className="text-2xl font-bold text-foreground">Müsaitlik</h1>
+        <p className="text-sm text-muted-foreground mt-1">Her çalışan için haftalık çalışma saatlerini ayarlayın.</p>
       </div>
 
       {staff.length === 0 ? (
-        <div className="bg-white rounded-xl border border-gray-200 p-10 text-center text-gray-400">
+        <div className="bg-card rounded-xl border border-border p-10 text-center text-muted-foreground">
           Çalışan bulunamadı. Müsaitliği yönetmek için önce çalışan ekleyin.
         </div>
       ) : (
         <>
           <div className="flex items-center gap-4">
-            <label className="text-sm font-medium text-gray-700">Çalışan:</label>
+            <label className="text-sm font-medium text-foreground">Çalışan:</label>
             <select
               value={selectedStaffId}
               onChange={(e) => setSelectedStaffId(e.target.value)}
-              className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="border border-border bg-input text-foreground rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               {staff.map((s) => (
                 <option key={s.id} value={s.id}>
@@ -150,11 +150,11 @@ export default function AvailabilityPage() {
             </select>
           </div>
 
-          <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-            <div className="px-5 py-4 border-b border-gray-100 bg-gray-50">
-              <p className="text-sm font-semibold text-gray-700">Haftalık Program</p>
+          <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
+            <div className="px-5 py-4 border-b border-border bg-muted/50">
+              <p className="text-sm font-semibold text-foreground">Haftalık Program</p>
             </div>
-            <div className="divide-y divide-gray-100">
+            <div className="divide-y divide-border">
               {DAYS.map(({ key, label }) => (
                 <div key={key} className="flex items-center gap-4 px-5 py-4">
                   <div className="w-28 flex items-center gap-2">
@@ -163,12 +163,12 @@ export default function AvailabilityPage() {
                       id={`day-${key}`}
                       checked={schedule[key].isActive}
                       onChange={(e) => updateDay(key, "isActive", e.target.checked)}
-                      className="rounded"
+                      className="rounded border-border bg-background"
                     />
                     <label
                       htmlFor={`day-${key}`}
                       className={`text-sm font-medium cursor-pointer ${
-                        schedule[key].isActive ? "text-gray-900" : "text-gray-400"
+                        schedule[key].isActive ? "text-foreground" : "text-muted-foreground"
                       }`}
                     >
                       {label}
@@ -180,18 +180,18 @@ export default function AvailabilityPage() {
                         type="time"
                         value={schedule[key].startTime}
                         onChange={(e) => updateDay(key, "startTime", e.target.value)}
-                        className="border border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="border border-border bg-input text-foreground rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
-                      <span className="text-gray-400 text-sm">—</span>
+                      <span className="text-muted-foreground text-sm">—</span>
                       <input
                         type="time"
                         value={schedule[key].endTime}
                         onChange={(e) => updateDay(key, "endTime", e.target.value)}
-                        className="border border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="border border-border bg-input text-foreground rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
                   ) : (
-                    <span className="text-sm text-gray-400">Kapalı</span>
+                    <span className="text-sm text-muted-foreground">Kapalı</span>
                   )}
                 </div>
               ))}
