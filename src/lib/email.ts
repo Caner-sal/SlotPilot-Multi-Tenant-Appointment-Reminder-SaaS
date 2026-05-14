@@ -1,3 +1,5 @@
+import nodemailer from "nodemailer";
+
 interface EmailPayload {
   to: string;
   subject: string;
@@ -6,12 +8,12 @@ interface EmailPayload {
 
 interface EmailResult {
   success: boolean;
-  mode: "fake" | "resend";
+  mode: "fake" | "resend" | "nodemailer";
   messageId?: string;
   error?: string;
 }
 
-const isFakeMode = !process.env.RESEND_API_KEY;
+const isFakeMode = !process.env.RESEND_API_KEY && (!process.env.SMTP_USER || !process.env.SMTP_PASSWORD);
 
 export async function sendEmail(payload: EmailPayload): Promise<EmailResult> {
   if (isFakeMode) {
@@ -20,6 +22,29 @@ export async function sendEmail(payload: EmailPayload): Promise<EmailResult> {
   }
 
   try {
+    // If SMTP credentials are provided, use nodemailer (Gmail etc.)
+    if (process.env.SMTP_USER && process.env.SMTP_PASSWORD) {
+      const transporter = nodemailer.createTransport({
+        host: process.env.SMTP_HOST || "smtp.gmail.com",
+        port: Number(process.env.SMTP_PORT) || 465,
+        secure: true,
+        auth: {
+          user: process.env.SMTP_USER,
+          pass: process.env.SMTP_PASSWORD,
+        },
+      });
+
+      const info = await transporter.sendMail({
+        from: process.env.EMAIL_FROM || process.env.SMTP_USER,
+        to: payload.to,
+        subject: payload.subject,
+        html: payload.html,
+      });
+
+      return { success: true, mode: "nodemailer", messageId: info.messageId };
+    }
+
+    // Otherwise fallback to Resend
     const { Resend } = await import("resend");
     const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -37,8 +62,33 @@ export async function sendEmail(payload: EmailPayload): Promise<EmailResult> {
     return { success: true, mode: "resend", messageId: data?.id };
   } catch (err) {
     const message = err instanceof Error ? err.message : "Bilinmeyen hata";
-    return { success: false, mode: "resend", error: message };
+    return { success: false, mode: "nodemailer", error: message };
   }
+}
+
+export async function sendVerificationEmail(email: string, token: string, baseUrl: string) {
+  return sendEmail({
+    to: email,
+    subject: "Doğrulama Kodunuz",
+    html: `
+      <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 500px; margin: 0 auto; padding: 30px; border: 1px solid #eaeaea; border-radius: 12px; background-color: #ffffff;">
+        <div style="text-align: center; margin-bottom: 30px;">
+          <h1 style="color: #111120; font-size: 24px; margin: 0;">Randevo</h1>
+        </div>
+        <h2 style="color: #333333; font-size: 20px; text-align: center; margin-bottom: 20px;">Hoş Geldiniz!</h2>
+        <p style="color: #555555; font-size: 15px; line-height: 1.6; text-align: center; margin-bottom: 30px;">
+          Kayıt işleminizi tamamlamak için aşağıdaki 6 haneli doğrulama kodunu kullanabilirsiniz.
+        </p>
+        <div style="text-align: center; background-color: #f7f7f9; padding: 20px; border-radius: 8px; margin-bottom: 30px;">
+          <span style="font-size: 32px; font-weight: 800; letter-spacing: 6px; color: #7768d4;">${token}</span>
+        </div>
+        <p style="color: #888888; font-size: 13px; text-align: center; margin-top: 30px; border-top: 1px solid #eaeaea; padding-top: 20px;">
+          Bu kodu siz talep etmediyseniz, lütfen bu e-postayı görmezden gelin.<br/><br/>
+          Randevo Randevu Sistemi
+        </p>
+      </div>
+    `,
+  });
 }
 
 export function buildReminderEmail(data: {

@@ -36,7 +36,21 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
+
+  React.useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    if (searchParams.get("verified") === "true") {
+      setSuccess("E-posta adresiniz başarıyla doğrulandı. Şimdi giriş yapabilirsiniz.");
+    }
+    const errParam = searchParams.get("error");
+    if (errParam === "InvalidToken") {
+      setError("Doğrulama bağlantısı geçersiz.");
+    } else if (errParam === "TokenExpired") {
+      setError("Doğrulama bağlantısının süresi dolmuş.");
+    }
+  }, []);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -47,7 +61,11 @@ export default function LoginPage() {
     setLoading(false);
 
     if (result?.error) {
-      setError("E-posta veya şifre hatalı.");
+      if (result.error === "unverified_email" || result.error === "CallbackRouteError") {
+        setError("Lütfen e-postanıza gönderilen bağlantıya tıklayarak hesabınızı doğrulayın.");
+      } else {
+        setError("E-posta veya şifre hatalı.");
+      }
       return;
     }
 
@@ -136,6 +154,11 @@ export default function LoginPage() {
             {error && (
               <div style={{ background: "rgba(244,63,94,0.08)", border: "1px solid rgba(244,63,94,0.25)", borderRadius: 10, padding: "11px 14px", fontSize: 13, color: "#f43f5e" }}>
                 {error}
+              </div>
+            )}
+            {success && (
+              <div style={{ background: "rgba(34,197,94,0.08)", border: "1px solid rgba(34,197,94,0.25)", borderRadius: 10, padding: "11px 14px", fontSize: 13, color: "#22c55e" }}>
+                {success}
               </div>
             )}
 

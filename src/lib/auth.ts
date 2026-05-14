@@ -1,4 +1,4 @@
-import NextAuth from "next-auth";
+import NextAuth, { CredentialsSignin } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { z } from "zod";
 
@@ -30,6 +30,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
         const valid = await bcrypt.compare(password, user.passwordHash);
         if (!valid) return null;
+
+        if (!user.emailVerified) {
+          class UnverifiedEmailError extends CredentialsSignin {
+            code = "unverified_email";
+          }
+          throw new UnverifiedEmailError();
+        }
 
         return {
           id: user.id,

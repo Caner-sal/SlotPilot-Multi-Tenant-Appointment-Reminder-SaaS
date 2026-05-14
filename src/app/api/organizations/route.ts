@@ -1,5 +1,5 @@
-﻿import { db } from "@/lib/db";
-import { requireAuth, TenantError } from "@/lib/tenant";
+import { db } from "@/lib/db";
+import { getCurrentUser, TenantError } from "@/lib/tenant";
 import { createAuditLog } from "@/services/audit.service";
 import { organizationSchema } from "@/lib/validators";
 import { NextResponse } from "next/server";
@@ -7,7 +7,7 @@ import { z } from "zod";
 
 export async function POST(req: Request) {
   try {
-    const { user } = await requireAuth();
+    const user = await getCurrentUser();
     const body = await req.json();
     const parsed = organizationSchema.parse(body);
 

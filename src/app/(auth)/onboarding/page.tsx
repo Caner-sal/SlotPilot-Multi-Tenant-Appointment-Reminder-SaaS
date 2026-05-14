@@ -88,10 +88,11 @@ export default function OnboardingPage() {
 
     const data = await res.json();
     if (!res.ok) {
-      if (res.status === 409 || data.message?.toLowerCase().includes("slug")) {
+      const msg = data.error ?? data.message;
+      if (res.status === 409 || (typeof msg === "string" && msg.toLowerCase().includes("slug"))) {
         setError("Bu URL kısa adı kullanımda. Lütfen farklı bir kısa ad seçin.");
       } else {
-        setError(data.message ?? "Bir hata oluştu. Lütfen tekrar deneyin.");
+        setError(typeof msg === "string" ? msg : "Bir hata oluştu. Lütfen tekrar deneyin.");
       }
       setLoading(false);
       return;
