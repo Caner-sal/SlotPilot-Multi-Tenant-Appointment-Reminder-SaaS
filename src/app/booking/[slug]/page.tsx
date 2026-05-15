@@ -357,10 +357,10 @@ export default function BookingPage() {
             <div
               className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold ${
                 step > s
-                  ? "bg-blue-600 text-white"
+                  ? "bg-primary text-primary-foreground"
                   : step === s
-                  ? "bg-blue-600 text-white ring-4 ring-blue-100"
-                  : "bg-gray-200 text-muted-foreground"
+                  ? "bg-primary text-primary-foreground ring-4 ring-primary/20"
+                  : "bg-muted text-muted-foreground"
               }`}
             >
               {step > s ? (
@@ -372,7 +372,7 @@ export default function BookingPage() {
               )}
             </div>
             {s < 4 && (
-              <div className={`w-12 h-0.5 ${step > s ? "bg-blue-600" : "bg-gray-200"}`} />
+              <div className={`w-12 h-0.5 ${step > s ? "bg-primary" : "bg-muted"}`} />
             )}
           </div>
         ))}
@@ -390,11 +390,11 @@ export default function BookingPage() {
                   key={service.id}
                   onClick={() => selectService(service)}
                   data-testid="booking-service-option"
-                  className="w-full text-left bg-card border border-border hover:border-blue-400 hover:shadow-md rounded-xl p-5 transition-all group"
+                  className="w-full text-left bg-card border border-border hover:border-primary hover:shadow-md rounded-xl p-5 transition-all group"
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <h3 className="font-semibold text-foreground group-hover:text-blue-600 transition-colors">
+                      <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors">
                         {service.name}
                       </h3>
                       {service.description && (
@@ -416,7 +416,7 @@ export default function BookingPage() {
                       </div>
                     </div>
                     <div className="text-right ml-4 shrink-0">
-                      <span className="font-bold text-blue-600 text-lg">
+                      <span className="font-bold text-primary text-lg">
                         {formatPrice(service.priceCents, service.currency, dateLocale)}
                       </span>
                     </div>
@@ -432,7 +432,7 @@ export default function BookingPage() {
         <div className="space-y-6">
           <button
             onClick={() => setStep(1)}
-            className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 rounded-md"
+            className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-md"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <polyline points="15 18 9 12 15 6" />
@@ -458,11 +458,11 @@ export default function BookingPage() {
                     data-testid="booking-staff-option"
                     className={`p-3 rounded-xl border text-sm font-medium transition-colors ${
                       selectedStaff?.id === staff.id
-                        ? "border-blue-500 bg-blue-50 text-blue-700"
+                        ? "border-primary bg-primary/10 text-primary"
                         : "border-border hover:border-blue-300 text-foreground"
                     }`}
                   >
-                    <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-xs font-semibold text-muted-foreground mx-auto mb-1">
+                    <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-xs font-semibold text-muted-foreground mx-auto mb-1">
                       {staff.name.charAt(0).toUpperCase()}
                     </div>
                     {staff.name}
@@ -474,7 +474,7 @@ export default function BookingPage() {
 
           {staffList.length === 1 && (
             <div className="flex items-center gap-3 py-2">
-              <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 text-xs font-semibold">
+              <div className="w-8 h-8 rounded-full bg-primary/15 flex items-center justify-center text-primary text-xs font-semibold">
                 {staffList[0].name.charAt(0).toUpperCase()}
               </div>
               <div>
@@ -507,7 +507,7 @@ export default function BookingPage() {
             <button
               onClick={handleStaffAndDateComplete}
               data-testid="booking-view-slots"
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground py-3 rounded-xl font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             >
               {t("viewSlots")}
             </button>
@@ -519,7 +519,7 @@ export default function BookingPage() {
         <div className="space-y-6">
           <button
             onClick={() => setStep(2)}
-            className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 rounded-md"
+            className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-md"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <polyline points="15 18 9 12 15 6" />
@@ -545,7 +545,7 @@ export default function BookingPage() {
               <p className="text-muted-foreground">{slotsError}</p>
               <button
                 onClick={() => setStep(2)}
-                className="mt-4 text-blue-600 hover:underline text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 rounded-md"
+                className="mt-4 text-primary hover:underline text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-md"
               >
                 {t("differentDate")}
               </button>
@@ -564,7 +564,7 @@ export default function BookingPage() {
                     key={slot.startTime}
                     onClick={() => selectSlot(slot)}
                     data-testid="booking-slot-option"
-                    className="py-2.5 rounded-xl border border-border hover:border-blue-400 hover:bg-blue-50 text-sm font-medium text-foreground hover:text-blue-700 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                    className="py-2.5 rounded-xl border border-border hover:border-primary hover:bg-primary/10 text-sm font-medium text-foreground hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                   >
                     {time}
                   </button>
@@ -579,7 +579,7 @@ export default function BookingPage() {
         <div className="space-y-6">
           <button
             onClick={() => setStep(3)}
-            className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 rounded-md"
+            className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-md"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <polyline points="15 18 9 12 15 6" />
@@ -587,9 +587,9 @@ export default function BookingPage() {
             {tCommon("back")}
           </button>
 
-          <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
-            <h3 className="font-semibold text-blue-900 mb-2">{t("summaryTitle")}</h3>
-            <div className="space-y-1 text-sm text-blue-700">
+          <div className="bg-primary/5 border border-primary/20 rounded-xl p-4">
+            <h3 className="font-semibold text-foreground mb-2">{t("summaryTitle")}</h3>
+            <div className="space-y-1 text-sm text-foreground/80">
               <div className="flex justify-between">
                 <span>{t("serviceLabel")}</span>
                 <span className="font-medium">{selectedService.name}</span>
@@ -612,7 +612,7 @@ export default function BookingPage() {
               </div>
               <div className="flex justify-between">
                 <span>{tCommon("price")}</span>
-                <span className="font-bold text-blue-800">
+                <span className="font-bold text-foreground">
                   {formatPrice(selectedService.priceCents, selectedService.currency, dateLocale)}
                 </span>
               </div>
@@ -636,7 +636,7 @@ export default function BookingPage() {
                   minLength={2}
                   value={customerForm.name}
                   onChange={(e) => setCustomerForm({ ...customerForm, name: e.target.value })}
-                  className="w-full border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
                   placeholder={t("namePlaceholder")}
                 />
               </div>
@@ -649,7 +649,7 @@ export default function BookingPage() {
                   type="email"
                   value={customerForm.email}
                   onChange={(e) => setCustomerForm({ ...customerForm, email: e.target.value })}
-                  className="w-full border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
                   placeholder={t("emailPlaceholder")}
                 />
               </div>
@@ -662,7 +662,7 @@ export default function BookingPage() {
                   type="tel"
                   value={customerForm.phone}
                   onChange={(e) => setCustomerForm({ ...customerForm, phone: e.target.value })}
-                  className="w-full border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
                   placeholder={`${addressConfig.phoneCountryCode} 555 000 0000`}
                 />
               </div>
@@ -681,7 +681,7 @@ export default function BookingPage() {
                       postalCode: "",
                     })
                   }
-                  className="w-full border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
                 >
                   {COUNTRY_OPTIONS.map((country) => (
                     <option key={country.code} value={country.code}>
@@ -726,7 +726,7 @@ export default function BookingPage() {
                         onChange={(e) =>
                           setCustomerForm({ ...customerForm, adminLevel1: e.target.value, adminLevel2: "" })
                         }
-                        className="w-full border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
                       >
                         <option value="">{t("provincePlaceholder")}</option>
                         {TURKEY_PROVINCES.map((p) => (
@@ -745,7 +745,7 @@ export default function BookingPage() {
                         value={customerForm.adminLevel2}
                         onChange={(e) => setCustomerForm({ ...customerForm, adminLevel2: e.target.value })}
                         disabled={!customerForm.adminLevel1}
-                        className="w-full border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-muted disabled:text-muted-foreground"
+                        className="w-full border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring disabled:bg-muted disabled:text-muted-foreground"
                       >
                         <option value="">{t("districtPlaceholder")}</option>
                         {getDistrictsByProvince(customerForm.adminLevel1).map((d) => (
@@ -766,7 +766,7 @@ export default function BookingPage() {
                       <input
                         value={customerForm.adminLevel1}
                         onChange={(e) => setCustomerForm({ ...customerForm, adminLevel1: e.target.value })}
-                        className="w-full border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
                         placeholder={t("adminLevel1Placeholder")}
                       />
                     </div>
@@ -778,7 +778,7 @@ export default function BookingPage() {
                       <input
                         value={customerForm.adminLevel2}
                         onChange={(e) => setCustomerForm({ ...customerForm, adminLevel2: e.target.value })}
-                        className="w-full border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
                         placeholder={t("adminLevel2Placeholder")}
                       />
                     </div>
@@ -794,7 +794,7 @@ export default function BookingPage() {
                   <input
                     value={customerForm.postalCode}
                     onChange={(e) => setCustomerForm({ ...customerForm, postalCode: e.target.value })}
-                    className="w-full border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
                     placeholder={t("postalCodePlaceholder")}
                   />
                 </div>
@@ -807,7 +807,7 @@ export default function BookingPage() {
                 <textarea
                   value={customerForm.notes}
                   onChange={(e) => setCustomerForm({ ...customerForm, notes: e.target.value })}
-                  className="w-full border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
                   rows={2}
                   placeholder={t("notesPlaceholder")}
                 />
@@ -819,7 +819,7 @@ export default function BookingPage() {
                     required
                     checked={customerForm.privacyNoticeAcknowledged}
                     onChange={(e) => setCustomerForm({ ...customerForm, privacyNoticeAcknowledged: e.target.checked })}
-                    className="mt-0.5 h-4 w-4 rounded border-border text-blue-600 focus:ring-blue-500"
+                    className="mt-0.5 h-4 w-4 rounded border-border text-primary focus:ring-ring"
                   />
                   <span className="text-sm text-foreground">
                     <span className="text-red-500">*</span>{" "}
@@ -831,7 +831,7 @@ export default function BookingPage() {
                     type="checkbox"
                     checked={customerForm.appointmentNotificationConsent}
                     onChange={(e) => setCustomerForm({ ...customerForm, appointmentNotificationConsent: e.target.checked })}
-                    className="mt-0.5 h-4 w-4 rounded border-border text-blue-600 focus:ring-blue-500"
+                    className="mt-0.5 h-4 w-4 rounded border-border text-primary focus:ring-ring"
                   />
                   <span className="text-sm text-muted-foreground">
                     {t("reminderConsent")}
@@ -842,7 +842,7 @@ export default function BookingPage() {
                     type="checkbox"
                     checked={customerForm.marketingConsent}
                     onChange={(e) => setCustomerForm({ ...customerForm, marketingConsent: e.target.checked })}
-                    className="mt-0.5 h-4 w-4 rounded border-border text-blue-600 focus:ring-blue-500"
+                    className="mt-0.5 h-4 w-4 rounded border-border text-primary focus:ring-ring"
                   />
                   <span className="text-sm text-muted-foreground">
                     {t("marketingConsent")}
@@ -852,7 +852,7 @@ export default function BookingPage() {
               <button
                 type="submit"
                 disabled={submitting || !customerForm.privacyNoticeAcknowledged}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-semibold transition-colors disabled:opacity-60 text-sm"
+                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground py-3 rounded-xl font-semibold transition-colors disabled:opacity-60 text-sm"
               >
                 {submitting ? t("confirming") : t("confirm")}
               </button>
@@ -865,7 +865,7 @@ export default function BookingPage() {
         <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3">
           {chatOpen && (
             <div className="w-80 bg-card rounded-2xl shadow-2xl border border-border flex flex-col overflow-hidden">
-              <div className="bg-blue-600 px-4 py-3 flex items-center justify-between">
+              <div className="bg-primary px-4 py-3 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div className="w-6 h-6 rounded-full bg-card/20 flex items-center justify-center">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
@@ -895,7 +895,7 @@ export default function BookingPage() {
                     <div
                       className={`max-w-[85%] rounded-xl px-3 py-2 text-xs leading-relaxed ${
                         m.role === "user"
-                          ? "bg-blue-600 text-white"
+                          ? "bg-primary text-primary-foreground"
                           : "bg-muted text-foreground"
                       }`}
                     >
@@ -907,9 +907,9 @@ export default function BookingPage() {
                   <div className="flex justify-start">
                     <div className="bg-muted rounded-xl px-3 py-2">
                       <span className="flex gap-1">
-                        <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
-                        <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-                        <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                        <span className="w-1.5 h-1.5 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                        <span className="w-1.5 h-1.5 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                        <span className="w-1.5 h-1.5 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
                       </span>
                     </div>
                   </div>
@@ -921,13 +921,13 @@ export default function BookingPage() {
                   value={chatInput}
                   onChange={(e) => setChatInput(e.target.value)}
                   placeholder={t("aiPlaceholder")}
-                  className="flex-1 text-xs border border-border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="flex-1 text-xs border border-border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
                   disabled={chatLoading}
                 />
                 <button
                   type="submit"
                   disabled={chatLoading || !chatInput.trim()}
-                  className="bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-3 py-2 transition-colors disabled:opacity-50"
+                  className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg px-3 py-2 transition-colors disabled:opacity-50"
                 >
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <line x1="22" y1="2" x2="11" y2="13" /><polygon points="22 2 15 22 11 13 2 9 22 2" />
@@ -939,7 +939,7 @@ export default function BookingPage() {
 
           <button
             onClick={() => setChatOpen(!chatOpen)}
-            className="w-12 h-12 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg flex items-center justify-center transition-all hover:scale-105"
+            className="w-12 h-12 bg-primary hover:bg-primary/90 text-primary-foreground rounded-full shadow-lg flex items-center justify-center transition-all hover:scale-105"
             aria-label={t("aiAssistant")}
           >
             {chatOpen ? (
@@ -1015,7 +1015,7 @@ export default function BookingPage() {
 
           <button
             onClick={reset}
-            className="inline-flex items-center gap-2 border border-border hover:border-blue-400 hover:bg-blue-50 text-foreground px-6 py-2.5 rounded-xl text-sm font-medium transition-colors"
+            className="inline-flex items-center gap-2 border border-border hover:border-primary hover:bg-primary/10 text-foreground px-6 py-2.5 rounded-xl text-sm font-medium transition-colors"
           >
             {t("newBooking")}
           </button>

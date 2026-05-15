@@ -1,6 +1,52 @@
 # Randevo Compact State
 
-_Last updated: 2026-05-14_
+_Last updated: 2026-05-15_
+
+## 2026-05-15 GEOUI-0 / GEOUI-1 / GEOUI-2 Checkpoint
+
+- GEOUI-0 completed:
+  - Audited all geo locale, UI copy, and design system bugs.
+  - Created: `docs/geoui-bug-audit.md` (9 bugs documented with file:line references).
+  - No code changes.
+
+- GEOUI-1 completed:
+  - Fixed root cause of local dev German locale: `resolveFallback` now returns `"tr"` (was `"en"`).
+    File: `src/i18n/request-locale.ts:142`
+  - Created `src/config/locale-market.ts`: MARKET_DEFAULTS with `landingVariant` per country.
+  - Created `src/lib/geo/detect-country.ts`: server-side country header helper.
+  - Created `src/lib/geo/detect-locale.ts`: server component locale resolver.
+  - Created `src/lib/geo/market-context.ts`: `getMarketConfig` / `getMarketConfigFromHeaders`.
+  - Created `src/tests/geo-locale.test.ts`: 22 unit tests.
+  - Updated `src/tests/request-locale.test.ts`: expect `tr` fallback.
+
+- GEOUI-2 completed:
+  - `src/middleware.ts`: adds `randevo_country` and `randevo_locale_source` cookies.
+    When `randevo_locale_source=manual`, IP geolocation is skipped.
+  - `src/components/i18n/LanguageSwitcher.tsx`: sets `randevo_locale_source=manual` on
+    manual locale switch, preventing IP from overriding user's choice.
+
+- Verification snapshot (GEOUI-2):
+  - `npm run lint` PASS
+  - `npm test` PASS (71 files, 428 tests)
+  - `npx prisma validate` FAIL in this workspace path context (`&` parsing) — known issue
+
+
+
+## 2026-05-15 GEOUI-4 / GEOUI-5 Checkpoint
+
+- GEOUI-4 completed:
+  - Replaced hard-coded light-mode Tailwind classes with semantic tokens.
+  - `src/app/booking/[slug]/layout.tsx`: bg-background, bg-card, border-border, text-foreground, text-primary
+  - `src/app/marketplace/page.tsx`: full token replacement + input/select dark theme
+  - `src/app/marketplace/[slug]/page.tsx`: full token replacement
+
+- GEOUI-5 completed:
+  - `src/components/ui/calendar.tsx`: `month_grid` now `table-fixed`, `weekday` and `day` use `flex-1`
+  - `src/components/booking/BookingDatePicker.tsx`: removed `w-[14.285%]` overrides, uses `flex-1` from base
+
+- Verification snapshot (GEOUI-5):
+  - `npm run lint` PASS
+  - `npm test` PASS (71 files, 428 tests)
 
 ## 2026-05-15 CALUI-0 / CALUI-1 Checkpoint
 
