@@ -55,10 +55,10 @@ export default function BookingDatePicker({
         classNames={{
           months: "w-full",
           month: "w-full",
-          month_grid: "w-full",
-          weekday: "w-[14.285%] text-center",
-          week: "w-full",
-          day: "w-[14.285%] h-10",
+          month_grid: "w-full table-fixed",
+          weekday: "flex-1 text-center",
+          week: "w-full flex",
+          day: "flex-1 h-10",
           day_button: "h-9 w-9 rounded-md mx-auto",
         }}
         formatters={{

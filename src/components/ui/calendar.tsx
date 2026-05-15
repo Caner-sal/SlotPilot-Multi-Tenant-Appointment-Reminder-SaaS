@@ -32,11 +32,11 @@ function Calendar({
           buttonVariants({ variant: "outline", size: "icon" }),
           "absolute right-1 h-7 w-7 rounded-md border-border bg-background p-0 opacity-90 hover:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         ),
-        month_grid: "w-full border-collapse",
+        month_grid: "w-full border-collapse table-fixed",
         weekdays: "flex",
-        weekday: "w-9 text-[0.8rem] font-medium text-muted-foreground",
+        weekday: "flex-1 text-center text-[0.8rem] font-medium text-muted-foreground",
         week: "mt-1 flex w-full",
-        day: "h-9 w-9 p-0 text-center text-sm",
+        day: "flex-1 h-9 p-0 text-center text-sm",
         day_button: cn(
           buttonVariants({ variant: "ghost" }),
           "h-9 w-9 rounded-md p-0 font-normal aria-selected:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
