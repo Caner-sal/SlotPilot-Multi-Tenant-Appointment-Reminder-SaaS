@@ -208,6 +208,7 @@
   "auth": {
     "loginTitle": "Bon retour",
     "loginSubtitle": "Connectez-vous à votre tableau de bord.",
+    "loginError": "Invalid email or password.",
     "emailLabel": "E-mail",
     "emailInvalid": "Adresse e-mail invalide.",
     "passwordLabel": "Mot de passe",

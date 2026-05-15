@@ -208,6 +208,7 @@
   "auth": {
     "loginTitle": "С возвращением",
     "loginSubtitle": "Sign in to your бизнес dashboard.",
+    "loginError": "Invalid email or password.",
     "emailLabel": "Эл. почта",
     "emailInvalid": "Неверный email адрес.",
     "passwordLabel": "Пароль",

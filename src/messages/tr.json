@@ -208,6 +208,7 @@
   "auth": {
     "loginTitle": "Tekrar hoş geldiniz",
     "loginSubtitle": "İşletme panelinize giriş yapın.",
+    "loginError": "E-posta veya şifre hatalı.",
     "emailLabel": "E-posta",
     "emailInvalid": "E-posta hatalı.",
     "passwordLabel": "Şifre",

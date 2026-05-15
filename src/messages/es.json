@@ -208,6 +208,7 @@
   "auth": {
     "loginTitle": "Bienvenido de nuevo",
     "loginSubtitle": "Inicia sesión en el panel de tu negocio.",
+    "loginError": "Invalid email or password.",
     "emailLabel": "Correo electronico",
     "emailInvalid": "Dirección de correo no válida.",
     "passwordLabel": "Contraseña",

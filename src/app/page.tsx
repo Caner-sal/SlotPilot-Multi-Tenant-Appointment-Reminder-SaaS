@@ -1,6 +1,8 @@
+import { cookies } from "next/headers";
 import { Link } from "@/i18n/navigation";
 import LanguageSwitcher from "@/components/i18n/LanguageSwitcher";
 import { getTranslations } from "next-intl/server";
+import { getMarketConfig } from "@/config/locale-market";
 
 const RandevoLogo = () => (
   <svg width="30" height="30" viewBox="0 0 32 32" fill="none">
@@ -21,6 +23,10 @@ const CheckIcon = ({ color = "#7768d4" }: { color?: string }) => (
 
 export default async function HomePage() {
   const t = await getTranslations("landing");
+  const cookieStore = await cookies();
+  const country = cookieStore.get("randevo_country")?.value ?? "TR";
+  const market = getMarketConfig(country);
+  const isTurkey = market.landingVariant === "turkey";
 
   const featureCards = [
     {
@@ -41,7 +47,7 @@ export default async function HomePage() {
         </svg>
       ),
     },
-    {
+    ...(isTurkey ? [{
       title: t("f3Title"),
       desc: t("f3Desc"),
       icon: (
@@ -49,7 +55,7 @@ export default async function HomePage() {
           <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" />
         </svg>
       ),
-    },
+    }] : []),
     {
       title: t("f4Title"),
       desc: t("f4Desc"),
@@ -166,11 +172,13 @@ export default async function HomePage() {
         }} />
 
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 28px", position: "relative", zIndex: 1 }}>
-          {/* badge */}
-          <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(119,104,212,0.1)", border: "1px solid rgba(119,104,212,0.28)", borderRadius: 100, padding: "5px 16px", marginBottom: 30 }}>
-            <span style={{ width: 6, height: 6, background: "#a59cf0", borderRadius: "50%", animation: "blink 2.2s infinite", flexShrink: 0 }} />
-            <span style={{ fontSize: 12, fontWeight: 700, color: "#a59cf0", textTransform: "uppercase", letterSpacing: "0.08em", fontFamily: "var(--font-heading, Outfit, sans-serif)" }}>{t("heroBadge")}</span>
-          </div>
+          {/* badge — TR only */}
+          {isTurkey && (
+            <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(119,104,212,0.1)", border: "1px solid rgba(119,104,212,0.28)", borderRadius: 100, padding: "5px 16px", marginBottom: 30 }}>
+              <span style={{ width: 6, height: 6, background: "#a59cf0", borderRadius: "50%", animation: "blink 2.2s infinite", flexShrink: 0 }} />
+              <span style={{ fontSize: 12, fontWeight: 700, color: "#a59cf0", textTransform: "uppercase", letterSpacing: "0.08em", fontFamily: "var(--font-heading, Outfit, sans-serif)" }}>{t("heroBadge")}</span>
+            </div>
+          )}
           <style>{`@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}`}</style>
 
           <h1 style={{ fontFamily: "var(--font-heading, Outfit, sans-serif)", fontSize: "clamp(46px,7.5vw,84px)", fontWeight: 800, lineHeight: 1.06, letterSpacing: "-0.04em", marginBottom: 22 }}>
@@ -200,7 +208,7 @@ export default async function HomePage() {
             {[
               ["500+", t("statBusinesses")],
               ["12K+", t("statMonthly")],
-              [t("statSupportValue"), t("statSupport")],
+              ...(isTurkey ? [[t("statSupportValue"), t("statSupport")] as [string, string]] : []),
               ["%94", t("statCompletion")],
             ].map(([num, label]) => (
               <div key={label} style={{ textAlign: "center" }}>

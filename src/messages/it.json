@@ -208,6 +208,7 @@
   "auth": {
     "loginTitle": "Bentornato",
     "loginSubtitle": "Accedi alla dashboard della tua attività.",
+    "loginError": "Invalid email or password.",
     "emailLabel": "Email",
     "emailInvalid": "Indirizzo email non valido.",
     "passwordLabel": "Password",

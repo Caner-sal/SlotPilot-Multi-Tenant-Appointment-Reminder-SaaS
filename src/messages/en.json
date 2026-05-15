@@ -208,6 +208,7 @@
   "auth": {
     "loginTitle": "Welcome back",
     "loginSubtitle": "Sign in to your business dashboard.",
+    "loginError": "Invalid email or password.",
     "emailLabel": "Email",
     "emailInvalid": "Invalid email address.",
     "passwordLabel": "Password",

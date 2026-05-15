@@ -333,6 +333,7 @@
   "auth": {
     "loginTitle": "مرحباً بعودتك",
     "loginSubtitle": "سجّل الدخول إلى لوحة تحكم عملك.",
+    "loginError": "Invalid email or password.",
     "emailLabel": "البريد الإلكتروني",
     "emailInvalid": "عنوان البريد الإلكتروني غير صحيح.",
     "passwordLabel": "كلمة المرور",

@@ -333,6 +333,7 @@
   "auth": {
     "loginTitle": "Willkommen zurück",
     "loginSubtitle": "Melden Sie sich bei Ihrem Dashboard an.",
+    "loginError": "Invalid email or password.",
     "emailLabel": "E-Mail",
     "emailInvalid": "Ungültige E-Mail-Adresse.",
     "passwordLabel": "Passwort",

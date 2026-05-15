@@ -208,6 +208,7 @@
   "auth": {
     "loginTitle": "خوش آمدید",
     "loginSubtitle": "به پنل کسب‌وکار خود وارد شوید.",
+    "loginError": "Invalid email or password.",
     "emailLabel": "ایمیل",
     "emailInvalid": "ایمیل معتبر نیست.",
     "passwordLabel": "رمز عبور",

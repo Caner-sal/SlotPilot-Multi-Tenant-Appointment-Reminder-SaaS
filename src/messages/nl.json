@@ -208,6 +208,7 @@
   "auth": {
     "loginTitle": "Welkom terug",
     "loginSubtitle": "Sign in to your bedrijf dashboard.",
+    "loginError": "Invalid email or password.",
     "emailLabel": "E-mail",
     "emailInvalid": "Ongeldig e-mailadres.",
     "passwordLabel": "Wachtwoord",
