@@ -43,7 +43,7 @@ export default function StaffDashboardPage() {
   }, []);
 
   if (loading) {
-    return <div className="rounded-lg border bg-white p-6 text-sm text-gray-600">Loading dashboard...</div>;
+    return <div className="rounded-lg border bg-card p-6 text-sm text-muted-foreground">Loading dashboard...</div>;
   }
 
   if (error || !data) {
@@ -58,38 +58,38 @@ export default function StaffDashboardPage() {
 
   return (
     <div>
-      <h1 className="mb-6 text-2xl font-bold text-gray-900">{t("welcomeBack", { name: data.name })}</h1>
+      <h1 className="mb-6 text-2xl font-bold text-foreground">{t("welcomeBack", { name: data.name })}</h1>
 
       <div className="mb-8 grid grid-cols-2 gap-4 md:grid-cols-4">
-        <div className="rounded-lg border bg-white p-4">
-          <p className="text-sm text-gray-500">{t("todayAppointments")}</p>
-          <p className="mt-1 text-3xl font-bold text-gray-900">{data.metrics.todayAppointments}</p>
+        <div className="rounded-lg border bg-card p-4">
+          <p className="text-sm text-muted-foreground">{t("todayAppointments")}</p>
+          <p className="mt-1 text-3xl font-bold text-foreground">{data.metrics.todayAppointments}</p>
         </div>
-        <div className="rounded-lg border bg-white p-4">
-          <p className="text-sm text-gray-500">This week</p>
+        <div className="rounded-lg border bg-card p-4">
+          <p className="text-sm text-muted-foreground">This week</p>
           <p className="mt-1 text-3xl font-bold text-blue-700">{data.metrics.weekAppointments}</p>
         </div>
-        <div className="rounded-lg border bg-white p-4">
-          <p className="text-sm text-gray-500">Completed</p>
+        <div className="rounded-lg border bg-card p-4">
+          <p className="text-sm text-muted-foreground">Completed</p>
           <p className="mt-1 text-3xl font-bold text-green-700">{data.metrics.completedAppointments}</p>
         </div>
-        <div className="rounded-lg border bg-white p-4">
-          <p className="text-sm text-gray-500">No-show</p>
-          <p className="mt-1 text-3xl font-bold text-gray-700">{data.metrics.noShowAppointments}</p>
+        <div className="rounded-lg border bg-card p-4">
+          <p className="text-sm text-muted-foreground">No-show</p>
+          <p className="mt-1 text-3xl font-bold text-foreground/90">{data.metrics.noShowAppointments}</p>
         </div>
       </div>
 
-      <div className="rounded-lg border bg-white p-4">
-        <h2 className="mb-3 font-semibold text-gray-900">Next appointment</h2>
+      <div className="rounded-lg border bg-card p-4">
+        <h2 className="mb-3 font-semibold text-foreground">Next appointment</h2>
         {next ? (
           <div className="flex items-center justify-between">
             <div>
-              <p className="font-medium text-gray-900">{next.customer.fullName}</p>
-              <p className="text-sm text-gray-500">{next.service.name}</p>
+              <p className="font-medium text-foreground">{next.customer.fullName}</p>
+              <p className="text-sm text-muted-foreground">{next.service.name}</p>
             </div>
             <div className="text-right text-sm">
               <p>{new Date(next.startTime).toLocaleDateString("tr-TR", { timeZone: "Europe/Istanbul" })}</p>
-              <p className="text-gray-500">
+              <p className="text-muted-foreground">
                 {new Date(next.startTime).toLocaleTimeString("tr-TR", {
                   hour: "2-digit",
                   minute: "2-digit",
@@ -99,7 +99,7 @@ export default function StaffDashboardPage() {
             </div>
           </div>
         ) : (
-          <p className="text-sm text-gray-500">{t("noUpcoming")}</p>
+          <p className="text-sm text-muted-foreground">{t("noUpcoming")}</p>
         )}
       </div>
 

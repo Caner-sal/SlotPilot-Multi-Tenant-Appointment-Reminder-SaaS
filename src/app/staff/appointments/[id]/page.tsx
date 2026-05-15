@@ -60,7 +60,7 @@ export default function StaffAppointmentDetailPage() {
   }
 
   if (loading) {
-    return <div className="rounded-lg border bg-white p-6 text-sm text-gray-600">Loading appointment...</div>;
+    return <div className="rounded-lg border bg-card p-6 text-sm text-muted-foreground">Loading appointment...</div>;
   }
 
   if (!appointment) {
@@ -73,23 +73,23 @@ export default function StaffAppointmentDetailPage() {
 
   return (
     <div className="max-w-2xl space-y-4">
-      <div className="rounded-lg border bg-white p-5">
-        <h1 className="mb-3 text-xl font-semibold text-gray-900">Appointment details</h1>
-        <p className="text-sm text-gray-500">Status: {appointment.status}</p>
-        <p className="text-sm text-gray-700">
+      <div className="rounded-lg border bg-card p-5">
+        <h1 className="mb-3 text-xl font-semibold text-foreground">Appointment details</h1>
+        <p className="text-sm text-muted-foreground">Status: {appointment.status}</p>
+        <p className="text-sm text-foreground/90">
           {new Date(appointment.startTime).toLocaleString("tr-TR", { timeZone: "Europe/Istanbul" })}
         </p>
-        <p className="text-sm text-gray-700">
+        <p className="text-sm text-foreground/90">
           Service: {appointment.service.name} ({appointment.service.durationMinutes} min)
         </p>
-        <p className="text-sm text-gray-700">
+        <p className="text-sm text-foreground/90">
           Customer: {appointment.customer.fullName} ({appointment.customer.phone ?? appointment.customer.email ?? "-"})
         </p>
-        {appointment.notes ? <p className="mt-2 text-sm text-gray-700">Notes: {appointment.notes}</p> : null}
+        {appointment.notes ? <p className="mt-2 text-sm text-foreground/90">Notes: {appointment.notes}</p> : null}
       </div>
 
-      <div className="rounded-lg border bg-white p-5">
-        <h2 className="mb-3 font-semibold text-gray-900">Update status</h2>
+      <div className="rounded-lg border bg-card p-5">
+        <h2 className="mb-3 font-semibold text-foreground">Update status</h2>
         <div className="flex gap-3">
           <button
             disabled={saving}

@@ -126,8 +126,8 @@ export default function ServicesPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">{t("title")}</h1>
-          <p className="text-sm text-gray-500 mt-1">{t("subtitle")}</p>
+          <h1 className="text-2xl font-bold text-foreground">{t("title")}</h1>
+          <p className="text-sm text-muted-foreground mt-1">{t("subtitle")}</p>
         </div>
         <button
           onClick={openAddDialog}
@@ -141,35 +141,35 @@ export default function ServicesPage() {
         </button>
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+      <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
         {loading ? (
-          <div className="p-10 text-center text-gray-400">{tCommon("loading")}</div>
+          <div className="p-10 text-center text-muted-foreground/80">{tCommon("loading")}</div>
         ) : services.length === 0 ? (
-          <div className="p-10 text-center text-gray-400">
+          <div className="p-10 text-center text-muted-foreground/80">
             {t("notFound")}
           </div>
         ) : (
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-gray-100 bg-gray-50">
-                <th className="px-5 py-3 text-left font-semibold text-gray-600">{t("nameCol")}</th>
-                <th className="px-5 py-3 text-left font-semibold text-gray-600">{t("durationCol")}</th>
-                <th className="px-5 py-3 text-left font-semibold text-gray-600">{t("priceCol")}</th>
-                <th className="px-5 py-3 text-left font-semibold text-gray-600">{tCommon("status")}</th>
-                <th className="px-5 py-3 text-right font-semibold text-gray-600">{tCommon("actions")}</th>
+              <tr className="border-b border-border/70 bg-muted/40">
+                <th className="px-5 py-3 text-left font-semibold text-muted-foreground">{t("nameCol")}</th>
+                <th className="px-5 py-3 text-left font-semibold text-muted-foreground">{t("durationCol")}</th>
+                <th className="px-5 py-3 text-left font-semibold text-muted-foreground">{t("priceCol")}</th>
+                <th className="px-5 py-3 text-left font-semibold text-muted-foreground">{tCommon("status")}</th>
+                <th className="px-5 py-3 text-right font-semibold text-muted-foreground">{tCommon("actions")}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
               {services.map((service) => (
-                <tr key={service.id} className="hover:bg-gray-50 transition-colors">
+                <tr key={service.id} className="hover:bg-muted/40 transition-colors">
                   <td className="px-5 py-3.5">
-                    <div className="font-medium text-gray-900">{service.name}</div>
+                    <div className="font-medium text-foreground">{service.name}</div>
                     {service.description && (
-                      <div className="text-xs text-gray-400 mt-0.5 line-clamp-1">{service.description}</div>
+                      <div className="text-xs text-muted-foreground/80 mt-0.5 line-clamp-1">{service.description}</div>
                     )}
                   </td>
-                  <td className="px-5 py-3.5 text-gray-600">{service.durationMinutes} {tCommon("min")}</td>
-                  <td className="px-5 py-3.5 text-gray-600">
+                  <td className="px-5 py-3.5 text-muted-foreground">{service.durationMinutes} {tCommon("min")}</td>
+                  <td className="px-5 py-3.5 text-muted-foreground">
                     {formatPrice(service.priceCents, service.currency)}
                   </td>
                   <td className="px-5 py-3.5">
@@ -177,7 +177,7 @@ export default function ServicesPage() {
                       className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                         service.isActive
                           ? "bg-green-100 text-green-700"
-                          : "bg-gray-100 text-gray-500"
+                          : "bg-muted text-muted-foreground"
                       }`}
                     >
                       {service.isActive ? tCommon("active") : tCommon("passive")}
@@ -193,7 +193,7 @@ export default function ServicesPage() {
                       </button>
                       <button
                         onClick={() => toggleActive(service)}
-                        className="text-gray-500 hover:text-gray-700 text-xs font-medium px-2 py-1 rounded hover:bg-gray-100 transition-colors"
+                        className="text-muted-foreground hover:text-foreground/90 text-xs font-medium px-2 py-1 rounded hover:bg-muted transition-colors"
                       >
                         {service.isActive ? t("deactivate") : t("activate")}
                       </button>
@@ -214,14 +214,14 @@ export default function ServicesPage() {
 
       {dialogOpen && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-md">
-            <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
-              <h2 className="font-semibold text-gray-900">
+          <div className="bg-card rounded-xl shadow-xl w-full max-w-md">
+            <div className="px-6 py-4 border-b border-border/70 flex items-center justify-between">
+              <h2 className="font-semibold text-foreground">
                 {editingService ? t("editService") : t("addService")}
               </h2>
               <button
                 onClick={() => setDialogOpen(false)}
-                className="text-gray-400 hover:text-gray-600"
+                className="text-muted-foreground/80 hover:text-muted-foreground"
               >
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <line x1="18" y1="6" x2="6" y2="18" />
@@ -236,28 +236,28 @@ export default function ServicesPage() {
                 </div>
               )}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Ad *</label>
+                <label className="block text-sm font-medium text-foreground/90 mb-1">Ad *</label>
                 <input
                   required
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder={t("namePlaceholder")}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">{tCommon("description")}</label>
+                <label className="block text-sm font-medium text-foreground/90 mb-1">{tCommon("description")}</label>
                 <textarea
                   value={form.description}
                   onChange={(e) => setForm({ ...form, description: e.target.value })}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   rows={2}
                   placeholder={t("descPlaceholder")}
                 />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">{t("durationLabel")}</label>
+                  <label className="block text-sm font-medium text-foreground/90 mb-1">{t("durationLabel")}</label>
                   <input
                     required
                     type="number"
@@ -265,11 +265,11 @@ export default function ServicesPage() {
                     max={480}
                     value={form.durationMinutes}
                     onChange={(e) => setForm({ ...form, durationMinutes: Number(e.target.value) })}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">{t("priceLabel")}</label>
+                  <label className="block text-sm font-medium text-foreground/90 mb-1">{t("priceLabel")}</label>
                   <input
                     required
                     type="number"
@@ -279,16 +279,16 @@ export default function ServicesPage() {
                     onChange={(e) =>
                       setForm({ ...form, priceCents: Math.round(Number(e.target.value) * 100) })
                     }
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">{t("currencyLabel")}</label>
+                <label className="block text-sm font-medium text-foreground/90 mb-1">{t("currencyLabel")}</label>
                 <select
                   value={form.currency}
                   onChange={(e) => setForm({ ...form, currency: e.target.value })}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="TRY">{t("tryLabel")}</option>
                   <option value="USD">{t("usdLabel")}</option>
@@ -304,7 +304,7 @@ export default function ServicesPage() {
                   onChange={(e) => setForm({ ...form, isActive: e.target.checked })}
                   className="rounded"
                 />
-                <label htmlFor="isActive" className="text-sm text-gray-700">
+                <label htmlFor="isActive" className="text-sm text-foreground/90">
                   {t("activeVisible")}
                 </label>
               </div>
@@ -312,7 +312,7 @@ export default function ServicesPage() {
                 <button
                   type="button"
                   onClick={() => setDialogOpen(false)}
-                  className="flex-1 border border-gray-300 text-gray-700 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors"
+                  className="flex-1 border border-border text-foreground/90 py-2 rounded-lg text-sm font-medium hover:bg-muted/40 transition-colors"
                 >
                   {tCommon("cancel")}
                 </button>

@@ -62,21 +62,21 @@ export default async function AdminOverviewPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Platform Genel Bakış</h1>
-        <p className="text-sm text-gray-500">Sistem genelindeki işletme, abonelik ve kullanım metrikleri</p>
+        <h1 className="text-2xl font-bold text-foreground">Platform Genel Bakış</h1>
+        <p className="text-sm text-muted-foreground">Sistem genelindeki işletme, abonelik ve kullanım metrikleri</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {stats.map((s) => (
-          <div key={s.label} className="bg-white rounded-lg border p-4">
-            <p className="text-sm text-gray-500">{s.label}</p>
-            <p className="text-3xl font-bold text-gray-900 mt-1">{s.value}</p>
+          <div key={s.label} className="bg-card rounded-lg border p-4">
+            <p className="text-sm text-muted-foreground">{s.label}</p>
+            <p className="text-3xl font-bold text-foreground mt-1">{s.value}</p>
           </div>
         ))}
       </div>
 
-      <div className="bg-white rounded-lg border p-4">
-        <h2 className="font-semibold text-gray-900 mb-3">Free / Starter / Pro dağılımı</h2>
+      <div className="bg-card rounded-lg border p-4">
+        <h2 className="font-semibold text-foreground mb-3">Free / Starter / Pro dağılımı</h2>
         <div className="flex gap-4 text-sm">
           {["FREE", "STARTER", "PRO"].map((plan) => (
             <div key={plan}>
@@ -86,21 +86,21 @@ export default async function AdminOverviewPage() {
         </div>
       </div>
 
-      <div className="bg-white rounded-lg border p-4">
-        <h2 className="font-semibold text-gray-900 mb-3">Son audit kayıtları</h2>
+      <div className="bg-card rounded-lg border p-4">
+        <h2 className="font-semibold text-foreground mb-3">Son audit kayıtları</h2>
         {recentLogs.length === 0 ? (
-          <p className="text-sm text-gray-500">Henüz audit kaydı yok.</p>
+          <p className="text-sm text-muted-foreground">Henüz audit kaydı yok.</p>
         ) : (
           <div className="space-y-2">
             {recentLogs.map((log) => (
               <div key={log.id} className="border rounded p-3 text-sm">
-                <p className="font-mono text-xs text-gray-700">{log.action}</p>
-                <p className="text-gray-600">
+                <p className="font-mono text-xs text-foreground/90">{log.action}</p>
+                <p className="text-muted-foreground">
                   {log.organization?.name ? `${log.organization.name} (${log.organization.slug})` : "Platform"}
                   {" · "}
                   {log.actor?.name ?? log.actor?.email ?? "Sistem"}
                 </p>
-                <p className="text-xs text-gray-500">{new Date(log.createdAt).toLocaleString("tr-TR")}</p>
+                <p className="text-xs text-muted-foreground">{new Date(log.createdAt).toLocaleString("tr-TR")}</p>
               </div>
             ))}
           </div>

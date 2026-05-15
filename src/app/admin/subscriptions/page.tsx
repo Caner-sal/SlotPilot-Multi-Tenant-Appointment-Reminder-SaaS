@@ -91,8 +91,8 @@ export default function AdminSubscriptionsPage() {
   return (
     <div className="space-y-4">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Abonelikler</h1>
-        <p className="text-sm text-gray-500">Plan dağılımı, ödeme bekleyen hesaplar ve abonelik listesi</p>
+        <h1 className="text-2xl font-bold text-foreground">Abonelikler</h1>
+        <p className="text-sm text-muted-foreground">Plan dağılımı, ödeme bekleyen hesaplar ve abonelik listesi</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
@@ -147,11 +147,11 @@ export default function AdminSubscriptionsPage() {
       {error ? <div className="text-sm text-red-600">{error}</div> : null}
 
       {loading ? (
-        <div className="text-sm text-gray-600">Yükleniyor...</div>
+        <div className="text-sm text-muted-foreground">Yükleniyor...</div>
       ) : (
-        <div className="bg-white rounded border overflow-hidden">
+        <div className="bg-card rounded border overflow-hidden">
           <table className="w-full text-sm">
-            <thead className="bg-gray-50 border-b">
+            <thead className="bg-muted/40 border-b">
               <tr>
                 <th className="text-left p-3">İşletme</th>
                 <th className="text-left p-3">Plan</th>
@@ -164,19 +164,19 @@ export default function AdminSubscriptionsPage() {
               {(data?.items ?? []).map((row) => (
                 <tr key={row.id} className="border-t align-top">
                   <td className="p-3">
-                    <p className="font-medium text-gray-900">{row.organization.name}</p>
-                    <p className="text-xs text-gray-500">/{row.organization.slug}</p>
-                    <p className="text-xs text-gray-500">{row.organization.email ?? "-"}</p>
+                    <p className="font-medium text-foreground">{row.organization.name}</p>
+                    <p className="text-xs text-muted-foreground">/{row.organization.slug}</p>
+                    <p className="text-xs text-muted-foreground">{row.organization.email ?? "-"}</p>
                   </td>
                   <td className="p-3">{row.plan}</td>
                   <td className="p-3">{row.status}</td>
                   <td className="p-3">{row.currentPeriodEnd ? new Date(row.currentPeriodEnd).toLocaleDateString("tr-TR") : "-"}</td>
-                  <td className="p-3 text-gray-500">{new Date(row.updatedAt).toLocaleString("tr-TR")}</td>
+                  <td className="p-3 text-muted-foreground">{new Date(row.updatedAt).toLocaleString("tr-TR")}</td>
                 </tr>
               ))}
               {(data?.items.length ?? 0) === 0 ? (
                 <tr>
-                  <td className="p-3 text-gray-500" colSpan={5}>Kayıt bulunamadı.</td>
+                  <td className="p-3 text-muted-foreground" colSpan={5}>Kayıt bulunamadı.</td>
                 </tr>
               ) : null}
             </tbody>
@@ -206,9 +206,9 @@ export default function AdminSubscriptionsPage() {
 
 function StatCard({ label, value, danger }: { label: string; value: number; danger?: boolean }) {
   return (
-    <div className="bg-white rounded border p-4">
-      <p className="text-sm text-gray-500">{label}</p>
-      <p className={`text-2xl font-bold mt-1 ${danger ? "text-red-600" : "text-gray-900"}`}>{value}</p>
+    <div className="bg-card rounded border p-4">
+      <p className="text-sm text-muted-foreground">{label}</p>
+      <p className={`text-2xl font-bold mt-1 ${danger ? "text-red-600" : "text-foreground"}`}>{value}</p>
     </div>
   );
 }

@@ -84,8 +84,8 @@ export default function AdminUsagePage() {
   return (
     <div className="space-y-4">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Kullanım</h1>
-        <p className="text-sm text-gray-500">Organizasyon bazlı randevu, ekip ve abonelik görünümü</p>
+        <h1 className="text-2xl font-bold text-foreground">Kullanım</h1>
+        <p className="text-sm text-muted-foreground">Organizasyon bazlı randevu, ekip ve abonelik görünümü</p>
       </div>
 
       {summary ? (
@@ -104,11 +104,11 @@ export default function AdminUsagePage() {
       {error ? <div className="text-sm text-red-600">{error}</div> : null}
 
       {loading ? (
-        <div className="text-sm text-gray-600">Yükleniyor...</div>
+        <div className="text-sm text-muted-foreground">Yükleniyor...</div>
       ) : (
-        <div className="bg-white rounded border overflow-hidden">
+        <div className="bg-card rounded border overflow-hidden">
           <table className="w-full text-sm">
-            <thead className="bg-gray-50 border-b">
+            <thead className="bg-muted/40 border-b">
               <tr>
                 <th className="text-left p-3">İşletme</th>
                 <th className="text-left p-3">Bu Ay</th>
@@ -123,8 +123,8 @@ export default function AdminUsagePage() {
               {(data?.items ?? []).map((row) => (
                 <tr key={row.id} className="border-t align-top">
                   <td className="p-3">
-                    <p className="font-medium text-gray-900">{row.name}</p>
-                    <p className="text-xs text-gray-500">/{row.slug}</p>
+                    <p className="font-medium text-foreground">{row.name}</p>
+                    <p className="text-xs text-muted-foreground">/{row.slug}</p>
                   </td>
                   <td className="p-3">{row.monthlyAppointments}</td>
                   <td className="p-3">{row._count.appointments}</td>
@@ -142,7 +142,7 @@ export default function AdminUsagePage() {
               ))}
               {(data?.items.length ?? 0) === 0 ? (
                 <tr>
-                  <td className="p-3 text-gray-500" colSpan={7}>Kayıt bulunamadı.</td>
+                  <td className="p-3 text-muted-foreground" colSpan={7}>Kayıt bulunamadı.</td>
                 </tr>
               ) : null}
             </tbody>
@@ -172,9 +172,9 @@ export default function AdminUsagePage() {
 
 function StatCard({ label, value, danger }: { label: string; value: number; danger?: boolean }) {
   return (
-    <div className="bg-white rounded border p-4">
-      <p className="text-sm text-gray-500">{label}</p>
-      <p className={`text-2xl font-bold mt-1 ${danger ? "text-red-600" : "text-gray-900"}`}>{value}</p>
+    <div className="bg-card rounded border p-4">
+      <p className="text-sm text-muted-foreground">{label}</p>
+      <p className={`text-2xl font-bold mt-1 ${danger ? "text-red-600" : "text-foreground"}`}>{value}</p>
     </div>
   );
 }

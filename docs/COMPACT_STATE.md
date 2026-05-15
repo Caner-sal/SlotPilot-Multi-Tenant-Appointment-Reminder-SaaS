@@ -34,6 +34,35 @@ _Last updated: 2026-05-14_
     - `node .\\node_modules\\prisma\\build\\index.js validate`
     - `node .\\node_modules\\prisma\\build\\index.js generate`
 
+## 2026-05-15 CALUI-2 / CALUI-3 Checkpoint
+
+- CALUI-2 completed:
+  - Normalized booking slots API date parsing with first-class `YYYY-MM-DD` support and ISO datetime compatibility.
+  - Added route response meta (`isUnavailableDay`) and preserved existing booking engine contract.
+  - Added client-side unavailable date memory in booking flow to mark known no-slot days on the calendar.
+  - Added route tests:
+    - `src/tests/booking-slots-route.test.ts`
+- CALUI-3 completed:
+  - Refactored dashboard/admin/staff surfaces to token-driven theme classes (`card`, `foreground`, `muted`, `border`) and removed hard-coded light-mode classes in target directories.
+  - Audited and aligned listed routes under:
+    - `/dashboard/*`
+    - `/admin/*`
+    - `/staff/*`
+  - Added guardrail test for theme regressions:
+    - `src/tests/dashboard-theme-class-audit.test.ts`
+- Verification snapshot (CALUI-3):
+  - `npm run typecheck` PASS
+  - `npm run lint` PASS
+  - `npm test` PASS (67 files, 401 tests)
+  - `npm run build` PASS
+  - `npm run i18n:check` PASS
+  - `npm run test:e2e` PASS (9 tests)
+  - `npx prisma validate` FAIL in this workspace path context (`&` parsing)
+  - `npx prisma generate` FAIL in this workspace path context (`&` parsing)
+  - Equivalent Prisma CLI commands PASS:
+    - `node .\\node_modules\\prisma\\build\\index.js validate`
+    - `node .\\node_modules\\prisma\\build\\index.js generate`
+
 ## 2026-05-14 SAP-6 / SAP-7 Checkpoint
 
 - SAP-6 completed:

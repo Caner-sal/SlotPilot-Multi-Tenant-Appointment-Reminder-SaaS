@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { Suspense, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
@@ -19,7 +19,7 @@ interface SubscriptionData {
 }
 
 const PLAN_BADGE_COLORS: Record<TurkeyPlanId, string> = {
-  FREE: "bg-gray-100 text-gray-600",
+  FREE: "bg-muted text-muted-foreground",
   STARTER: "bg-blue-100 text-blue-700",
   PRO: "bg-purple-100 text-purple-700",
   ENTERPRISE: "bg-slate-100 text-slate-700",
@@ -61,7 +61,7 @@ function BillingContent() {
       if (json.data?.url) {
         window.location.href = json.data.url;
       } else if (json.data?.mode === "test") {
-        setDemoMessage(json.data.message ?? "Demo modu: Stripe yapılandırılmamış.");
+        setDemoMessage(json.data.message ?? "Demo modu: Stripe yapÄ±landÄ±rÄ±lmamÄ±ÅŸ.");
       }
     } finally {
       setUpgrading(null);
@@ -74,7 +74,7 @@ function BillingContent() {
       return {
         id,
         label: plan.nameTR,
-        price: id === "FREE" ? "₺0/ay" : formatPlanPriceTR(plan),
+        price: id === "FREE" ? "â‚º0/ay" : formatPlanPriceTR(plan),
         highlight: id === "STARTER",
         features: plan.features,
       };
@@ -82,7 +82,7 @@ function BillingContent() {
   }, []);
 
   if (loading) {
-    return <div className="p-10 text-center text-gray-400">{t("loading")}</div>;
+    return <div className="p-10 text-center text-muted-foreground/80">{t("loading")}</div>;
   }
 
   const currentPlan: TurkeyPlanId = data?.plan ?? "FREE";
@@ -92,8 +92,8 @@ function BillingContent() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">{t("title")}</h1>
-        <p className="mt-1 text-sm text-gray-500">{t("subtitle")}</p>
+        <h1 className="text-2xl font-bold text-foreground">{t("title")}</h1>
+        <p className="mt-1 text-sm text-muted-foreground">{t("subtitle")}</p>
       </div>
 
       {success && (
@@ -114,12 +114,12 @@ function BillingContent() {
         </div>
       )}
 
-      <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+      <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
         <div className="mb-4 flex items-center justify-between">
           <div>
-            <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-gray-400">{t("currentPlan")}</p>
+            <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground/80">{t("currentPlan")}</p>
             <div className="flex items-center gap-3">
-              <h2 className="text-2xl font-bold text-gray-900">{currentPlanInfo.nameTR}</h2>
+              <h2 className="text-2xl font-bold text-foreground">{currentPlanInfo.nameTR}</h2>
               <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${PLAN_BADGE_COLORS[currentPlan]}`}>
                 {currentPlan}
               </span>
@@ -128,30 +128,30 @@ function BillingContent() {
         </div>
         {limits && (
           <div className="mt-4 grid grid-cols-2 gap-4 md:grid-cols-4">
-            <div className="rounded-lg bg-gray-50 p-3">
-              <p className="mb-1 text-xs text-gray-400">{t("maxStaff")}</p>
-              <p className="font-semibold text-gray-900">{limits.maxStaff === Infinity ? t("unlimited") : limits.maxStaff}</p>
+            <div className="rounded-lg bg-muted/40 p-3">
+              <p className="mb-1 text-xs text-muted-foreground/80">{t("maxStaff")}</p>
+              <p className="font-semibold text-foreground">{limits.maxStaff === Infinity ? t("unlimited") : limits.maxStaff}</p>
             </div>
-            <div className="rounded-lg bg-gray-50 p-3">
-              <p className="mb-1 text-xs text-gray-400">{t("appointmentsPerMonth")}</p>
-              <p className="font-semibold text-gray-900">
+            <div className="rounded-lg bg-muted/40 p-3">
+              <p className="mb-1 text-xs text-muted-foreground/80">{t("appointmentsPerMonth")}</p>
+              <p className="font-semibold text-foreground">
                 {limits.maxAppointmentsPerMonth === Infinity ? t("unlimited") : limits.maxAppointmentsPerMonth}
               </p>
             </div>
-            <div className="rounded-lg bg-gray-50 p-3">
-              <p className="mb-1 text-xs text-gray-400">{t("emailReminder")}</p>
-              <p className="font-semibold text-gray-900">{limits.emailReminders ? tCommon("yes") : tCommon("no")}</p>
+            <div className="rounded-lg bg-muted/40 p-3">
+              <p className="mb-1 text-xs text-muted-foreground/80">{t("emailReminder")}</p>
+              <p className="font-semibold text-foreground">{limits.emailReminders ? tCommon("yes") : tCommon("no")}</p>
             </div>
-            <div className="rounded-lg bg-gray-50 p-3">
-              <p className="mb-1 text-xs text-gray-400">{t("advancedAnalytics")}</p>
-              <p className="font-semibold text-gray-900">{limits.advancedAnalytics ? tCommon("yes") : tCommon("no")}</p>
+            <div className="rounded-lg bg-muted/40 p-3">
+              <p className="mb-1 text-xs text-muted-foreground/80">{t("advancedAnalytics")}</p>
+              <p className="font-semibold text-foreground">{limits.advancedAnalytics ? tCommon("yes") : tCommon("no")}</p>
             </div>
           </div>
         )}
       </div>
 
       <div>
-        <h2 className="mb-4 text-lg font-semibold text-gray-900">{t("plans")}</h2>
+        <h2 className="mb-4 text-lg font-semibold text-foreground">{t("plans")}</h2>
         <div className="grid gap-4 md:grid-cols-3">
           {planCards.map((plan) => {
             const isCurrent = plan.id === currentPlan;
@@ -159,8 +159,8 @@ function BillingContent() {
             return (
               <div
                 key={plan.id}
-                className={`flex flex-col rounded-xl border bg-white p-6 shadow-sm ${
-                  plan.highlight ? "border-blue-400" : "border-gray-200"
+                className={`flex flex-col rounded-xl border bg-card p-6 shadow-sm ${
+                  plan.highlight ? "border-blue-400" : "border-border"
                 } ${isCurrent ? "ring-2 ring-blue-500" : ""}`}
               >
                 {plan.highlight && (
@@ -169,11 +169,11 @@ function BillingContent() {
                 {isCurrent && (
                   <div className="mb-2 text-xs font-semibold uppercase tracking-wider text-green-600">{t("currentPlan")}</div>
                 )}
-                <h3 className="text-xl font-bold text-gray-900">{plan.label}</h3>
-                <p className="mt-1 text-2xl font-bold text-gray-900">{plan.price}</p>
+                <h3 className="text-xl font-bold text-foreground">{plan.label}</h3>
+                <p className="mt-1 text-2xl font-bold text-foreground">{plan.price}</p>
                 <ul className="mt-4 flex-1 space-y-2">
                   {plan.features.map((feature) => (
-                    <li key={feature} className="flex items-center gap-2 text-sm text-gray-600">
+                    <li key={feature} className="flex items-center gap-2 text-sm text-muted-foreground">
                       <svg
                         width="14"
                         height="14"
@@ -191,9 +191,9 @@ function BillingContent() {
                 </ul>
                 <div className="mt-5">
                   {isCurrent ? (
-                    <div className="rounded-lg border border-gray-200 py-2 text-center text-sm text-gray-500">{t("activePlan")}</div>
+                    <div className="rounded-lg border border-border py-2 text-center text-sm text-muted-foreground">{t("activePlan")}</div>
                   ) : plan.id === "FREE" ? (
-                    <div className="py-2 text-center text-sm text-gray-400">{t("downgradeContact")}</div>
+                    <div className="py-2 text-center text-sm text-muted-foreground/80">{t("downgradeContact")}</div>
                   ) : paidPlan ? (
                     <button
                       onClick={() => handleUpgrade(paidPlan)}
@@ -201,7 +201,7 @@ function BillingContent() {
                       className={`w-full rounded-lg py-2 text-sm font-semibold transition-colors disabled:opacity-60 ${
                         plan.highlight
                           ? "bg-blue-600 text-white hover:bg-blue-700"
-                          : "border border-gray-300 text-gray-700 hover:border-gray-400 hover:bg-gray-50"
+                          : "border border-border text-foreground/90 hover:border-border hover:bg-muted/40"
                       }`}
                     >
                       {upgrading === plan.id ? t("redirecting") : `${plan.label} ${t("switchTo")}`}
@@ -220,8 +220,9 @@ function BillingContent() {
 export default function BillingPage() {
   const tCommon = useTranslations("common");
   return (
-    <Suspense fallback={<div className="p-10 text-center text-gray-400">{tCommon("loading")}</div>}>
+    <Suspense fallback={<div className="p-10 text-center text-muted-foreground/80">{tCommon("loading")}</div>}>
       <BillingContent />
     </Suspense>
   );
 }
+

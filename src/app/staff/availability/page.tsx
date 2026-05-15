@@ -72,15 +72,15 @@ export default function StaffAvailabilityPage() {
 
   return (
     <div className="max-w-lg">
-      <h1 className="mb-6 text-2xl font-bold text-gray-900">{t("myAvailability")}</h1>
-      <div className="divide-y rounded-lg border bg-white">
+      <h1 className="mb-6 text-2xl font-bold text-foreground">{t("myAvailability")}</h1>
+      <div className="divide-y rounded-lg border bg-card">
         {DAYS.map((day) => {
           const rule = rules.find((r) => r.dayOfWeek === day);
           const enabled = !!rule;
           return (
             <div key={day} className="flex items-center gap-4 px-4 py-3">
               <input type="checkbox" checked={enabled} onChange={() => toggleDay(day)} className="h-4 w-4" />
-              <span className="w-24 text-sm font-medium text-gray-700">{DAY_LABELS[day]}</span>
+              <span className="w-24 text-sm font-medium text-foreground/90">{DAY_LABELS[day]}</span>
               {enabled ? (
                 <div className="flex items-center gap-2 text-sm">
                   <input
@@ -89,7 +89,7 @@ export default function StaffAvailabilityPage() {
                     onChange={(e) => updateRule(day, "startTime", e.target.value)}
                     className="rounded border px-2 py-1"
                   />
-                  <span className="text-gray-500">—</span>
+                  <span className="text-muted-foreground">—</span>
                   <input
                     type="time"
                     value={rule?.endTime ?? "17:00"}
@@ -98,7 +98,7 @@ export default function StaffAvailabilityPage() {
                   />
                 </div>
               ) : (
-                <span className="text-sm text-gray-400">{tCommon("closed")}</span>
+                <span className="text-sm text-muted-foreground/80">{tCommon("closed")}</span>
               )}
             </div>
           );

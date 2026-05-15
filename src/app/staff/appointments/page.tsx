@@ -9,7 +9,7 @@ const STATUS_COLORS: Record<string, string> = {
   CONFIRMED: "bg-blue-100 text-blue-700",
   COMPLETED: "bg-green-100 text-green-700",
   CANCELLED: "bg-red-100 text-red-700",
-  NO_SHOW: "bg-gray-100 text-gray-700",
+  NO_SHOW: "bg-muted text-foreground/90",
 };
 
 type Appointment = {
@@ -50,7 +50,7 @@ export default function StaffAppointmentsPage() {
   );
 
   if (loading) {
-    return <div className="rounded-lg border bg-white p-6 text-sm text-gray-600">Loading appointments...</div>;
+    return <div className="rounded-lg border bg-card p-6 text-sm text-muted-foreground">Loading appointments...</div>;
   }
 
   if (error) {
@@ -59,38 +59,38 @@ export default function StaffAppointmentsPage() {
 
   return (
     <div>
-      <h1 className="mb-6 text-2xl font-bold text-gray-900">{t("myAppointments")}</h1>
+      <h1 className="mb-6 text-2xl font-bold text-foreground">{t("myAppointments")}</h1>
 
-      <div className="overflow-hidden rounded-lg border bg-white">
+      <div className="overflow-hidden rounded-lg border bg-card">
         <table className="w-full text-sm">
-          <thead className="border-b bg-gray-50">
+          <thead className="border-b bg-muted/40">
             <tr>
-              <th className="px-4 py-3 text-left font-medium text-gray-600">{t("customerCol")}</th>
-              <th className="px-4 py-3 text-left font-medium text-gray-600">{t("serviceCol")}</th>
-              <th className="px-4 py-3 text-left font-medium text-gray-600">{t("dateTimeCol")}</th>
-              <th className="px-4 py-3 text-left font-medium text-gray-600">{tCommon("status")}</th>
+              <th className="px-4 py-3 text-left font-medium text-muted-foreground">{t("customerCol")}</th>
+              <th className="px-4 py-3 text-left font-medium text-muted-foreground">{t("serviceCol")}</th>
+              <th className="px-4 py-3 text-left font-medium text-muted-foreground">{t("dateTimeCol")}</th>
+              <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tCommon("status")}</th>
             </tr>
           </thead>
           <tbody className="divide-y">
             {appointments.map((apt) => (
-              <tr key={apt.id} className="hover:bg-gray-50">
+              <tr key={apt.id} className="hover:bg-muted/40">
                 <td className="px-4 py-3">
-                  <div className="font-medium text-gray-900">
+                  <div className="font-medium text-foreground">
                     <Link className="hover:underline" href={`/staff/appointments/${apt.id}`}>
                       {apt.customer.fullName}
                     </Link>
                   </div>
-                  <div className="text-xs text-gray-500">{apt.customer.phone ?? apt.customer.email ?? ""}</div>
+                  <div className="text-xs text-muted-foreground">{apt.customer.phone ?? apt.customer.email ?? ""}</div>
                 </td>
                 <td className="px-4 py-3">
                   <div>{apt.service.name}</div>
-                  <div className="text-xs text-gray-500">
+                  <div className="text-xs text-muted-foreground">
                     {apt.service.durationMinutes} {tCommon("min")}
                   </div>
                 </td>
                 <td className="px-4 py-3">
                   <div>{new Date(apt.startTime).toLocaleDateString("tr-TR", { timeZone: "Europe/Istanbul" })}</div>
-                  <div className="text-xs text-gray-500">
+                  <div className="text-xs text-muted-foreground">
                     {new Date(apt.startTime).toLocaleTimeString("tr-TR", {
                       hour: "2-digit",
                       minute: "2-digit",
@@ -100,7 +100,7 @@ export default function StaffAppointmentsPage() {
                 </td>
                 <td className="px-4 py-3">
                   <span
-                    className={`rounded px-2 py-1 text-xs font-medium ${STATUS_COLORS[apt.status] ?? "bg-gray-100 text-gray-700"}`}
+                    className={`rounded px-2 py-1 text-xs font-medium ${STATUS_COLORS[apt.status] ?? "bg-muted text-foreground/90"}`}
                   >
                     {statusLabels[apt.status as keyof typeof statusLabels] ?? apt.status}
                   </span>
@@ -111,7 +111,7 @@ export default function StaffAppointmentsPage() {
         </table>
 
         {appointments.length === 0 ? (
-          <div className="py-8 text-center text-gray-500">{t("noAppointments")}</div>
+          <div className="py-8 text-center text-muted-foreground">{t("noAppointments")}</div>
         ) : null}
       </div>
     </div>

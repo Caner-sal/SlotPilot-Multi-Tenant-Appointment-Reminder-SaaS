@@ -81,12 +81,12 @@ export default function LocationsPage() {
     load();
   }
 
-  if (loading) return <div className="p-6 text-gray-500">{tCommon("loading")}</div>;
+  if (loading) return <div className="p-6 text-muted-foreground">{tCommon("loading")}</div>;
 
   return (
     <div className="p-6">
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900">{t("title")}</h1>
+        <h1 className="text-2xl font-bold text-foreground">{t("title")}</h1>
         <button
           onClick={() => setShowForm(true)}
           className="rounded bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
@@ -96,8 +96,8 @@ export default function LocationsPage() {
       </div>
 
       {showForm && (
-        <form onSubmit={createLocation} className="mb-6 space-y-3 rounded-lg border bg-white p-4">
-          <h2 className="font-semibold text-gray-900">{t("newLocation")}</h2>
+        <form onSubmit={createLocation} className="mb-6 space-y-3 rounded-lg border bg-card p-4">
+          <h2 className="font-semibold text-foreground">{t("newLocation")}</h2>
           <input
             required
             placeholder={t("nameLabel")}
@@ -137,7 +137,7 @@ export default function LocationsPage() {
             <button
               type="button"
               onClick={() => setShowForm(false)}
-              className="rounded bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200"
+              className="rounded bg-muted px-4 py-2 text-sm font-medium text-foreground/90 hover:bg-gray-200"
             >
               {tCommon("cancel")}
             </button>
@@ -145,29 +145,29 @@ export default function LocationsPage() {
         </form>
       )}
 
-      <div className="overflow-hidden rounded-lg border bg-white">
+      <div className="overflow-hidden rounded-lg border bg-card">
         <table className="w-full text-sm">
-          <thead className="border-b bg-gray-50">
+          <thead className="border-b bg-muted/40">
             <tr>
-              <th className="px-4 py-3 text-left font-medium text-gray-600">{tCommon("name")}</th>
-              <th className="px-4 py-3 text-left font-medium text-gray-600">{tCommon("address")}</th>
-              <th className="px-4 py-3 text-left font-medium text-gray-600">{tCommon("status")}</th>
-              <th className="px-4 py-3 text-left font-medium text-gray-600">{tCommon("actions")}</th>
+              <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tCommon("name")}</th>
+              <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tCommon("address")}</th>
+              <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tCommon("status")}</th>
+              <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tCommon("actions")}</th>
             </tr>
           </thead>
           <tbody className="divide-y">
             {locations.map((loc) => (
-              <tr key={loc.id} className="hover:bg-gray-50">
+              <tr key={loc.id} className="hover:bg-muted/40">
                 <td className="px-4 py-3">
-                  <div className="font-medium text-gray-900">{loc.name}</div>
+                  <div className="font-medium text-foreground">{loc.name}</div>
                   {loc.isDefault && <span className="text-xs font-medium text-blue-600">{tCommon("default")}</span>}
                 </td>
-                <td className="px-4 py-3 text-gray-600">{loc.address ?? "—"}</td>
+                <td className="px-4 py-3 text-muted-foreground">{loc.address ?? "—"}</td>
                 <td className="px-4 py-3">
                   {loc.isActive ? (
                     <span className="rounded bg-green-100 px-2 py-1 text-xs text-green-700">{tCommon("active")}</span>
                   ) : (
-                    <span className="rounded bg-gray-100 px-2 py-1 text-xs text-gray-600">{tCommon("passive")}</span>
+                    <span className="rounded bg-muted px-2 py-1 text-xs text-muted-foreground">{tCommon("passive")}</span>
                   )}
                 </td>
                 <td className="px-4 py-3">
@@ -177,7 +177,7 @@ export default function LocationsPage() {
                         {t("makeDefault")}
                       </button>
                     )}
-                    <button onClick={() => toggleActive(loc.id, loc.isActive)} className="text-xs text-gray-600 hover:underline">
+                    <button onClick={() => toggleActive(loc.id, loc.isActive)} className="text-xs text-muted-foreground hover:underline">
                       {loc.isActive ? t("deactivate") : t("activate")}
                     </button>
                   </div>
@@ -186,7 +186,7 @@ export default function LocationsPage() {
             ))}
           </tbody>
         </table>
-        {locations.length === 0 && <div className="py-8 text-center text-gray-500">{t("notFound")}</div>}
+        {locations.length === 0 && <div className="py-8 text-center text-muted-foreground">{t("notFound")}</div>}
       </div>
     </div>
   );

@@ -52,7 +52,7 @@ function StatusBadge({ status, tCommon }: { status: string; tCommon: ReturnType<
     );
   if (status === "SKIPPED")
     return (
-      <span className="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300">
+      <span className="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium bg-muted text-foreground/90 dark:bg-gray-800 dark:text-muted-foreground/70">
         {tCommon("skipped")}
       </span>
     );
@@ -201,7 +201,7 @@ export default function WhatsAppAutoReplyPage() {
             aria-checked={settings.enabled}
           >
             <span
-              className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform ${
+              className={`inline-block h-4 w-4 transform rounded-full bg-card shadow transition-transform ${
                 settings.enabled ? "translate-x-6" : "translate-x-1"
               }`}
             />

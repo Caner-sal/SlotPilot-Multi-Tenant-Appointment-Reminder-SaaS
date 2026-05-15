@@ -101,9 +101,9 @@ export default function AdminOrgDetailPage() {
     setSaving(false);
   }
 
-  if (loading) return <div className="text-gray-500">Yükleniyor...</div>;
+  if (loading) return <div className="text-muted-foreground">Yükleniyor...</div>;
   if (error) return <div className="text-red-600">{error}</div>;
-  if (!org) return <div className="text-gray-500">İşletme bulunamadı.</div>;
+  if (!org) return <div className="text-muted-foreground">İşletme bulunamadı.</div>;
 
   return (
     <div className="max-w-3xl">
@@ -112,8 +112,8 @@ export default function AdminOrgDetailPage() {
           ← İşletmelere Dön
         </Link>
       </div>
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">{org.name}</h1>
-      <p className="text-gray-500 text-sm mb-6">/{org.slug}</p>
+      <h1 className="text-2xl font-bold text-foreground mb-2">{org.name}</h1>
+      <p className="text-muted-foreground text-sm mb-6">/{org.slug}</p>
 
       <div className="grid grid-cols-2 gap-4 mb-6">
         {[
@@ -122,33 +122,33 @@ export default function AdminOrgDetailPage() {
           { label: "Hizmetler", value: org._count.services },
           { label: "Üyeler", value: org._count.members },
         ].map((s) => (
-          <div key={s.label} className="bg-white rounded-lg border p-4">
-            <p className="text-sm text-gray-500">{s.label}</p>
-            <p className="text-2xl font-bold text-gray-900">{s.value}</p>
+          <div key={s.label} className="bg-card rounded-lg border p-4">
+            <p className="text-sm text-muted-foreground">{s.label}</p>
+            <p className="text-2xl font-bold text-foreground">{s.value}</p>
           </div>
         ))}
       </div>
 
-      <div className="bg-white rounded-lg border p-4 mb-4">
-        <h2 className="font-semibold text-gray-900 mb-3">Detaylar</h2>
+      <div className="bg-card rounded-lg border p-4 mb-4">
+        <h2 className="font-semibold text-foreground mb-3">Detaylar</h2>
         <dl className="grid grid-cols-2 gap-2 text-sm">
-          <dt className="text-gray-500">E-posta</dt>
+          <dt className="text-muted-foreground">E-posta</dt>
           <dd>{org.email ?? "—"}</dd>
-          <dt className="text-gray-500">Telefon</dt>
+          <dt className="text-muted-foreground">Telefon</dt>
           <dd>{org.phone ?? "—"}</dd>
-          <dt className="text-gray-500">Saat Dilimi</dt>
+          <dt className="text-muted-foreground">Saat Dilimi</dt>
           <dd>{org.timezone}</dd>
-          <dt className="text-gray-500">Plan</dt>
+          <dt className="text-muted-foreground">Plan</dt>
           <dd>{formatPlan(org.subscription?.plan)}</dd>
-          <dt className="text-gray-500">Abonelik Durumu</dt>
+          <dt className="text-muted-foreground">Abonelik Durumu</dt>
           <dd>{formatSubStatus(org.subscription?.status)}</dd>
-          <dt className="text-gray-500">Oluşturulma</dt>
+          <dt className="text-muted-foreground">Oluşturulma</dt>
           <dd>{new Date(org.createdAt).toLocaleDateString("tr-TR")}</dd>
         </dl>
       </div>
 
-      <div className="bg-white rounded-lg border p-4">
-        <h2 className="font-semibold text-gray-900 mb-3">Kontroller</h2>
+      <div className="bg-card rounded-lg border p-4">
+        <h2 className="font-semibold text-foreground mb-3">Kontroller</h2>
         <div className="flex gap-3">
           <button
             onClick={() => toggleField("suspended")}

@@ -149,8 +149,8 @@ export default function StaffPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">{t("title")}</h1>
-          <p className="text-sm text-gray-500 mt-1">{t("subtitle")}</p>
+          <h1 className="text-2xl font-bold text-foreground">{t("title")}</h1>
+          <p className="text-sm text-muted-foreground mt-1">{t("subtitle")}</p>
         </div>
         <button
           onClick={openAddDialog}
@@ -178,35 +178,35 @@ export default function StaffPage() {
         </div>
       )}
 
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+      <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
         {loading ? (
-          <div className="p-10 text-center text-gray-400">{tCommon("loading")}</div>
+          <div className="p-10 text-center text-muted-foreground/80">{tCommon("loading")}</div>
         ) : staff.length === 0 ? (
-          <div className="p-10 text-center text-gray-400">
+          <div className="p-10 text-center text-muted-foreground/80">
             {t("notFound")}
           </div>
         ) : (
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-gray-100 bg-gray-50">
-                <th className="px-5 py-3 text-left font-semibold text-gray-600">{tCommon("name")}</th>
-                <th className="px-5 py-3 text-left font-semibold text-gray-600">{t("emailCol")}</th>
-                <th className="px-5 py-3 text-left font-semibold text-gray-600">{t("phoneCol")}</th>
-                <th className="px-5 py-3 text-left font-semibold text-gray-600">{t("servicesCol")}</th>
-                <th className="px-5 py-3 text-left font-semibold text-gray-600">{tCommon("status")}</th>
-                <th className="px-5 py-3 text-right font-semibold text-gray-600">{tCommon("actions")}</th>
+              <tr className="border-b border-border/70 bg-muted/40">
+                <th className="px-5 py-3 text-left font-semibold text-muted-foreground">{tCommon("name")}</th>
+                <th className="px-5 py-3 text-left font-semibold text-muted-foreground">{t("emailCol")}</th>
+                <th className="px-5 py-3 text-left font-semibold text-muted-foreground">{t("phoneCol")}</th>
+                <th className="px-5 py-3 text-left font-semibold text-muted-foreground">{t("servicesCol")}</th>
+                <th className="px-5 py-3 text-left font-semibold text-muted-foreground">{tCommon("status")}</th>
+                <th className="px-5 py-3 text-right font-semibold text-muted-foreground">{tCommon("actions")}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
               {staff.map((member) => (
-                <tr key={member.id} className="hover:bg-gray-50 transition-colors">
-                  <td className="px-5 py-3.5 font-medium text-gray-900">{member.name}</td>
-                  <td className="px-5 py-3.5 text-gray-600">{member.email ?? "—"}</td>
-                  <td className="px-5 py-3.5 text-gray-600">{member.phone ?? "—"}</td>
+                <tr key={member.id} className="hover:bg-muted/40 transition-colors">
+                  <td className="px-5 py-3.5 font-medium text-foreground">{member.name}</td>
+                  <td className="px-5 py-3.5 text-muted-foreground">{member.email ?? "—"}</td>
+                  <td className="px-5 py-3.5 text-muted-foreground">{member.phone ?? "—"}</td>
                   <td className="px-5 py-3.5">
                     <div className="flex flex-wrap gap-1">
                       {member.staffServices.length === 0 ? (
-                        <span className="text-gray-400">{t("none")}</span>
+                        <span className="text-muted-foreground/80">{t("none")}</span>
                       ) : (
                         member.staffServices.map((ss) => (
                           <span
@@ -222,7 +222,7 @@ export default function StaffPage() {
                   <td className="px-5 py-3.5">
                     <span
                       className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        member.isActive ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"
+                        member.isActive ? "bg-green-100 text-green-700" : "bg-muted text-muted-foreground"
                       }`}
                     >
                       {member.isActive ? tCommon("active") : tCommon("passive")}
@@ -238,7 +238,7 @@ export default function StaffPage() {
                       </button>
                       <button
                         onClick={() => toggleActive(member)}
-                        className="text-gray-500 hover:text-gray-700 text-xs font-medium px-2 py-1 rounded hover:bg-gray-100 transition-colors"
+                        className="text-muted-foreground hover:text-foreground/90 text-xs font-medium px-2 py-1 rounded hover:bg-muted transition-colors"
                       >
                         {member.isActive ? tCommon("deactivate") : tCommon("activate")}
                       </button>
@@ -259,12 +259,12 @@ export default function StaffPage() {
 
       {dialogOpen && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto">
-            <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between sticky top-0 bg-white">
-              <h2 className="font-semibold text-gray-900">
+          <div className="bg-card rounded-xl shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto">
+            <div className="px-6 py-4 border-b border-border/70 flex items-center justify-between sticky top-0 bg-card">
+              <h2 className="font-semibold text-foreground">
                 {editingStaff ? t("editStaff") : t("addStaff")}
               </h2>
-              <button onClick={() => setDialogOpen(false)} className="text-gray-400 hover:text-gray-600">
+              <button onClick={() => setDialogOpen(false)} className="text-muted-foreground/80 hover:text-muted-foreground">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <line x1="18" y1="6" x2="6" y2="18" />
                   <line x1="6" y1="6" x2="18" y2="18" />
@@ -278,38 +278,38 @@ export default function StaffPage() {
                 </div>
               )}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">{t("fullNameLabel")}</label>
+                <label className="block text-sm font-medium text-foreground/90 mb-1">{t("fullNameLabel")}</label>
                 <input
                   required
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="Ad Soyad"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">{t("emailCol")}</label>
+                <label className="block text-sm font-medium text-foreground/90 mb-1">{t("emailCol")}</label>
                 <input
                   type="email"
                   value={form.email}
                   onChange={(e) => setForm({ ...form, email: e.target.value })}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder={t("emailPlaceholder")}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">{t("phoneCol")}</label>
+                <label className="block text-sm font-medium text-foreground/90 mb-1">{t("phoneCol")}</label>
                 <input
                   value={form.phone}
                   onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder={t("phonePlaceholder")}
                 />
               </div>
               {services.length > 0 && (
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">{t("assignedServices")}</label>
-                  <div className="space-y-2 max-h-40 overflow-y-auto border border-gray-200 rounded-lg p-3">
+                  <label className="block text-sm font-medium text-foreground/90 mb-2">{t("assignedServices")}</label>
+                  <div className="space-y-2 max-h-40 overflow-y-auto border border-border rounded-lg p-3">
                     {services.map((service) => (
                       <label key={service.id} className="flex items-center gap-2 cursor-pointer">
                         <input
@@ -318,7 +318,7 @@ export default function StaffPage() {
                           onChange={() => toggleService(service.id)}
                           className="rounded"
                         />
-                        <span className="text-sm text-gray-700">{service.name}</span>
+                        <span className="text-sm text-foreground/90">{service.name}</span>
                       </label>
                     ))}
                   </div>
@@ -332,7 +332,7 @@ export default function StaffPage() {
                   onChange={(e) => setForm({ ...form, isActive: e.target.checked })}
                   className="rounded"
                 />
-                <label htmlFor="staffActive" className="text-sm text-gray-700">
+                <label htmlFor="staffActive" className="text-sm text-foreground/90">
                   {tCommon("active")}
                 </label>
               </div>
@@ -340,7 +340,7 @@ export default function StaffPage() {
                 <button
                   type="button"
                   onClick={() => setDialogOpen(false)}
-                  className="flex-1 border border-gray-300 text-gray-700 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors"
+                  className="flex-1 border border-border text-foreground/90 py-2 rounded-lg text-sm font-medium hover:bg-muted/40 transition-colors"
                 >
                   {tCommon("cancel")}
                 </button>

@@ -131,12 +131,12 @@ export default function AppointmentsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">{t("title")}</h1>
-          <p className="text-sm text-gray-500 mt-1">{t("subtitle")}</p>
+          <h1 className="text-2xl font-bold text-foreground">{t("title")}</h1>
+          <p className="text-sm text-muted-foreground mt-1">{t("subtitle")}</p>
         </div>
         <button
           onClick={copyBookingLink}
-          className="inline-flex items-center gap-2 border border-gray-300 hover:border-blue-400 hover:bg-blue-50 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+          className="inline-flex items-center gap-2 border border-border hover:border-blue-400 hover:bg-blue-50 text-foreground/90 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <rect x="9" y="9" width="13" height="13" rx="2" />
@@ -146,18 +146,18 @@ export default function AppointmentsPage() {
         </button>
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4">
+      <div className="bg-card rounded-xl border border-border shadow-sm p-4">
         <div className="flex flex-wrap gap-3">
           <input
             type="date"
             value={filters.date}
             onChange={(e) => setFilter("date", e.target.value)}
-            className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <select
             value={filters.status}
             onChange={(e) => setFilter("status", e.target.value)}
-            className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="">{t("allStatuses")}</option>
             {STATUSES.map((s) => (
@@ -169,7 +169,7 @@ export default function AppointmentsPage() {
           <select
             value={filters.staffId}
             onChange={(e) => setFilter("staffId", e.target.value)}
-            className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="">{t("allStaff")}</option>
             {staffList.map((s) => (
@@ -181,7 +181,7 @@ export default function AppointmentsPage() {
           <select
             value={filters.serviceId}
             onChange={(e) => setFilter("serviceId", e.target.value)}
-            className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="">{t("allServices")}</option>
             {serviceList.map((s) => (
@@ -193,7 +193,7 @@ export default function AppointmentsPage() {
           {(filters.date || filters.status || filters.staffId || filters.serviceId) && (
             <button
               onClick={() => setFilters({ date: "", status: "", staffId: "", serviceId: "", page: 1 })}
-              className="text-sm text-gray-500 hover:text-gray-700 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors"
+              className="text-sm text-muted-foreground hover:text-foreground/90 px-3 py-2 rounded-lg hover:bg-muted transition-colors"
             >
               {t("clearFilters")}
             </button>
@@ -201,39 +201,39 @@ export default function AppointmentsPage() {
         </div>
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+      <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
         {loading ? (
-          <div className="p-10 text-center text-gray-400">{tCommon("loading")}</div>
+          <div className="p-10 text-center text-muted-foreground/80">{tCommon("loading")}</div>
         ) : appointments.length === 0 ? (
-          <div className="p-10 text-center text-gray-400">{t("notFound")}</div>
+          <div className="p-10 text-center text-muted-foreground/80">{t("notFound")}</div>
         ) : (
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-gray-100 bg-gray-50">
-                <th className="px-5 py-3 text-left font-semibold text-gray-600">{t("customer")}</th>
-                <th className="px-5 py-3 text-left font-semibold text-gray-600">{t("service")}</th>
-                <th className="px-5 py-3 text-left font-semibold text-gray-600">{t("staffCol")}</th>
-                <th className="px-5 py-3 text-left font-semibold text-gray-600">{t("dateTime")}</th>
-                <th className="px-5 py-3 text-left font-semibold text-gray-600">{t("statusCol")}</th>
-                <th className="px-5 py-3 text-left font-semibold text-gray-600">{t("notesCol")}</th>
-                <th className="px-5 py-3 text-right font-semibold text-gray-600">{t("update")}</th>
+              <tr className="border-b border-border/70 bg-muted/40">
+                <th className="px-5 py-3 text-left font-semibold text-muted-foreground">{t("customer")}</th>
+                <th className="px-5 py-3 text-left font-semibold text-muted-foreground">{t("service")}</th>
+                <th className="px-5 py-3 text-left font-semibold text-muted-foreground">{t("staffCol")}</th>
+                <th className="px-5 py-3 text-left font-semibold text-muted-foreground">{t("dateTime")}</th>
+                <th className="px-5 py-3 text-left font-semibold text-muted-foreground">{t("statusCol")}</th>
+                <th className="px-5 py-3 text-left font-semibold text-muted-foreground">{t("notesCol")}</th>
+                <th className="px-5 py-3 text-right font-semibold text-muted-foreground">{t("update")}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
               {appointments.map((appt) => (
-                <tr key={appt.id} className="hover:bg-gray-50 transition-colors">
+                <tr key={appt.id} className="hover:bg-muted/40 transition-colors">
                   <td className="px-5 py-3.5">
-                    <div className="font-medium text-gray-900">{appt.customer.fullName}</div>
-                    <div className="text-xs text-gray-400">{appt.customer.email}</div>
+                    <div className="font-medium text-foreground">{appt.customer.fullName}</div>
+                    <div className="text-xs text-muted-foreground/80">{appt.customer.email}</div>
                   </td>
-                  <td className="px-5 py-3.5 text-gray-700">
+                  <td className="px-5 py-3.5 text-foreground/90">
                     <div>{appt.service.name}</div>
-                    <div className="text-xs text-gray-400">{appt.service.durationMinutes} {tCommon("min")}</div>
+                    <div className="text-xs text-muted-foreground/80">{appt.service.durationMinutes} {tCommon("min")}</div>
                   </td>
-                  <td className="px-5 py-3.5 text-gray-700">{appt.staff.name}</td>
-                  <td className="px-5 py-3.5 text-gray-700">
+                  <td className="px-5 py-3.5 text-foreground/90">{appt.staff.name}</td>
+                  <td className="px-5 py-3.5 text-foreground/90">
                     {new Date(appt.startTime).toLocaleDateString("tr-TR", { timeZone: "Europe/Istanbul" })}{" "}
-                    <span className="text-gray-500">
+                    <span className="text-muted-foreground">
                       {new Date(appt.startTime).toLocaleTimeString("tr-TR", {
                         timeZone: "Europe/Istanbul",
                         hour: "2-digit",
@@ -244,20 +244,20 @@ export default function AppointmentsPage() {
                   <td className="px-5 py-3.5">
                     <span
                       className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        STATUS_COLORS[appt.status] ?? "bg-gray-100 text-gray-600"
+                        STATUS_COLORS[appt.status] ?? "bg-muted text-muted-foreground"
                       }`}
                     >
                       {STATUS_LABELS[appt.status] ?? appt.status}
                     </span>
                   </td>
-                  <td className="px-5 py-3.5 text-gray-500 max-w-[160px]">
+                  <td className="px-5 py-3.5 text-muted-foreground max-w-[160px]">
                     <span className="line-clamp-1 text-xs">{appt.notes ?? "—"}</span>
                   </td>
                   <td className="px-5 py-3.5 text-right">
                     <select
                       value={appt.status}
                       onChange={(e) => updateStatus(appt.id, e.target.value)}
-                      className="border border-gray-300 rounded-lg px-2 py-1 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="border border-border rounded-lg px-2 py-1 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
                       {STATUSES.map((s) => (
                         <option key={s} value={s}>
@@ -275,24 +275,24 @@ export default function AppointmentsPage() {
 
       {meta && meta.totalPages > 1 && (
         <div className="flex items-center justify-between">
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-muted-foreground">
             {(meta.page - 1) * meta.limit + 1}–{Math.min(meta.page * meta.limit, meta.total)} / {meta.total} {tCommon("appointment")}
           </p>
           <div className="flex items-center gap-2">
             <button
               disabled={meta.page <= 1}
               onClick={() => setFilters((p) => ({ ...p, page: p.page - 1 }))}
-              className="px-3 py-1.5 border border-gray-300 rounded-lg text-sm disabled:opacity-40 hover:bg-gray-50 transition-colors"
+              className="px-3 py-1.5 border border-border rounded-lg text-sm disabled:opacity-40 hover:bg-muted/40 transition-colors"
             >
               {tCommon("previous")}
             </button>
-            <span className="text-sm text-gray-600">
+            <span className="text-sm text-muted-foreground">
               {meta.page} / {meta.totalPages}
             </span>
             <button
               disabled={meta.page >= meta.totalPages}
               onClick={() => setFilters((p) => ({ ...p, page: p.page + 1 }))}
-              className="px-3 py-1.5 border border-gray-300 rounded-lg text-sm disabled:opacity-40 hover:bg-gray-50 transition-colors"
+              className="px-3 py-1.5 border border-border rounded-lg text-sm disabled:opacity-40 hover:bg-muted/40 transition-colors"
             >
               {tCommon("next")}
             </button>

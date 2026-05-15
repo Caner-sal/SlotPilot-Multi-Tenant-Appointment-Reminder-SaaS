@@ -132,29 +132,29 @@ export default function AvailabilityPage() {
 
   if (loading) {
     return (
-      <div className="p-10 text-center text-gray-400">{tCommon("loading")}</div>
+      <div className="p-10 text-center text-muted-foreground/80">{tCommon("loading")}</div>
     );
   }
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">{t("title")}</h1>
-        <p className="text-sm text-gray-500 mt-1">{t("subtitle")}</p>
+        <h1 className="text-2xl font-bold text-foreground">{t("title")}</h1>
+        <p className="text-sm text-muted-foreground mt-1">{t("subtitle")}</p>
       </div>
 
       {staff.length === 0 ? (
-        <div className="bg-white rounded-xl border border-gray-200 p-10 text-center text-gray-400">
+        <div className="bg-card rounded-xl border border-border p-10 text-center text-muted-foreground/80">
           {t("noStaff")}
         </div>
       ) : (
         <>
           <div className="flex items-center gap-4">
-            <label className="text-sm font-medium text-gray-700">{t("staffLabel")}</label>
+            <label className="text-sm font-medium text-foreground/90">{t("staffLabel")}</label>
             <select
               value={selectedStaffId}
               onChange={(e) => setSelectedStaffId(e.target.value)}
-              className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               {staff.map((s) => (
                 <option key={s.id} value={s.id}>
@@ -164,9 +164,9 @@ export default function AvailabilityPage() {
             </select>
           </div>
 
-          <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-            <div className="px-5 py-4 border-b border-gray-100 bg-gray-50">
-              <p className="text-sm font-semibold text-gray-700">{t("weeklySchedule")}</p>
+          <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
+            <div className="px-5 py-4 border-b border-border/70 bg-muted/40">
+              <p className="text-sm font-semibold text-foreground/90">{t("weeklySchedule")}</p>
             </div>
             <div className="divide-y divide-gray-100">
               {DAY_KEYS.map((key) => (
@@ -182,7 +182,7 @@ export default function AvailabilityPage() {
                     <label
                       htmlFor={`day-${key}`}
                       className={`text-sm font-medium cursor-pointer ${
-                        schedule[key].isActive ? "text-gray-900" : "text-gray-400"
+                        schedule[key].isActive ? "text-foreground" : "text-muted-foreground/80"
                       }`}
                     >
                       {DAY_LABELS[key]}
@@ -194,18 +194,18 @@ export default function AvailabilityPage() {
                         type="time"
                         value={schedule[key].startTime}
                         onChange={(e) => updateDay(key, "startTime", e.target.value)}
-                        className="border border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="border border-border rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
-                      <span className="text-gray-400 text-sm">—</span>
+                      <span className="text-muted-foreground/80 text-sm">—</span>
                       <input
                         type="time"
                         value={schedule[key].endTime}
                         onChange={(e) => updateDay(key, "endTime", e.target.value)}
-                        className="border border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="border border-border rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
                   ) : (
-                    <span className="text-sm text-gray-400">{tCommon("closed")}</span>
+                    <span className="text-sm text-muted-foreground/80">{tCommon("closed")}</span>
                   )}
                 </div>
               ))}
