@@ -1,7 +1,7 @@
-/* eslint-disable @next/next/no-img-element */
+﻿/* eslint-disable @next/next/no-img-element */
 import { db } from "@/lib/db";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { getProvinceBySlug } from "@/data/turkey-provinces";
 import type { Metadata } from "next";
 
@@ -21,8 +21,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const province = getProvinceBySlug(slug);
   if (province) {
     return {
-      title: `${province.name} İşletmeleri — Randevo Marketplace`,
-      description: `${province.name}'daki işletmeleri keşfedin, online randevu alın. Kuaför, güzellik, spor ve daha fazlası.`,
+      title: `${province.name} Businesses - Randevo Marketplace`,
+      description: `Browse businesses in ${province.name}.`,
     };
   }
   return { title: "Randevo Marketplace" };
@@ -31,96 +31,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function MarketplaceSlugPage({ params }: Props) {
   const { slug } = await params;
 
-  // Check if slug matches a Turkish province
   const province = getProvinceBySlug(slug);
   if (province) {
-    const orgs = await db.organization.findMany({
-      where: {
-        marketplaceEnabled: true,
-        bookingEnabled: true,
-        suspended: false,
-        province: slug,
-      },
-      select: {
-        id: true,
-        name: true,
-        slug: true,
-        description: true,
-        category: true,
-        city: true,
-        coverImageUrl: true,
-        logoUrl: true,
-        _count: { select: { services: { where: { isActive: true } } } },
-      },
-      orderBy: { name: "asc" },
-      take: 50,
-    });
-
-    return (
-      <div className="min-h-screen bg-gray-50">
-        <header className="bg-white border-b">
-          <div className="max-w-6xl mx-auto px-4 py-6">
-            <Link href="/marketplace" className="text-blue-600 text-sm hover:underline">
-              ← Tüm İllere Dön
-            </Link>
-            <h1 className="text-3xl font-bold text-gray-900 mt-2">
-              {province.name} İşletmeleri
-            </h1>
-            <p className="text-gray-500 mt-1">
-              {province.name}&apos;da yerel işletmeleri keşfedin ve randevu alın
-            </p>
-          </div>
-        </header>
-
-        <main className="max-w-6xl mx-auto px-4 py-8">
-          {orgs.length === 0 ? (
-            <div className="text-center py-16">
-              <p className="text-gray-400 text-lg">{province.name}&apos;da henüz listelenmiş işletme yok.</p>
-              <Link href="/marketplace" className="text-blue-600 hover:underline mt-4 inline-block text-sm">
-                Tüm işletmelere göz at
-              </Link>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {orgs.map((biz) => (
-                <Link key={biz.id} href={`/marketplace/${biz.slug}`}>
-                  <div className="bg-white rounded-xl border hover:shadow-md transition-shadow p-5 h-full">
-                    {biz.coverImageUrl && (
-                      <img src={biz.coverImageUrl} alt={biz.name} className="w-full h-32 object-cover rounded-lg mb-4" />
-                    )}
-                    <div className="flex items-center gap-3 mb-2">
-                      {biz.logoUrl && (
-                        <img src={biz.logoUrl} alt="" className="w-10 h-10 rounded-full object-cover" />
-                      )}
-                      <h2 className="font-semibold text-gray-900">{biz.name}</h2>
-                    </div>
-                    {biz.description && (
-                      <p className="text-gray-500 text-sm line-clamp-2 mb-3">{biz.description}</p>
-                    )}
-                    <div className="flex flex-wrap gap-2 text-xs">
-                      {biz.category && (
-                        <span className="bg-blue-50 text-blue-700 px-2 py-1 rounded-full">{biz.category}</span>
-                      )}
-                      {biz.city && (
-                        <span className="bg-gray-100 text-gray-600 px-2 py-1 rounded-full">{biz.city}</span>
-                      )}
-                      <span className="bg-green-50 text-green-700 px-2 py-1 rounded-full">
-                        {biz._count.services} hizmet
-                      </span>
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          )}
-        </main>
-      </div>
-    );
+    permanentRedirect(`/marketplace/location/tr/${province.slug}`);
   }
 
-  // Otherwise treat slug as a business slug
   const org = await db.organization.findFirst({
-    where: { slug, marketplaceEnabled: true, bookingEnabled: true, suspended: false },
+    where: {
+      slug,
+      marketplaceEnabled: true,
+      bookingEnabled: true,
+      suspended: false,
+      status: "ACTIVE",
+    },
     select: {
       name: true,
       slug: true,
@@ -143,11 +66,11 @@ export default async function MarketplaceSlugPage({ params }: Props) {
   if (!org) notFound();
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white border-b">
+    <div className="min-h-screen bg-background">
+      <header className="bg-card border-b border-border">
         <div className="max-w-4xl mx-auto px-4 py-4">
-          <Link href="/marketplace" className="text-blue-600 text-sm hover:underline">
-            ← Marketplace&apos;e Dön
+          <Link href="/marketplace" className="text-primary text-sm hover:underline">
+            Back to Marketplace
           </Link>
         </div>
         {org.coverImageUrl && (
@@ -155,13 +78,13 @@ export default async function MarketplaceSlugPage({ params }: Props) {
         )}
         <div className="max-w-4xl mx-auto px-4 py-6 flex items-center gap-4">
           {org.logoUrl && (
-            <img src={org.logoUrl} alt="" className="w-16 h-16 rounded-full object-cover border" />
+            <img src={org.logoUrl} alt="" className="w-16 h-16 rounded-full object-cover border border-border" />
           )}
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">{org.name}</h1>
+            <h1 className="text-2xl font-bold text-foreground">{org.name}</h1>
             <div className="flex gap-2 mt-1 text-sm">
-              {org.category && <span className="text-blue-600">{org.category}</span>}
-              {org.city && <span className="text-gray-500">{org.city}</span>}
+              {org.category && <span className="text-primary">{org.category}</span>}
+              {org.city && <span className="text-muted-foreground">{org.city}</span>}
             </div>
           </div>
         </div>
@@ -170,37 +93,37 @@ export default async function MarketplaceSlugPage({ params }: Props) {
       <main className="max-w-4xl mx-auto px-4 py-8 space-y-8">
         {org.description && (
           <section>
-            <h2 className="text-lg font-semibold mb-2">Hakkında</h2>
-            <p className="text-gray-600">{org.description}</p>
+            <h2 className="text-lg font-semibold mb-2">About</h2>
+            <p className="text-muted-foreground">{org.description}</p>
           </section>
         )}
 
         {(org.phone || org.email || org.address) && (
           <section>
-            <h2 className="text-lg font-semibold mb-2">İletişim</h2>
-            <div className="space-y-1 text-sm text-gray-600">
-              {org.phone && <p>📞 {org.phone}</p>}
-              {org.email && <p>✉️ {org.email}</p>}
-              {org.address && <p>📍 {org.address}</p>}
+            <h2 className="text-lg font-semibold mb-2">Contact</h2>
+            <div className="space-y-1 text-sm text-muted-foreground">
+              {org.phone && <p>Phone: {org.phone}</p>}
+              {org.email && <p>Email: {org.email}</p>}
+              {org.address && <p>Address: {org.address}</p>}
             </div>
           </section>
         )}
 
         <section>
-          <h2 className="text-lg font-semibold mb-4">Hizmetler</h2>
+          <h2 className="text-lg font-semibold mb-4">Services</h2>
           {org.services.length === 0 ? (
-            <p className="text-gray-400">Henüz hizmet listelenmemiş.</p>
+            <p className="text-muted-foreground">No services listed yet.</p>
           ) : (
             <div className="grid gap-3">
               {(org.services as Service[]).map((svc) => (
-                <div key={svc.id} className="bg-white border rounded-lg p-4 flex justify-between items-center">
+                <div key={svc.id} className="bg-card border border-border rounded-lg p-4 flex justify-between items-center">
                   <div>
                     <p className="font-medium">{svc.name}</p>
-                    <p className="text-sm text-gray-500">{svc.durationMinutes} dk</p>
+                    <p className="text-sm text-muted-foreground">{svc.durationMinutes} min</p>
                   </div>
                   {svc.priceCents > 0 && (
-                    <span className="font-semibold text-gray-900">
-                      {new Intl.NumberFormat("tr-TR", { style: "currency", currency: "TRY" }).format(svc.priceCents / 100)}
+                    <span className="font-semibold text-foreground">
+                      {new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(svc.priceCents / 100)}
                     </span>
                   )}
                 </div>
@@ -212,9 +135,9 @@ export default async function MarketplaceSlugPage({ params }: Props) {
         <div className="text-center pt-4">
           <Link
             href={`/booking/${org.slug}`}
-            className="inline-block bg-blue-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors"
+            className="inline-block bg-primary text-primary-foreground px-8 py-3 rounded-lg font-medium hover:bg-primary/90 transition-colors"
           >
-            Randevu Al
+            Book Appointment
           </Link>
         </div>
       </main>
