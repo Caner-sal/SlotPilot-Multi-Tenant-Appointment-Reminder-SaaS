@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { localeMetadata, resolveLocale } from "@/i18n/locales";
 
 interface Service {
   id: string;
@@ -22,13 +23,15 @@ const emptyForm = {
   isActive: true,
 };
 
-function formatPrice(cents: number, currency: string) {
-  return new Intl.NumberFormat("tr-TR", { style: "currency", currency }).format(cents / 100);
+function formatPrice(cents: number, currency: string, localeCode: string) {
+  return new Intl.NumberFormat(localeCode, { style: "currency", currency }).format(cents / 100);
 }
 
 export default function ServicesPage() {
   const t = useTranslations("services");
   const tCommon = useTranslations("common");
+  const locale = resolveLocale(useLocale());
+  const dateLocale = localeMetadata[locale].dateLocale;
 
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
@@ -117,7 +120,7 @@ export default function ServicesPage() {
   }
 
   async function deleteService(service: Service) {
-    if (!confirm(`"${service.name}" hizmetini kaldırmak istediğinizden emin misiniz?`)) return;
+    if (!confirm(`${tCommon("delete")}: "${service.name}"`)) return;
     await fetch(`/api/services/${service.id}`, { method: "DELETE" });
     await fetchServices();
   }
@@ -159,7 +162,7 @@ export default function ServicesPage() {
                 <th className="px-5 py-3 text-right font-semibold text-muted-foreground">{tCommon("actions")}</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-50">
+            <tbody className="divide-y divide-border/70">
               {services.map((service) => (
                 <tr key={service.id} className="hover:bg-muted/40 transition-colors">
                   <td className="px-5 py-3.5">
@@ -170,7 +173,7 @@ export default function ServicesPage() {
                   </td>
                   <td className="px-5 py-3.5 text-muted-foreground">{service.durationMinutes} {tCommon("min")}</td>
                   <td className="px-5 py-3.5 text-muted-foreground">
-                    {formatPrice(service.priceCents, service.currency)}
+                    {formatPrice(service.priceCents, service.currency, dateLocale)}
                   </td>
                   <td className="px-5 py-3.5">
                     <span
@@ -236,7 +239,9 @@ export default function ServicesPage() {
                 </div>
               )}
               <div>
-                <label className="block text-sm font-medium text-foreground/90 mb-1">Ad *</label>
+                <label className="block text-sm font-medium text-foreground/90 mb-1">
+                  {t("nameCol")} *
+                </label>
                 <input
                   required
                   value={form.name}
