@@ -13,6 +13,8 @@ export interface MarketConfig {
 export const MARKET_DEFAULTS: Record<string, MarketConfig> = {
   TR: { countryCode: "TR", defaultLocale: "tr", currency: "TRY", landingVariant: "turkey", phoneCode: "+90" },
   DE: { countryCode: "DE", defaultLocale: "de", currency: "EUR", landingVariant: "global", phoneCode: "+49" },
+  AT: { countryCode: "AT", defaultLocale: "de", currency: "EUR", landingVariant: "global", phoneCode: "+43" },
+  CH: { countryCode: "CH", defaultLocale: "de", currency: "CHF", landingVariant: "global", phoneCode: "+41" },
   IT: { countryCode: "IT", defaultLocale: "it", currency: "EUR", landingVariant: "global", phoneCode: "+39" },
   US: { countryCode: "US", defaultLocale: "en", currency: "USD", landingVariant: "global", phoneCode: "+1" },
   GB: { countryCode: "GB", defaultLocale: "en", currency: "GBP", landingVariant: "global", phoneCode: "+44" },
