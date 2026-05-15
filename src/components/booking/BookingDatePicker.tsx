@@ -35,6 +35,7 @@ export default function BookingDatePicker({
     <div
       className="rounded-xl border border-border bg-card text-card-foreground"
       aria-label="Booking date picker"
+      data-testid="booking-date-picker"
     >
       <Calendar
         mode="single"

@@ -310,9 +310,25 @@ Backfill davranışı:
 
 Bu workspace path içinde `&` bulunduğundan bazı PowerShell çağrılarında `npx prisma ...` komutu parse hatası verebilir.
 
-Bu durumda eşdeğer Prisma CLI çağrıları kullanılmalıdır:
+Birincil yaklaşım olarak npm script standardını kullanın:
+
+```powershell
+npm run prisma:validate
+npm run prisma:generate
+```
+
+Gerekirse eşdeğer Prisma CLI çağrıları da kullanılabilir:
 
 ```powershell
 node .\node_modules\prisma\build\index.js validate
 node .\node_modules\prisma\build\index.js generate
 ```
+
+## Calendar UI Update (v1.6.1-calendar-ui-fix)
+
+- Public booking date selection now uses a real month-navigable calendar.
+- Users can choose future dates beyond the initial visible range.
+- Slot availability is fetched by selected date from backend (`date=YYYY-MM-DD`).
+- Past and known unavailable days are disabled/marked in the booking calendar.
+- Dashboard/admin/staff UI surfaces were aligned to shared theme tokens for dark/light consistency.
+- UI localization and business-entered content boundaries are now explicitly documented and tested.

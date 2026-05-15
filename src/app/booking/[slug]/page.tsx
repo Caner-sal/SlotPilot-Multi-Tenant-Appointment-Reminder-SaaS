@@ -389,6 +389,7 @@ export default function BookingPage() {
                 <button
                   key={service.id}
                   onClick={() => selectService(service)}
+                  data-testid="booking-service-option"
                   className="w-full text-left bg-card border border-border hover:border-blue-400 hover:shadow-md rounded-xl p-5 transition-all group"
                 >
                   <div className="flex items-start justify-between">
@@ -454,6 +455,7 @@ export default function BookingPage() {
                   <button
                     key={staff.id}
                     onClick={() => setSelectedStaff(staff)}
+                    data-testid="booking-staff-option"
                     className={`p-3 rounded-xl border text-sm font-medium transition-colors ${
                       selectedStaff?.id === staff.id
                         ? "border-blue-500 bg-blue-50 text-blue-700"
@@ -504,6 +506,7 @@ export default function BookingPage() {
           {selectedStaff && selectedDate && (
             <button
               onClick={handleStaffAndDateComplete}
+              data-testid="booking-view-slots"
               className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
             >
               {t("viewSlots")}
@@ -560,6 +563,7 @@ export default function BookingPage() {
                   <button
                     key={slot.startTime}
                     onClick={() => selectSlot(slot)}
+                    data-testid="booking-slot-option"
                     className="py-2.5 rounded-xl border border-border hover:border-blue-400 hover:bg-blue-50 text-sm font-medium text-foreground hover:text-blue-700 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                   >
                     {time}

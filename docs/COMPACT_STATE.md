@@ -582,3 +582,32 @@ All phases completed and pushed:
     - `node .\\node_modules\\prisma\\build\\index.js validate`
     - `node .\\node_modules\\prisma\\build\\index.js generate`
 
+
+## 2026-05-15 CALUI-6 Final Checkpoint
+
+- Added Playwright CALUI regression suite:
+  - `tests/e2e/calui-regression.spec.ts`
+  - coverage includes:
+    - booking month-navigation/date-selection slot-request contract checks
+    - UI locale change vs stable business service-name rendering checks
+    - dashboard services route theme smoke
+- Added stable test selectors for booking flow:
+  - `data-testid` markers on booking service/staff/date/slot controls.
+- Updated release docs:
+  - `CHANGELOG.md` (`1.6.1-calendar-ui-fix` entry)
+  - `README.md` calendar UI update notes
+- Final gate snapshot:
+  - `npm run check:node` PASS
+  - `npm run check:secrets` PASS
+  - `npm run validate:skills` PASS
+  - `npm run typecheck` PASS
+  - `npm run lint` PASS
+  - `npm test` PASS (69 files, 403 tests)
+  - `npm run build` PASS
+  - `npm run i18n:check` PASS
+  - `npm run test:e2e` PASS (11 passed, 1 skipped due environment-dependent booking-day availability)
+  - `npx prisma validate` FAIL in this workspace path context (`&` parsing)
+  - `npx prisma generate` FAIL in this workspace path context (`&` parsing)
+  - Equivalent Prisma CLI commands PASS:
+    - `node .\\node_modules\\prisma\\build\\index.js validate`
+    - `node .\\node_modules\\prisma\\build\\index.js generate`
