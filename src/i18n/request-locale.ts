@@ -139,7 +139,7 @@ function mapCountryToLocale(countryCode: string | null | undefined): AppLocale |
 
 function resolveFallback(fallbackLocale?: string | null): AppLocale {
   if (fallbackLocale && isAppLocale(fallbackLocale)) return fallbackLocale;
-  return "en";
+  return "tr";
 }
 
 export function getCountryCodeFromHeaders(

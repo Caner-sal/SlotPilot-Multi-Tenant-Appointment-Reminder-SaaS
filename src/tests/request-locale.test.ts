@@ -61,12 +61,12 @@ describe("resolveRequestLocale", () => {
     expect(resolved).toEqual({ locale: "nl", source: "accept-language" });
   });
 
-  it("falls back to english for unknown inputs", () => {
+  it("falls back to tr for unknown inputs (TR is platform default)", () => {
     const resolved = resolveRequestLocale({
       countryCode: "ZZ",
       acceptLanguage: "pl-PL,pl;q=0.9",
     });
-    expect(resolved).toEqual({ locale: "en", source: "fallback" });
+    expect(resolved).toEqual({ locale: "tr", source: "fallback" });
   });
 });
 
