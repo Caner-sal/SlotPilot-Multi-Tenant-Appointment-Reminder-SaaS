@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
-import { COUNTRY_OPTIONS } from "@/data/country-options";
+import CountrySelect from "@/components/forms/CountrySelect";
 
 interface OrgForm {
   name: string;
@@ -234,17 +234,11 @@ export default function SettingsPage() {
           <div className="grid md:grid-cols-2 gap-5">
             <div>
               <label className="block text-sm font-medium text-foreground/90 mb-1">{tBooking("country")}</label>
-              <select
+              <CountrySelect
                 value={form.countryCode}
-                onChange={(e) => setForm({ ...form, countryCode: e.target.value })}
-                className="w-full border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                {COUNTRY_OPTIONS.map((country) => (
-                  <option key={country.code} value={country.code}>
-                    {country.name}
-                  </option>
-                ))}
-              </select>
+                onChange={(value) => setForm({ ...form, countryCode: value })}
+                className="rounded-lg"
+              />
             </div>
             <div>
               <label className="block text-sm font-medium text-foreground/90 mb-1">{tBooking("province")}</label>

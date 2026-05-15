@@ -4,11 +4,12 @@ import { useState, useEffect, useCallback } from "react";
 import { useParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { resolveLocale, localeMetadata } from "@/i18n/locales";
-import { TURKEY_PROVINCES, getDistrictsByProvince } from "@/data/turkey-provinces";
-import { COUNTRY_OPTIONS } from "@/data/country-options";
 import { getCountryAddressConfig } from "@/config/country-address-config";
 import AddressAutocomplete from "@/components/address/AddressAutocomplete";
 import BookingDatePicker from "@/components/booking/BookingDatePicker";
+import CountrySelect from "@/components/forms/CountrySelect";
+import ProvinceSelect from "@/components/forms/ProvinceSelect";
+import DistrictSelect from "@/components/forms/DistrictSelect";
 
 interface BusinessProfile {
   name: string;
@@ -670,25 +671,19 @@ export default function BookingPage() {
                 <label className="block text-sm font-medium text-foreground mb-1">
                   {t("country")}
                 </label>
-                <select
+                <CountrySelect
                   value={customerForm.countryCode}
-                  onChange={(e) =>
+                  onChange={(value) =>
                     setCustomerForm({
                       ...customerForm,
-                      countryCode: e.target.value,
+                      countryCode: value,
                       adminLevel1: "",
                       adminLevel2: "",
                       postalCode: "",
                     })
                   }
-                  className="w-full border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-                >
-                  {COUNTRY_OPTIONS.map((country) => (
-                    <option key={country.code} value={country.code}>
-                      {country.name}
-                    </option>
-                  ))}
-                </select>
+                  className="rounded-xl border-border"
+                />
               </div>
               <div>
                 <label className="block text-sm font-medium text-foreground mb-1">
@@ -721,39 +716,28 @@ export default function BookingPage() {
                         {t("province")}{" "}
                         <span className="text-muted-foreground font-normal">{t("phoneOptional")}</span>
                       </label>
-                      <select
+                      <ProvinceSelect
                         value={customerForm.adminLevel1}
-                        onChange={(e) =>
-                          setCustomerForm({ ...customerForm, adminLevel1: e.target.value, adminLevel2: "" })
+                        onChange={(value) =>
+                          setCustomerForm({ ...customerForm, adminLevel1: value, adminLevel2: "" })
                         }
-                        className="w-full border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-                      >
-                        <option value="">{t("provincePlaceholder")}</option>
-                        {TURKEY_PROVINCES.map((p) => (
-                          <option key={p.slug} value={p.slug}>
-                            {p.name}
-                          </option>
-                        ))}
-                      </select>
+                        placeholder={t("provincePlaceholder")}
+                        className="rounded-xl border-border"
+                      />
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-foreground mb-1">
                         {t("district")}{" "}
                         <span className="text-muted-foreground font-normal">{t("phoneOptional")}</span>
                       </label>
-                      <select
+                      <DistrictSelect
+                        provinceSlug={customerForm.adminLevel1}
                         value={customerForm.adminLevel2}
-                        onChange={(e) => setCustomerForm({ ...customerForm, adminLevel2: e.target.value })}
+                        onChange={(value) => setCustomerForm({ ...customerForm, adminLevel2: value })}
                         disabled={!customerForm.adminLevel1}
-                        className="w-full border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring disabled:bg-muted disabled:text-muted-foreground"
-                      >
-                        <option value="">{t("districtPlaceholder")}</option>
-                        {getDistrictsByProvince(customerForm.adminLevel1).map((d) => (
-                          <option key={d.slug} value={d.slug}>
-                            {d.name}
-                          </option>
-                        ))}
-                      </select>
+                        placeholder={t("districtPlaceholder")}
+                        className="rounded-xl border-border"
+                      />
                     </div>
                   </>
                 ) : (
