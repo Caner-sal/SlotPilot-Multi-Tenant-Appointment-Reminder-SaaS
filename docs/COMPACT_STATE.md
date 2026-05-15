@@ -2,6 +2,32 @@
 
 _Last updated: 2026-05-15_
 
+## 2026-05-15 DPD-4 → DPD-5 Checkpoint
+
+Branch: `feature/global-address-locale`
+
+- **DPD-4 (Turkey District Docs):**
+  - `src/data/turkey-provinces.ts` — `TURKEY_DISTRICTS`'e JSDoc eklendi (81 il, 903 ilçe, 2026-05-15)
+  - `docs/turkey-district-data-audit.md` oluşturuldu
+- **DPD-5 (Booking + Settings Select Refactor):**
+  - `src/app/booking/[slug]/page.tsx`:
+    - Country native `<select>` → `CountrySelect` (line 673)
+    - Province native `<select>` → `ProvinceSelect` (line 724)
+    - District native `<select>` → `DistrictSelect` (line 744)
+    - `TURKEY_PROVINCES`, `getDistrictsByProvince`, `COUNTRY_OPTIONS` importları kaldırıldı
+  - `src/app/dashboard/settings/page.tsx`:
+    - Country native `<select>` → `CountrySelect` (line 237)
+    - `COUNTRY_OPTIONS` import kaldırıldı
+
+Verification (DPD-5 sonrası):
+- `npm run typecheck` PASS
+- `npm run lint` PASS
+- `npm test` PASS (72 files, 488 tests)
+
+Next: DPD-6 (E2E regression), DPD-7 (CHANGELOG + release tag).
+
+---
+
 ## 2026-05-15 DPD-0 → DPD-3 Checkpoint
 
 Branch: `feature/global-address-locale`
