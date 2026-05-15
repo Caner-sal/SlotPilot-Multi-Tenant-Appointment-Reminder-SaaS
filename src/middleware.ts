@@ -28,10 +28,34 @@ function withRequestId(response: NextResponse, requestId: string): NextResponse 
   return response;
 }
 
+const countryPreferenceCookie = "randevo_country";
+const localeSourceCookie = "randevo_locale_source";
+
+function setPreferenceCookies(
+  response: NextResponse,
+  countryCode: string | null,
+  source: string,
+): void {
+  if (countryCode) {
+    response.cookies.set(countryPreferenceCookie, countryCode, {
+      path: "/",
+      sameSite: "lax",
+      maxAge: 60 * 60 * 24 * 365,
+    });
+  }
+  response.cookies.set(localeSourceCookie, source, {
+    path: "/",
+    sameSite: "lax",
+    maxAge: 60 * 60 * 24 * 365,
+  });
+}
+
 export default auth((req) => {
   const { pathname, search } = req.nextUrl;
   const { locale, internalPath } = extractLocale(pathname);
-  const countryCode = getCountryCodeFromHeaders(req.headers);
+  const rawCountryCode = getCountryCodeFromHeaders(req.headers);
+  const isManualLocale = req.cookies.get(localeSourceCookie)?.value === "manual";
+  const countryCode = isManualLocale ? null : rawCountryCode;
   const requestId = resolveRequestId(req.headers);
 
   if (
@@ -60,9 +84,10 @@ export default auth((req) => {
       sameSite: "lax",
       maxAge: 60 * 60 * 24 * 365,
     });
+    setPreferenceCookies(response, rawCountryCode, resolved.source);
     response.headers.set("x-app-locale-source", resolved.source);
-    if (countryCode) {
-      response.headers.set("x-app-country-code", countryCode);
+    if (rawCountryCode) {
+      response.headers.set("x-app-country-code", rawCountryCode);
     }
     return withRequestId(response, requestId);
   }
@@ -126,9 +151,12 @@ export default auth((req) => {
     sameSite: "lax",
     maxAge: 60 * 60 * 24 * 365,
   });
+  if (!isManualLocale) {
+    setPreferenceCookies(response, rawCountryCode, "route");
+  }
   response.headers.set("x-app-locale-source", "route");
-  if (countryCode) {
-    response.headers.set("x-app-country-code", countryCode);
+  if (rawCountryCode) {
+    response.headers.set("x-app-country-code", rawCountryCode);
   }
 
   return withRequestId(response, requestId);

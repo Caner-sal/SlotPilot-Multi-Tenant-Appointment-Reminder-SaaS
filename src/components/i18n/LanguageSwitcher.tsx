@@ -63,6 +63,7 @@ export default function LanguageSwitcher() {
     const queryString = searchParams.toString();
     const nextHref = queryString ? `${nextPath}?${queryString}` : nextPath;
     document.cookie = `${localeCookieName}=${nextLocale}; path=/; max-age=31536000; samesite=lax`;
+    document.cookie = `randevo_locale_source=manual; path=/; max-age=31536000; samesite=lax`;
     router.replace(nextHref);
     router.refresh();
     setOpen(false);
