@@ -2,6 +2,42 @@
 
 _Last updated: 2026-05-15_
 
+## 2026-05-15 GEOUI-6 / GEOUI-7 / GEOUI-8 Checkpoint (Final)
+
+- GEOUI-6 completed:
+  - `src/app/booking/[slug]/page.tsx`: full design token replacement.
+    Stepper (`bg-primary`, `ring-primary/20`, `bg-muted`), service/staff cards (`border-primary`,
+    `group-hover:text-primary`), slot buttons (`hover:bg-primary/10`), submit buttons
+    (`bg-primary hover:bg-primary/90 text-primary-foreground`), chatbot bubbles/header
+    (`bg-primary`), typing dots (`bg-muted-foreground`).
+    All `ring-blue-*` → `ring-ring`, `bg-blue-*` → `bg-primary`, `text-blue-*` → `text-primary`.
+
+- GEOUI-7 completed:
+  - `src/tests/geo-locale.test.ts` expanded to 47 unit tests:
+    - source priority chain (9 tests: route > cookie > user > country > accept-language > fallback)
+    - Arabic and multi-region country codes (SA, AE, EG, AT, CH, RU → correct locale)
+    - `getCountryCodeFromHeaders` extended header precedence (x-country-code, x-geo-country, all-4-header priority)
+    - `APP_ENABLE_GEO_LOCALE=false` disables geo, `APP_GEO_FALLBACK_LOCALE=en` overrides fallback
+    - `getMarketConfig` extended: FR, ES, AT, CH entries
+  - `src/tests/marketplace.test.ts`: 5 new TR market assertions:
+    - TR query includes countryCode in org filter
+    - Non-TR includes own countryCode (not TR)
+    - Non-TR with province param — province NOT applied as filter
+    - `q` param filters by name across all markets
+    - TR result set includes `province` field
+  - `src/config/locale-market.ts`: added AT (de, EUR, +43) and CH (de, CHF, +41) entries.
+
+- GEOUI-8 completed:
+  - Created `docs/geo-locale-strategy.md` (priority chain, market variants, cookie table, file map)
+  - Updated `CHANGELOG.md` with full `[1.6.2-geo-ui-fix]` entry
+  - Tagged `v1.6.2-geo-ui-fix`
+
+- Verification snapshot (GEOUI-8 final):
+  - `npm run lint` PASS
+  - `npm test` PASS (71 files, 457 tests)
+  - `npm run build` PASS
+  - `npx prisma validate` FAIL in workspace path context (`&` parsing) — known Windows env issue
+
 ## 2026-05-15 GEOUI-0 / GEOUI-1 / GEOUI-2 Checkpoint
 
 - GEOUI-0 completed:

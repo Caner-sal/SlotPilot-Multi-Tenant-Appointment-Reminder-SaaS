@@ -2,6 +2,57 @@
 
 All notable changes to Randevo are documented here.
 
+## [1.6.2-geo-ui-fix] - 2026-05-15
+
+### GEOUI-0 to GEOUI-8 â€” Geo Locale, Global Copy & Unified UI Fix
+
+#### Bug Fixes
+- Fixed local dev opening in German: `resolveFallback` in `src/i18n/request-locale.ts` now
+  returns `"tr"` (was `"en"`) â€” platform default is Turkish.
+- Fixed login/landing pages showing hard-coded Turkish copy for non-TR visitors:
+  - `src/app/(auth)/login/page.tsx`: branding panel, features list, and testimonial are
+    now market-aware (`isTurkey` â†’ TR copy, else global copy).
+  - `src/app/page.tsx`: "TÃ¼rkiye MVP" badge, "81 il" stat, and TR-only feature card are
+    gated behind `landingVariant === "turkey"`.
+- Fixed booking calendar grid misalignment: `month_grid` now uses `table-fixed`; `weekday`
+  and `day` cells use `flex-1` for equal 7-column distribution.
+
+#### Design System Unification
+- Replaced all hard-coded light-mode Tailwind utilities (`bg-gray-*`, `bg-white`,
+  `text-gray-*`, `border-gray-*`, `text-blue-600`, `bg-blue-600`) with semantic tokens
+  (`bg-background`, `bg-card`, `text-foreground`, `text-muted-foreground`, `border-border`,
+  `text-primary`, `bg-primary`, `text-primary-foreground`) across:
+  - `src/app/booking/[slug]/layout.tsx`
+  - `src/app/booking/[slug]/page.tsx` (stepper, slot buttons, submit, summary, chatbot)
+  - `src/app/marketplace/page.tsx`
+  - `src/app/marketplace/[slug]/page.tsx`
+
+#### New Features
+- Geo locale detection core (`src/lib/geo/`):
+  - `detect-country.ts` â€” server-side country header extraction
+  - `detect-locale.ts` â€” server component locale resolver
+  - `market-context.ts` â€” `getMarketConfigFromHeaders`
+  - `use-market-context.ts` â€” `useMarketContext()` client hook
+- Market config registry (`src/config/locale-market.ts`):
+  - `MARKET_DEFAULTS` with 14 country entries (TR, DE, AT, CH, IT, US, GB, FR, ES, NL, RU, SA, AE, IR)
+  - `getMarketConfig(countryCode)` with null/unknown fallback
+  - `LandingVariant` type: `"turkey"` | `"global"`
+- Middleware: writes `randevo_country` (1yr) and `randevo_locale_source` cookies.
+  When `randevo_locale_source=manual`, IP geolocation is skipped â€” user's manual choice is permanent.
+- LanguageSwitcher: sets `randevo_locale_source=manual` on manual locale switch.
+
+#### Docs
+- Added `docs/geoui-bug-audit.md` (9 bugs with file:line references)
+- Added `docs/geo-locale-strategy.md` (priority chain, market variants, cookie table, file map)
+
+#### Test Coverage
+- Created `src/tests/geo-locale.test.ts`: 47 unit tests
+  - `resolveRequestLocale` (9 tests), source priority chain (9), Arabic/multi-region codes (6),
+    `getCountryCodeFromHeaders` extended (4 + 3 existing), `APP_ENABLE_GEO_LOCALE` env flag (2),
+    `getMarketConfig` (9)
+- Updated `src/tests/marketplace.test.ts`: TR market assertions (5 new tests)
+- Updated `src/tests/request-locale.test.ts`: expect `tr` fallback
+
 ## [1.6.1-calendar-ui-fix] - 2026-05-15
 
 ### CALUI-0 to CALUI-6
@@ -212,9 +263,9 @@ All notable changes to Randevo are documented here.
 - Expanded Playwright i18n E2E flow with multi-locale switch, RTL check (fa), and persistence checks.
 - Updated compact state and README language support documentation.
 
-## [1.3.9-global-i18n-phase-8] — 2026-05-12
+## [1.3.9-global-i18n-phase-8] ï¿½ 2026-05-12
 
-### Phase I18N-8 — SEO + QA + Release
+### Phase I18N-8 ï¿½ SEO + QA + Release
 - Added locale SEO helpers: `src/lib/seo/i18n.ts`.
 - Added locale-aware sitemap route: `src/app/sitemap.ts`.
 - Added robots route with sitemap reference: `src/app/robots.ts`.
@@ -230,9 +281,9 @@ All notable changes to Randevo are documented here.
 - Added language extension documentation:
   - `docs/adding-new-language.md`
 - Updated final compact state in `docs/COMPACT_STATE.md`.
-## [1.3.8-global-i18n-phase-7] — 2026-05-12
+## [1.3.8-global-i18n-phase-7] ï¿½ 2026-05-12
 
-### Phase I18N-7 — Notification I18N
+### Phase I18N-7 ï¿½ Notification I18N
 - Added locale preference fields to Prisma models:
   - `User.preferredLocale`
   - `Organization.defaultLocale` (default: `tr`)
@@ -244,9 +295,9 @@ All notable changes to Randevo are documented here.
   - fallback order: `customer > organization > user > tr`
 - Updated `src/services/reminder.service.ts` to render reminder emails through locale-aware template resolver.
 - Added tests: `src/tests/notification-i18n.test.ts`.
-## [1.3.7-global-i18n-phase-6] — 2026-05-12
+## [1.3.7-global-i18n-phase-6] ï¿½ 2026-05-12
 
-### Phase I18N-6 — RTL + Accessibility
+### Phase I18N-6 ï¿½ RTL + Accessibility
 - Strengthened locale metadata for direction and labels in `src/i18n/locales.ts`.
 - Upgraded `src/components/i18n/LanguageSwitcher.tsx` accessibility:
   - `aria-label`, `aria-controls`, `listbox/option` semantics
@@ -255,9 +306,9 @@ All notable changes to Randevo are documented here.
 - Passed active locale from middleware to app render via request header `x-app-locale` in `src/middleware.ts`.
 - Updated `src/app/layout.tsx` to resolve locale from middleware header first, then cookie fallback.
 - Added RTL smoke tests in `src/tests/i18n-rtl.test.ts`.
-## [1.3.6-global-i18n-phase-5] — 2026-05-12
+## [1.3.6-global-i18n-phase-5] ï¿½ 2026-05-12
 
-### Phase I18N-5 — Mobile Language Support
+### Phase I18N-5 ï¿½ Mobile Language Support
 - Added mobile i18n infrastructure:
   - `mobile/src/i18n/config.ts`
   - `mobile/src/i18n/index.tsx`
@@ -272,18 +323,18 @@ All notable changes to Randevo are documented here.
 - Updated Expo-compatible dependencies:
   - `expo-localization` -> `~17.0.8`
   - `@react-native-async-storage/async-storage` -> `2.2.0`
-## [1.3.5-global-i18n-phase-4] — 2026-05-12
+## [1.3.5-global-i18n-phase-4] ï¿½ 2026-05-12
 
-### Phase I18N-4 — Locale Formatting Helpers
+### Phase I18N-4 ï¿½ Locale Formatting Helpers
 - Added locale-aware formatting module: `src/lib/locale/format.ts`
   - `formatCurrency`, `formatNumber`, `formatDate`, `formatTime`, `formatDateTime`
   - Locale normalization via shared i18n locale config
 - Added tests: `src/tests/locale-formatting.test.ts`
   - currency, date, number, timezone-safe formatting checks
 - Preserved Turkish-first behavior while enabling locale-aware rendering primitives for upcoming phases
-## [1.3.4-global-i18n-phase-3] — 2026-05-12
+## [1.3.4-global-i18n-phase-3] ï¿½ 2026-05-12
 
-### Phase I18N-3 — Translation Migration (Core Surface)
+### Phase I18N-3 ï¿½ Translation Migration (Core Surface)
 - Expanded locale dictionaries (`tr/en/de/ar`) with aligned keys for:
   - `dashboardHeader`
   - `landing`
@@ -296,9 +347,9 @@ All notable changes to Randevo are documented here.
   - `scripts/check-translations.ts`
   - `package.json` script: `check:translations`
 - Added phase gate for missing translation keys via parity script
-## [1.3.3-global-i18n-phase-2] — 2026-05-12
+## [1.3.3-global-i18n-phase-2] ï¿½ 2026-05-12
 
-### Phase I18N-2 — Web Dil + Bayrak Seçici
+### Phase I18N-2 ï¿½ Web Dil + Bayrak Seï¿½ici
 - Added `src/components/i18n/LanguageSwitcher.tsx`
 - Added locale path helper functions in `src/i18n/pathing.ts` for path-preserving locale switch
 - Integrated language switcher into:
@@ -307,9 +358,9 @@ All notable changes to Randevo are documented here.
   - `src/app/booking/[slug]/layout.tsx` (public booking header)
 - Updated route helper tests (`src/tests/i18n-routing.test.ts`) with locale replacement scenarios
 - Updated `docs/COMPACT_STATE.md` after completing I18N-0 + I18N-1 compact protocol
-## [1.3.2-global-i18n-phase-1] — 2026-05-12
+## [1.3.2-global-i18n-phase-1] ï¿½ 2026-05-12
 
-### Phase I18N-1 — Web Locale Routing ve Message Yapýsý
+### Phase I18N-1 ï¿½ Web Locale Routing ve Message Yapï¿½sï¿½
 - Added `next-intl` dependency and plugin wiring in `next.config.ts`
 - Added i18n configuration files:
   - `src/i18n/locales.ts`
@@ -328,9 +379,9 @@ All notable changes to Randevo are documented here.
   - rewrites prefixed routes to current route tree
   - keeps auth protection behavior locale-aware
 - Added routing helper tests: `src/tests/i18n-routing.test.ts`
-## [1.3.1-global-i18n-phase-0] — 2026-05-12
+## [1.3.1-global-i18n-phase-0] ï¿½ 2026-05-12
 
-### Phase I18N-0 — Baseline, Audit ve Mimari Karar
+### Phase I18N-0 ï¿½ Baseline, Audit ve Mimari Karar
 - Added i18n-focused agent set under `.claude/agents/`:
   - `i18n-architecture-agent.md`
   - `web-language-switcher-agent.md`
