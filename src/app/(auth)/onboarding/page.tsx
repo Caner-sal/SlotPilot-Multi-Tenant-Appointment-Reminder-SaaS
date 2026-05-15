@@ -1,8 +1,11 @@
-"use client";
+﻿"use client";
 
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { COUNTRY_OPTIONS } from "@/data/country-options";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { getCallingCodeForCountry } from "@/lib/phone/country-calling-code";
 
 const TIMEZONES = [
   "Europe/Istanbul",
@@ -53,6 +56,8 @@ const labelStyle: React.CSSProperties = {
 
 export default function OnboardingPage() {
   const t = useTranslations("auth");
+  const tCommon = useTranslations("common");
+  const tBooking = useTranslations("booking");
   const router = useRouter();
   const steps = [t("onboardingStep1"), t("onboardingStep2"), t("onboardingStep3")];
   const [step, setStep] = useState(0);
@@ -63,6 +68,11 @@ export default function OnboardingPage() {
   const [phone, setPhone] = useState("");
   const [orgEmail, setOrgEmail] = useState("");
   const [address, setAddress] = useState("");
+  const [countryCode, setCountryCode] = useState("TR");
+  const [province, setProvince] = useState("");
+  const [city, setCity] = useState("");
+  const [locality, setLocality] = useState("");
+  const [postalCode, setPostalCode] = useState("");
   const [timezone, setTimezone] = useState("Europe/Istanbul");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -84,7 +94,21 @@ export default function OnboardingPage() {
     const res = await fetch("/api/organizations", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: businessName, slug, description, phone, email: orgEmail, address, timezone }),
+      body: JSON.stringify({
+        name: businessName,
+        slug,
+        description,
+        phone,
+        email: orgEmail,
+        address,
+        formattedAddress: address,
+        countryCode,
+        province,
+        city,
+        locality: locality || city,
+        postalCode,
+        timezone,
+      }),
     });
 
     const data = await res.json();
@@ -106,14 +130,11 @@ export default function OnboardingPage() {
       <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 800px 500px at 50% 30%, rgba(119,104,212,0.1) 0%, transparent 70%)", pointerEvents: "none" }} />
 
       <div style={{ width: "100%", maxWidth: 560, position: "relative", zIndex: 1 }}>
-
-        {/* Logo */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10, marginBottom: 40 }}>
           <RandevoLogo />
           <span style={{ fontFamily: "var(--font-heading, Outfit, sans-serif)", fontSize: 20, fontWeight: 700, letterSpacing: "-0.4px" }}>Randevo</span>
         </div>
 
-        {/* Step indicator */}
         <div style={{ display: "flex", alignItems: "center", marginBottom: 8 }}>
           {steps.map((s, i) => (
             <React.Fragment key={s}>
@@ -121,16 +142,13 @@ export default function OnboardingPage() {
                 <div style={{
                   width: 30, height: 30, borderRadius: "50%", display: "grid", placeItems: "center",
                   fontFamily: "var(--font-heading, Outfit, sans-serif)", fontSize: 13, fontWeight: 700,
-                  background: i < step ? "#7768d4" : i === step ? "#7768d4" : "#181828",
+                  background: i <= step ? "#7768d4" : "#181828",
                   color: i <= step ? "#fff" : "#3a3a58",
                   border: i > step ? "1px solid rgba(119,104,212,0.15)" : "none",
                   boxShadow: i === step ? "0 0 0 4px rgba(119,104,212,0.14)" : "none",
                   transition: "all 0.25s",
                 }}>
-                  {i < step
-                    ? <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
-                    : i + 1
-                  }
+                  {i < step ? <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5" /></svg> : i + 1}
                 </div>
               </div>
               {i < steps.length - 1 && (
@@ -147,7 +165,6 @@ export default function OnboardingPage() {
           ))}
         </div>
 
-        {/* Card */}
         <div style={{ background: "#111120", border: "1px solid rgba(119,104,212,0.12)", borderRadius: 20, padding: "32px 36px" }}>
           <h2 style={{ fontFamily: "var(--font-heading, Outfit, sans-serif)", fontSize: 20, fontWeight: 700, letterSpacing: "-0.02em", marginBottom: 6 }}>
             {step === 0 ? t("onboardingTitle1") : step === 1 ? t("onboardingTitle2") : t("onboardingTitle3")}
@@ -164,8 +181,6 @@ export default function OnboardingPage() {
 
           <form onSubmit={step < 2 ? (e) => { e.preventDefault(); setStep(step + 1); } : handleSubmit}>
             <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-
-              {/* STEP 0 */}
               {step === 0 && (
                 <>
                   <div>
@@ -178,59 +193,81 @@ export default function OnboardingPage() {
                       <span style={{ display: "flex", alignItems: "center", background: "#181828", border: "1px solid rgba(119,104,212,0.18)", borderRight: "none", borderRadius: "10px 0 0 10px", padding: "0 12px", fontSize: 12, color: "#3a3a58", whiteSpace: "nowrap" }}>
                         randevo.com/
                       </span>
-                      <input
-                        style={{ ...inputStyle, borderRadius: "0 10px 10px 0" }}
-                        type="text" placeholder="bella-hair-studio"
-                        value={slug} onChange={handleSlugChange} required
-                      />
+                      <input style={{ ...inputStyle, borderRadius: "0 10px 10px 0" }} type="text" placeholder="bella-hair-studio" value={slug} onChange={handleSlugChange} required />
                     </div>
                   </div>
                   <div>
-                    <label style={labelStyle}>Açıklama</label>
-                    <input style={inputStyle} type="text" placeholder="İşletmeniz için kısa bir açıklama" value={description} onChange={(e) => setDescription(e.target.value)} />
+                    <label style={labelStyle}>{tCommon("description")}</label>
+                    <input style={inputStyle} type="text" placeholder="Describe your business" value={description} onChange={(e) => setDescription(e.target.value)} />
                   </div>
                 </>
               )}
 
-              {/* STEP 1 */}
               {step === 1 && (
                 <>
                   <div>
-                    <label style={labelStyle}>Telefon</label>
-                    <input style={inputStyle} type="tel" placeholder="+90 555 000 00 00" value={phone} onChange={(e) => setPhone(e.target.value)} />
+                    <label style={labelStyle}>{tCommon("phone")}</label>
+                    <input style={inputStyle} type="tel" placeholder={`${getCallingCodeForCountry(countryCode) || "+XX"} 555 000 0000`} value={phone} onChange={(e) => setPhone(e.target.value)} />
                   </div>
                   <div>
                     <label style={labelStyle}>{t("businessEmail")}</label>
-                    <input style={inputStyle} type="email" placeholder="merhaba@isletmeniz.com" value={orgEmail} onChange={(e) => setOrgEmail(e.target.value)} />
+                    <input style={inputStyle} type="email" placeholder="hello@business.com" value={orgEmail} onChange={(e) => setOrgEmail(e.target.value)} />
                   </div>
                 </>
               )}
 
-              {/* STEP 2 */}
               {step === 2 && (
                 <>
                   <div>
-                    <label style={labelStyle}>Adres</label>
-                    <input style={inputStyle} type="text" placeholder="Cadde/Sokak, İlçe, İl" value={address} onChange={(e) => setAddress(e.target.value)} />
+                    <label style={labelStyle}>{tBooking("country")}</label>
+                    <Select value={countryCode} onValueChange={setCountryCode}>
+                      <SelectTrigger style={{ ...inputStyle, cursor: "pointer" }}>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {COUNTRY_OPTIONS.map((c) => (
+                          <SelectItem key={c.code} value={c.code}>{c.name}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <label style={labelStyle}>{tBooking("province")}</label>
+                    <input style={inputStyle} type="text" placeholder={countryCode === "TR" ? "Province" : "State / Province"} value={province} onChange={(e) => setProvince(e.target.value)} />
+                  </div>
+                  <div>
+                    <label style={labelStyle}>{tBooking("city")}</label>
+                    <input style={inputStyle} type="text" placeholder="City" value={city} onChange={(e) => setCity(e.target.value)} />
+                  </div>
+                  <div>
+                    <label style={labelStyle}>Locality</label>
+                    <input style={inputStyle} type="text" placeholder="Locality" value={locality} onChange={(e) => setLocality(e.target.value)} />
+                  </div>
+                  <div>
+                    <label style={labelStyle}>{tCommon("address")}</label>
+                    <input style={inputStyle} type="text" placeholder="Street, district, city" value={address} onChange={(e) => setAddress(e.target.value)} />
+                  </div>
+                  <div>
+                    <label style={labelStyle}>{tBooking("postalCode")}</label>
+                    <input style={inputStyle} type="text" placeholder="34000" value={postalCode} onChange={(e) => setPostalCode(e.target.value)} />
                   </div>
                   <div>
                     <label style={labelStyle}>{t("timezone")}</label>
-                    <select
-                      value={timezone}
-                      onChange={(e) => setTimezone(e.target.value)}
-                      style={{ ...inputStyle, cursor: "pointer" }}
-                      required
-                    >
-                      {TIMEZONES.map((tz) => (
-                        <option key={tz} value={tz} style={{ background: "#111120" }}>{tz}</option>
-                      ))}
-                    </select>
+                    <Select value={timezone} onValueChange={setTimezone}>
+                      <SelectTrigger style={{ ...inputStyle, cursor: "pointer" }}>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {TIMEZONES.map((tz) => (
+                          <SelectItem key={tz} value={tz}>{tz}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                 </>
               )}
             </div>
 
-            {/* Navigation */}
             <div style={{ display: "flex", justifyContent: step > 0 ? "space-between" : "flex-end", marginTop: 28 }}>
               {step > 0 && (
                 <button
@@ -239,7 +276,7 @@ export default function OnboardingPage() {
                   style={{ display: "flex", alignItems: "center", gap: 8, padding: "11px 22px", borderRadius: 11, border: "1px solid rgba(119,104,212,0.2)", background: "transparent", color: "#8a8aaa", fontFamily: "var(--font-heading, Outfit, sans-serif)", fontSize: 14, fontWeight: 600, cursor: "pointer" }}
                 >
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5" /><path d="m12 19-7-7 7-7" /></svg>
-                  {t("back")}
+                  {tCommon("back")}
                 </button>
               )}
               <button
@@ -255,7 +292,7 @@ export default function OnboardingPage() {
                 }}
               >
                 {step < 2
-                  ? <>{t("continue")} <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg></>
+                  ? <>{tCommon("next")} <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg></>
                   : loading ? t("creating2") : <>{t("createBusiness")} <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5" /></svg></>
                 }
               </button>
