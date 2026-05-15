@@ -86,6 +86,7 @@ export default function BookingPage() {
   const [selectedStaff, setSelectedStaff] = useState<StaffMember | null>(null);
   const [staffList, setStaffList] = useState<StaffMember[]>([]);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [unavailableDates, setUnavailableDates] = useState<string[]>([]);
 
   const [slots, setSlots] = useState<TimeSlot[]>([]);
   const [loadingSlots, setLoadingSlots] = useState(false);
@@ -149,6 +150,8 @@ export default function BookingPage() {
 
   const fetchSlots = useCallback(async () => {
     if (!selectedService || !selectedStaff || !selectedDate) return;
+    const requestedDate = selectedDate;
+    const requestedDateKey = toDateString(requestedDate);
     setLoadingSlots(true);
     setSlotsError(null);
     setSlots([]);
@@ -157,7 +160,7 @@ export default function BookingPage() {
       const params = new URLSearchParams({
         serviceId: selectedService.id,
         staffId: selectedStaff.id,
-        date: toDateString(selectedDate),
+        date: requestedDateKey,
       });
       const res = await fetch(`/api/booking/${slug}/slots?${params}`);
       if (!res.ok) {
@@ -166,9 +169,15 @@ export default function BookingPage() {
         return;
       }
       const json = await res.json();
-      setSlots(json.data ?? []);
-      if ((json.data ?? []).length === 0) {
+      const nextSlots: TimeSlot[] = json.data ?? [];
+      setSlots(nextSlots);
+      if (nextSlots.length === 0) {
+        setUnavailableDates((prev) =>
+          prev.includes(requestedDateKey) ? prev : [...prev, requestedDateKey]
+        );
         setSlotsError(t("noSlotsForDate"));
+      } else {
+        setUnavailableDates((prev) => prev.filter((item) => item !== requestedDateKey));
       }
     } catch {
       setSlotsError(t("slotsError"));
@@ -189,6 +198,7 @@ export default function BookingPage() {
     setStaffList(staffMembers);
     setSelectedStaff(staffMembers.length === 1 ? staffMembers[0] : null);
     setSelectedDate(null);
+    setUnavailableDates([]);
     setSelectedSlot(null);
     setStep(2);
   }
@@ -275,6 +285,7 @@ export default function BookingPage() {
     setSelectedService(null);
     setSelectedStaff(null);
     setSelectedDate(null);
+    setUnavailableDates([]);
     setSelectedSlot(null);
     setCustomerForm({
       name: "",
@@ -482,6 +493,8 @@ export default function BookingPage() {
                 selectedDate={selectedDate}
                 onSelectDate={setSelectedDate}
                 localeCode={dateLocale}
+                unavailableDates={unavailableDates}
+                unavailableHint={t("noSlotsForDate")}
               />
             </div>
           )}
