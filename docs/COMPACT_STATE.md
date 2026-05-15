@@ -2,6 +2,38 @@
 
 _Last updated: 2026-05-14_
 
+## 2026-05-15 CALUI-0 / CALUI-1 Checkpoint
+
+- CALUI-0 completed:
+  - Read `RANDEVO_CALENDAR_UI_THEME_BUGFIX_PLAN.md`.
+  - Audited booking date flow, slots contract, dashboard/admin/staff theme mismatches, and i18n/content boundaries.
+  - Added report:
+    - `docs/ui-calendar-i18n-bug-report.md`
+- CALUI-0 gate unblock:
+  - `npm run i18n:check` initially failed due key parity (`auth.continue` only in `tr`).
+  - Added missing `auth.continue` key to locale packs (`en/de/ar/es/fr/it/fa/ru/nl`) to restore parity.
+- CALUI-1 completed:
+  - Added reusable calendar wrapper:
+    - `src/components/ui/calendar.tsx`
+  - Added booking date picker component (month navigation + past-date disable):
+    - `src/components/booking/BookingDatePicker.tsx`
+  - Replaced fixed 14-day booking cards in:
+    - `src/app/booking/[slug]/page.tsx`
+  - Added helper coverage:
+    - `src/tests/booking-date-picker.test.ts`
+- Verification snapshot (CALUI-1):
+  - `npm run typecheck` PASS
+  - `npm run lint` PASS
+  - `npm test` PASS (65 files, 397 tests)
+  - `npm run build` PASS
+  - `npm run i18n:check` PASS
+  - `npm run test:e2e` PASS (9 tests)
+  - `npx prisma validate` FAIL in this workspace path context (`&` parsing)
+  - `npx prisma generate` FAIL in this workspace path context (`&` parsing)
+  - Equivalent Prisma CLI commands PASS:
+    - `node .\\node_modules\\prisma\\build\\index.js validate`
+    - `node .\\node_modules\\prisma\\build\\index.js generate`
+
 ## 2026-05-14 SAP-6 / SAP-7 Checkpoint
 
 - SAP-6 completed:

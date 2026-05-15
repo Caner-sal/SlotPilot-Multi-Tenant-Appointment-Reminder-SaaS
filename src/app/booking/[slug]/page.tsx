@@ -8,6 +8,7 @@ import { TURKEY_PROVINCES, getDistrictsByProvince } from "@/data/turkey-province
 import { COUNTRY_OPTIONS } from "@/data/country-options";
 import { getCountryAddressConfig } from "@/config/country-address-config";
 import AddressAutocomplete from "@/components/address/AddressAutocomplete";
+import BookingDatePicker from "@/components/booking/BookingDatePicker";
 
 interface BusinessProfile {
   name: string;
@@ -56,18 +57,6 @@ type Step = 1 | 2 | 3 | 4 | 5;
 
 function formatPrice(cents: number, currency: string, dateLocale: string) {
   return new Intl.NumberFormat(dateLocale, { style: "currency", currency }).format(cents / 100);
-}
-
-function getNext14Days() {
-  const days: Date[] = [];
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  for (let i = 0; i < 14; i++) {
-    const d = new Date(today);
-    d.setDate(today.getDate() + i);
-    days.push(d);
-  }
-  return days;
 }
 
 function formatDate(d: Date, dateLocale: string) {
@@ -330,7 +319,6 @@ export default function BookingPage() {
     );
   }
 
-  const days = getNext14Days();
   const addressConfig = getCountryAddressConfig(customerForm.countryCode);
 
   return (
@@ -490,29 +478,11 @@ export default function BookingPage() {
           {selectedStaff && (
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-3">{t("selectDate")}</label>
-              <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
-                {days.map((day) => (
-                  <button
-                    key={day.toISOString()}
-                    onClick={() => setSelectedDate(day)}
-                    className={`p-2.5 rounded-xl border text-center transition-colors ${
-                      selectedDate && toDateString(selectedDate) === toDateString(day)
-                        ? "border-blue-500 bg-blue-600 text-white"
-                        : "border-gray-200 hover:border-blue-300 text-gray-700 hover:bg-blue-50"
-                    }`}
-                  >
-                    <div className="text-xs font-medium">
-                      {day.toLocaleDateString(dateLocale, { weekday: "short" })}
-                    </div>
-                    <div className="text-sm font-bold mt-0.5">
-                      {day.getDate()}
-                    </div>
-                    <div className="text-xs opacity-70">
-                      {day.toLocaleDateString(dateLocale, { month: "short" })}
-                    </div>
-                  </button>
-                ))}
-              </div>
+              <BookingDatePicker
+                selectedDate={selectedDate}
+                onSelectDate={setSelectedDate}
+                localeCode={dateLocale}
+              />
             </div>
           )}
 
