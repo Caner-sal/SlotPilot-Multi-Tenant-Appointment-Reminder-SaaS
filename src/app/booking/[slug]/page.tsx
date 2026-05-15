@@ -308,24 +308,26 @@ export default function BookingPage() {
   if (loadingProfile) {
     return (
       <div className="flex items-center justify-center min-h-64 p-10">
-        <div className="text-center">
+        <div className="text-center" role="status" aria-live="polite">
           <div className="w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-          <p className="text-gray-500 text-sm">{tCommon("loading")}</p>
+          <p className="text-muted-foreground text-sm">{tCommon("loading")}</p>
         </div>
       </div>
     );
   }
 
   if (profileError) {
+    const profileErrorLower = profileError.toLowerCase();
+    const isNotFoundError =
+      profileErrorLower.includes("not found") || profileErrorLower.includes("bulunam");
+
     return (
-      <div className="max-w-lg mx-auto px-4 py-20 text-center">
-        <div className="text-5xl mb-4">🚫</div>
-        <h1 className="text-xl font-bold text-gray-900 mb-2">
-          {profileError.includes("bulunamadı") || profileError.includes("not found")
-            ? t("businessNotFound")
-            : t("notAvailable")}
+      <div className="max-w-lg mx-auto px-4 py-20 text-center" role="alert" aria-live="assertive">
+        <div className="text-4xl mb-4 text-muted-foreground">!</div>
+        <h1 className="text-xl font-bold text-foreground mb-2">
+          {isNotFoundError ? t("businessNotFound") : t("notAvailable")}
         </h1>
-        <p className="text-gray-500">{profileError}</p>
+        <p className="text-muted-foreground">{profileError}</p>
       </div>
     );
   }
@@ -336,12 +338,12 @@ export default function BookingPage() {
     <div className="max-w-2xl mx-auto px-4 py-8">
       {profile && (
         <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-gray-900">{profile.name}</h1>
+          <h1 className="text-3xl font-bold text-foreground">{profile.name}</h1>
           {profile.description && (
-            <p className="text-gray-500 mt-2 max-w-lg mx-auto">{profile.description}</p>
+            <p className="text-muted-foreground mt-2 max-w-lg mx-auto">{profile.description}</p>
           )}
           {(profile.address || profile.phone) && (
-            <div className="flex items-center justify-center gap-4 mt-3 text-sm text-gray-400">
+            <div className="flex items-center justify-center gap-4 mt-3 text-sm text-muted-foreground">
               {profile.address && <span>{profile.address}</span>}
               {profile.phone && <span>{profile.phone}</span>}
             </div>
@@ -358,7 +360,7 @@ export default function BookingPage() {
                   ? "bg-blue-600 text-white"
                   : step === s
                   ? "bg-blue-600 text-white ring-4 ring-blue-100"
-                  : "bg-gray-200 text-gray-500"
+                  : "bg-gray-200 text-muted-foreground"
               }`}
             >
               {step > s ? (
@@ -378,27 +380,27 @@ export default function BookingPage() {
 
       {step === 1 && (
         <div>
-          <h2 className="text-xl font-semibold text-gray-900 mb-5">{t("step1Title")}</h2>
+          <h2 className="text-xl font-semibold text-foreground mb-5">{t("step1Title")}</h2>
           {services.length === 0 ? (
-            <div className="text-center py-12 text-gray-400">{t("noServices")}</div>
+            <div className="text-center py-12 text-muted-foreground">{t("noServices")}</div>
           ) : (
             <div className="grid gap-3">
               {services.map((service) => (
                 <button
                   key={service.id}
                   onClick={() => selectService(service)}
-                  className="w-full text-left bg-white border border-gray-200 hover:border-blue-400 hover:shadow-md rounded-xl p-5 transition-all group"
+                  className="w-full text-left bg-card border border-border hover:border-blue-400 hover:shadow-md rounded-xl p-5 transition-all group"
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <h3 className="font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
+                      <h3 className="font-semibold text-foreground group-hover:text-blue-600 transition-colors">
                         {service.name}
                       </h3>
                       {service.description && (
-                        <p className="text-sm text-gray-500 mt-1">{service.description}</p>
+                        <p className="text-sm text-muted-foreground mt-1">{service.description}</p>
                       )}
                       <div className="flex items-center gap-3 mt-2">
-                        <span className="text-sm text-gray-500 flex items-center gap-1">
+                        <span className="text-sm text-muted-foreground flex items-center gap-1">
                           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                             <circle cx="12" cy="12" r="10" />
                             <polyline points="12 6 12 12 16 14" />
@@ -406,7 +408,7 @@ export default function BookingPage() {
                           {service.durationMinutes} {tCommon("min")}
                         </span>
                         {service.staffServices.length > 0 && (
-                          <span className="text-sm text-gray-500">
+                          <span className="text-sm text-muted-foreground">
                             {service.staffServices.length} {tCommon("worker")}
                           </span>
                         )}
@@ -429,7 +431,7 @@ export default function BookingPage() {
         <div className="space-y-6">
           <button
             onClick={() => setStep(1)}
-            className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700 transition-colors"
+            className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 rounded-md"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <polyline points="15 18 9 12 15 6" />
@@ -438,15 +440,15 @@ export default function BookingPage() {
           </button>
 
           <div>
-            <h2 className="text-xl font-semibold text-gray-900 mb-1">{t("step2Title")}</h2>
-            <div className="text-sm text-gray-500">
-              {selectedService.name} · {selectedService.durationMinutes} {tCommon("min")}
+            <h2 className="text-xl font-semibold text-foreground mb-1">{t("step2Title")}</h2>
+            <div className="text-sm text-muted-foreground">
+              {selectedService.name} - {selectedService.durationMinutes} {tCommon("min")}
             </div>
           </div>
 
           {staffList.length > 1 && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-3">{t("selectStaff")}</label>
+              <label className="block text-sm font-medium text-foreground mb-3">{t("selectStaff")}</label>
               <div className="grid grid-cols-2 gap-3">
                 {staffList.map((staff) => (
                   <button
@@ -455,10 +457,10 @@ export default function BookingPage() {
                     className={`p-3 rounded-xl border text-sm font-medium transition-colors ${
                       selectedStaff?.id === staff.id
                         ? "border-blue-500 bg-blue-50 text-blue-700"
-                        : "border-gray-200 hover:border-blue-300 text-gray-700"
+                        : "border-border hover:border-blue-300 text-foreground"
                     }`}
                   >
-                    <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-xs font-semibold text-gray-600 mx-auto mb-1">
+                    <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-xs font-semibold text-muted-foreground mx-auto mb-1">
                       {staff.name.charAt(0).toUpperCase()}
                     </div>
                     {staff.name}
@@ -474,21 +476,21 @@ export default function BookingPage() {
                 {staffList[0].name.charAt(0).toUpperCase()}
               </div>
               <div>
-                <p className="text-sm text-gray-500">{t("appointmentWith")}</p>
-                <p className="font-medium text-gray-900">{staffList[0].name}</p>
+                <p className="text-sm text-muted-foreground">{t("appointmentWith")}</p>
+                <p className="font-medium text-foreground">{staffList[0].name}</p>
               </div>
             </div>
           )}
 
           {staffList.length === 0 && (
-            <div className="text-center py-6 text-gray-400 text-sm">
+            <div className="text-center py-6 text-muted-foreground text-sm">
               {t("noStaff")}
             </div>
           )}
 
           {selectedStaff && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-3">{t("selectDate")}</label>
+              <label className="block text-sm font-medium text-foreground mb-3">{t("selectDate")}</label>
               <BookingDatePicker
                 selectedDate={selectedDate}
                 onSelectDate={setSelectedDate}
@@ -502,7 +504,7 @@ export default function BookingPage() {
           {selectedStaff && selectedDate && (
             <button
               onClick={handleStaffAndDateComplete}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-semibold transition-colors"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
             >
               {t("viewSlots")}
             </button>
@@ -514,7 +516,7 @@ export default function BookingPage() {
         <div className="space-y-6">
           <button
             onClick={() => setStep(2)}
-            className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700 transition-colors"
+            className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 rounded-md"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <polyline points="15 18 9 12 15 6" />
@@ -523,24 +525,24 @@ export default function BookingPage() {
           </button>
 
           <div>
-            <h2 className="text-xl font-semibold text-gray-900 mb-1">{t("step3Title")}</h2>
-            <p className="text-sm text-gray-500">
-              {selectedStaff.name} · {formatDate(selectedDate, dateLocale)}
+            <h2 className="text-xl font-semibold text-foreground mb-1">{t("step3Title")}</h2>
+            <p className="text-sm text-muted-foreground">
+              {selectedStaff.name} - {formatDate(selectedDate, dateLocale)}
             </p>
           </div>
 
           {loadingSlots && (
-            <div className="flex items-center justify-center py-12">
+            <div className="flex items-center justify-center py-12" role="status" aria-live="polite">
               <div className="w-7 h-7 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
             </div>
           )}
 
           {!loadingSlots && slotsError && (
-            <div className="text-center py-10">
-              <p className="text-gray-500">{slotsError}</p>
+            <div className="text-center py-10 rounded-xl border border-border bg-card" role="alert" aria-live="assertive">
+              <p className="text-muted-foreground">{slotsError}</p>
               <button
                 onClick={() => setStep(2)}
-                className="mt-4 text-blue-600 hover:underline text-sm"
+                className="mt-4 text-blue-600 hover:underline text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 rounded-md"
               >
                 {t("differentDate")}
               </button>
@@ -558,7 +560,7 @@ export default function BookingPage() {
                   <button
                     key={slot.startTime}
                     onClick={() => selectSlot(slot)}
-                    className="py-2.5 rounded-xl border border-gray-200 hover:border-blue-400 hover:bg-blue-50 text-sm font-medium text-gray-700 hover:text-blue-700 transition-colors"
+                    className="py-2.5 rounded-xl border border-border hover:border-blue-400 hover:bg-blue-50 text-sm font-medium text-foreground hover:text-blue-700 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                   >
                     {time}
                   </button>
@@ -573,7 +575,7 @@ export default function BookingPage() {
         <div className="space-y-6">
           <button
             onClick={() => setStep(3)}
-            className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700 transition-colors"
+            className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 rounded-md"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <polyline points="15 18 9 12 15 6" />
@@ -614,7 +616,7 @@ export default function BookingPage() {
           </div>
 
           <div>
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">{t("step4Title")}</h2>
+            <h2 className="text-xl font-semibold text-foreground mb-4">{t("step4Title")}</h2>
             <form onSubmit={handleConfirm} className="space-y-4">
               {submitError && (
                 <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg px-4 py-3">
@@ -622,7 +624,7 @@ export default function BookingPage() {
                 </div>
               )}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-foreground mb-1">
                   {t("fullName")}
                 </label>
                 <input
@@ -630,12 +632,12 @@ export default function BookingPage() {
                   minLength={2}
                   value={customerForm.name}
                   onChange={(e) => setCustomerForm({ ...customerForm, name: e.target.value })}
-                  className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder={t("namePlaceholder")}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-foreground mb-1">
                   {t("emailLabel")}
                 </label>
                 <input
@@ -643,25 +645,25 @@ export default function BookingPage() {
                   type="email"
                   value={customerForm.email}
                   onChange={(e) => setCustomerForm({ ...customerForm, email: e.target.value })}
-                  className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder={t("emailPlaceholder")}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-foreground mb-1">
                   {t("phoneLabel")}{" "}
-                  <span className="text-gray-400 font-normal">{t("phoneOptional")}</span>
+                  <span className="text-muted-foreground font-normal">{t("phoneOptional")}</span>
                 </label>
                 <input
                   type="tel"
                   value={customerForm.phone}
                   onChange={(e) => setCustomerForm({ ...customerForm, phone: e.target.value })}
-                  className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder={`${addressConfig.phoneCountryCode} 555 000 0000`}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-foreground mb-1">
                   {t("country")}
                 </label>
                 <select
@@ -675,7 +677,7 @@ export default function BookingPage() {
                       postalCode: "",
                     })
                   }
-                  className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   {COUNTRY_OPTIONS.map((country) => (
                     <option key={country.code} value={country.code}>
@@ -685,9 +687,9 @@ export default function BookingPage() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-foreground mb-1">
                   {t("addressLine")}{" "}
-                  <span className="text-gray-400 font-normal">{t("phoneOptional")}</span>
+                  <span className="text-muted-foreground font-normal">{t("phoneOptional")}</span>
                 </label>
                 <AddressAutocomplete
                   locale={locale}
@@ -711,16 +713,16 @@ export default function BookingPage() {
                 {customerForm.countryCode === "TR" ? (
                   <>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <label className="block text-sm font-medium text-foreground mb-1">
                         {t("province")}{" "}
-                        <span className="text-gray-400 font-normal">{t("phoneOptional")}</span>
+                        <span className="text-muted-foreground font-normal">{t("phoneOptional")}</span>
                       </label>
                       <select
                         value={customerForm.adminLevel1}
                         onChange={(e) =>
                           setCustomerForm({ ...customerForm, adminLevel1: e.target.value, adminLevel2: "" })
                         }
-                        className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                       >
                         <option value="">{t("provincePlaceholder")}</option>
                         {TURKEY_PROVINCES.map((p) => (
@@ -731,15 +733,15 @@ export default function BookingPage() {
                       </select>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <label className="block text-sm font-medium text-foreground mb-1">
                         {t("district")}{" "}
-                        <span className="text-gray-400 font-normal">{t("phoneOptional")}</span>
+                        <span className="text-muted-foreground font-normal">{t("phoneOptional")}</span>
                       </label>
                       <select
                         value={customerForm.adminLevel2}
                         onChange={(e) => setCustomerForm({ ...customerForm, adminLevel2: e.target.value })}
                         disabled={!customerForm.adminLevel1}
-                        className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-400"
+                        className="w-full border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-muted disabled:text-muted-foreground"
                       >
                         <option value="">{t("districtPlaceholder")}</option>
                         {getDistrictsByProvince(customerForm.adminLevel1).map((d) => (
@@ -753,26 +755,26 @@ export default function BookingPage() {
                 ) : (
                   <>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <label className="block text-sm font-medium text-foreground mb-1">
                         {t(addressConfig.labels.adminLevel1)}{" "}
-                        <span className="text-gray-400 font-normal">{t("phoneOptional")}</span>
+                        <span className="text-muted-foreground font-normal">{t("phoneOptional")}</span>
                       </label>
                       <input
                         value={customerForm.adminLevel1}
                         onChange={(e) => setCustomerForm({ ...customerForm, adminLevel1: e.target.value })}
-                        className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                         placeholder={t("adminLevel1Placeholder")}
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <label className="block text-sm font-medium text-foreground mb-1">
                         {t(addressConfig.labels.adminLevel2)}{" "}
-                        <span className="text-gray-400 font-normal">{t("phoneOptional")}</span>
+                        <span className="text-muted-foreground font-normal">{t("phoneOptional")}</span>
                       </label>
                       <input
                         value={customerForm.adminLevel2}
                         onChange={(e) => setCustomerForm({ ...customerForm, adminLevel2: e.target.value })}
-                        className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                         placeholder={t("adminLevel2Placeholder")}
                       />
                     </div>
@@ -781,41 +783,41 @@ export default function BookingPage() {
               </div>
               {addressConfig.fields.postalCode ? (
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-foreground mb-1">
                     {t(addressConfig.labels.postalCode)}{" "}
-                    <span className="text-gray-400 font-normal">{t("phoneOptional")}</span>
+                    <span className="text-muted-foreground font-normal">{t("phoneOptional")}</span>
                   </label>
                   <input
                     value={customerForm.postalCode}
                     onChange={(e) => setCustomerForm({ ...customerForm, postalCode: e.target.value })}
-                    className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder={t("postalCodePlaceholder")}
                   />
                 </div>
               ) : null}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-foreground mb-1">
                   {tCommon("notes")}{" "}
-                  <span className="text-gray-400 font-normal">{t("phoneOptional")}</span>
+                  <span className="text-muted-foreground font-normal">{t("phoneOptional")}</span>
                 </label>
                 <textarea
                   value={customerForm.notes}
                   onChange={(e) => setCustomerForm({ ...customerForm, notes: e.target.value })}
-                  className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   rows={2}
                   placeholder={t("notesPlaceholder")}
                 />
               </div>
-              <div className="space-y-3 border-t border-gray-100 pt-4">
+              <div className="space-y-3 border-t border-border pt-4">
                 <label className="flex items-start gap-3 cursor-pointer">
                   <input
                     type="checkbox"
                     required
                     checked={customerForm.privacyNoticeAcknowledged}
                     onChange={(e) => setCustomerForm({ ...customerForm, privacyNoticeAcknowledged: e.target.checked })}
-                    className="mt-0.5 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                    className="mt-0.5 h-4 w-4 rounded border-border text-blue-600 focus:ring-blue-500"
                   />
-                  <span className="text-sm text-gray-700">
+                  <span className="text-sm text-foreground">
                     <span className="text-red-500">*</span>{" "}
                     {t("kvkkConsent")}
                   </span>
@@ -825,9 +827,9 @@ export default function BookingPage() {
                     type="checkbox"
                     checked={customerForm.appointmentNotificationConsent}
                     onChange={(e) => setCustomerForm({ ...customerForm, appointmentNotificationConsent: e.target.checked })}
-                    className="mt-0.5 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                    className="mt-0.5 h-4 w-4 rounded border-border text-blue-600 focus:ring-blue-500"
                   />
-                  <span className="text-sm text-gray-600">
+                  <span className="text-sm text-muted-foreground">
                     {t("reminderConsent")}
                   </span>
                 </label>
@@ -836,9 +838,9 @@ export default function BookingPage() {
                     type="checkbox"
                     checked={customerForm.marketingConsent}
                     onChange={(e) => setCustomerForm({ ...customerForm, marketingConsent: e.target.checked })}
-                    className="mt-0.5 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                    className="mt-0.5 h-4 w-4 rounded border-border text-blue-600 focus:ring-blue-500"
                   />
-                  <span className="text-sm text-gray-600">
+                  <span className="text-sm text-muted-foreground">
                     {t("marketingConsent")}
                   </span>
                 </label>
@@ -858,10 +860,10 @@ export default function BookingPage() {
       {profile?.aiChatbotEnabled && (
         <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3">
           {chatOpen && (
-            <div className="w-80 bg-white rounded-2xl shadow-2xl border border-gray-200 flex flex-col overflow-hidden">
+            <div className="w-80 bg-card rounded-2xl shadow-2xl border border-border flex flex-col overflow-hidden">
               <div className="bg-blue-600 px-4 py-3 flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center">
+                  <div className="w-6 h-6 rounded-full bg-card/20 flex items-center justify-center">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
                       <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
                     </svg>
@@ -880,7 +882,7 @@ export default function BookingPage() {
 
               <div className="flex-1 overflow-y-auto p-3 space-y-2 max-h-72 min-h-32">
                 {chatMessages.length === 0 && (
-                  <p className="text-xs text-gray-400 text-center py-4">
+                  <p className="text-xs text-muted-foreground text-center py-4">
                     {t("aiGreeting")}
                   </p>
                 )}
@@ -890,7 +892,7 @@ export default function BookingPage() {
                       className={`max-w-[85%] rounded-xl px-3 py-2 text-xs leading-relaxed ${
                         m.role === "user"
                           ? "bg-blue-600 text-white"
-                          : "bg-gray-100 text-gray-800"
+                          : "bg-muted text-foreground"
                       }`}
                     >
                       {m.content}
@@ -899,7 +901,7 @@ export default function BookingPage() {
                 ))}
                 {chatLoading && (
                   <div className="flex justify-start">
-                    <div className="bg-gray-100 rounded-xl px-3 py-2">
+                    <div className="bg-muted rounded-xl px-3 py-2">
                       <span className="flex gap-1">
                         <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
                         <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
@@ -910,12 +912,12 @@ export default function BookingPage() {
                 )}
               </div>
 
-              <form onSubmit={sendChatMessage} className="border-t border-gray-100 p-2 flex gap-2">
+              <form onSubmit={sendChatMessage} className="border-t border-border p-2 flex gap-2">
                 <input
                   value={chatInput}
                   onChange={(e) => setChatInput(e.target.value)}
                   placeholder={t("aiPlaceholder")}
-                  className="flex-1 text-xs border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="flex-1 text-xs border border-border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   disabled={chatLoading}
                 />
                 <button
@@ -934,7 +936,7 @@ export default function BookingPage() {
           <button
             onClick={() => setChatOpen(!chatOpen)}
             className="w-12 h-12 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg flex items-center justify-center transition-all hover:scale-105"
-            aria-label="AI asistanı aç"
+            aria-label={t("aiAssistant")}
           >
             {chatOpen ? (
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -958,26 +960,26 @@ export default function BookingPage() {
           </div>
 
           <div>
-            <h2 className="text-2xl font-bold text-gray-900">{t("confirmed")}</h2>
-            <p className="text-gray-500 mt-1">
+            <h2 className="text-2xl font-bold text-foreground">{t("confirmed")}</h2>
+            <p className="text-muted-foreground mt-1">
               {confirmation.customer.email} {t("confirmationEmail")}
             </p>
           </div>
 
-          <div className="bg-gray-50 border border-gray-200 rounded-xl p-6 text-left space-y-3">
-            <h3 className="font-semibold text-gray-900">{profile.name}</h3>
+          <div className="bg-muted/40 border border-border rounded-xl p-6 text-left space-y-3">
+            <h3 className="font-semibold text-foreground">{profile.name}</h3>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
-                <span className="text-gray-500">{t("serviceLabel")}</span>
-                <span className="font-medium text-gray-900">{confirmation.service.name}</span>
+                <span className="text-muted-foreground">{t("serviceLabel")}</span>
+                <span className="font-medium text-foreground">{confirmation.service.name}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-500">{t("staffLabel")}</span>
-                <span className="font-medium text-gray-900">{confirmation.staff.name}</span>
+                <span className="text-muted-foreground">{t("staffLabel")}</span>
+                <span className="font-medium text-foreground">{confirmation.staff.name}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-500">{t("dateTime")}</span>
-                <span className="font-medium text-gray-900">
+                <span className="text-muted-foreground">{t("dateTime")}</span>
+                <span className="font-medium text-foreground">
                   {new Date(confirmation.startTime).toLocaleString(dateLocale, {
                     weekday: "long",
                     month: "long",
@@ -989,19 +991,19 @@ export default function BookingPage() {
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-500">{t("customerLabel")}</span>
-                <span className="font-medium text-gray-900">{confirmation.customer.fullName}</span>
+                <span className="text-muted-foreground">{t("customerLabel")}</span>
+                <span className="font-medium text-foreground">{confirmation.customer.fullName}</span>
               </div>
               {profile.address && (
                 <div className="flex justify-between">
-                  <span className="text-gray-500">{tCommon("address")}</span>
-                  <span className="font-medium text-gray-900">{profile.address}</span>
+                  <span className="text-muted-foreground">{tCommon("address")}</span>
+                  <span className="font-medium text-foreground">{profile.address}</span>
                 </div>
               )}
               {profile.phone && (
                 <div className="flex justify-between">
-                  <span className="text-gray-500">{tCommon("phone")}</span>
-                  <span className="font-medium text-gray-900">{profile.phone}</span>
+                  <span className="text-muted-foreground">{tCommon("phone")}</span>
+                  <span className="font-medium text-foreground">{profile.phone}</span>
                 </div>
               )}
             </div>
@@ -1009,7 +1011,7 @@ export default function BookingPage() {
 
           <button
             onClick={reset}
-            className="inline-flex items-center gap-2 border border-gray-300 hover:border-blue-400 hover:bg-blue-50 text-gray-700 px-6 py-2.5 rounded-xl text-sm font-medium transition-colors"
+            className="inline-flex items-center gap-2 border border-border hover:border-blue-400 hover:bg-blue-50 text-foreground px-6 py-2.5 rounded-xl text-sm font-medium transition-colors"
           >
             {t("newBooking")}
           </button>
@@ -1018,3 +1020,4 @@ export default function BookingPage() {
     </div>
   );
 }
+

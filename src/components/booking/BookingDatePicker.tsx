@@ -32,11 +32,20 @@ export default function BookingDatePicker({
   );
 
   return (
-    <div className="rounded-xl border border-border bg-card text-card-foreground">
+    <div
+      className="rounded-xl border border-border bg-card text-card-foreground"
+      aria-label="Booking date picker"
+    >
       <Calendar
         mode="single"
         selected={selectedDate ?? undefined}
         onSelect={(value) => onSelectDate(value ?? null)}
+        modifiers={{
+          unavailable: (date) => unavailableDateSet.has(format(date, "yyyy-MM-dd")),
+        }}
+        modifiersClassNames={{
+          unavailable: "line-through text-muted-foreground opacity-60",
+        }}
         disabled={(date) => {
           if (date < today) return true;
           const dateKey = format(date, "yyyy-MM-dd");

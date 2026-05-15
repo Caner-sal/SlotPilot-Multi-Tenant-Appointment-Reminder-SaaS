@@ -548,3 +548,37 @@ All phases completed and pushed:
 - Equivalent commands PASS:
   - `node .\\node_modules\\prisma\\build\\index.js validate`
   - `node .\\node_modules\\prisma\\build\\index.js generate`
+
+## 2026-05-15 CALUI-4 / CALUI-5 Checkpoint
+
+- CALUI-4 completed:
+  - Added strategy doc: `docs/i18n-content-strategy.md`
+  - Clarified separation boundary:
+    - UI strings are dictionary-driven
+    - business-entered data is preserved as-is
+  - Updated dashboard services UI labels/formatting on changed surfaces to avoid hard-coded locale assumptions.
+  - Added regression test:
+    - `src/tests/booking-services-content-preservation.test.ts`
+- CALUI-5 completed:
+  - Improved booking accessibility and contrast on updated surfaces:
+    - Added `aria-live` loading/alert semantics
+    - Added visible `focus-visible` ring styles on calendar navigation/day controls and booking slot actions
+    - Replaced remaining low-contrast/theme-breaking utility classes in booking flow with tokenized classes
+    - Added unavailable-day visual signaling on booking calendar
+  - Added QA report:
+    - `docs/ui-accessibility-qa.md`
+  - Added audit regression test:
+    - `src/tests/booking-accessibility-theme-audit.test.ts`
+- Verification snapshot (CALUI-5):
+  - `npm run typecheck` PASS
+  - `npm run lint` PASS
+  - `npm test` PASS (69 files, 403 tests)
+  - `npm run build` PASS
+  - `npm run i18n:check` PASS
+  - `npm run test:e2e` PASS (9 tests)
+  - `npx prisma validate` FAIL in this workspace path context (`&` parsing)
+  - `npx prisma generate` FAIL in this workspace path context (`&` parsing)
+  - Equivalent Prisma CLI commands PASS:
+    - `node .\\node_modules\\prisma\\build\\index.js validate`
+    - `node .\\node_modules\\prisma\\build\\index.js generate`
+
