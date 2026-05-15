@@ -2,6 +2,34 @@
 
 _Last updated: 2026-05-15_
 
+## 2026-05-15 DPD-0 → DPD-3 Checkpoint
+
+Branch: `feature/global-address-locale`
+
+- **DPD-0 (Audit):** `docs/dark-select-phone-district-bug-report.md` oluşturuldu. 71 test, 457 test geçiyor (baseline).
+- **DPD-1 (Wrapper Components):**
+  - `src/components/forms/CountrySelect.tsx` oluşturuldu (Radix UI Select, COUNTRY_OPTIONS)
+  - `src/components/forms/ProvinceSelect.tsx` oluşturuldu (Radix UI Select, TURKEY_PROVINCES)
+  - `src/components/forms/DistrictSelect.tsx` oluşturuldu (Radix UI Select, getDistrictsByProvince)
+- **DPD-2 (Phone Code Data):**
+  - `src/data/country-phone-codes.ts` oluşturuldu (180+ ülke ISO → E.164 mapping)
+  - `src/lib/phone/country-calling-code.ts` oluşturuldu (`getCallingCodeForCountry` helper, fallback: "")
+  - `src/config/country-address-config.ts` düzeltildi: `defaultConfig.phoneCountryCode: ""` (eski: "+90"), NL/GB/CA/AU eklendi
+  - `src/tests/country-phone-codes.test.ts` oluşturuldu (24 test)
+  - `src/tests/country-address-config.test.ts` genişletildi (6 yeni test)
+- **DPD-3 (Phone Binding):**
+  - `src/app/(auth)/onboarding/page.tsx` — hardcoded `+90 555 000 00 00` → `getCallingCodeForCountry(countryCode)`
+  - Onboarding country native `<select>` → Radix `<Select>` (style prop pass-through)
+  - Onboarding timezone native `<select>` → Radix `<Select>`
+
+Verification (DPD-3 sonrası):
+- `npm run typecheck` PASS
+- `npm test` PASS (72 files, 488 tests)
+
+Next: DPD-4 (Turkey district docs), DPD-5 (booking+settings select refactor), DPD-6 (E2E), DPD-7 (release).
+
+---
+
 ## 2026-05-15 GEOUI-6 / GEOUI-7 / GEOUI-8 Checkpoint (Final)
 
 - GEOUI-6 completed:
