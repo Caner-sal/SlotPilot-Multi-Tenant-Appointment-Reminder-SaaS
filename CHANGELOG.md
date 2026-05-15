@@ -2,6 +2,57 @@
 
 All notable changes to Randevo are documented here.
 
+## [1.6.3-phone-district-select-fix] - 2026-05-15
+
+### DPD-0 to DPD-7 — Dark Select, Global Phone Codes, Turkey District Fix
+
+#### Bug Fixes
+
+- **Dark theme select dropdown:** Native `<select>` elements replaced with Radix UI themed
+  `Select` component (`src/components/ui/select.tsx` — already fully dark-theme aware via
+  `bg-popover`/`text-popover-foreground` CSS vars). Affected pages:
+  - `src/app/(auth)/onboarding/page.tsx`: country select + timezone select → Radix Select
+    (inline `style` prop passed to `SelectTrigger`)
+  - `src/app/booking/[slug]/page.tsx`: country, province, and district selects → `CountrySelect`,
+    `ProvinceSelect`, `DistrictSelect` wrapper components
+  - `src/app/dashboard/settings/page.tsx`: country select → `CountrySelect`
+
+- **Phone dial code not updating on country change:** Root cause was
+  `src/config/country-address-config.ts` `defaultConfig.phoneCountryCode: "+90"` causing
+  NL, GB, CA, AU to inherit Turkey's dial code. Fixes:
+  - `defaultConfig.phoneCountryCode` changed from `"+90"` to `""` (no hardcoded fallback)
+  - NL (+31), GB (+44), CA (+1), AU (+61) added to `countryAddressConfigs`
+  - `src/app/booking/[slug]/page.tsx` line 666 phone placeholder was already dynamic via
+    `addressConfig.phoneCountryCode` — auto-heals with config fix
+
+- **Onboarding hardcoded `+90` placeholder:** `src/app/(auth)/onboarding/page.tsx` line 208
+  `placeholder="+90 555 000 00 00"` replaced with dynamic
+  `getCallingCodeForCountry(countryCode)` call
+
+#### New Files
+
+- `src/data/country-phone-codes.ts` — 180+ ISO 3166-1 alpha-2 → E.164 dial code mapping
+- `src/lib/phone/country-calling-code.ts` — `getCallingCodeForCountry(code): string` helper
+  (returns `""` for unknown countries, never `"+90"`)
+- `src/components/forms/CountrySelect.tsx` — Radix UI Select + COUNTRY_OPTIONS
+- `src/components/forms/ProvinceSelect.tsx` — Radix UI Select + TURKEY_PROVINCES
+- `src/components/forms/DistrictSelect.tsx` — Radix UI Select + getDistrictsByProvince
+- `tests/e2e/dark-select-phone-regression.spec.ts` — E2E regression guards
+
+#### Documentation
+
+- `docs/dark-select-phone-district-bug-report.md` — bug audit report
+- `docs/turkey-district-data-audit.md` — Turkey district completeness report
+  (81 provinces, 903 districts, all tests passing)
+- `src/data/turkey-provinces.ts` — JSDoc added to `TURKEY_DISTRICTS` constant
+
+#### Tests Added
+
+- `src/tests/country-phone-codes.test.ts` — 24 tests (dial code mapping + helper)
+- `src/tests/country-address-config.test.ts` — 6 new assertions (NL/GB/CA/AU + empty default)
+
+---
+
 ## [1.6.2-geo-ui-fix] - 2026-05-15
 
 ### GEOUI-0 to GEOUI-8 — Geo Locale, Global Copy & Unified UI Fix
