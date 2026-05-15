@@ -15,7 +15,7 @@ export interface CountryAddressConfig {
 
 const defaultConfig: CountryAddressConfig = {
   countryCode: "TR",
-  phoneCountryCode: "+90",
+  phoneCountryCode: "",
   labels: {
     adminLevel1: "province",
     adminLevel2: "district",
@@ -84,6 +84,46 @@ const countryAddressConfigs: Record<string, CountryAddressConfig> = {
     phoneCountryCode: "+34",
     labels: {
       adminLevel1: "region",
+      adminLevel2: "city",
+      postalCode: "postalCode",
+    },
+    fields: { adminLevel1: true, adminLevel2: true, postalCode: true },
+  },
+  NL: {
+    countryCode: "NL",
+    phoneCountryCode: "+31",
+    labels: {
+      adminLevel1: "province",
+      adminLevel2: "city",
+      postalCode: "postalCode",
+    },
+    fields: { adminLevel1: true, adminLevel2: true, postalCode: true },
+  },
+  GB: {
+    countryCode: "GB",
+    phoneCountryCode: "+44",
+    labels: {
+      adminLevel1: "county",
+      adminLevel2: "city",
+      postalCode: "postalCode",
+    },
+    fields: { adminLevel1: true, adminLevel2: true, postalCode: true },
+  },
+  CA: {
+    countryCode: "CA",
+    phoneCountryCode: "+1",
+    labels: {
+      adminLevel1: "province",
+      adminLevel2: "city",
+      postalCode: "postalCode",
+    },
+    fields: { adminLevel1: true, adminLevel2: true, postalCode: true },
+  },
+  AU: {
+    countryCode: "AU",
+    phoneCountryCode: "+61",
+    labels: {
+      adminLevel1: "state",
       adminLevel2: "city",
       postalCode: "postalCode",
     },
