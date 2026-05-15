@@ -366,7 +366,8 @@
     "createBusiness": "Unternehmen erstellen",
     "stepOf": "Schritt {step} / {total}",
     "slugTaken": "Dieses URL-Kürzel ist bereits vergeben. Bitte wählen Sie ein anderes.",
-    "genericError": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut."
+    "genericError": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
+    "continue": "Weiter"
   },
   "dashboard": {
     "overview": "Übersicht",

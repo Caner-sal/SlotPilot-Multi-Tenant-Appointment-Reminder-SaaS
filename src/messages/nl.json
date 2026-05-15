@@ -241,7 +241,8 @@
     "createBusiness": "Create bedrijf",
     "stepOf": "Stap {step} / {total}",
     "slugTaken": "Deze URL-slug is al in gebruik. Kies een andere.",
-    "genericError": "Er is een fout opgetreden. Probeer opnieuw."
+    "genericError": "Er is een fout opgetreden. Probeer opnieuw.",
+    "continue": "Volgende"
   },
   "dashboard": {
     "overview": "Overzicht",

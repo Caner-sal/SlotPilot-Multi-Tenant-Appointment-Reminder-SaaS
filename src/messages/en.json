@@ -241,7 +241,8 @@
     "createBusiness": "Create Business",
     "stepOf": "Step {step} / {total}",
     "slugTaken": "This URL slug is already taken. Please choose a different one.",
-    "genericError": "An error occurred. Please try again."
+    "genericError": "An error occurred. Please try again.",
+    "continue": "Next"
   },
   "dashboard": {
     "overview": "Overview",

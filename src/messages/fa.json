@@ -241,7 +241,8 @@
     "createBusiness": "Create کسب‌وکار",
     "stepOf": "مرحله {step} از {total}",
     "slugTaken": "این اسلاگ قبلاً استفاده شده است. لطفاً مورد دیگری انتخاب کنید.",
-    "genericError": "خطایی رخ داد. دوباره تلاش کنید."
+    "genericError": "خطایی رخ داد. دوباره تلاش کنید.",
+    "continue": "بعدی"
   },
   "dashboard": {
     "overview": "نمای کلی",

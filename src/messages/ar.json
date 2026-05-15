@@ -366,7 +366,8 @@
     "createBusiness": "إنشاء العمل",
     "stepOf": "الخطوة {step} / {total}",
     "slugTaken": "رابط URL المختصر هذا مستخدم بالفعل. يرجى اختيار رابط آخر.",
-    "genericError": "حدث خطأ. يرجى المحاولة مرة أخرى."
+    "genericError": "حدث خطأ. يرجى المحاولة مرة أخرى.",
+    "continue": "التالي"
   },
   "dashboard": {
     "overview": "نظرة عامة",

@@ -241,7 +241,8 @@
     "createBusiness": "Create Attivita",
     "stepOf": "Passo {step} / {total}",
     "slugTaken": "Questo slug URL è già in uso. Scegline un altro.",
-    "genericError": "Si è verificato un errore. Riprova."
+    "genericError": "Si è verificato un errore. Riprova.",
+    "continue": "Avanti"
   },
   "dashboard": {
     "overview": "Panoramica",

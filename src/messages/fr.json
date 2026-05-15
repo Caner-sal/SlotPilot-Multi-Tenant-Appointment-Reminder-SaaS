@@ -241,7 +241,8 @@
     "createBusiness": "Create Entreprise",
     "stepOf": "Étape {step} / {total}",
     "slugTaken": "Ce slug URL est déjà utilisé. Veuillez en choisir un autre.",
-    "genericError": "Une erreur est survenue. Veuillez réessayer."
+    "genericError": "Une erreur est survenue. Veuillez réessayer.",
+    "continue": "Suivant"
   },
   "dashboard": {
     "overview": "Vue d'ensemble",

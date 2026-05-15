@@ -241,7 +241,8 @@
     "createBusiness": "Create бизнес",
     "stepOf": "Шаг {step} / {total}",
     "slugTaken": "Этот URL-слиг уже занят. Выберите другой.",
-    "genericError": "Произошла ошибка. Повторите попытку."
+    "genericError": "Произошла ошибка. Повторите попытку.",
+    "continue": "Далее"
   },
   "dashboard": {
     "overview": "Обзор",

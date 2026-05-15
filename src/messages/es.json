@@ -241,7 +241,8 @@
     "createBusiness": "Create Negocio",
     "stepOf": "Paso {step} / {total}",
     "slugTaken": "Este slug ya está en uso. Elige uno diferente.",
-    "genericError": "Ocurrió un error. Inténtalo de nuevo."
+    "genericError": "Ocurrió un error. Inténtalo de nuevo.",
+    "continue": "Siguiente"
   },
   "dashboard": {
     "overview": "Resumen",
