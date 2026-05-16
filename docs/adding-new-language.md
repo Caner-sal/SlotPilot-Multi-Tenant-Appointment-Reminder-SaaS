@@ -72,12 +72,12 @@ consume locale list automatically.
 
 Run:
 - `node .\node_modules\typescript\bin\tsc --noEmit`
-- `node .\node_modules\next\dist\bin\next lint`
+- `npm run lint`
 - `node .\node_modules\vitest\vitest.mjs run`
 - `node .\node_modules\next\dist\bin\next build`
-- `node .\node_modules\prisma\build\index.js validate`
-- `node .\node_modules\prisma\build\index.js generate`
-- `node .\node_modules\prisma\build\index.js migrate status`
+- `npm run prisma:validate`
+- `npm run prisma:generate`
+- `npm run prisma:migrate:status`
 - `node scripts/check-no-secrets.js`
 
 ## 9. E2E Validation
