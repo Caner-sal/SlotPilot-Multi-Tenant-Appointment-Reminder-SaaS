@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface WaSettings {
   enabled: boolean;
@@ -211,17 +212,19 @@ export default function WhatsAppAutoReplyPage() {
         {/* Reply Mode */}
         <div className="space-y-1">
           <label className="text-sm font-medium">{t("responseMode")}</label>
-          <select
+          <Select
             value={settings.replyMode}
-            onChange={(e) =>
-              setSettings((s) => ({ ...s, replyMode: e.target.value as WaSettings["replyMode"] }))
-            }
-            className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-ring"
+            onValueChange={(v) => setSettings((s) => ({ ...s, replyMode: v as WaSettings["replyMode"] }))}
           >
-            <option value="ALWAYS">{t("modeAlways")}</option>
-            <option value="KEYWORD_ONLY">{t("modeKeyword")}</option>
-            <option value="DISABLED">{t("modeOff")}</option>
-          </select>
+            <SelectTrigger className="w-full">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="ALWAYS">{t("modeAlways")}</SelectItem>
+              <SelectItem value="KEYWORD_ONLY">{t("modeKeyword")}</SelectItem>
+              <SelectItem value="DISABLED">{t("modeOff")}</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
 
         {/* Cooldown */}
