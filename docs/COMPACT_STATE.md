@@ -41,6 +41,27 @@ Branch: `feature/global-address-locale` | Tag: `v1.6.4`
 
 ---
 
+## 2026-05-16 UCF-0 → UCF-3 Checkpoint
+
+Branch: `feature/global-address-locale` | Hedef tag: `v1.7.0`
+
+- **UCF-0 (Audit):** `docs/user-customer-fixes-audit.md` oluşturuldu — Kocaeli eksikleri, `href="#"` forgot-password linki, UI kalıntıları ve eksik customer sayfaları belgelendi.
+- **UCF-1 (Kocaeli İlçeleri):** `src/data/turkey-provinces.ts` — Kocaeli için 8 eksik ilçe eklendi (Başiskele, Çayırova, Derince, Dilovası, Gölcük, Kandıra, Karamürsel, Kartepe). `src/tests/turkey-districts.test.ts`'e 3 yeni spot-check test eklendi.
+- **UCF-2 (UI Binding):** Booking sayfasında TR/non-TR province-district gating doğrulandı (zaten doğru çalışıyordu). `getDistrictsByProvince("kocaeli")` için test eklendi.
+- **UCF-3 (Forgot Password Backend):**
+  - `prisma/schema.prisma` — `PasswordResetToken` modeli eklendi (hashlenmiş, süreli, tek kullanımlık)
+  - `src/lib/email.ts` — `buildPasswordResetEmail()` eklendi
+  - `src/app/api/auth/forgot-password/route.ts` — rate limit (5/15dk), account enumeration yok
+  - `src/app/api/auth/reset-password/route.ts` — bcrypt, usedAt guard, $transaction
+  - `src/tests/auth-reset.test.ts` — 12 test (tümü geçiyor)
+
+### Verification Snapshot (UCF-3)
+
+- `npm run typecheck` PASS
+- `npm test` PASS (73 dosya, 505 test)
+
+---
+
 ## 2026-05-15 DPD-4 → DPD-5 Checkpoint
 
 Branch: `feature/global-address-locale`

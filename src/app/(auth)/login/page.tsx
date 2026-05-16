@@ -194,7 +194,7 @@ export default function LoginPage() {
             <div>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
                 <label style={{ ...labelStyle, marginBottom: 0 }}>{t("passwordLabel")}</label>
-                <a href="#" style={{ fontSize: 12, color: "#a59cf0" }}>{t("forgotPassword")}</a>
+                <Link href="/forgot-password" style={{ fontSize: 12, color: "#a59cf0" }}>{t("forgotPassword")}</Link>
               </div>
               <input style={inputStyle} type="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} required autoComplete="current-password" />
             </div>
