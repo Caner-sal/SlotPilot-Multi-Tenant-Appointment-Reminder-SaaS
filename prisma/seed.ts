@@ -1,69 +1,71 @@
-import { PrismaClient, DayOfWeek, SubscriptionPlan, SubscriptionStatus } from "@prisma/client";
+import { DayOfWeek, PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
+import { DEMO_WORKSPACE, validateDemoWorkspaceSafety } from "./demo-workspace";
 
 const prisma = new PrismaClient();
 
 async function main() {
   console.log("Seeding database...");
 
-  // Superadmin user
-  const superadminHash = await bcrypt.hash("superadmin1234", 12);
+  const superadminHash = await bcrypt.hash(DEMO_WORKSPACE.superadmin.password, 12);
   await prisma.user.upsert({
-    where: { email: "admin@randevo.app" },
+    where: { email: DEMO_WORKSPACE.superadmin.email },
     update: {
-      name: "Platform Yöneticisi",
+      name: "Platform Yoneticisi",
       passwordHash: superadminHash,
       platformRole: "SUPERADMIN",
       appRole: "OWNER",
     },
     create: {
-      name: "Platform Yöneticisi",
-      email: "admin@randevo.app",
+      name: "Platform Yoneticisi",
+      email: DEMO_WORKSPACE.superadmin.email,
       passwordHash: superadminHash,
       platformRole: "SUPERADMIN",
       appRole: "OWNER",
     },
   });
 
-  // Demo user
-  const passwordHash = await bcrypt.hash("demo1234", 12);
-  const user = await prisma.user.upsert({
-    where: { email: "demo@randevo.app" },
+  const ownerPasswordHash = await bcrypt.hash(DEMO_WORKSPACE.owner.password, 12);
+  const ownerUser = await prisma.user.upsert({
+    where: { email: DEMO_WORKSPACE.owner.email },
     update: {
-      name: "Demo İşletme Sahibi",
-      passwordHash,
+      name: "Demo Isletme Sahibi",
+      passwordHash: ownerPasswordHash,
       appRole: "OWNER",
     },
     create: {
-      name: "Demo İşletme Sahibi",
-      email: "demo@randevo.app",
-      passwordHash,
+      name: "Demo Isletme Sahibi",
+      email: DEMO_WORKSPACE.owner.email,
+      passwordHash: ownerPasswordHash,
       appRole: "OWNER",
     },
   });
 
-  // Demo organization
   const org = await prisma.organization.upsert({
-    where: { slug: "barber-demo" },
+    where: { slug: DEMO_WORKSPACE.organization.slug },
     update: {
-      name: "Berber Demo",
-      description: "Randevo için demo berber işletmesi",
+      name: DEMO_WORKSPACE.organization.name,
+      description: "Randevo icin demo berber isletmesi",
       phone: "+90 555 000 0000",
       email: "hello@barberdemo.com",
-      address: "İstanbul, Türkiye",
+      address: "Istanbul, Turkiye",
       timezone: "Europe/Istanbul",
       bookingEnabled: true,
     },
     create: {
-      name: "Berber Demo",
-      slug: "barber-demo",
-      description: "Randevo için demo berber işletmesi",
+      name: DEMO_WORKSPACE.organization.name,
+      slug: DEMO_WORKSPACE.organization.slug,
+      description: "Randevo icin demo berber isletmesi",
       phone: "+90 555 000 0000",
       email: "hello@barberdemo.com",
-      address: "İstanbul, Türkiye",
+      address: "Istanbul, Turkiye",
       timezone: "Europe/Istanbul",
       bookingEnabled: true,
     },
+  });
+
+  const paymentCountBefore = await prisma.payment.count({
+    where: { organizationId: org.id },
   });
 
   const tier1CountryConfigs = [
@@ -102,23 +104,22 @@ async function main() {
     });
   }
 
-  // Default location for demo org
   await prisma.location.upsert({
-    where: { id: "loc-barber-main" },
+    where: { id: DEMO_WORKSPACE.ids.location },
     update: {
       organizationId: org.id,
-      name: "Merkez Şube",
-      address: "İstanbul, Türkiye",
+      name: "Merkez Sube",
+      address: "Istanbul, Turkiye",
       phone: "+90 555 000 0000",
       timezone: "Europe/Istanbul",
       isDefault: true,
       isActive: true,
     },
     create: {
-      id: "loc-barber-main",
+      id: DEMO_WORKSPACE.ids.location,
       organizationId: org.id,
-      name: "Merkez Şube",
-      address: "İstanbul, Türkiye",
+      name: "Merkez Sube",
+      address: "Istanbul, Turkiye",
       phone: "+90 555 000 0000",
       timezone: "Europe/Istanbul",
       isDefault: true,
@@ -126,136 +127,159 @@ async function main() {
     },
   });
 
-  // Organization member
   await prisma.organizationMember.upsert({
-    where: { userId_organizationId: { userId: user.id, organizationId: org.id } },
-    update: {
-      role: "OWNER",
+    where: {
+      userId_organizationId: {
+        userId: ownerUser.id,
+        organizationId: org.id,
+      },
     },
+    update: { role: "OWNER" },
     create: {
-      userId: user.id,
+      userId: ownerUser.id,
       organizationId: org.id,
       role: "OWNER",
     },
   });
 
-  // Subscription (free plan)
-  await prisma.subscription.upsert({
+  const subscription = await prisma.subscription.upsert({
     where: { organizationId: org.id },
     update: {
-      plan: SubscriptionPlan.FREE,
-      status: SubscriptionStatus.ACTIVE,
+      plan: DEMO_WORKSPACE.subscription.plan,
+      status: DEMO_WORKSPACE.subscription.status,
+      stripeCustomerId: null,
+      stripeSubscriptionId: null,
+      currentPeriodEnd: null,
     },
     create: {
       organizationId: org.id,
-      plan: SubscriptionPlan.FREE,
-      status: SubscriptionStatus.ACTIVE,
+      plan: DEMO_WORKSPACE.subscription.plan,
+      status: DEMO_WORKSPACE.subscription.status,
+      stripeCustomerId: null,
+      stripeSubscriptionId: null,
+      currentPeriodEnd: null,
     },
   });
 
-  // Services
   const haircut = await prisma.service.upsert({
-    where: { id: "service-haircut-demo" },
+    where: { id: DEMO_WORKSPACE.ids.serviceHaircut },
     update: {
       organizationId: org.id,
-      name: "Saç Kesimi",
-      description: "Klasik saç kesimi ve şekillendirme",
+      name: "Sac Kesimi",
+      description: "Klasik sac kesimi ve sekillendirme",
       durationMinutes: 30,
       priceCents: 35000,
       currency: "TRY",
+      depositRequired: false,
+      depositAmountCents: 0,
       isActive: true,
     },
     create: {
-      id: "service-haircut-demo",
+      id: DEMO_WORKSPACE.ids.serviceHaircut,
       organizationId: org.id,
-      name: "Saç Kesimi",
-      description: "Klasik saç kesimi ve şekillendirme",
+      name: "Sac Kesimi",
+      description: "Klasik sac kesimi ve sekillendirme",
       durationMinutes: 30,
       priceCents: 35000,
       currency: "TRY",
+      depositRequired: false,
+      depositAmountCents: 0,
       isActive: true,
     },
   });
 
   const beard = await prisma.service.upsert({
-    where: { id: "service-beard-demo" },
+    where: { id: DEMO_WORKSPACE.ids.serviceBeard },
     update: {
       organizationId: org.id,
-      name: "Sakal Tıraşı",
-      description: "Sakal kısaltma ve şekillendirme",
+      name: "Sakal Tirasi",
+      description: "Sakal kisaltma ve sekillendirme",
       durationMinutes: 20,
       priceCents: 20000,
       currency: "TRY",
+      depositRequired: false,
+      depositAmountCents: 0,
       isActive: true,
     },
     create: {
-      id: "service-beard-demo",
+      id: DEMO_WORKSPACE.ids.serviceBeard,
       organizationId: org.id,
-      name: "Sakal Tıraşı",
-      description: "Sakal kısaltma ve şekillendirme",
+      name: "Sakal Tirasi",
+      description: "Sakal kisaltma ve sekillendirme",
       durationMinutes: 20,
       priceCents: 20000,
       currency: "TRY",
+      depositRequired: false,
+      depositAmountCents: 0,
       isActive: true,
     },
   });
 
   const combo = await prisma.service.upsert({
-    where: { id: "service-combo-demo" },
+    where: { id: DEMO_WORKSPACE.ids.serviceCombo },
     update: {
       organizationId: org.id,
-      name: "Saç + Sakal",
-      description: "Tam bakım paketi",
+      name: "Sac + Sakal",
+      description: "Tam bakim paketi",
       durationMinutes: 45,
       priceCents: 50000,
       currency: "TRY",
+      depositRequired: false,
+      depositAmountCents: 0,
       isActive: true,
     },
     create: {
-      id: "service-combo-demo",
+      id: DEMO_WORKSPACE.ids.serviceCombo,
       organizationId: org.id,
-      name: "Saç + Sakal",
-      description: "Tam bakım paketi",
+      name: "Sac + Sakal",
+      description: "Tam bakim paketi",
       durationMinutes: 45,
       priceCents: 50000,
       currency: "TRY",
+      depositRequired: false,
+      depositAmountCents: 0,
       isActive: true,
     },
   });
 
-  // Staff
   const staffAli = await prisma.staff.upsert({
-    where: { id: "staff-ali-demo" },
+    where: { id: DEMO_WORKSPACE.ids.staffAli },
     update: {
       organizationId: org.id,
-      name: "Ali Yılmaz",
+      name: "Ali Yilmaz",
       email: "ali@barberdemo.com",
       phone: "+90 555 111 1111",
       isActive: true,
     },
     create: {
-      id: "staff-ali-demo",
+      id: DEMO_WORKSPACE.ids.staffAli,
       organizationId: org.id,
-      name: "Ali Yılmaz",
+      name: "Ali Yilmaz",
       email: "ali@barberdemo.com",
       phone: "+90 555 111 1111",
       isActive: true,
     },
   });
 
-  // Staff-service assignments
   for (const serviceId of [haircut.id, beard.id, combo.id]) {
     await prisma.staffService.upsert({
-      where: { staffId_serviceId: { staffId: staffAli.id, serviceId } },
+      where: {
+        staffId_serviceId: {
+          staffId: staffAli.id,
+          serviceId,
+        },
+      },
       update: {
         staffId: staffAli.id,
         serviceId,
       },
-      create: { staffId: staffAli.id, serviceId },
+      create: {
+        staffId: staffAli.id,
+        serviceId,
+      },
     });
   }
 
-  // Availability (Mon-Sat, 09:00-18:00)
   const workDays: DayOfWeek[] = [
     "MONDAY",
     "TUESDAY",
@@ -287,7 +311,6 @@ async function main() {
     });
   }
 
-  // WhatsApp Auto Reply Settings — default for demo org
   await prisma.whatsAppAutoReplySettings.upsert({
     where: { organizationId: org.id },
     update: {},
@@ -302,12 +325,36 @@ async function main() {
     },
   });
 
+  const paymentCountAfter = await prisma.payment.count({
+    where: { organizationId: org.id },
+  });
+
+  const safety = validateDemoWorkspaceSafety({
+    subscriptionPlan: subscription.plan,
+    subscriptionStatus: subscription.status,
+    stripeCustomerId: subscription.stripeCustomerId,
+    stripeSubscriptionId: subscription.stripeSubscriptionId,
+    paymentCountDelta: paymentCountAfter - paymentCountBefore,
+  });
+
   console.log("Seed complete!");
+  console.log("Demo workspace smoke summary:");
+  console.log(`  ownerEmail=${DEMO_WORKSPACE.owner.email}`);
+  console.log(`  organizationSlug=${DEMO_WORKSPACE.organization.slug}`);
+  console.log(`  plan=${subscription.plan} status=${subscription.status}`);
+  console.log(`  paymentCountDelta=${paymentCountAfter - paymentCountBefore}`);
+  if (!safety.ok) {
+    for (const issue of safety.issues) {
+      console.error(`  [safety-issue] ${issue}`);
+    }
+    throw new Error("Demo workspace safety assertions failed");
+  }
+  console.log("  safety=PASS");
   console.log(`\nDemo credentials:`);
-  console.log(`  Email: demo@randevo.app`);
-  console.log(`  Password: demo1234`);
-  console.log(`\nPublic booking URL:`);
-  console.log(`  /booking/barber-demo`);
+  console.log(`  Email: ${DEMO_WORKSPACE.owner.email}`);
+  console.log(`  Password: ${DEMO_WORKSPACE.owner.password}`);
+  console.log("\nPublic booking URL:");
+  console.log(`  /booking/${DEMO_WORKSPACE.organization.slug}`);
 }
 
 main()
