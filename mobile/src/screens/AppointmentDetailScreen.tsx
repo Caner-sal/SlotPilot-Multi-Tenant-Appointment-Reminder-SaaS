@@ -1,12 +1,13 @@
 ﻿import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, Alert } from "react-native";
-import { apiFetch } from "../api/client";
+import { apiFetch, ApiError } from "../api/client";
 import type { Appointment, AppointmentStatus } from "../api/client";
 import { useI18n } from "../i18n";
 
 interface Props {
   appointmentId: string;
   token: string;
+  canUpdateStatus: boolean;
   onBack: () => void;
 }
 
@@ -26,26 +27,26 @@ const STATUS_COLORS: Record<string, string> = {
   NO_SHOW: "#ef4444"
 };
 
-export default function AppointmentDetailScreen({ appointmentId, token, onBack }: Props) {
+export default function AppointmentDetailScreen({ appointmentId, token, canUpdateStatus, onBack }: Props) {
   const { locale, t } = useI18n();
   const [appointment, setAppointment] = useState<Appointment | null>(null);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
 
   useEffect(() => {
-    apiFetch<{ data: Appointment }>(`/api/appointments/${appointmentId}`, {}, token)
+    apiFetch<{ data: Appointment }>(`/api/mobile/appointments/${appointmentId}`, {}, token)
       .then((res) => setAppointment(res.data))
       .catch(() => Alert.alert(t("common_error"), t("appointment_load_error")))
       .finally(() => setLoading(false));
   }, [appointmentId, t, token]);
 
   async function updateStatus(newStatus: AppointmentStatus) {
-    if (!appointment) return;
+    if (!appointment || !canUpdateStatus) return;
 
     setUpdating(true);
     try {
       await apiFetch(
-        `/api/appointments/${appointmentId}/status`,
+        `/api/mobile/appointments/${appointmentId}/status`,
         {
           method: "PATCH",
           body: JSON.stringify({ status: newStatus })
@@ -55,8 +56,12 @@ export default function AppointmentDetailScreen({ appointmentId, token, onBack }
 
       setAppointment({ ...appointment, status: newStatus });
       Alert.alert(t("appointment_update_status"), t("appointment_update_success", { status: t(`status_${newStatus.toLowerCase()}`) }));
-    } catch {
-      Alert.alert(t("common_error"), t("appointment_update_error"));
+    } catch (err) {
+      if (err instanceof ApiError && err.status === 403) {
+        Alert.alert(t("common_error"), t("common_forbidden"));
+      } else {
+        Alert.alert(t("common_error"), t("appointment_update_error"));
+      }
     } finally {
       setUpdating(false);
     }
@@ -114,7 +119,7 @@ export default function AppointmentDetailScreen({ appointmentId, token, onBack }
         />
       </View>
 
-      {transitions.length > 0 && (
+      {canUpdateStatus && transitions.length > 0 && (
         <View style={styles.actions}>
           <Text style={styles.actionsLabel}>{t("appointment_update_status")}</Text>
           {transitions.map((s) => (
@@ -168,3 +173,4 @@ const styles = StyleSheet.create({
   actionButton: { borderRadius: 10, padding: 12, alignItems: "center", marginBottom: 8 },
   actionButtonText: { color: "#fff", fontWeight: "600", fontSize: 14 }
 });
+

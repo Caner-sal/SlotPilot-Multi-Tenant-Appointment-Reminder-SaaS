@@ -18,6 +18,9 @@ export const translations: Record<MobileLocale, Record<string, string>> = {
     dashboard_welcome: "Tekrar hos geldin",
     dashboard_sign_out: "Cikis Yap",
     dashboard_view_appointments: "Randevulari Gor",
+    dashboard_view_calendar: "Takvim",
+    dashboard_staff_mode: "Personel Modu",
+    dashboard_owner_mode: "Isletme Sahibi Modu",
     dashboard_today: "Bugun",
     dashboard_this_week: "Bu Hafta",
     dashboard_this_month: "Bu Ay",
@@ -27,6 +30,11 @@ export const translations: Record<MobileLocale, Record<string, string>> = {
     appointments_title: "Randevular",
     appointments_empty: "Randevu bulunamadi.",
     appointments_load_error: "Randevular yuklenemedi.",
+    appointments_cached_banner: "Baglanti sorunu nedeniyle onbellek verisi gosteriliyor.",
+    appointments_offline_banner: "Cevrimdisi gorunum etkin.",
+    calendar_title: "Takvim",
+    calendar_day: "Gunluk",
+    calendar_week: "Haftalik",
     appointment_not_found: "Randevu bulunamadi.",
     appointment_load_error: "Randevu yuklenemedi.",
     appointment_update_success: "Durum guncellendi: {{status}}",
@@ -44,7 +52,8 @@ export const translations: Record<MobileLocale, Record<string, string>> = {
     status_confirmed: "Onaylandi",
     status_completed: "Tamamlandi",
     status_cancelled: "Iptal Edildi",
-    status_no_show: "Gelmedi"
+    status_no_show: "Gelmedi",
+    common_forbidden: "Bu islem icin yetkiniz yok."
   },
   en: {
     login_title: "Randevo",
@@ -60,6 +69,9 @@ export const translations: Record<MobileLocale, Record<string, string>> = {
     dashboard_welcome: "Welcome back",
     dashboard_sign_out: "Sign out",
     dashboard_view_appointments: "View Appointments",
+    dashboard_view_calendar: "Calendar",
+    dashboard_staff_mode: "Staff Mode",
+    dashboard_owner_mode: "Owner Mode",
     dashboard_today: "Today",
     dashboard_this_week: "This Week",
     dashboard_this_month: "This Month",
@@ -69,6 +81,11 @@ export const translations: Record<MobileLocale, Record<string, string>> = {
     appointments_title: "Appointments",
     appointments_empty: "No appointments found.",
     appointments_load_error: "Could not load appointments.",
+    appointments_cached_banner: "Showing cached data due to connection issue.",
+    appointments_offline_banner: "Offline fallback mode is active.",
+    calendar_title: "Calendar",
+    calendar_day: "Day",
+    calendar_week: "Week",
     appointment_not_found: "Appointment not found.",
     appointment_load_error: "Could not load appointment.",
     appointment_update_success: "Status changed to {{status}}",
@@ -86,7 +103,8 @@ export const translations: Record<MobileLocale, Record<string, string>> = {
     status_confirmed: "Confirmed",
     status_completed: "Completed",
     status_cancelled: "Cancelled",
-    status_no_show: "No Show"
+    status_no_show: "No Show",
+    common_forbidden: "You do not have permission for this action."
   },
   de: {
     login_title: "Randevo",

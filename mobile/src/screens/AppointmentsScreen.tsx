@@ -1,6 +1,7 @@
-﻿import React, { useEffect, useState } from "react";
+﻿import AsyncStorage from "@react-native-async-storage/async-storage";
+import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator, Alert } from "react-native";
-import { apiFetch } from "../api/client";
+import { apiFetch, ApiError } from "../api/client";
 import type { Appointment } from "../api/client";
 import { useI18n } from "../i18n";
 
@@ -18,16 +19,49 @@ const STATUS_COLORS: Record<string, string> = {
   NO_SHOW: "#ef4444"
 };
 
+const CACHE_KEY = "slotpilot_mobile_appointments_cache";
+
 export default function AppointmentsScreen({ token, onSelectAppointment, onBack }: Props) {
   const { locale, t } = useI18n();
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showCachedBanner, setShowCachedBanner] = useState(false);
 
   useEffect(() => {
-    apiFetch<{ data: Appointment[] }>("/api/appointments", {}, token)
-      .then((res) => setAppointments(res.data ?? []))
-      .catch(() => Alert.alert(t("common_error"), t("appointments_load_error")))
-      .finally(() => setLoading(false));
+    let active = true;
+
+    async function load() {
+      try {
+        const res = await apiFetch<{ data: Appointment[] }>("/api/mobile/appointments?limit=100", {}, token);
+        if (!active) return;
+        setAppointments(res.data ?? []);
+        setShowCachedBanner(false);
+        await AsyncStorage.setItem(CACHE_KEY, JSON.stringify(res.data ?? []));
+      } catch (err) {
+        const cachedRaw = await AsyncStorage.getItem(CACHE_KEY);
+        const cached = cachedRaw ? (JSON.parse(cachedRaw) as Appointment[]) : [];
+        if (!active) return;
+        if (cached.length > 0) {
+          setAppointments(cached);
+          setShowCachedBanner(true);
+        } else {
+          Alert.alert(t("common_error"), t("appointments_load_error"));
+        }
+        if (err instanceof ApiError && err.status === 403) {
+          Alert.alert(t("common_error"), t("common_forbidden"));
+        }
+      } finally {
+        if (active) setLoading(false);
+      }
+    }
+
+    load().catch(() => {
+      if (active) setLoading(false);
+    });
+
+    return () => {
+      active = false;
+    };
   }, [t, token]);
 
   return (
@@ -38,6 +72,13 @@ export default function AppointmentsScreen({ token, onSelectAppointment, onBack 
         </TouchableOpacity>
         <Text style={styles.title}>{t("appointments_title")}</Text>
       </View>
+
+      {showCachedBanner && (
+        <View style={styles.banner}>
+          <Text style={styles.bannerText}>{t("appointments_cached_banner")}</Text>
+          <Text style={styles.bannerSubText}>{t("appointments_offline_banner")}</Text>
+        </View>
+      )}
 
       {loading ? (
         <ActivityIndicator style={{ marginTop: 40 }} size="large" color="#2563eb" />
@@ -73,6 +114,16 @@ const styles = StyleSheet.create({
   header: { flexDirection: "row", alignItems: "center", gap: 12, marginBottom: 16 },
   back: { color: "#2563eb", fontSize: 15 },
   title: { fontSize: 20, fontWeight: "700", color: "#111827" },
+  banner: {
+    backgroundColor: "#fef3c7",
+    borderRadius: 10,
+    padding: 10,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: "#fcd34d",
+  },
+  bannerText: { color: "#92400e", fontSize: 12, fontWeight: "600" },
+  bannerSubText: { color: "#a16207", fontSize: 11, marginTop: 2 },
   empty: { color: "#9ca3af", textAlign: "center", marginTop: 40 },
   card: {
     backgroundColor: "#fff",
@@ -91,3 +142,4 @@ const styles = StyleSheet.create({
   statusBadge: { borderRadius: 20, paddingHorizontal: 8, paddingVertical: 2 },
   statusText: { fontSize: 11, fontWeight: "600" }
 });
+

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+﻿import React, { useState } from "react";
 import {
   View,
   Text,
@@ -10,13 +10,13 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
+import { mobileLogin } from "../api/client";
+import type { MobileAuthPayload } from "../api/client";
 import { useI18n } from "../i18n";
 
 interface Props {
-  onLogin: (token: string, email: string) => void;
+  onLogin: (payload: MobileAuthPayload) => void;
 }
-
-const API_BASE = process.env.EXPO_PUBLIC_API_URL ?? "http://localhost:3000";
 
 export default function LoginScreen({ onLogin }: Props) {
   const { t } = useI18n();
@@ -32,27 +32,13 @@ export default function LoginScreen({ onLogin }: Props) {
 
     setLoading(true);
     try {
-      const res = await fetch(`${API_BASE}/api/auth/signin`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: email.trim().toLowerCase(),
-          password,
-          redirect: false,
-          csrfToken: undefined,
-        }),
+      const payload = await mobileLogin({
+        email: email.trim().toLowerCase(),
+        password,
       });
-
-      if (res.ok) {
-        // Extract session cookie or use email as token placeholder
-        const sessionCookie = res.headers.get("set-cookie") ?? "";
-        // Pass email as identifier so subsequent requests can use session
-        onLogin(sessionCookie, email.trim().toLowerCase());
-      } else {
-        Alert.alert(t("login_error_failed_title"), t("login_error_failed"));
-      }
-    } catch (err) {
-      Alert.alert(t("login_error_title"), t("login_error_connection"));
+      onLogin(payload);
+    } catch (_err) {
+      Alert.alert(t("login_error_failed_title"), t("login_error_failed"));
     } finally {
       setLoading(false);
     }
@@ -110,3 +96,4 @@ const styles = StyleSheet.create({
   buttonDisabled: { backgroundColor: "#93c5fd" },
   buttonText: { color: "#fff", fontWeight: "600", fontSize: 15 },
 });
+
