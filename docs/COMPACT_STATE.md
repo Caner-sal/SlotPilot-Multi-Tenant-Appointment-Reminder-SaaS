@@ -2,6 +2,28 @@
 
 _Last updated: 2026-05-17_
 
+## 2026-05-17 BILLUI-6+7 — iyzico Checkout & Webhook Checkpoint
+
+Branch: `feature/global-address-locale`
+
+### Tamamlanan Phaseler
+
+- **BILLUI-6:** `IyzicoProvider.createSubscriptionCheckout()` implement edildi. HMAC-SHA256 IYZWSv2 auth header. iyzico Subscription Checkout Form API entegrasyonu. `src/config/payment-provider-mapping.ts` (STARTER/PRO planları için iyzico referansları).
+- **BILLUI-7:** `/api/webhooks/iyzico` oluşturuldu: HMAC-SHA256 imza doğrulama, `WebhookEvent` idempotency (payloadHash unique), amount/currency server-side doğrulama, SUCCESS → SubscriptionPaymentTransaction.PAID + Subscription.ACTIVE, FAILURE → FAILED. `/api/billing/confirm` (GET): OWNER/ADMIN guard, transactionStatus+subscriptionStatus döndürür, dev/test fake=1 ile auto-aktivasyon.
+
+### Verification Snapshot (BILLUI-7 Final)
+
+- `npm run typecheck` PASS
+- `npm run lint` PASS
+- `npm test` PASS (73 dosya, 518 test)
+- `npm run check:secrets` PASS
+
+### Kalan Phaseler
+
+BILLUI-8 → BILLUI-9 (success/failure/history sayfaları, E2E testler, release)
+
+---
+
 ## 2026-05-17 BILLUI-3+4+5 — Billing Data Model & Checkout API Checkpoint
 
 Branch: `feature/global-address-locale`
