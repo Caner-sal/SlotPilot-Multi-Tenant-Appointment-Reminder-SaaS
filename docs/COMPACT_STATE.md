@@ -2,6 +2,60 @@
 
 _Last updated: 2026-05-17_
 
+## 2026-05-17 BILLUI-8+9 — Billing Success/Failure/History & Release Checkpoint (FINAL)
+
+Branch: `feature/global-address-locale` | Tag: `v1.9.0-billing-checkout-ui-fix`
+
+### Tamamlanan Phaseler
+
+- **BILLUI-8:** `/dashboard/billing/success` (polling confirm endpoint, 4 durum: loading/active/pending/failed), `/dashboard/billing/failure` (retry CTA, troubleshooting), `/dashboard/billing/history` (tablo, dark badge'ler) sayfaları oluşturuldu. `GET /api/billing/history` API eklendi (OWNER/ADMIN guard, son 50 transaction). 25 yeni i18n anahtarı (10 locale).
+- **BILLUI-9:** `tests/e2e/billing-checkout.spec.ts` (8 test: dark theme regression, route availability, API security guards). `docs/billing-security-review.md` (full security checklist). `CHANGELOG.md` v1.9.0 girişi. Final release tag ve push.
+
+### Tüm BILLUI Phaselerinin Özeti
+
+| Phase | Özet |
+|---|---|
+| BILLUI-0 | Audit: `docs/billing-ui-audit.md` |
+| BILLUI-1 | Analytics + Billing: `bg-blue-50/indigo-50/green-50/yellow-50` → dark token |
+| BILLUI-2 | WhatsApp native `<select>` → Radix UI Select |
+| BILLUI-3 | `SubscriptionPaymentTransaction` Prisma modeli, `src/config/billing-plans.ts` |
+| BILLUI-4 | `/dashboard/billing/checkout?plan=` sayfası, Staff redirect guard |
+| BILLUI-5 | PaymentProvider interface genişletme, FakePaymentProvider, factory FAKE path, checkout API refactor |
+| BILLUI-6 | IyzicoProvider HMAC-SHA256 Subscription Checkout Form, `payment-provider-mapping.ts` |
+| BILLUI-7 | `/api/webhooks/iyzico` (signature, idempotency, amount verify, activate), `/api/billing/confirm` |
+| BILLUI-8 | Success/Failure/History sayfaları + `/api/billing/history` |
+| BILLUI-9 | E2E testler, security review, CHANGELOG, release tag v1.9.0 |
+
+### Verification Snapshot (BILLUI-9 Final)
+
+- `npm run typecheck` PASS
+- `npm run lint` PASS
+- `npm test` PASS (73 dosya, 518 test)
+- `npm run build` PASS
+- `npm run check:secrets` PASS
+- `npm run prisma:validate` PASS
+- `npm run validate:skills` PASS
+
+### Yeni Dosyalar (BILLUI-0 → BILLUI-9)
+
+| Dosya | Phase |
+|---|---|
+| `docs/billing-ui-audit.md` | BILLUI-0 |
+| `src/config/billing-plans.ts` | BILLUI-3 |
+| `src/app/dashboard/billing/checkout/page.tsx` | BILLUI-4 |
+| `src/services/payment/fake-payment.provider.ts` | BILLUI-5 |
+| `src/config/payment-provider-mapping.ts` | BILLUI-6 |
+| `src/app/api/webhooks/iyzico/route.ts` | BILLUI-7 |
+| `src/app/api/billing/confirm/route.ts` | BILLUI-7 |
+| `src/app/dashboard/billing/success/page.tsx` | BILLUI-8 |
+| `src/app/dashboard/billing/failure/page.tsx` | BILLUI-8 |
+| `src/app/dashboard/billing/history/page.tsx` | BILLUI-8 |
+| `src/app/api/billing/history/route.ts` | BILLUI-8 |
+| `tests/e2e/billing-checkout.spec.ts` | BILLUI-9 |
+| `docs/billing-security-review.md` | BILLUI-9 |
+
+---
+
 ## 2026-05-17 BILLUI-6+7 — iyzico Checkout & Webhook Checkpoint
 
 Branch: `feature/global-address-locale`
