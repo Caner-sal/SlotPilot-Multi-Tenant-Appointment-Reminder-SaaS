@@ -2,6 +2,28 @@
 
 _Last updated: 2026-05-17_
 
+## 2026-05-17 BILLUI-0+1+2 — Billing UI Cleanup Checkpoint
+
+Branch: `feature/global-address-locale`
+
+### Tamamlanan Phaseler
+
+- **BILLUI-0 (Audit):** `docs/billing-ui-audit.md` oluşturuldu. Native select, açık renkli kartlar, eksik checkout sayfaları belgelendi.
+- **BILLUI-1 (UI Cleanup):** Analytics highlight kartları (`bg-blue-50/indigo-50` → `bg-*/500/10`), Billing plan badge renkleri (`bg-blue-100/purple-100` → `bg-*/500/15`), Billing alert mesajları (`bg-green-50/yellow-50/amber-50` → `bg-*/500/10`) dark token ile değiştirildi.
+- **BILLUI-2 (Themed Select):** WhatsApp `/dashboard/whatsapp` sayfasındaki native `<select>` → Radix UI `Select` bileşenine taşındı. Beyaz dropdown bug'ı giderildi.
+
+### Verification Snapshot (BILLUI-2 Final)
+
+- `npm run typecheck` PASS
+- `npm run lint` PASS
+- `npm test` PASS (73 dosya, 518 test)
+
+### Kalan Phaseler
+
+BILLUI-3 → BILLUI-9 (Billing data model, checkout page, provider abstraction, iyzico, webhook, history, E2E)
+
+---
+
 ## 2026-05-17 UCF-1+UCF-2 — Nationwide Turkey District Dataset Checkpoint
 
 Branch: `feature/global-address-locale` | Tag: `v1.8.0`
