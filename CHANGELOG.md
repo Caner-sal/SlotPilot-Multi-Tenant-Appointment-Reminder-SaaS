@@ -2,6 +2,54 @@
 
 All notable changes to Randevo are documented here.
 
+## [1.9.0] - 2026-05-17
+
+### Billing Checkout & UI Cleanup — BILLUI-0 → BILLUI-9
+
+#### UI Düzeltmeleri
+
+- **WhatsApp yanıt modu** native `<select>` → Radix UI Select ile değiştirildi (beyaz dropdown bug giderildi)
+- **Analytics "Öne Çıkanlar"** kartları: `bg-blue-50` / `bg-indigo-50` → `bg-blue-500/10` / `bg-indigo-500/10` (dark theme uyumu)
+- **Billing plan badge'leri**: `bg-blue-100` / `bg-purple-100` → `bg-blue-500/15` / `bg-purple-500/15`
+- **Billing alert mesajları**: `bg-green-50` / `bg-yellow-50` / `bg-amber-50` → dark-safe `/10` token'larına taşındı
+
+#### Yeni Billing Sayfaları
+
+- `/dashboard/billing/checkout?plan=STARTER|PRO` — Plan detayları, ödeme özeti, güvenlik notu
+- `/dashboard/billing/success` — Ödeme doğrulama bekleme, PAID/ACTIVE → başarı mesajı, polling
+- `/dashboard/billing/failure` — Hata mesajı, tekrar dene butonu
+- `/dashboard/billing/history` — Son 50 subscription payment transaction listesi
+
+#### Yeni API Endpoint'leri
+
+- `GET /api/billing/history` — OWNER/ADMIN guard, SubscriptionPaymentTransaction listesi
+- `GET /api/billing/confirm?conversationId=...` — Ödeme durum sorgusu (success sayfası için)
+- `POST /api/webhooks/iyzico` — iyzico webhook (signature doğrulama, idempotency, amount kontrolü)
+
+#### Billing Altyapısı
+
+- `SubscriptionPaymentTransaction` Prisma modeli eklendi (subscription ödemeleri için)
+- `src/config/billing-plans.ts` — merkezi plan config re-export + checkout URL helper
+- `src/config/payment-provider-mapping.ts` — iyzico plan referans kodları
+- `PaymentProvider` interface'e `createSubscriptionCheckout?` method eklendi
+- `FakePaymentProvider` — dev/test için end-to-end checkout akışı simülasyonu
+- `IyzicoProvider.createSubscriptionCheckout()` — iyzico Subscription Checkout Form API entegrasyonu
+- `/api/billing/checkout` refactor: multi-provider, SubscriptionPaymentTransaction kaydı, production fail-fast
+
+#### Güvenlik
+
+- Amount/currency her zaman server-side plan config'den alınıyor (client kontrolü yok)
+- Staff kullanıcılar billing checkout başlatamıyor (assertMembership guard)
+- iyzico webhook: HMAC-SHA256 imza doğrulama + WebhookEvent idempotency
+- Subscription sadece webhook/confirm doğrulaması sonrası aktif ediliyor
+- FakePaymentProvider sadece `NODE_ENV !== "production"` ortamında kullanılabilir
+- `docs/billing-security-review.md` oluşturuldu
+
+#### Testler
+
+- `tests/e2e/billing-checkout.spec.ts` — 8 E2E test (UI regression + API guard'ları)
+- 41 yeni i18n anahtarı (checkout, success, failure, history) — 10 locale
+
 ## [1.8.0] - 2026-05-16
 
 ### Türkiye İl/İlçe Datası — Tam 81 İl
