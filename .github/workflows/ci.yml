@@ -94,6 +94,9 @@ jobs:
           NEXTAUTH_URL: http://localhost:3100
           NEXT_PUBLIC_APP_URL: http://localhost:3100
 
+      - name: Install Playwright browsers
+        run: npx playwright install chromium --with-deps
+
       - name: Run Playwright e2e
         run: npm run test:e2e
         env:

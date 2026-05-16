@@ -14,7 +14,7 @@ export default defineConfig({
     trace: "on-first-retry"
   },
   webServer: {
-    command: "node .\\node_modules\\next\\dist\\bin\\next start -p 3100",
+    command: "node ./node_modules/next/dist/bin/next start -p 3100",
     url: "http://localhost:3100/tr",
     reuseExistingServer: true,
     timeout: 180_000,
