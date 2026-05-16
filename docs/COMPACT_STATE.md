@@ -41,6 +41,35 @@ Branch: `feature/global-address-locale` | Tag: `v1.6.4`
 
 ---
 
+## 2026-05-16 UCF-4 → UCF-7 Checkpoint
+
+Branch: `feature/global-address-locale` | Hedef tag: `v1.7.0`
+
+- **UCF-4 (Forgot Password UI):**
+  - `src/app/(auth)/forgot-password/page.tsx` — email form, generic success, rate limit error
+  - `src/app/(auth)/reset-password/[token]/page.tsx` — yeni şifre + onay, redirect to /login
+  - `src/app/(auth)/login/page.tsx` — `href="#"` → `Link href="/forgot-password"`
+- **UCF-5 (UI Cleanup):**
+  - `src/app/booking/[slug]/page.tsx` — `bg-red-50` → `bg-destructive/10`, `bg-green-100` → `bg-green-500/10`, `hover:border-blue-300` → `hover:border-primary/50`
+  - `src/app/marketplace/location/[country]/[city]/page.tsx` — tüm gray/white/blue kalıntılar design token'larına taşındı
+  - `src/app/dashboard/page.tsx` + `OnboardingChecklistCard.tsx` — inline `#111120` → `bg-card`
+  - `docs/ui-remnant-cleanup-report.md` oluşturuldu
+- **UCF-6 (Customer Discover MVP):**
+  - `src/app/api/discover/search/route.ts` — public endpoint, TR province/district + non-TR locality filter
+  - `src/app/discover/page.tsx` — arama formu (category, country, province/district, locality)
+  - `src/components/discover/BusinessCard.tsx` — işletme kartı, Randevu Al CTA
+- **UCF-7 (Customer Booking & Appointment Panel):**
+  - `src/app/discover/business/[slug]/page.tsx` — işletme detay sayfası, booking CTA
+  - `src/app/api/customer/appointments/route.ts` — email-scoped, 401 guard
+  - `src/app/customer/appointments/page.tsx` — yaklaşan/geçmiş sekmeleri, durum badge
+
+### Verification Snapshot (UCF-7)
+
+- `npm run typecheck` PASS
+- `npm test` PASS (73 dosya, 505 test)
+
+---
+
 ## 2026-05-16 UCF-0 → UCF-3 Checkpoint
 
 Branch: `feature/global-address-locale` | Hedef tag: `v1.7.0`

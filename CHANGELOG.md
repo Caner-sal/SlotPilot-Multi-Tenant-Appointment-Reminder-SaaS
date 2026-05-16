@@ -2,6 +2,48 @@
 
 All notable changes to Randevo are documented here.
 
+## [1.7.0] - 2026-05-16
+
+### Yeni Özellikler
+
+- **Kullanıcı Keşif Sayfası (`/discover`)**: Hizmet, kategori, ülke, il/ilçe filtreleri ile işletme arama.
+- **İşletme Detay Sayfası (`/discover/business/[slug]`)**: Hizmet listesi ve tek tıkla randevu alma.
+- **Customer Appointment Panel (`/customer/appointments`)**: Yaklaşan ve geçmiş randevuların email-scoped listesi.
+- **Şifremi Unuttum Akışı**: `/forgot-password` ve `/reset-password/[token]` sayfaları, güvenli hash/expiry/single-use token sistemi.
+
+### Güvenlik
+
+- `POST /api/auth/forgot-password`: Rate limit (5/15dk/IP), account enumeration yok, SHA-256 token hash.
+- `POST /api/auth/reset-password`: `usedAt` guard, expiry kontrolü, bcrypt re-hash, `$transaction` ile atomik güncelleme.
+- `GET /api/customer/appointments`: 401 guard, sadece session email'iyle eşleşen randevular.
+
+### Türkiye İlçe Datası
+
+- Kocaeli için 8 eksik ilçe eklendi: Başiskele, Çayırova, Derince, Dilovası, Gölcük, Kandıra, Karamürsel, Kartepe.
+- Kocaeli şimdi 12 resmi ilçenin tamamına sahip.
+- Regression spot-check testleri eklendi.
+
+### UI / Tema
+
+- Booking sayfasında `bg-red-50` → `bg-destructive/10`, `bg-green-100` → `bg-green-500/10`.
+- Marketplace location sayfasındaki tüm light-theme kalıntıları design token'larına taşındı.
+- Dashboard metrik kartları ve OnboardingChecklistCard inline stillerden Tailwind class'larına geçirildi.
+
+### Yeni API'ler
+
+- `GET /api/discover/search` — public, `marketplaceEnabled` filtrelidir.
+- `GET /api/customer/appointments` — auth-required, email-scoped.
+- `POST /api/auth/forgot-password` — rate limited.
+- `POST /api/auth/reset-password` — token validate + bcrypt.
+
+### Test
+
+- 12 yeni `auth-reset` unit testi (forgot-password + reset-password).
+- 3 yeni Kocaeli district spot-check testi.
+- Toplam: 73 test dosyası, 505 test.
+
+---
+
 ## [1.6.4-production-audit-hardening] - 2026-05-16
 
 ### Production Audit Hardening (PH-0 to PH-9)
