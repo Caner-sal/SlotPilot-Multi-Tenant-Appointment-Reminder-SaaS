@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { fillOnboardingStep0, fillOnboardingStep1 } from "./helpers/fill-onboarding";
 
 const slug = "barber-demo";
 
@@ -47,10 +48,10 @@ test.describe("DPD regression: dark select and phone dial code", () => {
       return;
     }
 
-    // Step 0 → 1
-    await nextBtn.click();
-    // Step 1 → 2
-    await nextBtn.click();
+    // Step 0 → 1: fill required fields (businessName is required)
+    await fillOnboardingStep0(page, { name: "Test Salon" });
+    // Step 1 → 2: no required fields
+    await fillOnboardingStep1(page);
 
     // On step 2, country select should be Radix (button trigger), not native <select>
     const nativeSelect = page.locator("select").first();

@@ -61,7 +61,7 @@ function BillingContent() {
       if (json.data?.url) {
         window.location.href = json.data.url;
       } else if (json.data?.mode === "test") {
-        setDemoMessage(json.data.message ?? "Demo modu: Stripe yapÄ±landÄ±rÄ±lmamÄ±ÅŸ.");
+        setDemoMessage(json.data.message ?? "Demo modu: Stripe yapılandırılmamış.");
       }
     } finally {
       setUpgrading(null);
@@ -74,7 +74,7 @@ function BillingContent() {
       return {
         id,
         label: plan.nameTR,
-        price: id === "FREE" ? "â‚º0/ay" : formatPlanPriceTR(plan),
+        price: id === "FREE" ? "₺0/ay" : formatPlanPriceTR(plan),
         highlight: id === "STARTER",
         features: plan.features,
       };

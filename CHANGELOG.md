@@ -2,6 +2,64 @@
 
 All notable changes to Randevo are documented here.
 
+## [1.6.4-production-audit-hardening] - 2026-05-16
+
+### Production Audit Hardening (PH-0 to PH-9)
+
+#### Security Fixes
+
+- **PH-1**: Middleware Edge runtime güvenliği — NextAuth `auth()` wrapper (Prisma+bcrypt zinciri)
+  kaldırıldı, Edge-safe `getEdgeSession()` ile değiştirildi (`src/lib/auth-edge.ts`, `next-auth/jwt` Web Crypto)
+- **PH-2**: Mobile JWT secret fail-fast — `"dev-mobile-secret-change-me"` fallback kaldırıldı;
+  MOBILE_JWT_SECRET veya AUTH_SECRET yoksa runtime'da throw eder (`src/lib/mobile-jwt.ts`)
+- **PH-8**: Invite accept endpoint rate limiting — 10 istek/15 dakika per IP, 429 + Retry-After
+  header döner (`src/lib/rate-limit.ts` kullanılır)
+
+#### Bug Fixes
+
+- **PH-5**: Staff invite route PII sızıntısı — `console.log(email, inviteUrl)` kaldırıldı,
+  structured logger ile değiştirildi (email + invite URL loglanmaz)
+- **PH-5b**: Audit service error leak — `console.error(params)` → `logger.error(...)` (metadata omitted)
+- **PH-6**: billing/page.tsx encoding bozukluğu — `yapılandırılmamış` ve `₺0/ay` düzeltildi
+  (mojibake UTF-8→Latin-1 karışıklığı)
+
+#### New Features / Hardening
+
+- **PH-3**: Active organization selection — cookie tabanlı aktif org seçimi + membership doğrulama;
+  `OrganizationSwitcher` UI component; `GET /api/organizations` endpoint
+- **PH-7**: Provider factory fail-fast — calendar ve whatsapp factory'leri production'da FAKE
+  provider'a sessizce düşmez, `src/lib/providers/provider-health.ts` utility
+- **PH-9**: Auth/tenant guard helpers — `src/lib/auth/guards.ts` ve
+  `src/lib/tenant/require-membership.ts` merkezi guard pattern
+
+#### New Scripts
+
+- `env:check` — zorunlu production env değişkenlerini doğrular (`scripts/check-production-env.ts`)
+- `check:logs` — API route'larda `console.log` PII sızıntısını tespit eder
+- `check:encoding` — kaynak dosyalarda mojibake karakterleri tespit eder
+
+#### New Files (17)
+
+- `docs/production-audit-2026-05-16.md` — audit bulguları tablosu
+- `src/lib/auth-edge.ts` — Edge-safe JWT session helper
+- `src/lib/auth-server.ts` — server-side auth re-export
+- `src/lib/env/validate-env.ts` — env validation utility
+- `scripts/check-production-env.ts` — production env check script
+- `src/lib/tenant/active-organization.ts` — cookie-based active org resolver
+- `src/app/api/organization/active/route.ts` — active org API endpoint
+- `src/components/organization/OrganizationSwitcher.tsx` — org switcher UI
+- `tests/e2e/helpers/fill-onboarding.ts` — E2E onboarding helper
+- `tests/e2e/helpers/test-users.ts` — E2E test user constants
+- `tests/e2e/helpers/selectors.ts` — E2E selector constants
+- `scripts/check-console-usage.ts` — console PII guard script
+- `scripts/check-encoding.ts` — encoding check script
+- `src/lib/providers/provider-health.ts` — provider fail-fast utility
+- `src/lib/auth/guards.ts` — shared auth guard helpers
+- `src/lib/tenant/require-membership.ts` — combined auth+membership guard
+- `docs/auth-tenant-helper-strategy.md` — auth split strategy docs
+
+---
+
 ## [1.6.3-phone-district-select-fix] - 2026-05-15
 
 ### DPD-0 to DPD-7 — Dark Select, Global Phone Codes, Turkey District Fix

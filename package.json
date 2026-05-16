@@ -10,13 +10,17 @@
   "scripts": {
     "check:node": "node scripts/check-node.js",
     "typecheck": "node ./node_modules/typescript/bin/tsc --noEmit",
-    "dev": "node ./node_modules/next/dist/bin/next dev",
+    "dev": "node scripts/dev-runner.js",
     "build": "node ./node_modules/next/dist/bin/next build",
     "start": "node ./node_modules/next/dist/bin/next start",
-    "lint": "node ./node_modules/next/dist/bin/next lint",
+    "lint": "node ./node_modules/eslint/bin/eslint.js . --max-warnings=0",
     "test": "node ./node_modules/vitest/vitest.mjs run",
     "test:watch": "node ./node_modules/vitest/vitest.mjs",
     "test:e2e": "node .\\node_modules\\playwright\\cli.js test",
+    "prisma:validate": "node ./node_modules/prisma/build/index.js validate",
+    "prisma:generate": "node ./node_modules/prisma/build/index.js generate",
+    "prisma:dbpush": "node ./node_modules/prisma/build/index.js db push --skip-generate",
+    "prisma:migrate:status": "node ./node_modules/prisma/build/index.js migrate status",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
     "db:migrate": "prisma migrate dev",
@@ -26,9 +30,13 @@
     "audit:districts": "node ./node_modules/tsx/dist/cli.mjs scripts/audit-turkey-districts.ts",
     "check:translations": "node ./node_modules/tsx/dist/cli.mjs scripts/check-translations.ts",
     "i18n:check": "node ./node_modules/tsx/dist/cli.mjs scripts/check-translations.ts",
-    "phase:gate": "node ./node_modules/typescript/bin/tsc --noEmit && node ./node_modules/next/dist/bin/next lint && node ./node_modules/vitest/vitest.mjs run && node ./node_modules/next/dist/bin/next build && node ./node_modules/prisma/build/index.js validate && node ./node_modules/prisma/build/index.js generate && node ./node_modules/prisma/build/index.js migrate status",
+    "phase:gate": "npm run check:node && npm run env:check && npm run check:secrets && npm run check:logs && npm run check:encoding && npm run validate:skills && npm run agent:check && node ./node_modules/typescript/bin/tsc --noEmit && npm run lint && node ./node_modules/vitest/vitest.mjs run && node ./node_modules/next/dist/bin/next build && npm run prisma:validate && npm run prisma:generate && npm run prisma:migrate:status",
     "validate:skills": "node scripts/validate-skills.js",
-    "check:secrets": "node scripts/check-no-secrets.js"
+    "check:secrets": "node scripts/check-no-secrets.js",
+    "agent:check": "node scripts/agent-check.js",
+    "env:check": "node ./node_modules/tsx/dist/cli.mjs scripts/check-production-env.ts",
+    "check:logs": "node ./node_modules/tsx/dist/cli.mjs scripts/check-console-usage.ts",
+    "check:encoding": "node ./node_modules/tsx/dist/cli.mjs scripts/check-encoding.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.0.1",
@@ -62,9 +70,6 @@
     "tailwind-merge": "^3.3.0",
     "zod": "^3.24.4"
   },
-  "prisma": {
-    "seed": "node node_modules/tsx/dist/cli.mjs prisma/seed.ts"
-  },
   "devDependencies": {
     "@playwright/test": "^1.60.0",
     "@tailwindcss/postcss": "^4",
@@ -76,6 +81,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@vitejs/plugin-react": "^4.5.0",
+    "dotenv": "^16.6.1",
     "eslint": "^9",
     "eslint-config-next": "15.5.18",
     "prisma": "^6.8.2",

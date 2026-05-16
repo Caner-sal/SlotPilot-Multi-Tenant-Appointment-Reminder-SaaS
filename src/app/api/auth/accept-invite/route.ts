@@ -6,6 +6,7 @@ import {
   markInviteAccepted,
   markInviteStatus,
 } from "@/services/staff-invite.service";
+import { consumeRateLimit, getClientIp, rateLimitHeaders } from "@/lib/rate-limit";
 import { StaffInviteStatus } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { NextResponse } from "next/server";
@@ -34,6 +35,20 @@ async function markInviteExpiredWithAudit(inviteId: string, organizationId: stri
 
 export async function POST(req: Request) {
   try {
+    // Rate limit: 10 attempts per IP per 15 minutes
+    const clientIp = getClientIp(req.headers as unknown as Headers);
+    const rl = consumeRateLimit({
+      key: `accept-invite:${clientIp}`,
+      limit: 10,
+      windowMs: 15 * 60 * 1000,
+    });
+    if (!rl.allowed) {
+      return NextResponse.json(
+        { error: "Çok fazla deneme. Lütfen daha sonra tekrar deneyin." },
+        { status: 429, headers: rateLimitHeaders(rl) },
+      );
+    }
+
     const body = await req.json();
     const { token, name, password } = acceptSchema.parse(body);
 
@@ -159,12 +174,22 @@ export async function POST(req: Request) {
     if (err instanceof z.ZodError) {
       return NextResponse.json({ error: err.issues }, { status: 400 });
     }
-    console.error(err);
     return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }
 
 export async function GET(req: Request) {
+  // Rate limit: 30 lookups per IP per 15 minutes
+  const clientIp = getClientIp(req.headers as unknown as Headers);
+  const rl = consumeRateLimit({
+    key: `accept-invite-get:${clientIp}`,
+    limit: 30,
+    windowMs: 15 * 60 * 1000,
+  });
+  if (!rl.allowed) {
+    return NextResponse.json({ error: "Too many requests" }, { status: 429, headers: rateLimitHeaders(rl) });
+  }
+
   const { searchParams } = new URL(req.url);
   const token = searchParams.get("token");
 

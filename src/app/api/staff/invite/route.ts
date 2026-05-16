@@ -1,5 +1,6 @@
 ﻿import { db } from "@/lib/db";
 import { assertMembership, requireAuth, TenantError } from "@/lib/tenant";
+import { logger } from "@/lib/logger";
 import { createAuditLog } from "@/services/audit.service";
 import {
   createStaffInvite,
@@ -67,7 +68,13 @@ export async function POST(req: Request) {
 
     const inviteUrl = `${process.env.NEXTAUTH_URL ?? "http://localhost:3000"}/staff/invite/${rawToken}`;
 
-    console.log(`[STAFF INVITE] ${email} -> ${inviteUrl}`);
+    logger.info("staff invite created", {
+      organizationId: org.id,
+      staffId,
+      inviteId: invite.id,
+      expiresAt: invite.expiresAt.toISOString(),
+      // email and inviteUrl intentionally omitted — PII + security-sensitive URL
+    });
 
     return NextResponse.json(
       {
@@ -87,7 +94,7 @@ export async function POST(req: Request) {
     if (err instanceof z.ZodError) {
       return NextResponse.json({ error: err.issues }, { status: 400 });
     }
-    console.error(err);
+    logger.error("staff invite creation failed", { err: String(err) });
     return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }

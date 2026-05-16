@@ -1,11 +1,11 @@
-import { auth } from "@/lib/auth";
+import { getEdgeSession } from "@/lib/auth-edge";
 import { localeCookieName } from "@/i18n/locales";
 import { extractLocale, withLocale } from "@/i18n/pathing";
 import {
   getCountryCodeFromHeaders,
   resolveRequestLocale,
 } from "@/i18n/request-locale";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 const protectedRoutes = ["/dashboard"];
 const adminRoutes = ["/admin"];
@@ -50,7 +50,7 @@ function setPreferenceCookies(
   });
 }
 
-export default auth((req) => {
+export default async function middleware(req: NextRequest) {
   const { pathname, search } = req.nextUrl;
   const { locale, internalPath } = extractLocale(pathname);
   const rawCountryCode = getCountryCodeFromHeaders(req.headers);
@@ -69,10 +69,12 @@ export default auth((req) => {
     return withRequestId(NextResponse.next({ request: { headers: requestHeaders } }), requestId);
   }
 
+  const session = await getEdgeSession(req);
+
   if (!locale) {
     const resolved = resolveRequestLocale({
       cookieLocale: req.cookies.get(localeCookieName)?.value,
-      userPreferredLocale: req.auth?.user?.preferredLocale,
+      userPreferredLocale: session?.preferredLocale,
       countryCode,
       acceptLanguage: req.headers.get("accept-language"),
     });
@@ -92,9 +94,9 @@ export default auth((req) => {
     return withRequestId(response, requestId);
   }
 
-  const isLoggedIn = !!req.auth;
-  const platformRole = req.auth?.user?.platformRole;
-  const appRole = req.auth?.user?.appRole;
+  const isLoggedIn = !!session;
+  const platformRole = session?.platformRole;
+  const appRole = session?.appRole;
 
   const isProtected = protectedRoutes.some((r) => internalPath.startsWith(r));
   const isAdminRoute = adminRoutes.some((r) => internalPath.startsWith(r));
@@ -160,7 +162,7 @@ export default auth((req) => {
   }
 
   return withRequestId(response, requestId);
-});
+}
 
 export const config = {
   matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],

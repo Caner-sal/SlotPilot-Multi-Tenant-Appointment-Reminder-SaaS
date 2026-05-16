@@ -1,6 +1,45 @@
 # Randevo Compact State
 
-_Last updated: 2026-05-15_
+_Last updated: 2026-05-16_
+
+## 2026-05-16 Production Audit PH-0 → PH-9 Checkpoint
+
+Branch: `feature/global-address-locale` | Tag: `v1.6.4`
+
+### Tamamlanan Phaseler
+
+- **PH-0**: `docs/production-audit-2026-05-16.md` oluşturuldu (F-001..F-008 tablosu)
+- **PH-1**: Middleware Edge-safe yapıldı — `auth()` wrapper kaldırıldı, `getEdgeSession()` eklendi (`src/lib/auth-edge.ts`)
+- **PH-2**: Mobile JWT secret fail-fast — `"dev-mobile-secret-change-me"` fallback kaldırıldı; `src/lib/env/validate-env.ts`, `scripts/check-production-env.ts`
+- **PH-3**: Active organization context — cookie-based org seçimi + membership doğrulama; `OrganizationSwitcher` UI; `GET /api/organizations`
+- **PH-4**: E2E stability — `tests/e2e/helpers/` klasörü oluşturuldu; onboarding required field fix; `playwright.config.ts` CI retries eklendi
+- **PH-5**: PII logger fix — `staff/invite/route.ts:70` console.log kaldırıldı; `audit.service.ts` logger.error kullanımı; `scripts/check-console-usage.ts`
+- **PH-6**: Encoding fix — `billing/page.tsx:64,77` mojibake düzeltildi (`yapılandırılmamış`, `₺0/ay`); `scripts/check-encoding.ts`
+- **PH-7**: Provider fail-fast — `calendar.factory.ts` + `whatsapp.factory.ts` production FAKE guard; `src/lib/providers/provider-health.ts`
+- **PH-8**: Invite rate limit — `accept-invite/route.ts` POST+GET rate limiting (10/30 req per 15min per IP)
+- **PH-9**: Auth guard helpers — `src/lib/auth/guards.ts`, `src/lib/tenant/require-membership.ts`, `docs/auth-tenant-helper-strategy.md`
+
+### Yeni Scriptler
+
+| Script | Dosya |
+|--------|-------|
+| `env:check` | `scripts/check-production-env.ts` |
+| `check:logs` | `scripts/check-console-usage.ts` |
+| `check:encoding` | `scripts/check-encoding.ts` |
+
+### Verification Snapshot (PH-10 Final)
+
+- `npm run typecheck` PASS
+- `npm run lint` PASS
+- `npm test` PASS (72 files, 488 tests)
+- `npm run build` PASS
+- `npm run env:check` PASS (WARN: MOBILE_JWT_SECRET önerilen)
+- `npm run check:logs` PASS (0 FAIL, 66 WARN)
+- `npm run check:encoding` PASS (test dosyaları skip edildi)
+- `node ./node_modules/prisma/build/index.js validate` PASS
+- `node ./node_modules/prisma/build/index.js generate` PASS
+
+---
 
 ## 2026-05-15 DPD-4 → DPD-5 Checkpoint
 
