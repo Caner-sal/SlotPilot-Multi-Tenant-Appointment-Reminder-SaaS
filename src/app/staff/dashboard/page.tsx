@@ -1,86 +1,112 @@
-import { auth } from "@/lib/auth";
-import { db } from "@/lib/db";
-import { redirect } from "next/navigation";
+"use client";
 
-export default async function StaffDashboardPage() {
-  const session = await auth();
-  if (!session?.user?.staffId) redirect("/login");
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 
-  const staffId = session.user.staffId;
+type Metrics = {
+  todayAppointments: number;
+  weekAppointments: number;
+  completedAppointments: number;
+  noShowAppointments: number;
+};
 
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const tomorrow = new Date(today);
-  tomorrow.setDate(tomorrow.getDate() + 1);
+type MeResponse = {
+  id: string;
+  name: string;
+  email?: string | null;
+  isActive: boolean;
+  metrics: Metrics;
+  nextAppointment?: {
+    id: string;
+    startTime: string;
+    customer: { fullName: string };
+    service: { name: string };
+  } | null;
+};
 
-  const [todayAppts, pendingAppts, upcomingAppts] = await db.$transaction([
-    db.appointment.count({
-      where: { staffId, startTime: { gte: today, lt: tomorrow } },
-    }),
-    db.appointment.count({
-      where: { staffId, status: "PENDING", startTime: { gte: today } },
-    }),
-    db.appointment.findMany({
-      where: { staffId, startTime: { gte: today } },
-      include: {
-        service: { select: { name: true } },
-        customer: { select: { fullName: true } },
-      },
-      orderBy: { startTime: "asc" },
-      take: 5,
-    }),
-  ]);
+export default function StaffDashboardPage() {
+  const t = useTranslations("staffPortal");
+  const [data, setData] = useState<MeResponse | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch("/api/staff/me")
+      .then(async (res) => {
+        const body = await res.json();
+        if (!res.ok) throw new Error(body?.error ?? "Failed to load staff profile");
+        setData(body.data ?? null);
+      })
+      .catch((err: Error) => setError(err.message))
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading) {
+    return <div className="rounded-lg border bg-card p-6 text-sm text-muted-foreground">Loading dashboard...</div>;
+  }
+
+  if (error || !data) {
+    return (
+      <div className="rounded-lg border border-red-200 bg-red-50 p-6 text-sm text-red-700">
+        {error ?? "Failed to load staff dashboard"}
+      </div>
+    );
+  }
+
+  const next = data.nextAppointment;
 
   return (
     <div>
-      <h1 className="mb-6 text-2xl font-bold text-gray-900">
-        Tekrar hoş geldiniz, {session.user.name ?? "Çalışan"}
-      </h1>
-      <div className="mb-8 grid grid-cols-3 gap-4">
-        <div className="rounded-lg border bg-white p-4">
-          <p className="text-sm text-gray-500">Bugünkü Randevular</p>
-          <p className="mt-1 text-3xl font-bold text-gray-900">{todayAppts}</p>
+      <h1 className="mb-6 text-2xl font-bold text-foreground">{t("welcomeBack", { name: data.name })}</h1>
+
+      <div className="mb-8 grid grid-cols-2 gap-4 md:grid-cols-4">
+        <div className="rounded-lg border bg-card p-4">
+          <p className="text-sm text-muted-foreground">{t("todayAppointments")}</p>
+          <p className="mt-1 text-3xl font-bold text-foreground">{data.metrics.todayAppointments}</p>
         </div>
-        <div className="rounded-lg border bg-white p-4">
-          <p className="text-sm text-gray-500">Bekleyen</p>
-          <p className="mt-1 text-3xl font-bold text-yellow-600">{pendingAppts}</p>
+        <div className="rounded-lg border bg-card p-4">
+          <p className="text-sm text-muted-foreground">This week</p>
+          <p className="mt-1 text-3xl font-bold text-blue-700">{data.metrics.weekAppointments}</p>
         </div>
-        <div className="rounded-lg border bg-white p-4">
-          <p className="text-sm text-gray-500">Yaklaşan (5)</p>
-          <p className="mt-1 text-3xl font-bold text-blue-600">{upcomingAppts.length}</p>
+        <div className="rounded-lg border bg-card p-4">
+          <p className="text-sm text-muted-foreground">Completed</p>
+          <p className="mt-1 text-3xl font-bold text-green-700">{data.metrics.completedAppointments}</p>
+        </div>
+        <div className="rounded-lg border bg-card p-4">
+          <p className="text-sm text-muted-foreground">No-show</p>
+          <p className="mt-1 text-3xl font-bold text-foreground/90">{data.metrics.noShowAppointments}</p>
         </div>
       </div>
 
-      <div className="rounded-lg border bg-white">
-        <div className="border-b px-4 py-3">
-          <h2 className="font-semibold text-gray-900">Sıradaki Randevular</h2>
-        </div>
-        {upcomingAppts.length === 0 ? (
-          <div className="py-8 text-center text-gray-500">Yaklaşan randevu yok.</div>
+      <div className="rounded-lg border bg-card p-4">
+        <h2 className="mb-3 font-semibold text-foreground">Next appointment</h2>
+        {next ? (
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="font-medium text-foreground">{next.customer.fullName}</p>
+              <p className="text-sm text-muted-foreground">{next.service.name}</p>
+            </div>
+            <div className="text-right text-sm">
+              <p>{new Date(next.startTime).toLocaleDateString("tr-TR", { timeZone: "Europe/Istanbul" })}</p>
+              <p className="text-muted-foreground">
+                {new Date(next.startTime).toLocaleTimeString("tr-TR", {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  timeZone: "Europe/Istanbul",
+                })}
+              </p>
+            </div>
+          </div>
         ) : (
-          <ul className="divide-y">
-            {upcomingAppts.map((apt) => (
-              <li key={apt.id} className="flex items-center justify-between px-4 py-3">
-                <div>
-                  <p className="font-medium text-gray-900">{apt.customer.fullName}</p>
-                  <p className="text-sm text-gray-500">{apt.service.name}</p>
-                </div>
-                <div className="text-right text-sm">
-                  <p className="text-gray-900">
-                    {new Date(apt.startTime).toLocaleDateString("tr-TR", { timeZone: "Europe/Istanbul" })}
-                  </p>
-                  <p className="text-gray-500">
-                    {new Date(apt.startTime).toLocaleTimeString("tr-TR", {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                      timeZone: "Europe/Istanbul",
-                    })}
-                  </p>
-                </div>
-              </li>
-            ))}
-          </ul>
+          <p className="text-sm text-muted-foreground">{t("noUpcoming")}</p>
         )}
+      </div>
+
+      <div className="mt-4">
+        <Link href="/staff/appointments" className="text-sm font-medium text-blue-600 hover:text-blue-700">
+          Go to appointments
+        </Link>
       </div>
     </div>
   );

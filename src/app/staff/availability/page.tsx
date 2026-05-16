@@ -1,18 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 
 const DAYS = ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"] as const;
-
-const DAY_LABELS: Record<(typeof DAYS)[number], string> = {
-  MONDAY: "Pazartesi",
-  TUESDAY: "Salı",
-  WEDNESDAY: "Çarşamba",
-  THURSDAY: "Perşembe",
-  FRIDAY: "Cuma",
-  SATURDAY: "Cumartesi",
-  SUNDAY: "Pazar",
-};
 
 interface AvailabilityRule {
   dayOfWeek: string;
@@ -22,12 +13,25 @@ interface AvailabilityRule {
 }
 
 export default function StaffAvailabilityPage() {
+  const t = useTranslations("staffPortal");
+  const tCommon = useTranslations("common");
+
+  const DAY_LABELS: Record<(typeof DAYS)[number], string> = {
+    MONDAY: tCommon("monday"),
+    TUESDAY: tCommon("tuesday"),
+    WEDNESDAY: tCommon("wednesday"),
+    THURSDAY: tCommon("thursday"),
+    FRIDAY: tCommon("friday"),
+    SATURDAY: tCommon("saturday"),
+    SUNDAY: tCommon("sunday"),
+  };
+
   const [rules, setRules] = useState<AvailabilityRule[]>([]);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch("/api/staff-portal/availability")
+    fetch("/api/staff/me/availability")
       .then((r) => r.json())
       .then((d) => {
         if (d.data) setRules(d.data);
@@ -57,27 +61,27 @@ export default function StaffAvailabilityPage() {
   async function save() {
     setSaving(true);
     setMessage(null);
-    const res = await fetch("/api/staff-portal/availability", {
-      method: "PUT",
+    const res = await fetch("/api/staff/me/availability", {
+      method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(rules),
     });
     setSaving(false);
-    setMessage(res.ok ? "Müsaitlik kaydedildi." : "Kaydetme işlemi başarısız oldu.");
+    setMessage(res.ok ? t("savedSuccess") : t("saveFailed"));
   }
 
   return (
     <div className="max-w-lg">
-      <h1 className="mb-6 text-2xl font-bold text-gray-900">Müsaitliğim</h1>
-      <div className="divide-y rounded-lg border bg-white">
+      <h1 className="mb-6 text-2xl font-bold text-foreground">{t("myAvailability")}</h1>
+      <div className="divide-y rounded-lg border bg-card">
         {DAYS.map((day) => {
           const rule = rules.find((r) => r.dayOfWeek === day);
           const enabled = !!rule;
           return (
             <div key={day} className="flex items-center gap-4 px-4 py-3">
               <input type="checkbox" checked={enabled} onChange={() => toggleDay(day)} className="h-4 w-4" />
-              <span className="w-24 text-sm font-medium text-gray-700">{DAY_LABELS[day]}</span>
-              {enabled && (
+              <span className="w-24 text-sm font-medium text-foreground/90">{DAY_LABELS[day]}</span>
+              {enabled ? (
                 <div className="flex items-center gap-2 text-sm">
                   <input
                     type="time"
@@ -85,7 +89,7 @@ export default function StaffAvailabilityPage() {
                     onChange={(e) => updateRule(day, "startTime", e.target.value)}
                     className="rounded border px-2 py-1"
                   />
-                  <span className="text-gray-500">—</span>
+                  <span className="text-muted-foreground">—</span>
                   <input
                     type="time"
                     value={rule?.endTime ?? "17:00"}
@@ -93,6 +97,8 @@ export default function StaffAvailabilityPage() {
                     className="rounded border px-2 py-1"
                   />
                 </div>
+              ) : (
+                <span className="text-sm text-muted-foreground/80">{tCommon("closed")}</span>
               )}
             </div>
           );
@@ -104,9 +110,9 @@ export default function StaffAvailabilityPage() {
           disabled={saving}
           className="rounded bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
         >
-          {saving ? "Kaydediliyor..." : "Müsaitliği Kaydet"}
+          {saving ? tCommon("saving") : t("saveAvailability")}
         </button>
-        {message && <span className={`text-sm ${message.includes("başarısız") ? "text-red-600" : "text-green-600"}`}>{message}</span>}
+        {message && <span className={`text-sm ${message === t("saveFailed") ? "text-red-600" : "text-green-600"}`}>{message}</span>}
       </div>
     </div>
   );

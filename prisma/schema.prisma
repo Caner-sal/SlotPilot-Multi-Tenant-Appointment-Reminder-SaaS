@@ -27,6 +27,19 @@ enum MemberRole {
   STAFF
 }
 
+enum OrganizationStatus {
+  ACTIVE
+  SUSPENDED
+  CANCELLED
+}
+
+enum StaffInviteStatus {
+  PENDING
+  ACCEPTED
+  EXPIRED
+  REVOKED
+}
+
 enum AppointmentStatus {
   PENDING
   CONFIRMED
@@ -81,80 +94,170 @@ enum DayOfWeek {
 // ─── Models ──────────────────────────────────────────────────────────────────
 
 model User {
-  id            String       @id @default(cuid())
-  name          String
-  email         String       @unique
-  emailVerified DateTime?
-  passwordHash  String
-  platformRole  PlatformRole @default(USER)
-  appRole       AppRole      @default(OWNER)
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
+  id             String       @id @default(cuid())
+  name           String
+  email          String       @unique
+  passwordHash   String
+  preferredLocale String?
+  platformRole   PlatformRole @default(USER)
+  appRole        AppRole      @default(OWNER)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
 
   memberships  OrganizationMember[]
   auditLogs    AuditLog[]
   staffProfile Staff?
+  createdStaffInvites StaffInvite[] @relation("CreatedStaffInvites")
+  mobileRefreshTokens MobileRefreshToken[]
+  mobilePushTokens    MobilePushToken[]
+  productEvents       ProductEvent[]
+  passwordResetTokens PasswordResetToken[]
 
   @@index([email])
   @@index([platformRole])
 }
 
 model Organization {
-  id                 String   @id @default(cuid())
-  name               String
-  slug               String   @unique
-  description        String?
-  phone              String?
-  email              String?
-  address            String?
-  province           String?
-  district           String?
-  postalCode         String?
-  timezone           String   @default("UTC")
-  bookingEnabled     Boolean  @default(true)
-  suspended          Boolean  @default(false)
-  smsEnabled         Boolean  @default(false)
-  whatsappEnabled    Boolean  @default(false)
-  marketplaceEnabled Boolean  @default(false)
-  category           String?
-  city               String?
-  coverImageUrl      String?
-  aiChatbotEnabled   Boolean  @default(false)
-  faqText            String?
-  chatbotTone        String?
-  logoUrl            String?
-  ratingAverage      Float?
-  reviewCount        Int      @default(0)
-  createdAt          DateTime @default(now())
-  updatedAt          DateTime @updatedAt
+  id             String   @id @default(cuid())
+  name           String
+  slug           String   @unique
+  description    String?
+  phone          String?
+  email          String?
+  address        String?
+  province       String?
+  district       String?
+  postalCode     String?
+  countryCode    String   @default("TR")
+  locality       String?
+  formattedAddress String?
+  latitude       Float?
+  longitude      Float?
+  timezone       String   @default("UTC")
+  defaultLocale  String   @default("tr")
+  bookingEnabled Boolean  @default(true)
+  suspended      Boolean  @default(false)
+  status         OrganizationStatus @default(ACTIVE)
+  suspendedAt    DateTime?
+  suspendedReason String?
+  suspendedByUserId String?
+  smsEnabled        Boolean  @default(false)
+  whatsappEnabled     Boolean  @default(false)
+  marketplaceEnabled  Boolean  @default(false)
+  category            String?
+  city                String?
+  coverImageUrl       String?
+  aiChatbotEnabled    Boolean  @default(false)
+  faqText             String?
+  chatbotTone         String?
+  logoUrl             String?
+  ratingAverage       Float?
+  reviewCount         Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
-  members                    OrganizationMember[]
-  services                   Service[]
-  staff                      Staff[]
-  customers                  Customer[]
-  appointments               Appointment[]
-  reminders                  Reminder[]
-  subscription               Subscription?
-  auditLogs                  AuditLog[]
-  availability               AvailabilityRule[]
-  staffInvites               StaffInvite[]
-  locations                  Location[]
-  payments                   Payment[]
-  calendarConnections        CalendarConnection[]
-  revenueLedger              RevenueLedger[]
-  chatConversations          ChatConversation[]
-  invoiceRecords             InvoiceRecord[]
-  accountingConnection       AccountingConnection?
-  consentLogs                ConsentLog[]
-  deletionRequests           DataDeletionRequest[]
-  invoiceProfile             InvoiceProfile?
-  closedDays                 BusinessClosedDay[]
+  members       OrganizationMember[]
+  services      Service[]
+  staff         Staff[]
+  customers     Customer[]
+  appointments  Appointment[]
+  reminders     Reminder[]
+  subscription  Subscription?
+  auditLogs     AuditLog[]
+  availability  AvailabilityRule[]
+  staffInvites  StaffInvite[]
+  locations            Location[]
+  payments             Payment[]
+  webhookEvents        WebhookEvent[]
+  calendarConnections  CalendarConnection[]
+  revenueLedger        RevenueLedger[]
+  chatConversations    ChatConversation[]
+  invoiceRecords       InvoiceRecord[]
+  accountingConnection AccountingConnection?
+  consentLogs          ConsentLog[]
+  deletionRequests     DataDeletionRequest[]
+  exportRequests       DataExportRequest[]
+  mobileRefreshTokens  MobileRefreshToken[]
+  mobilePushTokens     MobilePushToken[]
+  productEvents        ProductEvent[]
+  invoiceProfile       InvoiceProfile?
+  closedDays           BusinessClosedDay[]
   whatsAppAutoReplySettings  WhatsAppAutoReplySettings?
   whatsAppInboundMessages    WhatsAppInboundMessage[]
   whatsAppAutoReplyLogs      WhatsAppAutoReplyLog[]
-  whatsAppContactPreferences WhatsAppContactPreference[]
+  whatsAppContactPreferences      WhatsAppContactPreference[]
+  normalizedAddresses             NormalizedAddress[]
+  addressProviderLogs             AddressProviderLog[]
+  subscriptionPaymentTransactions SubscriptionPaymentTransaction[]
 
   @@index([slug])
+  @@index([status])
+  @@index([countryCode])
+}
+
+model NormalizedAddress {
+  id                     String   @id @default(cuid())
+  organizationId         String?
+  ownerType              String
+  ownerId                String
+  countryCode            String?
+  countryName            String?
+  adminLevel1            String?
+  adminLevel2            String?
+  adminLevel3            String?
+  locality               String?
+  subLocality            String?
+  postalCode             String?
+  street                 String?
+  streetNumber           String?
+  formattedAddress       String
+  latitude               Float?
+  longitude              Float?
+  provider               String
+  providerPlaceId        String
+  rawProviderPayloadSafe Json?
+  language               String?
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+
+  organization Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+
+  @@index([organizationId])
+  @@index([ownerType, ownerId])
+  @@index([countryCode])
+  @@index([provider, providerPlaceId])
+}
+
+model CountryConfig {
+  id                String   @id @default(cuid())
+  countryCode       String   @unique
+  countryName       String
+  defaultLocale     String
+  defaultCurrency   String
+  addressFormat     String?
+  phoneCountryCode  String?
+  enabled           Boolean  @default(true)
+  marketplaceEnabled Boolean @default(false)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model AddressProviderLog {
+  id             String   @id @default(cuid())
+  organizationId String?
+  provider       String
+  query          String
+  countryCode    String?
+  status         String
+  resultCount    Int      @default(0)
+  errorMessage   String?
+  createdAt      DateTime @default(now())
+
+  organization Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+
+  @@index([organizationId])
+  @@index([provider])
+  @@index([createdAt])
 }
 
 model OrganizationMember {
@@ -217,22 +320,75 @@ model Staff {
 }
 
 model Payment {
-  id             String   @id @default(cuid())
-  organizationId String
-  appointmentId  String
-  stripeEventId  String   @unique
-  sessionId      String
-  amountCents    Int
-  currency       String   @default("TRY")
-  status         String   @default("paid")
-  createdAt      DateTime @default(now())
+  id              String   @id @default(cuid())
+  organizationId  String
+  appointmentId   String
+  provider        String   @default("STRIPE")
+  purpose         String   @default("APPOINTMENT_DEPOSIT")
+  providerEventId String?
+  externalReference String?
+  stripeEventId   String   @unique
+  sessionId       String
+  amountCents     Int
+  currency        String   @default("TRY")
+  status          String   @default("paid")
+  metadata        Json?
+  confirmedAt     DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  appointment  Appointment  @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
+  appointment  Appointment @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
+  attempts     PaymentAttempt[]
 
   @@index([organizationId])
+  @@index([organizationId, status, createdAt])
+  @@index([provider, providerEventId])
+  @@index([externalReference])
   @@index([appointmentId])
   @@index([stripeEventId])
+}
+
+model PaymentAttempt {
+  id                String   @id @default(cuid())
+  paymentId         String
+  provider          String
+  status            String
+  idempotencyKey    String?
+  providerReference String?
+  requestId         String?
+  errorCode         String?
+  errorMessage      String?
+  rawSafe           Json?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  payment Payment @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+
+  @@index([paymentId])
+  @@index([provider, status])
+  @@index([idempotencyKey])
+}
+
+model WebhookEvent {
+  id             String   @id @default(cuid())
+  provider       String
+  eventType      String
+  eventId        String
+  organizationId String?
+  payloadSafe    Json?
+  signatureValid Boolean  @default(false)
+  status         String   @default("RECEIVED")
+  errorMessage   String?
+  processedAt    DateTime?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+
+  @@unique([provider, eventId])
+  @@index([organizationId])
+  @@index([status, createdAt])
 }
 
 model Location {
@@ -243,6 +399,11 @@ model Location {
   province       String?
   district       String?
   postalCode     String?
+  countryCode    String   @default("TR")
+  locality       String?
+  formattedAddress String?
+  latitude       Float?
+  longitude      Float?
   phone          String?
   timezone       String   @default("UTC")
   isActive       Boolean  @default(true)
@@ -255,23 +416,35 @@ model Location {
 
   @@index([organizationId])
   @@index([organizationId, isActive])
+  @@index([countryCode])
 }
 
 model StaffInvite {
   id             String    @id @default(cuid())
   organizationId String
-  staffId        String
-  token          String    @unique
-  email          String
+  staffId        String?
+  token          String?   @unique
+  tokenHash      String?   @unique
+  invitedEmail   String
+  invitedName    String?
+  role           MemberRole @default(STAFF)
+  status         StaffInviteStatus @default(PENDING)
   expiresAt      DateTime
   usedAt         DateTime?
+  acceptedAt     DateTime?
+  createdByUserId String?
   createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
 
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  staff        Staff        @relation(fields: [staffId], references: [id], onDelete: Cascade)
+  staff        Staff?       @relation(fields: [staffId], references: [id], onDelete: SetNull)
+  createdByUser User?       @relation("CreatedStaffInvites", fields: [createdByUserId], references: [id], onDelete: SetNull)
 
   @@index([token])
+  @@index([tokenHash])
   @@index([organizationId])
+  @@index([createdByUserId])
+  @@index([status, expiresAt])
 }
 
 model StaffService {
@@ -312,6 +485,7 @@ model Customer {
   phone          String?
   province       String?
   district       String?
+  preferredLocale String?
   smsOptIn       Boolean  @default(true)
   whatsappOptIn  Boolean  @default(true)
   createdAt      DateTime @default(now())
@@ -537,6 +711,83 @@ model DataDeletionRequest {
   @@index([status])
 }
 
+model DataExportRequest {
+  id             String   @id @default(cuid())
+  organizationId String
+  customerId     String?
+  email          String
+  reason         String?
+  status         String   @default("pending")
+  format         String   @default("json")
+  downloadUrl    String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([status])
+}
+
+model MobileRefreshToken {
+  id             String   @id @default(cuid())
+  userId         String
+  organizationId String
+  tokenHash      String   @unique
+  jti            String   @unique
+  deviceId       String?
+  userAgent      String?
+  ipAddress      String?
+  expiresAt      DateTime
+  revokedAt      DateTime?
+  replacedByJti  String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([userId, organizationId])
+  @@index([organizationId, revokedAt])
+  @@index([expiresAt])
+}
+
+model MobilePushToken {
+  id             String   @id @default(cuid())
+  userId         String
+  organizationId String
+  expoPushToken  String
+  platform       String?
+  appVersion     String?
+  deviceId       String?
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  lastSeenAt     DateTime @default(now())
+
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, expoPushToken])
+  @@index([userId, organizationId])
+  @@index([organizationId, isActive])
+}
+
+model ProductEvent {
+  id             String   @id @default(cuid())
+  eventName      String
+  userId         String?
+  organizationId String?
+  payloadSafe    Json?
+  createdAt      DateTime @default(now())
+
+  user         User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
+  organization Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+
+  @@index([eventName, createdAt])
+  @@index([organizationId, createdAt])
+}
+
 model AccountingConnection {
   id             String   @id @default(cuid())
   organizationId String   @unique
@@ -633,6 +884,20 @@ model WhatsAppAutoReplyLog {
   @@index([organizationId, customerPhone])
 }
 
+model PasswordResetToken {
+  id        String    @id @default(cuid())
+  userId    String
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
 model WhatsAppContactPreference {
   id                             String    @id @default(cuid())
   organizationId                 String
@@ -651,22 +916,31 @@ model WhatsAppContactPreference {
   @@index([organizationId, phone])
 }
 
-model VerificationToken {
-  id        String   @id @default(cuid())
-  email     String
-  token     String   @unique
-  expires   DateTime
-  createdAt DateTime @default(now())
+// Subscription-level payment transactions (separate from appointment deposit Payments)
+model SubscriptionPaymentTransaction {
+  id                 String    @id @default(cuid())
+  organizationId     String
+  provider           String    // STRIPE | IYZICO | FAKE
+  providerSessionId  String?
+  conversationId     String    @unique
+  planId             String    // STARTER | PRO
+  billingCycle       String    @default("MONTHLY")
+  amountCents        Int
+  currency           String    @default("TRY")
+  // INITIATED | PENDING | PAID | FAILED | CANCELLED
+  status             String    @default("INITIATED")
+  providerPaymentId  String?
+  rawProviderPayload String?
+  paidAt             DateTime?
+  failedAt           DateTime?
+  failureReason      String?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
 
-  @@unique([email, token])
-}
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 
-model PasswordResetToken {
-  id        String   @id @default(cuid())
-  email     String
-  token     String   @unique
-  expires   DateTime
-  createdAt DateTime @default(now())
-
-  @@unique([email, token])
+  @@index([organizationId])
+  @@index([status])
+  @@index([provider])
+  @@index([conversationId])
 }

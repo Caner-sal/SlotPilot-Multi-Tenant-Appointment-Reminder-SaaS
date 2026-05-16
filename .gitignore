@@ -54,3 +54,10 @@ prisma/dev.db-journal
 .mcp.json
 *.log
 next-*.log
+
+# Playwright
+test-results/
+playwright-report/
+
+# Temporary script outputs
+scripts/tmp/

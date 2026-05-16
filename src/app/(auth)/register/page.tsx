@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
+import { useTranslations } from "next-intl";
 
 function RandevoLogo() {
   return (
@@ -32,6 +33,7 @@ const labelStyle: React.CSSProperties = {
 };
 
 export default function RegisterPage() {
+  const t = useTranslations("auth");
   const router = useRouter();
   const [step, setStep] = useState<1 | 2>(1);
   const [name, setName] = useState("");
@@ -166,40 +168,53 @@ export default function RegisterPage() {
             <span style={{ fontFamily: "var(--font-heading, Outfit, sans-serif)", fontSize: 20, fontWeight: 700 }}>Randevo</span>
           </div>
 
-          {step === 1 ? (
-            <>
-              <h3 style={{ fontFamily: "var(--font-heading, Outfit, sans-serif)", fontSize: 22, fontWeight: 700, letterSpacing: "-0.02em", marginBottom: 6 }}>Hesap oluşturun</h3>
-              <p style={{ fontSize: 13, color: "#8a8aaa", marginBottom: 24 }}>Ücretsiz başlayın, istediğiniz zaman yükseltin.</p>
+          <h3 style={{ fontFamily: "var(--font-heading, Outfit, sans-serif)", fontSize: 22, fontWeight: 700, letterSpacing: "-0.02em", marginBottom: 6 }}>{t("registerTitle")}</h3>
+          <p style={{ fontSize: 13, color: "#8a8aaa", marginBottom: 24 }}>{t("registerSubtitle")}</p>
 
-              <div style={{ background: "rgba(119,104,212,0.1)", border: "1px solid rgba(119,104,212,0.22)", borderRadius: 10, padding: "11px 14px", marginBottom: 22, fontSize: 13, color: "#a59cf0", display: "flex", alignItems: "center", gap: 8 }}>
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
-                  <circle cx="12" cy="12" r="10" /><path d="M12 8v4" /><path d="M12 16h.01" />
-                </svg>
-                Ücretsiz plan: 1 çalışan, ayda 20 randevu. Kart bilgisi gerekmez.
+          {/* Free plan notice */}
+          <div style={{ background: "rgba(119,104,212,0.1)", border: "1px solid rgba(119,104,212,0.22)", borderRadius: 10, padding: "11px 14px", marginBottom: 22, fontSize: 13, color: "#a59cf0", display: "flex", alignItems: "center", gap: 8 }}>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+              <circle cx="12" cy="12" r="10" /><path d="M12 8v4" /><path d="M12 16h.01" />
+            </svg>
+            {t("registerFreeNote")}
+          </div>
+
+          <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+            {error && (
+              <div style={{ background: "rgba(244,63,94,0.08)", border: "1px solid rgba(244,63,94,0.25)", borderRadius: 10, padding: "11px 14px", fontSize: 13, color: "#f43f5e" }}>
+                {error}
               </div>
 
-              <form onSubmit={handleRegisterSubmit} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-                {error && (
-                  <div style={{ background: "rgba(244,63,94,0.08)", border: "1px solid rgba(244,63,94,0.25)", borderRadius: 10, padding: "11px 14px", fontSize: 13, color: "#f43f5e" }}>
-                    {error}
-                  </div>
-                )}
+            <div>
+              <label style={labelStyle}>{t("fullName")}</label>
+              <input style={inputStyle} type="text" placeholder="Ayşe Yılmaz" value={name} onChange={(e) => setName(e.target.value)} required autoComplete="name" />
+            </div>
 
-                <div>
-                  <label style={labelStyle}>Ad Soyad</label>
-                  <input style={inputStyle} type="text" placeholder="Ayşe Yılmaz" value={name} onChange={(e) => setName(e.target.value)} required autoComplete="name" />
-                </div>
+            <div>
+              <label style={labelStyle}>{t("emailLabel")}</label>
+              <input style={inputStyle} type="email" placeholder="siz@ornek.com" value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="email" />
+            </div>
 
-                <div>
-                  <label style={labelStyle}>E-posta</label>
-                  <input style={inputStyle} type="email" placeholder="siz@ornek.com" value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="email" />
-                </div>
+            <div>
+              <label style={labelStyle}>{t("passwordLabel")}</label>
+              <input style={inputStyle} type="password" placeholder="En az 8 karakter" value={password} onChange={(e) => setPassword(e.target.value)} required autoComplete="new-password" minLength={8} />
+              <p style={{ fontSize: 12, color: "#3a3a58", marginTop: 5 }}>{t("passwordHint")}</p>
+            </div>
 
-                <div>
-                  <label style={labelStyle}>Şifre</label>
-                  <input style={inputStyle} type="password" placeholder="En az 8 karakter" value={password} onChange={(e) => setPassword(e.target.value)} required autoComplete="new-password" minLength={8} />
-                  <p style={{ fontSize: 12, color: "#3a3a58", marginTop: 5 }}>Büyük harf, rakam ve özel karakter önerilir.</p>
-                </div>
+            <button
+              type="submit"
+              disabled={loading}
+              style={{
+                width: "100%", padding: 13, borderRadius: 11, border: "none",
+                fontFamily: "var(--font-heading, Outfit, sans-serif)", fontSize: 15, fontWeight: 700,
+                background: loading ? "rgba(119,104,212,0.5)" : "#7768d4", color: "#fff",
+                boxShadow: "0 0 24px rgba(119,104,212,0.28)", cursor: loading ? "default" : "pointer",
+                marginTop: 4, transition: "all 0.2s",
+              }}
+            >
+              {loading ? t("creating") : t("createFreeAccount")}
+            </button>
+          </form>
 
                 <button
                   type="submit"
@@ -216,73 +231,10 @@ export default function RegisterPage() {
                 </button>
               </form>
 
-              <p style={{ fontSize: 12, color: "#3a3a58", textAlign: "center", marginTop: 16, lineHeight: 1.5 }}>
-                Kayıt olarak{" "}
-                <a href="#" style={{ color: "#a59cf0" }}>Kullanım Koşulları</a>
-                {" "}ve{" "}
-                <a href="#" style={{ color: "#a59cf0" }}>KVKK Aydınlatma Metni</a>
-                &apos;ni kabul etmiş olursunuz.
-              </p>
-
-              <p style={{ fontSize: 13, color: "#3a3a58", textAlign: "center", marginTop: 18 }}>
-                Zaten hesabınız var mı?{" "}
-                <Link href="/login" style={{ color: "#a59cf0", fontWeight: 600 }}>Giriş yapın</Link>
-              </p>
-            </>
-          ) : (
-            <>
-              <h3 style={{ fontFamily: "var(--font-heading, Outfit, sans-serif)", fontSize: 22, fontWeight: 700, letterSpacing: "-0.02em", marginBottom: 6 }}>Kodu girin</h3>
-              <p style={{ fontSize: 14, color: "#8a8aaa", marginBottom: 28, lineHeight: 1.6 }}>
-                <strong style={{ color: "#f0eff8" }}>{email}</strong> adresine 6 haneli bir doğrulama kodu gönderdik. Lütfen aşağıya girin.
-              </p>
-
-              <form onSubmit={handleVerifySubmit} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-                {error && (
-                  <div style={{ background: "rgba(244,63,94,0.08)", border: "1px solid rgba(244,63,94,0.25)", borderRadius: 10, padding: "11px 14px", fontSize: 13, color: "#f43f5e" }}>
-                    {error}
-                  </div>
-                )}
-
-                <div>
-                  <label style={labelStyle}>Doğrulama Kodu</label>
-                  <input 
-                    style={{ ...inputStyle, fontSize: 24, letterSpacing: "4px", textAlign: "center", padding: "16px" }} 
-                    type="text" 
-                    placeholder="••••••" 
-                    maxLength={6}
-                    value={verificationCode} 
-                    onChange={(e) => setVerificationCode(e.target.value.replace(/[^0-9]/g, ''))} 
-                    required 
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={loading || verificationCode.length !== 6}
-                  style={{
-                    width: "100%", padding: 13, borderRadius: 11, border: "none",
-                    fontFamily: "var(--font-heading, Outfit, sans-serif)", fontSize: 15, fontWeight: 700,
-                    background: (loading || verificationCode.length !== 6) ? "rgba(119,104,212,0.5)" : "#7768d4", color: "#fff",
-                    boxShadow: "0 0 24px rgba(119,104,212,0.28)", cursor: (loading || verificationCode.length !== 6) ? "default" : "pointer",
-                    marginTop: 12, transition: "all 0.2s",
-                  }}
-                >
-                  {loading ? "Doğrulanıyor..." : "Hesabı Doğrula ve Giriş Yap"}
-                </button>
-              </form>
-              
-              <button 
-                onClick={() => setStep(1)}
-                style={{
-                  background: "transparent", border: "none", color: "#8a8aaa", fontSize: 13, 
-                  marginTop: 24, cursor: "pointer", width: "100%", textAlign: "center",
-                  textDecoration: "underline"
-                }}
-              >
-                Geri Dön
-              </button>
-            </>
-          )}
+          <p style={{ fontSize: 13, color: "#3a3a58", textAlign: "center", marginTop: 18 }}>
+            {t("alreadyHaveAccount")}{" "}
+            <Link href="/login" style={{ color: "#a59cf0", fontWeight: 600 }}>{t("signIn")}</Link>
+          </p>
         </div>
       </div>
 

@@ -1,66 +1,96 @@
-import { auth } from "@/lib/auth";
-import { db } from "@/lib/db";
-import { redirect } from "next/navigation";
+"use client";
 
-const STATUS_LABELS: Record<string, string> = {
-  PENDING: "Bekliyor",
-  CONFIRMED: "Onaylandı",
-  COMPLETED: "Tamamlandı",
-  CANCELLED: "İptal Edildi",
-  NO_SHOW: "Gelmedi",
-};
+import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
+import { useTranslations } from "next-intl";
 
 const STATUS_COLORS: Record<string, string> = {
   PENDING: "bg-yellow-100 text-yellow-700",
   CONFIRMED: "bg-blue-100 text-blue-700",
   COMPLETED: "bg-green-100 text-green-700",
   CANCELLED: "bg-red-100 text-red-700",
-  NO_SHOW: "bg-gray-100 text-gray-700",
+  NO_SHOW: "bg-muted text-foreground/90",
 };
 
-export default async function StaffAppointmentsPage() {
-  const session = await auth();
-  if (!session?.user?.staffId) redirect("/login");
+type Appointment = {
+  id: string;
+  startTime: string;
+  status: string;
+  service: { name: string; durationMinutes: number };
+  customer: { fullName: string; phone?: string | null; email?: string | null };
+};
 
-  const staffId = session.user.staffId;
+export default function StaffAppointmentsPage() {
+  const t = useTranslations("staffPortal");
+  const tCommon = useTranslations("common");
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const appointments = await db.appointment.findMany({
-    where: { staffId },
-    include: {
-      service: { select: { name: true, durationMinutes: true } },
-      customer: { select: { fullName: true, phone: true, email: true } },
-    },
-    orderBy: { startTime: "desc" },
-    take: 50,
-  });
+  useEffect(() => {
+    fetch("/api/staff/me/appointments")
+      .then(async (res) => {
+        const body = await res.json();
+        if (!res.ok) throw new Error(body?.error ?? "Failed to load appointments");
+        setAppointments(body.data ?? []);
+      })
+      .catch((err: Error) => setError(err.message))
+      .finally(() => setLoading(false));
+  }, []);
+
+  const statusLabels = useMemo(
+    () => ({
+      PENDING: tCommon("pending"),
+      CONFIRMED: tCommon("confirmed"),
+      COMPLETED: tCommon("completed"),
+      CANCELLED: tCommon("cancelled"),
+      NO_SHOW: tCommon("noShow"),
+    }),
+    [tCommon]
+  );
+
+  if (loading) {
+    return <div className="rounded-lg border bg-card p-6 text-sm text-muted-foreground">Loading appointments...</div>;
+  }
+
+  if (error) {
+    return <div className="rounded-lg border border-red-200 bg-red-50 p-6 text-sm text-red-700">{error}</div>;
+  }
 
   return (
     <div>
-      <h1 className="mb-6 text-2xl font-bold text-gray-900">Randevularım</h1>
-      <div className="overflow-hidden rounded-lg border bg-white">
+      <h1 className="mb-6 text-2xl font-bold text-foreground">{t("myAppointments")}</h1>
+
+      <div className="overflow-hidden rounded-lg border bg-card">
         <table className="w-full text-sm">
-          <thead className="border-b bg-gray-50">
+          <thead className="border-b bg-muted/40">
             <tr>
-              <th className="px-4 py-3 text-left font-medium text-gray-600">Müşteri</th>
-              <th className="px-4 py-3 text-left font-medium text-gray-600">Hizmet</th>
-              <th className="px-4 py-3 text-left font-medium text-gray-600">Tarih / Saat</th>
-              <th className="px-4 py-3 text-left font-medium text-gray-600">Durum</th>
+              <th className="px-4 py-3 text-left font-medium text-muted-foreground">{t("customerCol")}</th>
+              <th className="px-4 py-3 text-left font-medium text-muted-foreground">{t("serviceCol")}</th>
+              <th className="px-4 py-3 text-left font-medium text-muted-foreground">{t("dateTimeCol")}</th>
+              <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tCommon("status")}</th>
             </tr>
           </thead>
           <tbody className="divide-y">
             {appointments.map((apt) => (
-              <tr key={apt.id} className="hover:bg-gray-50">
+              <tr key={apt.id} className="hover:bg-muted/40">
                 <td className="px-4 py-3">
-                  <div className="font-medium text-gray-900">{apt.customer.fullName}</div>
-                  <div className="text-xs text-gray-500">{apt.customer.phone ?? apt.customer.email ?? ""}</div>
+                  <div className="font-medium text-foreground">
+                    <Link className="hover:underline" href={`/staff/appointments/${apt.id}`}>
+                      {apt.customer.fullName}
+                    </Link>
+                  </div>
+                  <div className="text-xs text-muted-foreground">{apt.customer.phone ?? apt.customer.email ?? ""}</div>
                 </td>
                 <td className="px-4 py-3">
                   <div>{apt.service.name}</div>
-                  <div className="text-xs text-gray-500">{apt.service.durationMinutes} dk</div>
+                  <div className="text-xs text-muted-foreground">
+                    {apt.service.durationMinutes} {tCommon("min")}
+                  </div>
                 </td>
                 <td className="px-4 py-3">
                   <div>{new Date(apt.startTime).toLocaleDateString("tr-TR", { timeZone: "Europe/Istanbul" })}</div>
-                  <div className="text-xs text-gray-500">
+                  <div className="text-xs text-muted-foreground">
                     {new Date(apt.startTime).toLocaleTimeString("tr-TR", {
                       hour: "2-digit",
                       minute: "2-digit",
@@ -69,15 +99,20 @@ export default async function StaffAppointmentsPage() {
                   </div>
                 </td>
                 <td className="px-4 py-3">
-                  <span className={`rounded px-2 py-1 text-xs font-medium ${STATUS_COLORS[apt.status] ?? "bg-gray-100 text-gray-700"}`}>
-                    {STATUS_LABELS[apt.status] ?? apt.status}
+                  <span
+                    className={`rounded px-2 py-1 text-xs font-medium ${STATUS_COLORS[apt.status] ?? "bg-muted text-foreground/90"}`}
+                  >
+                    {statusLabels[apt.status as keyof typeof statusLabels] ?? apt.status}
                   </span>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
-        {appointments.length === 0 && <div className="py-8 text-center text-gray-500">Henüz randevu yok.</div>}
+
+        {appointments.length === 0 ? (
+          <div className="py-8 text-center text-muted-foreground">{t("noAppointments")}</div>
+        ) : null}
       </div>
     </div>
   );

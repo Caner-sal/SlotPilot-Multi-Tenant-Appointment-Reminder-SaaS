@@ -1,0 +1,66 @@
+"use client";
+
+import * as React from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { DayPicker } from "react-day-picker";
+import { cn } from "@/lib/utils";
+import { buttonVariants } from "@/components/ui/button";
+
+export type CalendarProps = React.ComponentProps<typeof DayPicker>;
+
+function Calendar({
+  className,
+  classNames,
+  showOutsideDays = true,
+  ...props
+}: CalendarProps) {
+  return (
+    <DayPicker
+      showOutsideDays={showOutsideDays}
+      className={cn("p-3", className)}
+      classNames={{
+        months: "flex flex-col sm:flex-row gap-4",
+        month: "space-y-4",
+        caption: "relative flex items-center justify-center pt-1",
+        caption_label: "text-sm font-semibold text-foreground",
+        nav: "flex items-center gap-1",
+        button_previous: cn(
+          buttonVariants({ variant: "outline", size: "icon" }),
+          "absolute left-1 h-7 w-7 rounded-md border-border bg-background p-0 opacity-90 hover:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+        ),
+        button_next: cn(
+          buttonVariants({ variant: "outline", size: "icon" }),
+          "absolute right-1 h-7 w-7 rounded-md border-border bg-background p-0 opacity-90 hover:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+        ),
+        month_grid: "w-full border-collapse table-fixed",
+        weekdays: "flex",
+        weekday: "flex-1 text-center text-[0.8rem] font-medium text-muted-foreground",
+        week: "mt-1 flex w-full",
+        day: "flex-1 h-9 p-0 text-center text-sm",
+        day_button: cn(
+          buttonVariants({ variant: "ghost" }),
+          "h-9 w-9 rounded-md p-0 font-normal aria-selected:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+        ),
+        selected:
+          "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground",
+        today: "bg-accent text-accent-foreground",
+        outside: "text-muted-foreground opacity-50",
+        disabled: "text-muted-foreground opacity-40",
+        hidden: "invisible",
+        ...classNames,
+      }}
+      components={{
+        Chevron: ({ orientation, ...chevronProps }) =>
+          orientation === "left" ? (
+            <ChevronLeft className="h-4 w-4" {...chevronProps} />
+          ) : (
+            <ChevronRight className="h-4 w-4" {...chevronProps} />
+          ),
+      }}
+      {...props}
+    />
+  );
+}
+Calendar.displayName = "Calendar";
+
+export { Calendar };

@@ -51,6 +51,19 @@ describe("TURKEY_DISTRICTS", () => {
     const districts = getDistrictsByProvince("adana");
     expect(districts.length).toBeGreaterThan(0);
   });
+
+  it("getDistrictsByProvince returns all 12 Kocaeli districts", () => {
+    const districts = getDistrictsByProvince("kocaeli");
+    expect(districts).toHaveLength(12);
+    const slugs = districts.map((d) => d.slug);
+    expect(slugs).toContain("dilovasi");
+    expect(slugs).toContain("cayirova");
+    expect(slugs).toContain("karamursel");
+  });
+
+  it("getDistrictsByProvince returns empty array for unknown province", () => {
+    expect(getDistrictsByProvince("unknown-slug")).toEqual([]);
+  });
 });
 
 describe("normalizeTRPhone", () => {

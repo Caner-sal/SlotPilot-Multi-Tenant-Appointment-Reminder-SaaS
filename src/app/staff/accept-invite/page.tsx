@@ -58,17 +58,17 @@ function AcceptInviteForm() {
     }
   }
 
-  if (loading) return <div className="text-gray-500">Davet bilgisi yükleniyor...</div>;
+  if (loading) return <div className="text-muted-foreground">Davet bilgisi yükleniyor...</div>;
   if (error && !inviteInfo) return <div className="text-red-600">{error}</div>;
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <p className="mb-4 text-sm text-gray-600">
+      <p className="mb-4 text-sm text-muted-foreground">
         Çalışan olarak davet edildiniz. E-posta adresiniz: <strong>{inviteInfo?.email}</strong>
       </p>
 
       <div>
-        <label className="mb-1 block text-sm font-medium text-gray-700">Ad Soyad</label>
+        <label className="mb-1 block text-sm font-medium text-foreground/90">Ad Soyad</label>
         <input
           type="text"
           required
@@ -79,7 +79,7 @@ function AcceptInviteForm() {
         />
       </div>
       <div>
-        <label className="mb-1 block text-sm font-medium text-gray-700">Şifre</label>
+        <label className="mb-1 block text-sm font-medium text-foreground/90">Şifre</label>
         <input
           type="password"
           required
@@ -90,7 +90,7 @@ function AcceptInviteForm() {
         />
       </div>
       <div>
-        <label className="mb-1 block text-sm font-medium text-gray-700">Şifre (Tekrar)</label>
+        <label className="mb-1 block text-sm font-medium text-foreground/90">Şifre (Tekrar)</label>
         <input
           type="password"
           required
@@ -113,10 +113,10 @@ function AcceptInviteForm() {
 
 export default function AcceptInvitePage() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50">
-      <div className="w-full max-w-md rounded-lg border bg-white p-8">
-        <h1 className="mb-6 text-2xl font-bold text-gray-900">Çalışan Daveti</h1>
-        <Suspense fallback={<div className="text-gray-500">Yükleniyor...</div>}>
+    <div className="flex min-h-screen items-center justify-center bg-muted/40">
+      <div className="w-full max-w-md rounded-lg border bg-card p-8">
+        <h1 className="mb-6 text-2xl font-bold text-foreground">Çalışan Daveti</h1>
+        <Suspense fallback={<div className="text-muted-foreground">Yükleniyor...</div>}>
           <AcceptInviteForm />
         </Suspense>
       </div>

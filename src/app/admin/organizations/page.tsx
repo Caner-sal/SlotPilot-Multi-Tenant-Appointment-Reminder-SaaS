@@ -24,7 +24,10 @@ export default async function AdminOrganizationsPage() {
       slug: true,
       email: true,
       bookingEnabled: true,
+      status: true,
       suspended: true,
+      suspendedAt: true,
+      suspendedReason: true,
       createdAt: true,
       subscription: { select: { plan: true, status: true } },
       _count: { select: { appointments: true, staff: true } },
@@ -34,25 +37,25 @@ export default async function AdminOrganizationsPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">İşletmeler ({organizations.length})</h1>
-      <div className="bg-white rounded-lg border overflow-hidden">
+      <h1 className="text-2xl font-bold text-foreground mb-6">İşletmeler ({organizations.length})</h1>
+      <div className="bg-card rounded-lg border overflow-hidden">
         <table className="w-full text-sm">
-          <thead className="bg-gray-50 border-b">
+          <thead className="bg-muted/40 border-b">
             <tr>
-              <th className="text-left px-4 py-3 font-medium text-gray-600">İşletme</th>
-              <th className="text-left px-4 py-3 font-medium text-gray-600">Plan</th>
-              <th className="text-left px-4 py-3 font-medium text-gray-600">Randevu</th>
-              <th className="text-left px-4 py-3 font-medium text-gray-600">Çalışan</th>
-              <th className="text-left px-4 py-3 font-medium text-gray-600">Durum</th>
-              <th className="text-left px-4 py-3 font-medium text-gray-600">İşlemler</th>
+              <th className="text-left px-4 py-3 font-medium text-muted-foreground">İşletme</th>
+              <th className="text-left px-4 py-3 font-medium text-muted-foreground">Plan</th>
+              <th className="text-left px-4 py-3 font-medium text-muted-foreground">Randevu</th>
+              <th className="text-left px-4 py-3 font-medium text-muted-foreground">Çalışan</th>
+              <th className="text-left px-4 py-3 font-medium text-muted-foreground">Durum</th>
+              <th className="text-left px-4 py-3 font-medium text-muted-foreground">İşlemler</th>
             </tr>
           </thead>
           <tbody className="divide-y">
             {organizations.map((org) => (
-              <tr key={org.id} className="hover:bg-gray-50">
+              <tr key={org.id} className="hover:bg-muted/40">
                 <td className="px-4 py-3">
-                  <div className="font-medium text-gray-900">{org.name}</div>
-                  <div className="text-gray-500 text-xs">{org.slug}</div>
+                  <div className="font-medium text-foreground">{org.name}</div>
+                  <div className="text-muted-foreground text-xs">{org.slug}</div>
                 </td>
                 <td className="px-4 py-3">
                   <span className="font-medium">{formatPlan(org.subscription?.plan)}</span>
@@ -60,7 +63,7 @@ export default async function AdminOrganizationsPage() {
                 <td className="px-4 py-3">{org._count.appointments}</td>
                 <td className="px-4 py-3">{org._count.staff}</td>
                 <td className="px-4 py-3">
-                  {org.suspended ? (
+                  {org.status !== "ACTIVE" || org.suspended ? (
                     <span className="px-2 py-1 bg-red-100 text-red-700 rounded text-xs font-medium">Askıda</span>
                   ) : org.bookingEnabled ? (
                     <span className="px-2 py-1 bg-green-100 text-green-700 rounded text-xs font-medium">Aktif</span>
@@ -78,7 +81,7 @@ export default async function AdminOrganizationsPage() {
           </tbody>
         </table>
         {organizations.length === 0 && (
-          <div className="text-center py-8 text-gray-500">Henüz işletme yok.</div>
+          <div className="text-center py-8 text-muted-foreground">Henüz işletme yok.</div>
         )}
       </div>
     </div>

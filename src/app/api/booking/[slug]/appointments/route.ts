@@ -1,7 +1,9 @@
 import { db } from "@/lib/db";
 import { canCreateAppointment } from "@/lib/billing";
+import { isOrganizationPubliclyAvailable, isOrganizationSuspended } from "@/lib/organization-lifecycle";
 import { createAuditLog } from "@/services/audit.service";
 import { createBooking } from "@/services/booking.service";
+import { trackProductEvent } from "@/services/product-event.service";
 import { scheduleReminder } from "@/services/reminder.service";
 import { sendEmail, buildBookingConfirmationEmail } from "@/lib/email";
 import { generateBookingToken, getBookingManageUrl } from "@/lib/booking-token";
@@ -24,15 +26,18 @@ export async function POST(
 
     const org = await db.organization.findUnique({
       where: { slug },
-      select: { id: true, bookingEnabled: true },
+      select: { id: true, bookingEnabled: true, suspended: true },
     });
 
     if (!org) {
       return NextResponse.json({ error: "İşletme bulunamadı" }, { status: 404 });
     }
 
-    if (!org.bookingEnabled) {
-      return NextResponse.json({ error: "Online booking is not available for this business" }, { status: 403 });
+    if (!isOrganizationPubliclyAvailable(org)) {
+      const error = isOrganizationSuspended(org)
+        ? "This business is currently unavailable"
+        : "Online booking is not available for this business";
+      return NextResponse.json({ error }, { status: 403 });
     }
 
     const check = await canCreateAppointment(org.id);
@@ -53,6 +58,9 @@ export async function POST(
       customerPhone: parsed.customerPhone,
       customerProvince: parsed.customerProvince,
       customerDistrict: parsed.customerDistrict,
+      customerCountryCode: parsed.customerCountryCode,
+      customerAddressLine: parsed.customerAddressLine,
+      customerPostalCode: parsed.customerPostalCode,
       notes: parsed.notes,
     });
 
@@ -80,36 +88,26 @@ export async function POST(
       entityId: appointment.id,
       metadata: {
         customerEmail: parsed.customerEmail,
+        customerCountryCode: parsed.customerCountryCode,
         serviceId: parsed.serviceId,
         staffId: parsed.staffId,
         startTime: appointment.startTime,
       },
     });
 
-    // Send booking confirmation email (non-blocking)
-    generateBookingToken(appointment.id)
-      .then((token) => {
-        const manageUrl = getBookingManageUrl(token);
-        const { subject, html } = buildBookingConfirmationEmail({
-          customerName: appointment.customer.fullName,
-          businessName: appointment.organization.name,
-          serviceName: appointment.service.name,
-          staffName: appointment.staff.name,
-          startTime: appointment.startTime,
-          priceCents: appointment.service.priceCents,
-          currency: appointment.service.currency,
-          manageUrl,
-        });
-        return sendEmail({ to: appointment.customer.email!, subject, html });
-      })
-      .then((result) => {
-        if (!result.success) {
-          console.error("[BOOKING CONFIRMATION EMAIL] Failed:", result.error);
-        }
-      })
-      .catch((err) => {
-        console.error("[BOOKING CONFIRMATION EMAIL] Error:", err);
+    const orgAppointmentCount = await db.appointment.count({
+      where: { organizationId: org.id },
+    });
+    if (orgAppointmentCount === 1) {
+      await trackProductEvent({
+        eventName: "first_booking_created",
+        organizationId: org.id,
+        payloadSafe: {
+          appointmentId: appointment.id,
+          serviceId: parsed.serviceId,
+        },
       });
+    }
 
     return NextResponse.json({ data: appointment }, { status: 201 });
   } catch (err) {
@@ -123,4 +121,5 @@ export async function POST(
     return NextResponse.json({ error: "Sunucu hatası" }, { status: 500 });
   }
 }
+
 

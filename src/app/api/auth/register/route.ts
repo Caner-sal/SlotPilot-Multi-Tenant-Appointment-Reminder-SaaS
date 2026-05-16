@@ -1,16 +1,9 @@
+﻿import bcrypt from "bcryptjs";
 import { db } from "@/lib/db";
 import { registerSchema } from "@/lib/validators";
+import { trackProductEvent } from "@/services/product-event.service";
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import bcrypt from "bcryptjs";
-import { sendVerificationEmail } from "@/lib/email";
-import crypto from "crypto";
-import { globalRateLimiter } from "@/lib/rate-limit";
-
-function generateToken() {
-  // Use crypto for cryptographically secure random number generation
-  return crypto.randomInt(100000, 999999).toString();
-}
 
 export async function POST(req: Request) {
   try {
@@ -38,27 +31,13 @@ export async function POST(req: Request) {
       select: { id: true, email: true, name: true },
     });
 
-    const token = generateToken();
-    const expires = new Date(Date.now() + 1000 * 60 * 60 * 24); // 24 hours
-
-    await db.verificationToken.create({
-      data: {
-        email: user.email,
-        token,
-        expires,
-      },
+    await trackProductEvent({
+      eventName: "signup_started",
+      userId: user.id,
+      payloadSafe: { channel: "web" },
     });
 
-    const protocol = req.headers.get("x-forwarded-proto") || "http";
-    const host = req.headers.get("host") || "localhost:3000";
-    const baseUrl = `${protocol}://${host}`;
-
-    await sendVerificationEmail(user.email, token, baseUrl);
-
-    return NextResponse.json({ 
-      data: { user }, 
-      message: "Kayıt başarılı. Lütfen e-postanıza gönderilen bağlantıya tıklayarak hesabınızı doğrulayın." 
-    }, { status: 201 });
+    return NextResponse.json({ data: { user } }, { status: 201 });
   } catch (err) {
     if (err instanceof z.ZodError) {
       return NextResponse.json({ error: err.issues, message: "Geçersiz form verisi" }, { status: 400 });

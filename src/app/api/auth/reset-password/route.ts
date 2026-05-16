@@ -1,62 +1,76 @@
-import { db } from "@/lib/db";
-import { NextResponse } from "next/server";
+import crypto from "crypto";
 import bcrypt from "bcryptjs";
-import { globalRateLimiter } from "@/lib/rate-limit";
+import { db } from "@/lib/db";
+import { consumeRateLimit, getClientIp } from "@/lib/rate-limit";
+import { NextResponse } from "next/server";
+import { z } from "zod";
+
+const schema = z.object({
+  token: z.string().min(1),
+  password: z.string().min(8, "Şifre en az 8 karakter olmalıdır"),
+});
 
 export async function POST(req: Request) {
-  try {
-    const ip = req.headers.get("x-forwarded-for") || "127.0.0.1";
-    if (!globalRateLimiter.isAllowed(ip, 3, 60 * 1000)) { // 3 requests per minute
-      return NextResponse.json({ error: "Çok fazla istek gönderdiniz. Lütfen daha sonra tekrar deneyin." }, { status: 429 });
-    }
+  const ip = getClientIp(req.headers as Headers);
+  const rateLimit = consumeRateLimit({
+    key: `auth:reset:${ip}`,
+    limit: 10,
+    windowMs: 15 * 60 * 1000,
+  });
 
-    const { email, token, newPassword } = await req.json();
-
-    if (!email || !token || !newPassword) {
-      return NextResponse.json({ error: "E-posta, kod ve yeni şifre gereklidir." }, { status: 400 });
-    }
-
-    if (newPassword.length < 6) {
-      return NextResponse.json({ error: "Şifre en az 6 karakter olmalıdır." }, { status: 400 });
-    }
-
-    const existingToken = await db.passwordResetToken.findFirst({
-      where: { email, token },
-    });
-
-    if (!existingToken) {
-      return NextResponse.json({ error: "Geçersiz doğrulama kodu." }, { status: 400 });
-    }
-
-    const hasExpired = new Date(existingToken.expires) < new Date();
-    if (hasExpired) {
-      return NextResponse.json({ error: "Doğrulama kodunun süresi dolmuş." }, { status: 400 });
-    }
-
-    const existingUser = await db.user.findUnique({
-      where: { email },
-    });
-
-    if (!existingUser) {
-      return NextResponse.json({ error: "Kullanıcı bulunamadı." }, { status: 400 });
-    }
-
-    const hashedPassword = await bcrypt.hash(newPassword, 12);
-
-    await db.user.update({
-      where: { id: existingUser.id },
-      data: {
-        passwordHash: hashedPassword,
-      },
-    });
-
-    await db.passwordResetToken.delete({
-      where: { id: existingToken.id },
-    });
-
-    return NextResponse.json({ success: true, message: "Şifreniz başarıyla değiştirildi." });
-  } catch (error) {
-    console.error("Reset password error:", error);
-    return NextResponse.json({ error: "Sunucu hatası oluştu." }, { status: 500 });
+  if (!rateLimit.allowed) {
+    return NextResponse.json(
+      { message: "Çok fazla istek. Lütfen bekleyin." },
+      {
+        status: 429,
+        headers: { "Retry-After": String(rateLimit.retryAfterSeconds) },
+      }
+    );
   }
+
+  let token: string;
+  let password: string;
+  try {
+    const body = await req.json();
+    ({ token, password } = schema.parse(body));
+  } catch (err) {
+    if (err instanceof z.ZodError) {
+      return NextResponse.json({ error: err.issues[0]?.message ?? "Geçersiz istek" }, { status: 400 });
+    }
+    return NextResponse.json({ error: "Geçersiz istek" }, { status: 400 });
+  }
+
+  const tokenHash = crypto.createHash("sha256").update(token).digest("hex");
+
+  const resetToken = await db.passwordResetToken.findUnique({
+    where: { tokenHash },
+    include: { user: { select: { id: true, email: true } } },
+  });
+
+  if (!resetToken) {
+    return NextResponse.json({ error: "Geçersiz veya süresi dolmuş bağlantı" }, { status: 400 });
+  }
+
+  if (resetToken.usedAt !== null) {
+    return NextResponse.json({ error: "Bu bağlantı daha önce kullanılmış" }, { status: 400 });
+  }
+
+  if (resetToken.expiresAt < new Date()) {
+    return NextResponse.json({ error: "Geçersiz veya süresi dolmuş bağlantı" }, { status: 400 });
+  }
+
+  const passwordHash = await bcrypt.hash(password, 12);
+
+  await db.$transaction([
+    db.user.update({
+      where: { id: resetToken.userId },
+      data: { passwordHash },
+    }),
+    db.passwordResetToken.update({
+      where: { id: resetToken.id },
+      data: { usedAt: new Date() },
+    }),
+  ]);
+
+  return NextResponse.json({ message: "Şifreniz başarıyla sıfırlandı" }, { status: 200 });
 }

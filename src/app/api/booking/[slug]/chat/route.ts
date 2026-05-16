@@ -1,4 +1,8 @@
 ﻿import { db } from "@/lib/db";
+import { logger } from "@/lib/logger";
+import { isOrganizationSuspended } from "@/lib/organization-lifecycle";
+import { getRequestId } from "@/lib/request-id";
+import { consumeRateLimit, getClientIp, rateLimitHeaders } from "@/lib/rate-limit";
 import { NextResponse } from "next/server";
 
 interface ChatMessage {
@@ -11,33 +15,30 @@ interface RequestBody {
   conversationHistory?: ChatMessage[];
 }
 
-// In-memory rate limiter: 30 req/min per slug (production should use Redis)
-const rateLimitMap = new Map<string, { count: number; reset: number }>();
-
-function checkRateLimit(slug: string): boolean {
-  const now = Date.now();
-  const entry = rateLimitMap.get(slug);
-
-  if (!entry || now > entry.reset) {
-    rateLimitMap.set(slug, { count: 1, reset: now + 60_000 });
-    return true;
-  }
-
-  if (entry.count >= 30) return false;
-
-  entry.count++;
-  return true;
-}
-
 const MOCK_RESPONSE =
   "AI assistant is not available right now. Please call us or use the booking form to schedule an appointment.";
 
 export async function POST(req: Request, { params }: { params: Promise<{ slug: string }> }) {
+  const requestId = getRequestId(req.headers);
   const { slug } = await params;
+  const ip = getClientIp(req.headers);
+  const limit = consumeRateLimit({
+    key: `booking-chat:${slug}:${ip}`,
+    limit: 30,
+    windowMs: 60_000,
+  });
 
-  if (!checkRateLimit(slug)) {
-    return NextResponse.json({ error: "Too many requests. Please try again in a minute." }, { status: 429 });
+  if (!limit.allowed) {
+    return NextResponse.json(
+      { error: "Too many requests. Please try again in a minute." },
+      { status: 429, headers: { "x-request-id": requestId, ...rateLimitHeaders(limit) } }
+    );
   }
+
+  const baseHeaders = {
+    "x-request-id": requestId,
+    ...rateLimitHeaders(limit),
+  };
 
   const org = await db.organization.findUnique({
     where: { slug },
@@ -47,36 +48,35 @@ export async function POST(req: Request, { params }: { params: Promise<{ slug: s
       faqText: true,
       aiChatbotEnabled: true,
       suspended: true,
-      bookingEnabled: true,
       phone: true,
       address: true,
     },
   });
 
-  if (!org || org.suspended) {
-    return NextResponse.json({ error: "İşletme bulunamadı" }, { status: 403 });
+  if (!org || isOrganizationSuspended(org)) {
+    return NextResponse.json({ error: "Business not available" }, { status: 403, headers: baseHeaders });
   }
 
   if (!org.aiChatbotEnabled) {
-    return NextResponse.json({ error: "AI assistant is not enabled for this business" }, { status: 404 });
+    return NextResponse.json({ error: "AI assistant is not enabled for this business" }, { status: 404, headers: baseHeaders });
   }
 
   let body: RequestBody;
   try {
-    body = await req.json() as RequestBody;
+    body = (await req.json()) as RequestBody;
   } catch {
-    return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
+    return NextResponse.json({ error: "Invalid request body" }, { status: 400, headers: baseHeaders });
   }
 
   if (!body.message || typeof body.message !== "string" || body.message.trim().length === 0) {
-    return NextResponse.json({ error: "Mesaj zorunludur" }, { status: 400 });
+    return NextResponse.json({ error: "Message is required" }, { status: 400, headers: baseHeaders });
   }
 
   const apiKey = process.env.ANTHROPIC_API_KEY;
   const aiDisabled = !apiKey || process.env.AI_PROVIDER === "DISABLED";
 
   if (aiDisabled) {
-    return NextResponse.json({ data: { reply: MOCK_RESPONSE, mock: true } });
+    return NextResponse.json({ data: { reply: MOCK_RESPONSE, mock: true } }, { headers: baseHeaders });
   }
 
   const systemPrompt = [
@@ -99,7 +99,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ slug: s
     .filter(Boolean)
     .join("\n");
 
-  const history = (body.conversationHistory ?? []).slice(-10); // keep last 10 turns
+  const history = (body.conversationHistory ?? []).slice(-10);
 
   try {
     const res = await fetch("https://api.anthropic.com/v1/messages", {
@@ -113,25 +113,21 @@ export async function POST(req: Request, { params }: { params: Promise<{ slug: s
         model: "claude-haiku-4-5-20251001",
         max_tokens: 512,
         system: systemPrompt,
-        messages: [
-          ...history,
-          { role: "user", content: body.message.trim() },
-        ],
+        messages: [...history, { role: "user", content: body.message.trim() }],
       }),
     });
 
     if (!res.ok) {
-      console.error("Anthropic API error:", res.status, await res.text());
-      return NextResponse.json({ data: { reply: MOCK_RESPONSE, mock: true } });
+      logger.warn("anthropic api non-ok response", { requestId, slug, status: res.status });
+      return NextResponse.json({ data: { reply: MOCK_RESPONSE, mock: true } }, { headers: baseHeaders });
     }
 
-    const data = await res.json() as { content?: Array<{ text?: string }> };
+    const data = (await res.json()) as { content?: Array<{ text?: string }> };
     const reply = data.content?.[0]?.text ?? MOCK_RESPONSE;
-
-    return NextResponse.json({ data: { reply } });
+    return NextResponse.json({ data: { reply } }, { headers: baseHeaders });
   } catch (err) {
-    console.error("AI chatbot error:", err);
-    return NextResponse.json({ data: { reply: MOCK_RESPONSE, mock: true } });
+    logger.error("ai chatbot request failed", { requestId, slug, err });
+    return NextResponse.json({ data: { reply: MOCK_RESPONSE, mock: true } }, { headers: baseHeaders });
   }
 }
 

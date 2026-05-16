@@ -66,54 +66,33 @@ export async function sendEmail(payload: EmailPayload): Promise<EmailResult> {
   }
 }
 
-export async function sendVerificationEmail(email: string, token: string, baseUrl: string) {
-  return sendEmail({
-    to: email,
-    subject: "Doğrulama Kodunuz",
+export function buildPasswordResetEmail(data: {
+  resetUrl: string;
+  expiresInMinutes: number;
+}): { subject: string; html: string } {
+  return {
+    subject: "Randevo şifre sıfırlama isteği",
     html: `
-      <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 500px; margin: 0 auto; padding: 30px; border: 1px solid #eaeaea; border-radius: 12px; background-color: #ffffff;">
-        <div style="text-align: center; margin-bottom: 30px;">
-          <h1 style="color: #111120; font-size: 24px; margin: 0;">Randevo</h1>
-        </div>
-        <h2 style="color: #333333; font-size: 20px; text-align: center; margin-bottom: 20px;">Hoş Geldiniz!</h2>
-        <p style="color: #555555; font-size: 15px; line-height: 1.6; text-align: center; margin-bottom: 30px;">
-          Kayıt işleminizi tamamlamak için aşağıdaki 6 haneli doğrulama kodunu kullanabilirsiniz.
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2>Şifre Sıfırlama</h2>
+        <p>Merhaba,</p>
+        <p>Randevo hesabınız için şifre sıfırlama isteği aldık.</p>
+        <p>Yeni şifre belirlemek için aşağıdaki bağlantıyı kullanın:</p>
+        <p style="margin: 24px 0;">
+          <a href="${data.resetUrl}" style="background: #7768d4; color: #fff; padding: 12px 24px; border-radius: 8px; text-decoration: none; display: inline-block;">
+            Şifremi Sıfırla
+          </a>
         </p>
-        <div style="text-align: center; background-color: #f7f7f9; padding: 20px; border-radius: 8px; margin-bottom: 30px;">
-          <span style="font-size: 32px; font-weight: 800; letter-spacing: 6px; color: #7768d4;">${token}</span>
-        </div>
-        <p style="color: #888888; font-size: 13px; text-align: center; margin-top: 30px; border-top: 1px solid #eaeaea; padding-top: 20px;">
-          Bu kodu siz talep etmediyseniz, lütfen bu e-postayı görmezden gelin.<br/><br/>
-          Randevo Randevu Sistemi
+        <p style="color: #888; font-size: 13px;">
+          Bu bağlantı ${data.expiresInMinutes} dakika içinde geçersiz olacaktır.
         </p>
+        <p style="color: #888; font-size: 13px;">
+          Eğer bu isteği siz yapmadıysanız bu e-postayı yok sayabilirsiniz.
+        </p>
+        <p style="color: #888; font-size: 12px;">Randevo Randevu Sistemi</p>
       </div>
     `,
-  });
-}
-
-export async function sendPasswordResetEmail(email: string, token: string) {
-  return sendEmail({
-    to: email,
-    subject: "Şifre Sıfırlama Kodunuz",
-    html: `
-      <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 500px; margin: 0 auto; padding: 30px; border: 1px solid #eaeaea; border-radius: 12px; background-color: #ffffff;">
-        <div style="text-align: center; margin-bottom: 30px;">
-          <h1 style="color: #111120; font-size: 24px; margin: 0;">Randevo</h1>
-        </div>
-        <h2 style="color: #333333; font-size: 20px; text-align: center; margin-bottom: 20px;">Şifre Sıfırlama İsteği</h2>
-        <p style="color: #555555; font-size: 15px; line-height: 1.6; text-align: center; margin-bottom: 30px;">
-          Şifrenizi sıfırlamak için aşağıdaki 6 haneli doğrulama kodunu kullanabilirsiniz.
-        </p>
-        <div style="text-align: center; background-color: #f7f7f9; padding: 20px; border-radius: 8px; margin-bottom: 30px;">
-          <span style="font-size: 32px; font-weight: 800; letter-spacing: 6px; color: #7768d4;">${token}</span>
-        </div>
-        <p style="color: #888888; font-size: 13px; text-align: center; margin-top: 30px; border-top: 1px solid #eaeaea; padding-top: 20px;">
-          Bu kodu siz talep etmediyseniz, lütfen bu e-postayı görmezden gelin ve hesabınızın güvenliği için şifrenizi değiştirin.<br/><br/>
-          Randevo Randevu Sistemi
-        </p>
-      </div>
-    `,
-  });
+  };
 }
 
 export function buildReminderEmail(data: {

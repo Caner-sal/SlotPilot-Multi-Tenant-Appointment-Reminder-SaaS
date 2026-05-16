@@ -1,8 +1,10 @@
-"use client";
+﻿"use client";
 
 import { Suspense, useEffect, useMemo, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { TURKEY_PLANS, formatPlanPriceTR, getPlanTR, type TurkeyPlanId } from "@/config/pricing.tr";
+import { getCheckoutUrl, type UpgradablePlanId } from "@/config/billing-plans";
 
 interface PlanLimits {
   maxStaff: number;
@@ -19,20 +21,22 @@ interface SubscriptionData {
 
 const PLAN_BADGE_COLORS: Record<TurkeyPlanId, string> = {
   FREE: "bg-muted text-muted-foreground",
-  STARTER: "bg-blue-500/20 text-blue-400",
-  PRO: "bg-purple-500/20 text-purple-400",
-  ENTERPRISE: "bg-slate-500/20 text-slate-400",
+  STARTER: "bg-blue-500/15 text-blue-400",
+  PRO: "bg-purple-500/15 text-purple-400",
+  ENTERPRISE: "bg-muted text-muted-foreground",
 };
 
-function isUpgradablePlan(planId: TurkeyPlanId): planId is "STARTER" | "PRO" {
+function isUpgradablePlan(planId: TurkeyPlanId): planId is UpgradablePlanId {
   return planId === "STARTER" || planId === "PRO";
 }
 
 function BillingContent() {
+  const t = useTranslations("billing");
+  const tCommon = useTranslations("common");
+  const router = useRouter();
   const [data, setData] = useState<SubscriptionData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [upgrading, setUpgrading] = useState<"STARTER" | "PRO" | null>(null);
-  const [demoMessage, setDemoMessage] = useState("");
+  const [demoMessage] = useState("");
   const searchParams = useSearchParams();
 
   const success = searchParams.get("success") === "true";
@@ -45,24 +49,8 @@ function BillingContent() {
       .finally(() => setLoading(false));
   }, []);
 
-  async function handleUpgrade(plan: "STARTER" | "PRO") {
-    setUpgrading(plan);
-    setDemoMessage("");
-    try {
-      const res = await fetch("/api/billing/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ plan }),
-      });
-      const json = await res.json();
-      if (json.data?.url) {
-        window.location.href = json.data.url;
-      } else if (json.data?.mode === "test") {
-        setDemoMessage(json.data.message ?? "Demo modu: Stripe yapılandırılmamış.");
-      }
-    } finally {
-      setUpgrading(null);
-    }
+  function handleUpgrade(plan: UpgradablePlanId) {
+    router.push(getCheckoutUrl(plan));
   }
 
   const planCards = useMemo(() => {
@@ -79,7 +67,7 @@ function BillingContent() {
   }, []);
 
   if (loading) {
-    return <div className="p-10 text-center text-muted-foreground">Abonelik bilgileri yükleniyor...</div>;
+    return <div className="p-10 text-center text-muted-foreground/80">{t("loading")}</div>;
   }
 
   const currentPlan: TurkeyPlanId = data?.plan ?? "FREE";
@@ -89,32 +77,32 @@ function BillingContent() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-foreground">Abonelik</h1>
-        <p className="mt-1 text-sm text-muted-foreground">Abonelik planınızı yönetin.</p>
+        <h1 className="text-2xl font-bold text-foreground">{t("title")}</h1>
+        <p className="mt-1 text-sm text-muted-foreground">{t("subtitle")}</p>
       </div>
 
       {success && (
-        <div className="rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
-          Aboneliğiniz başarıyla güncellendi.
+        <div className="rounded-lg border border-green-500/20 bg-green-500/10 px-4 py-3 text-sm text-green-400">
+          {t("updateSuccess")}
         </div>
       )}
 
       {cancelled && (
-        <div className="rounded-lg border border-yellow-200 bg-yellow-50 px-4 py-3 text-sm text-yellow-700">
-          Ödeme iptal edildi. Planınız değişmedi.
+        <div className="rounded-lg border border-yellow-500/20 bg-yellow-500/10 px-4 py-3 text-sm text-yellow-400">
+          {t("paymentCancelled")}
         </div>
       )}
 
       {demoMessage && (
-        <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700">
-          <strong>Demo Modu:</strong> {demoMessage}
+        <div className="rounded-lg border border-amber-500/20 bg-amber-500/10 px-4 py-3 text-sm text-amber-400">
+          <strong>{t("demoMode")}</strong> {demoMessage}
         </div>
       )}
 
       <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
         <div className="mb-4 flex items-center justify-between">
           <div>
-            <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Mevcut Plan</p>
+            <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground/80">{t("currentPlan")}</p>
             <div className="flex items-center gap-3">
               <h2 className="text-2xl font-bold text-foreground">{currentPlanInfo.nameTR}</h2>
               <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${PLAN_BADGE_COLORS[currentPlan]}`}>
@@ -125,30 +113,30 @@ function BillingContent() {
         </div>
         {limits && (
           <div className="mt-4 grid grid-cols-2 gap-4 md:grid-cols-4">
-            <div className="rounded-lg bg-muted/50 p-3">
-              <p className="mb-1 text-xs text-muted-foreground">Maks. Çalışan</p>
-              <p className="font-semibold text-foreground">{limits.maxStaff === Infinity ? "Sınırsız" : limits.maxStaff}</p>
+            <div className="rounded-lg bg-muted/40 p-3">
+              <p className="mb-1 text-xs text-muted-foreground/80">{t("maxStaff")}</p>
+              <p className="font-semibold text-foreground">{limits.maxStaff === Infinity ? t("unlimited") : limits.maxStaff}</p>
             </div>
-            <div className="rounded-lg bg-muted/50 p-3">
-              <p className="mb-1 text-xs text-muted-foreground">Randevu / ay</p>
+            <div className="rounded-lg bg-muted/40 p-3">
+              <p className="mb-1 text-xs text-muted-foreground/80">{t("appointmentsPerMonth")}</p>
               <p className="font-semibold text-foreground">
-                {limits.maxAppointmentsPerMonth === Infinity ? "Sınırsız" : limits.maxAppointmentsPerMonth}
+                {limits.maxAppointmentsPerMonth === Infinity ? t("unlimited") : limits.maxAppointmentsPerMonth}
               </p>
             </div>
-            <div className="rounded-lg bg-muted/50 p-3">
-              <p className="mb-1 text-xs text-muted-foreground">E-posta Hatırlatma</p>
-              <p className="font-semibold text-foreground">{limits.emailReminders ? "Evet" : "Hayır"}</p>
+            <div className="rounded-lg bg-muted/40 p-3">
+              <p className="mb-1 text-xs text-muted-foreground/80">{t("emailReminder")}</p>
+              <p className="font-semibold text-foreground">{limits.emailReminders ? tCommon("yes") : tCommon("no")}</p>
             </div>
-            <div className="rounded-lg bg-muted/50 p-3">
-              <p className="mb-1 text-xs text-muted-foreground">Gelişmiş Analitik</p>
-              <p className="font-semibold text-foreground">{limits.advancedAnalytics ? "Evet" : "Hayır"}</p>
+            <div className="rounded-lg bg-muted/40 p-3">
+              <p className="mb-1 text-xs text-muted-foreground/80">{t("advancedAnalytics")}</p>
+              <p className="font-semibold text-foreground">{limits.advancedAnalytics ? tCommon("yes") : tCommon("no")}</p>
             </div>
           </div>
         )}
       </div>
 
       <div>
-        <h2 className="mb-4 text-lg font-semibold text-foreground">Planlar</h2>
+        <h2 className="mb-4 text-lg font-semibold text-foreground">{t("plans")}</h2>
         <div className="grid gap-4 md:grid-cols-3">
           {planCards.map((plan) => {
             const isCurrent = plan.id === currentPlan;
@@ -157,14 +145,14 @@ function BillingContent() {
               <div
                 key={plan.id}
                 className={`flex flex-col rounded-xl border bg-card p-6 shadow-sm ${
-                  plan.highlight ? "border-blue-500" : "border-border"
+                  plan.highlight ? "border-blue-400" : "border-border"
                 } ${isCurrent ? "ring-2 ring-blue-500" : ""}`}
               >
                 {plan.highlight && (
-                  <div className="mb-2 text-xs font-semibold uppercase tracking-wider text-blue-600">En Çok Tercih Edilen</div>
+                  <div className="mb-2 text-xs font-semibold uppercase tracking-wider text-blue-600">{t("mostPopular")}</div>
                 )}
                 {isCurrent && (
-                  <div className="mb-2 text-xs font-semibold uppercase tracking-wider text-green-600">Mevcut Plan</div>
+                  <div className="mb-2 text-xs font-semibold uppercase tracking-wider text-green-600">{t("currentPlan")}</div>
                 )}
                 <h3 className="text-xl font-bold text-foreground">{plan.label}</h3>
                 <p className="mt-1 text-2xl font-bold text-foreground">{plan.price}</p>
@@ -188,20 +176,19 @@ function BillingContent() {
                 </ul>
                 <div className="mt-5">
                   {isCurrent ? (
-                    <div className="rounded-lg border border-border py-2 text-center text-sm text-muted-foreground">Aktif Plan</div>
+                    <div className="rounded-lg border border-border py-2 text-center text-sm text-muted-foreground">{t("activePlan")}</div>
                   ) : plan.id === "FREE" ? (
-                    <div className="py-2 text-center text-sm text-muted-foreground">Düşürmek için destek ile iletişime geçin</div>
+                    <div className="py-2 text-center text-sm text-muted-foreground/80">{t("downgradeContact")}</div>
                   ) : paidPlan ? (
                     <button
                       onClick={() => handleUpgrade(paidPlan)}
-                      disabled={!!upgrading}
-                      className={`w-full rounded-lg py-2 text-sm font-semibold transition-colors disabled:opacity-60 ${
+                      className={`w-full rounded-lg py-2 text-sm font-semibold transition-colors ${
                         plan.highlight
                           ? "bg-blue-600 text-white hover:bg-blue-700"
-                          : "border border-border text-foreground hover:border-muted-foreground hover:bg-muted"
+                          : "border border-border text-foreground/90 hover:border-border hover:bg-muted/40"
                       }`}
                     >
-                      {upgrading === plan.id ? "Yönlendiriliyor..." : `${plan.label} planına geç`}
+                      {`${plan.label} ${t("switchTo")}`}
                     </button>
                   ) : null}
                 </div>
@@ -215,9 +202,11 @@ function BillingContent() {
 }
 
 export default function BillingPage() {
+  const tCommon = useTranslations("common");
   return (
-    <Suspense fallback={<div className="p-10 text-center text-muted-foreground">Yükleniyor...</div>}>
+    <Suspense fallback={<div className="p-10 text-center text-muted-foreground/80">{tCommon("loading")}</div>}>
       <BillingContent />
     </Suspense>
   );
 }
+

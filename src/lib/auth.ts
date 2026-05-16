@@ -42,6 +42,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           id: user.id,
           email: user.email,
           name: user.name,
+          preferredLocale: user.preferredLocale ?? null,
           platformRole: user.platformRole,
           appRole: user.appRole,
           staffId: user.staffProfile?.id ?? null,
@@ -54,12 +55,19 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        const u = user as { platformRole?: string; appRole?: string; staffId?: string | null; staffOrgId?: string | null };
+        const u = user as {
+          platformRole?: string;
+          appRole?: string;
+          staffId?: string | null;
+          staffOrgId?: string | null;
+          preferredLocale?: string | null;
+        };
         token.id = user.id;
         token.platformRole = u.platformRole ?? "USER";
         token.appRole = u.appRole ?? "OWNER";
         token.staffId = u.staffId ?? null;
         token.staffOrgId = u.staffOrgId ?? null;
+        token.preferredLocale = u.preferredLocale ?? null;
       }
       return token;
     },
@@ -67,9 +75,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (token.id) session.user.id = token.id as string;
       if (token.platformRole) session.user.platformRole = token.platformRole as string;
       if (token.appRole) session.user.appRole = token.appRole as string;
-      // staffId ve staffOrgId null olabilir — undefined yerine açıkça atanmalı
-      session.user.staffId = (token.staffId as string) ?? undefined;
-      session.user.staffOrgId = (token.staffOrgId as string) ?? undefined;
+      if (token.staffId) session.user.staffId = token.staffId as string;
+      if (token.staffOrgId) session.user.staffOrgId = token.staffOrgId as string;
+      if (token.preferredLocale) session.user.preferredLocale = token.preferredLocale as string;
       return session;
     },
   },
@@ -89,6 +97,7 @@ declare module "next-auth" {
       appRole?: string;
       staffId?: string;
       staffOrgId?: string;
+      preferredLocale?: string;
     };
   }
 }

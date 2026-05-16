@@ -13,6 +13,7 @@ export class ManualBankTransferProvider implements PaymentProvider {
     description: string;
     customerEmail: string;
     metadata?: Record<string, string>;
+    idempotencyKey?: string;
   }): Promise<PaymentResult> {
     const iban = process.env.BANK_TRANSFER_IBAN ?? "";
     const holder = process.env.BANK_TRANSFER_ACCOUNT_HOLDER ?? "";
@@ -25,9 +26,9 @@ export class ManualBankTransferProvider implements PaymentProvider {
     const instructions = [
       `Tutar: ${amount} ${params.currency}`,
       iban ? `IBAN: ${iban}` : "",
-      holder ? `AlÄ±cÄ±: ${holder}` : "",
+      holder ? `Alıcı: ${holder}` : "",
       bank ? `Banka: ${bank}` : "",
-      `AÃ§Ä±klama: ${reference}`,
+      `Açıklama: ${reference}`,
       `E-posta: ${params.customerEmail}`,
     ]
       .filter(Boolean)

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useTranslations } from "next-intl";
 
 interface Reminder {
   id: string;
@@ -28,17 +29,12 @@ const STATUS_COLORS: Record<string, string> = {
   PENDING: "bg-yellow-100 text-yellow-700",
   SENT: "bg-green-100 text-green-700",
   FAILED: "bg-red-100 text-red-700",
-  SKIPPED: "bg-gray-100 text-gray-500",
-};
-
-const STATUS_LABELS: Record<string, string> = {
-  PENDING: "Beklemede",
-  SENT: "Gönderildi",
-  FAILED: "Başarısız",
-  SKIPPED: "Atlandı",
+  SKIPPED: "bg-muted text-muted-foreground",
 };
 
 export default function RemindersPage() {
+  const t = useTranslations("reminders");
+  const tCommon = useTranslations("common");
   const [reminders, setReminders] = useState<Reminder[]>([]);
   const [meta, setMeta] = useState<Meta | null>(null);
   const [loading, setLoading] = useState(true);
@@ -71,23 +67,30 @@ export default function RemindersPage() {
       if (res.ok && json.data) {
         const d = json.data;
         setProcessResult(
-          `İşlendi: ${d.processed ?? 0} gönderildi, ${d.failed ?? 0} başarısız, ${d.skipped ?? 0} atlandı.`
+          t("processResult", { processed: d.processed ?? 0, failed: d.failed ?? 0, skipped: d.skipped ?? 0 })
         );
         await fetchReminders();
       } else {
-        setProcessResult("Hatırlatmalar işlenemedi.");
+        setProcessResult(t("processError"));
       }
     } finally {
       setProcessing(false);
     }
   }
 
+  const STATUS_LABELS: Record<string, string> = {
+    PENDING: tCommon("pending"),
+    SENT: tCommon("sent"),
+    FAILED: tCommon("failed"),
+    SKIPPED: tCommon("skipped"),
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">Hatırlatmalar</h1>
-          <p className="text-sm text-muted-foreground mt-1">Hatırlatma günlüklerini görüntüleyin ve manuel işlem başlatın.</p>
+          <h1 className="text-2xl font-bold text-foreground">{t("title")}</h1>
+          <p className="text-sm text-muted-foreground mt-1">{t("subtitle")}</p>
         </div>
         <button
           onClick={processReminders}
@@ -97,7 +100,7 @@ export default function RemindersPage() {
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M5 3l14 9-14 9V3z" />
           </svg>
-          {processing ? "İşleniyor..." : "Hatırlatmaları İşle"}
+          {processing ? t("processing") : t("processButton")}
         </button>
       </div>
 
@@ -109,27 +112,27 @@ export default function RemindersPage() {
 
       <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
         {loading ? (
-          <div className="p-10 text-center text-muted-foreground">Yükleniyor...</div>
+          <div className="p-10 text-center text-muted-foreground/80">{tCommon("loading")}</div>
         ) : reminders.length === 0 ? (
-          <div className="p-10 text-center text-muted-foreground">Hatırlatma bulunamadı.</div>
+          <div className="p-10 text-center text-muted-foreground/80">{t("notFound")}</div>
         ) : (
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-border bg-muted/50">
-                <th className="px-5 py-3 text-left font-semibold text-muted-foreground">Randevu</th>
-                <th className="px-5 py-3 text-left font-semibold text-muted-foreground">Tür</th>
-                <th className="px-5 py-3 text-left font-semibold text-muted-foreground">Planlandı</th>
-                <th className="px-5 py-3 text-left font-semibold text-muted-foreground">Durum</th>
-                <th className="px-5 py-3 text-left font-semibold text-muted-foreground">Gönderildi</th>
-                <th className="px-5 py-3 text-left font-semibold text-muted-foreground">Hata</th>
+              <tr className="border-b border-border/70 bg-muted/40">
+                <th className="px-5 py-3 text-left font-semibold text-muted-foreground">{t("appointmentCol")}</th>
+                <th className="px-5 py-3 text-left font-semibold text-muted-foreground">{t("typeCol")}</th>
+                <th className="px-5 py-3 text-left font-semibold text-muted-foreground">{t("scheduledCol")}</th>
+                <th className="px-5 py-3 text-left font-semibold text-muted-foreground">{tCommon("status")}</th>
+                <th className="px-5 py-3 text-left font-semibold text-muted-foreground">{tCommon("sent")}</th>
+                <th className="px-5 py-3 text-left font-semibold text-muted-foreground">{tCommon("failed")}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
               {reminders.map((reminder) => (
-                <tr key={reminder.id} className="hover:bg-muted/30 transition-colors">
+                <tr key={reminder.id} className="hover:bg-muted/40 transition-colors">
                   <td className="px-5 py-3.5">
                     <div className="font-medium text-foreground">{reminder.appointment.customer.fullName}</div>
-                    <div className="text-xs text-muted-foreground">
+                    <div className="text-xs text-muted-foreground/80">
                       {reminder.appointment.service.name} ·{" "}
                       {new Date(reminder.appointment.startTime).toLocaleString("tr-TR", { timeZone: "Europe/Istanbul" })}
                     </div>
@@ -163,15 +166,15 @@ export default function RemindersPage() {
       {meta && meta.totalPages > 1 && (
         <div className="flex items-center justify-between">
           <p className="text-sm text-muted-foreground">
-            {(meta.page - 1) * meta.limit + 1}–{Math.min(meta.page * meta.limit, meta.total)} / {meta.total} hatırlatma
+            {t("pageInfo", { page: meta.page, totalPages: meta.totalPages })}
           </p>
           <div className="flex items-center gap-2">
             <button
               disabled={page <= 1}
               onClick={() => setPage((p) => p - 1)}
-              className="px-3 py-1.5 border border-border bg-card text-foreground rounded-lg text-sm disabled:opacity-40 hover:bg-muted transition-colors"
+              className="px-3 py-1.5 border border-border rounded-lg text-sm disabled:opacity-40 hover:bg-muted/40 transition-colors"
             >
-              Önceki
+              {tCommon("previous")}
             </button>
             <span className="text-sm text-muted-foreground">
               {meta.page} / {meta.totalPages}
@@ -179,9 +182,9 @@ export default function RemindersPage() {
             <button
               disabled={page >= meta.totalPages}
               onClick={() => setPage((p) => p + 1)}
-              className="px-3 py-1.5 border border-border bg-card text-foreground rounded-lg text-sm disabled:opacity-40 hover:bg-muted transition-colors"
+              className="px-3 py-1.5 border border-border rounded-lg text-sm disabled:opacity-40 hover:bg-muted/40 transition-colors"
             >
-              Sonraki
+              {tCommon("next")}
             </button>
           </div>
         </div>

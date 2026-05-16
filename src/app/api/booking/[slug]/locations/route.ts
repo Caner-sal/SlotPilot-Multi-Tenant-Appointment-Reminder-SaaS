@@ -1,4 +1,5 @@
 ﻿import { db } from "@/lib/db";
+import { isOrganizationPubliclyAvailable } from "@/lib/organization-lifecycle";
 import { NextResponse } from "next/server";
 
 export async function GET(
@@ -13,7 +14,7 @@ export async function GET(
       select: { id: true, bookingEnabled: true, suspended: true },
     });
 
-    if (!org || org.suspended || !org.bookingEnabled) {
+    if (!org || !isOrganizationPubliclyAvailable(org)) {
       return NextResponse.json({ error: "Business not available" }, { status: 403 });
     }
 

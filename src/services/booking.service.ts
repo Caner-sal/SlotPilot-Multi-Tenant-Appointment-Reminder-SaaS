@@ -116,9 +116,26 @@ export async function createBooking(params: {
   customerPhone?: string;
   customerProvince?: string;
   customerDistrict?: string;
+  customerCountryCode?: string;
+  customerAddressLine?: string;
+  customerPostalCode?: string;
   notes?: string;
 }) {
-  const { organizationId, serviceId, staffId, startTime, customerName, customerEmail, customerPhone, customerProvince, customerDistrict, notes } = params;
+  const {
+    organizationId,
+    serviceId,
+    staffId,
+    startTime,
+    customerName,
+    customerEmail,
+    customerPhone,
+    customerProvince,
+    customerDistrict,
+    customerCountryCode,
+    customerAddressLine,
+    customerPostalCode,
+    notes,
+  } = params;
 
   const service = await db.service.findFirst({
     where: { id: serviceId, organizationId, isActive: true },
@@ -148,45 +165,67 @@ export async function createBooking(params: {
         ],
       },
     });
-    if (conflict) throw new Error("This time slot is no longer available");
-
-    // 3. Upsert customer
-    let customer = await tx.customer.findFirst({
-      where: { organizationId, email: customerEmail },
+  } else {
+    customer = await db.customer.update({
+      where: { id: customer.id },
+      data: {
+        fullName: customerName,
+        phone: customerPhone ?? customer.phone,
+        province: customerProvince ?? customer.province,
+        district: customerDistrict ?? customer.district,
+      },
     });
+  }
 
-    if (!customer) {
-      customer = await tx.customer.create({
-        data: {
-          organizationId,
-          fullName: customerName,
-          email: customerEmail,
-          phone: customerPhone,
-          province: customerProvince,
-          district: customerDistrict,
-        },
-      });
-    }
-
-    // 4. Create appointment
-    return await tx.appointment.create({
+  if (customerAddressLine || customerCountryCode || customerProvince || customerDistrict || customerPostalCode) {
+    await db.normalizedAddress.create({
       data: {
         organizationId,
-        serviceId,
-        staffId,
-        customerId: customer.id,
-        startTime,
-        endTime,
-        status: "PENDING",
-        notes,
-      },
-      include: {
-        service: true,
-        staff: true,
-        customer: true,
-        organization: true,
+        ownerType: "CUSTOMER",
+        ownerId: customer.id,
+        countryCode: customerCountryCode,
+        adminLevel1: customerProvince,
+        adminLevel2: customerDistrict,
+        locality: customerDistrict,
+        postalCode: customerPostalCode,
+        formattedAddress: customerAddressLine ?? [customerDistrict, customerProvince].filter(Boolean).join(", "),
+        provider: "manual",
+        providerPlaceId: `customer:${customer.id}:${Date.now()}`,
+        language: undefined,
       },
     });
+  }
+
+  // Create appointment
+  const appointment = await db.appointment.create({
+    data: {
+      organizationId,
+      serviceId,
+      staffId,
+      customerId: customer.id,
+      startTime,
+      endTime,
+      status: "PENDING",
+      notes,
+    },
+    include: {
+      service: true,
+      staff: true,
+      customer: true,
+      organization: {
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+          bookingEnabled: true,
+          suspended: true,
+          timezone: true,
+          phone: true,
+          email: true,
+          address: true,
+        },
+      },
+    },
   });
 
   return appointment;

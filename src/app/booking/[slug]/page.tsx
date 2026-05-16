@@ -2,7 +2,14 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useParams } from "next/navigation";
-import { TURKEY_PROVINCES, getDistrictsByProvince } from "@/data/turkey-provinces";
+import { useLocale, useTranslations } from "next-intl";
+import { resolveLocale, localeMetadata } from "@/i18n/locales";
+import { getCountryAddressConfig } from "@/config/country-address-config";
+import AddressAutocomplete from "@/components/address/AddressAutocomplete";
+import BookingDatePicker from "@/components/booking/BookingDatePicker";
+import CountrySelect from "@/components/forms/CountrySelect";
+import ProvinceSelect from "@/components/forms/ProvinceSelect";
+import DistrictSelect from "@/components/forms/DistrictSelect";
 
 interface BusinessProfile {
   name: string;
@@ -49,24 +56,12 @@ interface BookingConfirmation {
 
 type Step = 1 | 2 | 3 | 4 | 5;
 
-function formatPrice(cents: number, currency: string) {
-  return new Intl.NumberFormat("tr-TR", { style: "currency", currency }).format(cents / 100);
+function formatPrice(cents: number, currency: string, dateLocale: string) {
+  return new Intl.NumberFormat(dateLocale, { style: "currency", currency }).format(cents / 100);
 }
 
-function getNext14Days() {
-  const days: Date[] = [];
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  for (let i = 0; i < 14; i++) {
-    const d = new Date(today);
-    d.setDate(today.getDate() + i);
-    days.push(d);
-  }
-  return days;
-}
-
-function formatDate(d: Date) {
-  return d.toLocaleDateString("tr-TR", { weekday: "short", month: "short", day: "numeric" });
+function formatDate(d: Date, dateLocale: string) {
+  return d.toLocaleDateString(dateLocale, { weekday: "short", month: "short", day: "numeric" });
 }
 
 function toDateString(d: Date) {
@@ -76,6 +71,11 @@ function toDateString(d: Date) {
 export default function BookingPage() {
   const params = useParams();
   const slug = params.slug as string;
+
+  const t = useTranslations("booking");
+  const tCommon = useTranslations("common");
+  const locale = resolveLocale(useLocale());
+  const dateLocale = localeMetadata[locale].dateLocale;
 
   const [step, setStep] = useState<Step>(1);
   const [profileError, setProfileError] = useState<string | null>(null);
@@ -87,6 +87,7 @@ export default function BookingPage() {
   const [selectedStaff, setSelectedStaff] = useState<StaffMember | null>(null);
   const [staffList, setStaffList] = useState<StaffMember[]>([]);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [unavailableDates, setUnavailableDates] = useState<string[]>([]);
 
   const [slots, setSlots] = useState<TimeSlot[]>([]);
   const [loadingSlots, setLoadingSlots] = useState(false);
@@ -97,8 +98,11 @@ export default function BookingPage() {
     name: "",
     email: "",
     phone: "",
-    province: "",
-    district: "",
+    countryCode: "TR",
+    addressLine: "",
+    adminLevel1: "",
+    adminLevel2: "",
+    postalCode: "",
     notes: "",
     privacyNoticeAcknowledged: false,
     appointmentNotificationConsent: true,
@@ -140,7 +144,7 @@ export default function BookingPage() {
 
         if (!profileRes.ok) {
           const j = await profileRes.json();
-          setProfileError(j.error ?? "İşletme bulunamadı");
+          setProfileError(j.error ?? t("businessNotFound"));
           return;
         }
 
@@ -152,16 +156,18 @@ export default function BookingPage() {
           setServices(servicesJson.data ?? []);
         }
       } catch {
-        setProfileError("İşletme bilgileri yüklenemedi.");
+        setProfileError(t("businessLoadError"));
       } finally {
         setLoadingProfile(false);
       }
     }
     load();
-  }, [slug]);
+  }, [slug, t]);
 
   const fetchSlots = useCallback(async () => {
     if (!selectedService || !selectedStaff || !selectedDate) return;
+    const requestedDate = selectedDate;
+    const requestedDateKey = toDateString(requestedDate);
     setLoadingSlots(true);
     setSlotsError(null);
     setSlots([]);
@@ -170,25 +176,31 @@ export default function BookingPage() {
       const params = new URLSearchParams({
         serviceId: selectedService.id,
         staffId: selectedStaff.id,
-        date: toDateString(selectedDate),
+        date: requestedDateKey,
       });
       const res = await fetch(`/api/booking/${slug}/slots?${params}`);
       if (!res.ok) {
         const j = await res.json();
-        setSlotsError(j.error ?? "Saatler yüklenemedi");
+        setSlotsError(j.error ?? t("slotsLoadError"));
         return;
       }
       const json = await res.json();
-      setSlots(json.data ?? []);
-      if ((json.data ?? []).length === 0) {
-        setSlotsError("Bu tarih için müsait saat yok.");
+      const nextSlots: TimeSlot[] = json.data ?? [];
+      setSlots(nextSlots);
+      if (nextSlots.length === 0) {
+        setUnavailableDates((prev) =>
+          prev.includes(requestedDateKey) ? prev : [...prev, requestedDateKey]
+        );
+        setSlotsError(t("noSlotsForDate"));
+      } else {
+        setUnavailableDates((prev) => prev.filter((item) => item !== requestedDateKey));
       }
     } catch {
-      setSlotsError("Saatler yüklenemedi.");
+      setSlotsError(t("slotsError"));
     } finally {
       setLoadingSlots(false);
     }
-  }, [slug, selectedService, selectedStaff, selectedDate]);
+  }, [slug, selectedService, selectedStaff, selectedDate, t]);
 
   useEffect(() => {
     if (step === 3 && selectedService && selectedStaff && selectedDate) {
@@ -202,6 +214,7 @@ export default function BookingPage() {
     setStaffList(staffMembers);
     setSelectedStaff(staffMembers.length === 1 ? staffMembers[0] : null);
     setSelectedDate(null);
+    setUnavailableDates([]);
     setSelectedSlot(null);
     setStep(2);
   }
@@ -232,8 +245,11 @@ export default function BookingPage() {
           customerName: customerForm.name,
           customerEmail: customerForm.email,
           customerPhone: customerForm.phone || undefined,
-          customerProvince: customerForm.province || undefined,
-          customerDistrict: customerForm.district || undefined,
+          customerProvince: customerForm.adminLevel1 || undefined,
+          customerDistrict: customerForm.adminLevel2 || undefined,
+          customerCountryCode: customerForm.countryCode || undefined,
+          customerAddressLine: customerForm.addressLine || undefined,
+          customerPostalCode: customerForm.postalCode || undefined,
           notes: customerForm.notes || undefined,
           privacyNoticeAcknowledged: customerForm.privacyNoticeAcknowledged,
           appointmentNotificationConsent: customerForm.appointmentNotificationConsent,
@@ -242,7 +258,7 @@ export default function BookingPage() {
       });
       if (!res.ok) {
         const j = await res.json();
-        setSubmitError(typeof j.error === "string" ? j.error : "Rezervasyon oluşturulamadı");
+        setSubmitError(typeof j.error === "string" ? j.error : t("bookingFailed"));
         return;
       }
       const json = await res.json();
@@ -280,10 +296,10 @@ export default function BookingPage() {
         body: JSON.stringify({ message: msg, conversationHistory: chatMessages.slice(-10) }),
       });
       const json = await res.json() as { data?: { reply: string }; error?: string };
-      const reply = json.data?.reply ?? "Üzgünüm, isteğinizi işleyemedim.";
+      const reply = json.data?.reply ?? t("aiError1");
       setChatMessages([...updated, { role: "assistant", content: reply }]);
     } catch {
-      setChatMessages([...updated, { role: "assistant", content: "Üzgünüm, bir şeyler yanlış gitti. Lütfen tekrar deneyin." }]);
+      setChatMessages([...updated, { role: "assistant", content: t("aiError2") }]);
     } finally {
       setChatLoading(false);
     }
@@ -294,8 +310,22 @@ export default function BookingPage() {
     setSelectedService(null);
     setSelectedStaff(null);
     setSelectedDate(null);
+    setUnavailableDates([]);
     setSelectedSlot(null);
-    setCustomerForm({ name: "", email: "", phone: "", province: "", district: "", notes: "", privacyNoticeAcknowledged: false, appointmentNotificationConsent: true, marketingConsent: false });
+    setCustomerForm({
+      name: "",
+      email: "",
+      phone: "",
+      countryCode: "TR",
+      addressLine: "",
+      adminLevel1: "",
+      adminLevel2: "",
+      postalCode: "",
+      notes: "",
+      privacyNoticeAcknowledged: false,
+      appointmentNotificationConsent: true,
+      marketingConsent: false,
+    });
     setSubmitError(null);
     setConfirmation(null);
   }
@@ -303,40 +333,42 @@ export default function BookingPage() {
   if (loadingProfile) {
     return (
       <div className="flex items-center justify-center min-h-64 p-10">
-        <div className="text-center">
+        <div className="text-center" role="status" aria-live="polite">
           <div className="w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-          <p className="text-gray-500 text-sm">Yükleniyor...</p>
+          <p className="text-muted-foreground text-sm">{tCommon("loading")}</p>
         </div>
       </div>
     );
   }
 
   if (profileError) {
+    const profileErrorLower = profileError.toLowerCase();
+    const isNotFoundError =
+      profileErrorLower.includes("not found") || profileErrorLower.includes("bulunam");
+
     return (
-      <div className="max-w-lg mx-auto px-4 py-20 text-center">
-        <div className="text-5xl mb-4">🚫</div>
-        <h1 className="text-xl font-bold text-gray-900 mb-2">
-          {profileError.includes("bulunamadı") || profileError.includes("not found")
-            ? "İşletme Bulunamadı"
-            : "Rezervasyon Mevcut Değil"}
+      <div className="max-w-lg mx-auto px-4 py-20 text-center" role="alert" aria-live="assertive">
+        <div className="text-4xl mb-4 text-muted-foreground">!</div>
+        <h1 className="text-xl font-bold text-foreground mb-2">
+          {isNotFoundError ? t("businessNotFound") : t("notAvailable")}
         </h1>
-        <p className="text-gray-500">{profileError}</p>
+        <p className="text-muted-foreground">{profileError}</p>
       </div>
     );
   }
 
-  const days = getNext14Days();
+  const addressConfig = getCountryAddressConfig(customerForm.countryCode);
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
       {profile && (
         <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-gray-900">{profile.name}</h1>
+          <h1 className="text-3xl font-bold text-foreground">{profile.name}</h1>
           {profile.description && (
-            <p className="text-gray-500 mt-2 max-w-lg mx-auto">{profile.description}</p>
+            <p className="text-muted-foreground mt-2 max-w-lg mx-auto">{profile.description}</p>
           )}
           {(profile.address || profile.phone) && (
-            <div className="flex items-center justify-center gap-4 mt-3 text-sm text-gray-400">
+            <div className="flex items-center justify-center gap-4 mt-3 text-sm text-muted-foreground">
               {profile.address && <span>{profile.address}</span>}
               {profile.phone && <span>{profile.phone}</span>}
             </div>
@@ -350,10 +382,10 @@ export default function BookingPage() {
             <div
               className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold ${
                 step > s
-                  ? "bg-blue-600 text-white"
+                  ? "bg-primary text-primary-foreground"
                   : step === s
-                  ? "bg-blue-600 text-white ring-4 ring-blue-100"
-                  : "bg-gray-200 text-gray-500"
+                  ? "bg-primary text-primary-foreground ring-4 ring-primary/20"
+                  : "bg-muted text-muted-foreground"
               }`}
             >
               {step > s ? (
@@ -365,7 +397,7 @@ export default function BookingPage() {
               )}
             </div>
             {s < 4 && (
-              <div className={`w-12 h-0.5 ${step > s ? "bg-blue-600" : "bg-gray-200"}`} />
+              <div className={`w-12 h-0.5 ${step > s ? "bg-primary" : "bg-muted"}`} />
             )}
           </div>
         ))}
@@ -373,43 +405,44 @@ export default function BookingPage() {
 
       {step === 1 && (
         <div>
-          <h2 className="text-xl font-semibold text-gray-900 mb-5">Hizmet Seçin</h2>
+          <h2 className="text-xl font-semibold text-foreground mb-5">{t("step1Title")}</h2>
           {services.length === 0 ? (
-            <div className="text-center py-12 text-gray-400">Şu anda mevcut hizmet yok.</div>
+            <div className="text-center py-12 text-muted-foreground">{t("noServices")}</div>
           ) : (
             <div className="grid gap-3">
               {services.map((service) => (
                 <button
                   key={service.id}
                   onClick={() => selectService(service)}
-                  className="w-full text-left bg-white border border-gray-200 hover:border-blue-400 hover:shadow-md rounded-xl p-5 transition-all group"
+                  data-testid="booking-service-option"
+                  className="w-full text-left bg-card border border-border hover:border-primary hover:shadow-md rounded-xl p-5 transition-all group"
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <h3 className="font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
+                      <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors">
                         {service.name}
                       </h3>
                       {service.description && (
-                        <p className="text-sm text-gray-500 mt-1">{service.description}</p>
+                        <p className="text-sm text-muted-foreground mt-1">{service.description}</p>
                       )}
                       <div className="flex items-center gap-3 mt-2">
-                        <span className="text-sm text-gray-500 flex items-center gap-1">
+                        <span className="text-sm text-muted-foreground flex items-center gap-1">
                           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                             <circle cx="12" cy="12" r="10" />
                             <polyline points="12 6 12 12 16 14" />
                           </svg>
-                          {service.durationMinutes} dk
+                          {service.durationMinutes} {tCommon("min")}
                         </span>
                         {service.staffServices.length > 0 && (
-                          <span className="text-sm text-gray-500">
-                            {service.staffServices.length} çalışan
+                          <span className="text-sm text-muted-foreground">
+                            {service.staffServices.length} {tCommon("worker")}
                           </span>
                         )}
                       </div>
                     </div>
                     <div className="text-right ml-4 shrink-0">
-                      <span className="font-bold text-blue-600 text-lg">
-                        {formatPrice(service.priceCents, service.currency)}
+                      <span className="font-bold text-primary text-lg">
+                        {formatPrice(service.priceCents, service.currency, dateLocale)}
                       </span>
                     </div>
                   </div>
@@ -424,36 +457,37 @@ export default function BookingPage() {
         <div className="space-y-6">
           <button
             onClick={() => setStep(1)}
-            className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700 transition-colors"
+            className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-md"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <polyline points="15 18 9 12 15 6" />
             </svg>
-            Hizmetlere Dön
+            {t("backToServices")}
           </button>
 
           <div>
-            <h2 className="text-xl font-semibold text-gray-900 mb-1">Çalışan ve Tarih Seçin</h2>
-            <div className="text-sm text-gray-500">
-              {selectedService.name} · {selectedService.durationMinutes} dk
+            <h2 className="text-xl font-semibold text-foreground mb-1">{t("step2Title")}</h2>
+            <div className="text-sm text-muted-foreground">
+              {selectedService.name} - {selectedService.durationMinutes} {tCommon("min")}
             </div>
           </div>
 
           {staffList.length > 1 && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-3">Çalışan Seçin</label>
+              <label className="block text-sm font-medium text-foreground mb-3">{t("selectStaff")}</label>
               <div className="grid grid-cols-2 gap-3">
                 {staffList.map((staff) => (
                   <button
                     key={staff.id}
                     onClick={() => setSelectedStaff(staff)}
+                    data-testid="booking-staff-option"
                     className={`p-3 rounded-xl border text-sm font-medium transition-colors ${
                       selectedStaff?.id === staff.id
-                        ? "border-blue-500 bg-blue-50 text-blue-700"
-                        : "border-gray-200 hover:border-blue-300 text-gray-700"
+                        ? "border-primary bg-primary/10 text-primary"
+                        : "border-border hover:border-primary/50 text-foreground"
                     }`}
                   >
-                    <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-xs font-semibold text-gray-600 mx-auto mb-1">
+                    <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-xs font-semibold text-muted-foreground mx-auto mb-1">
                       {staff.name.charAt(0).toUpperCase()}
                     </div>
                     {staff.name}
@@ -465,57 +499,42 @@ export default function BookingPage() {
 
           {staffList.length === 1 && (
             <div className="flex items-center gap-3 py-2">
-              <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 text-xs font-semibold">
+              <div className="w-8 h-8 rounded-full bg-primary/15 flex items-center justify-center text-primary text-xs font-semibold">
                 {staffList[0].name.charAt(0).toUpperCase()}
               </div>
               <div>
-                <p className="text-sm text-gray-500">Randevunuz şu kişiyle:</p>
-                <p className="font-medium text-gray-900">{staffList[0].name}</p>
+                <p className="text-sm text-muted-foreground">{t("appointmentWith")}</p>
+                <p className="font-medium text-foreground">{staffList[0].name}</p>
               </div>
             </div>
           )}
 
           {staffList.length === 0 && (
-            <div className="text-center py-6 text-gray-400 text-sm">
-              Bu hizmet için mevcut çalışan yok.
+            <div className="text-center py-6 text-muted-foreground text-sm">
+              {t("noStaff")}
             </div>
           )}
 
           {selectedStaff && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-3">Tarih Seçin</label>
-              <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
-                {days.map((day) => (
-                  <button
-                    key={day.toISOString()}
-                    onClick={() => setSelectedDate(day)}
-                    className={`p-2.5 rounded-xl border text-center transition-colors ${
-                      selectedDate && toDateString(selectedDate) === toDateString(day)
-                        ? "border-blue-500 bg-blue-600 text-white"
-                        : "border-gray-200 hover:border-blue-300 text-gray-700 hover:bg-blue-50"
-                    }`}
-                  >
-                    <div className="text-xs font-medium">
-                      {day.toLocaleDateString("tr-TR", { weekday: "short" })}
-                    </div>
-                    <div className="text-sm font-bold mt-0.5">
-                      {day.getDate()}
-                    </div>
-                    <div className="text-xs opacity-70">
-                      {day.toLocaleDateString("tr-TR", { month: "short" })}
-                    </div>
-                  </button>
-                ))}
-              </div>
+              <label className="block text-sm font-medium text-foreground mb-3">{t("selectDate")}</label>
+              <BookingDatePicker
+                selectedDate={selectedDate}
+                onSelectDate={setSelectedDate}
+                localeCode={dateLocale}
+                unavailableDates={unavailableDates}
+                unavailableHint={t("noSlotsForDate")}
+              />
             </div>
           )}
 
           {selectedStaff && selectedDate && (
             <button
               onClick={handleStaffAndDateComplete}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-semibold transition-colors"
+              data-testid="booking-view-slots"
+              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground py-3 rounded-xl font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             >
-              Uygun Saatleri Görüntüle
+              {t("viewSlots")}
             </button>
           )}
         </div>
@@ -525,35 +544,35 @@ export default function BookingPage() {
         <div className="space-y-6">
           <button
             onClick={() => setStep(2)}
-            className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700 transition-colors"
+            className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-md"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <polyline points="15 18 9 12 15 6" />
             </svg>
-            Geri
+            {tCommon("back")}
           </button>
 
           <div>
-            <h2 className="text-xl font-semibold text-gray-900 mb-1">Saat Seçin</h2>
-            <p className="text-sm text-gray-500">
-              {selectedStaff.name} · {formatDate(selectedDate)}
+            <h2 className="text-xl font-semibold text-foreground mb-1">{t("step3Title")}</h2>
+            <p className="text-sm text-muted-foreground">
+              {selectedStaff.name} - {formatDate(selectedDate, dateLocale)}
             </p>
           </div>
 
           {loadingSlots && (
-            <div className="flex items-center justify-center py-12">
+            <div className="flex items-center justify-center py-12" role="status" aria-live="polite">
               <div className="w-7 h-7 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
             </div>
           )}
 
           {!loadingSlots && slotsError && (
-            <div className="text-center py-10">
-              <p className="text-gray-500">{slotsError}</p>
+            <div className="text-center py-10 rounded-xl border border-border bg-card" role="alert" aria-live="assertive">
+              <p className="text-muted-foreground">{slotsError}</p>
               <button
                 onClick={() => setStep(2)}
-                className="mt-4 text-blue-600 hover:underline text-sm"
+                className="mt-4 text-primary hover:underline text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-md"
               >
-                Farklı bir tarih seçin
+                {t("differentDate")}
               </button>
             </div>
           )}
@@ -561,7 +580,7 @@ export default function BookingPage() {
           {!loadingSlots && !slotsError && slots.length > 0 && (
             <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
               {slots.map((slot) => {
-                const time = new Date(slot.startTime).toLocaleTimeString("tr-TR", {
+                const time = new Date(slot.startTime).toLocaleTimeString(dateLocale, {
                   hour: "2-digit",
                   minute: "2-digit",
                 });
@@ -569,7 +588,8 @@ export default function BookingPage() {
                   <button
                     key={slot.startTime}
                     onClick={() => selectSlot(slot)}
-                    className="py-2.5 rounded-xl border border-gray-200 hover:border-blue-400 hover:bg-blue-50 text-sm font-medium text-gray-700 hover:text-blue-700 transition-colors"
+                    data-testid="booking-slot-option"
+                    className="py-2.5 rounded-xl border border-border hover:border-primary hover:bg-primary/10 text-sm font-medium text-foreground hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                   >
                     {time}
                   </button>
@@ -584,29 +604,29 @@ export default function BookingPage() {
         <div className="space-y-6">
           <button
             onClick={() => setStep(3)}
-            className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700 transition-colors"
+            className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-md"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <polyline points="15 18 9 12 15 6" />
             </svg>
-            Geri
+            {tCommon("back")}
           </button>
 
-          <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
-            <h3 className="font-semibold text-blue-900 mb-2">Rezervasyon Özeti</h3>
-            <div className="space-y-1 text-sm text-blue-700">
+          <div className="bg-primary/5 border border-primary/20 rounded-xl p-4">
+            <h3 className="font-semibold text-foreground mb-2">{t("summaryTitle")}</h3>
+            <div className="space-y-1 text-sm text-foreground/80">
               <div className="flex justify-between">
-                <span>Hizmet</span>
+                <span>{t("serviceLabel")}</span>
                 <span className="font-medium">{selectedService.name}</span>
               </div>
               <div className="flex justify-between">
-                <span>Çalışan</span>
+                <span>{t("staffLabel")}</span>
                 <span className="font-medium">{selectedStaff.name}</span>
               </div>
               <div className="flex justify-between">
-                <span>Tarih & Saat</span>
+                <span>{t("dateTime")}</span>
                 <span className="font-medium">
-                  {new Date(selectedSlot.startTime).toLocaleString("tr-TR", {
+                  {new Date(selectedSlot.startTime).toLocaleString(dateLocale, {
                     weekday: "short",
                     month: "short",
                     day: "numeric",
@@ -616,121 +636,202 @@ export default function BookingPage() {
                 </span>
               </div>
               <div className="flex justify-between">
-                <span>Fiyat</span>
-                <span className="font-bold text-blue-800">
-                  {formatPrice(selectedService.priceCents, selectedService.currency)}
+                <span>{tCommon("price")}</span>
+                <span className="font-bold text-foreground">
+                  {formatPrice(selectedService.priceCents, selectedService.currency, dateLocale)}
                 </span>
               </div>
             </div>
           </div>
 
           <div>
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">Bilgileriniz</h2>
+            <h2 className="text-xl font-semibold text-foreground mb-4">{t("step4Title")}</h2>
             <form onSubmit={handleConfirm} className="space-y-4">
               {submitError && (
-                <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg px-4 py-3">
+                <div className="bg-destructive/10 border border-destructive/30 text-destructive text-sm rounded-lg px-4 py-3">
                   {submitError}
                 </div>
               )}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Ad Soyad *
+                <label className="block text-sm font-medium text-foreground mb-1">
+                  {t("fullName")}
                 </label>
                 <input
                   required
                   minLength={2}
                   value={customerForm.name}
                   onChange={(e) => setCustomerForm({ ...customerForm, name: e.target.value })}
-                  className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Ayşe Yılmaz"
+                  className="w-full border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                  placeholder={t("namePlaceholder")}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  E-posta *
+                <label className="block text-sm font-medium text-foreground mb-1">
+                  {t("emailLabel")}
                 </label>
                 <input
                   required
                   type="email"
                   value={customerForm.email}
                   onChange={(e) => setCustomerForm({ ...customerForm, email: e.target.value })}
-                  className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="siz@ornek.com"
+                  className="w-full border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                  placeholder={t("emailPlaceholder")}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Telefon{" "}
-                  <span className="text-gray-400 font-normal">(opsiyonel)</span>
+                <label className="block text-sm font-medium text-foreground mb-1">
+                  {t("phoneLabel")}{" "}
+                  <span className="text-muted-foreground font-normal">{t("phoneOptional")}</span>
                 </label>
                 <input
                   type="tel"
                   value={customerForm.phone}
                   onChange={(e) => setCustomerForm({ ...customerForm, phone: e.target.value })}
-                  className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="+90 555 000 0000"
+                  className="w-full border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                  placeholder={`${addressConfig.phoneCountryCode} 555 000 0000`}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-1">
+                  {t("country")}
+                </label>
+                <CountrySelect
+                  value={customerForm.countryCode}
+                  onChange={(value) =>
+                    setCustomerForm({
+                      ...customerForm,
+                      countryCode: value,
+                      adminLevel1: "",
+                      adminLevel2: "",
+                      postalCode: "",
+                    })
+                  }
+                  className="rounded-xl border-border"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-1">
+                  {t("addressLine")}{" "}
+                  <span className="text-muted-foreground font-normal">{t("phoneOptional")}</span>
+                </label>
+                <AddressAutocomplete
+                  locale={locale}
+                  countryCode={customerForm.countryCode}
+                  placeholder={t("addressLinePlaceholder")}
+                  value={customerForm.addressLine}
+                  onChange={(nextValue) => setCustomerForm({ ...customerForm, addressLine: nextValue })}
+                  onSelect={(normalized) =>
+                    setCustomerForm((prev) => ({
+                      ...prev,
+                      countryCode: normalized.countryCode ?? prev.countryCode,
+                      addressLine: normalized.formattedAddress,
+                      adminLevel1: normalized.adminLevel1 ?? prev.adminLevel1,
+                      adminLevel2: normalized.adminLevel2 ?? normalized.locality ?? prev.adminLevel2,
+                      postalCode: normalized.postalCode ?? prev.postalCode,
+                    }))
+                  }
                 />
               </div>
               <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    İl{" "}
-                    <span className="text-gray-400 font-normal">(opsiyonel)</span>
-                  </label>
-                  <select
-                    value={customerForm.province}
-                    onChange={(e) => setCustomerForm({ ...customerForm, province: e.target.value, district: "" })}
-                    className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="">İl seçin</option>
-                    {TURKEY_PROVINCES.map((p) => (
-                      <option key={p.slug} value={p.slug}>{p.name}</option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    İlçe{" "}
-                    <span className="text-gray-400 font-normal">(opsiyonel)</span>
-                  </label>
-                  <select
-                    value={customerForm.district}
-                    onChange={(e) => setCustomerForm({ ...customerForm, district: e.target.value })}
-                    disabled={!customerForm.province}
-                    className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-400"
-                  >
-                    <option value="">İlçe seçin</option>
-                    {getDistrictsByProvince(customerForm.province).map((d) => (
-                      <option key={d.slug} value={d.slug}>{d.name}</option>
-                    ))}
-                  </select>
-                </div>
+                {customerForm.countryCode === "TR" ? (
+                  <>
+                    <div>
+                      <label className="block text-sm font-medium text-foreground mb-1">
+                        {t("province")}{" "}
+                        <span className="text-muted-foreground font-normal">{t("phoneOptional")}</span>
+                      </label>
+                      <ProvinceSelect
+                        value={customerForm.adminLevel1}
+                        onChange={(value) =>
+                          setCustomerForm({ ...customerForm, adminLevel1: value, adminLevel2: "" })
+                        }
+                        placeholder={t("provincePlaceholder")}
+                        className="rounded-xl border-border"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-foreground mb-1">
+                        {t("district")}{" "}
+                        <span className="text-muted-foreground font-normal">{t("phoneOptional")}</span>
+                      </label>
+                      <DistrictSelect
+                        provinceSlug={customerForm.adminLevel1}
+                        value={customerForm.adminLevel2}
+                        onChange={(value) => setCustomerForm({ ...customerForm, adminLevel2: value })}
+                        disabled={!customerForm.adminLevel1}
+                        placeholder={t("districtPlaceholder")}
+                        className="rounded-xl border-border"
+                      />
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div>
+                      <label className="block text-sm font-medium text-foreground mb-1">
+                        {t(addressConfig.labels.adminLevel1)}{" "}
+                        <span className="text-muted-foreground font-normal">{t("phoneOptional")}</span>
+                      </label>
+                      <input
+                        value={customerForm.adminLevel1}
+                        onChange={(e) => setCustomerForm({ ...customerForm, adminLevel1: e.target.value })}
+                        className="w-full border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                        placeholder={t("adminLevel1Placeholder")}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-foreground mb-1">
+                        {t(addressConfig.labels.adminLevel2)}{" "}
+                        <span className="text-muted-foreground font-normal">{t("phoneOptional")}</span>
+                      </label>
+                      <input
+                        value={customerForm.adminLevel2}
+                        onChange={(e) => setCustomerForm({ ...customerForm, adminLevel2: e.target.value })}
+                        className="w-full border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                        placeholder={t("adminLevel2Placeholder")}
+                      />
+                    </div>
+                  </>
+                )}
               </div>
+              {addressConfig.fields.postalCode ? (
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-1">
+                    {t(addressConfig.labels.postalCode)}{" "}
+                    <span className="text-muted-foreground font-normal">{t("phoneOptional")}</span>
+                  </label>
+                  <input
+                    value={customerForm.postalCode}
+                    onChange={(e) => setCustomerForm({ ...customerForm, postalCode: e.target.value })}
+                    className="w-full border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                    placeholder={t("postalCodePlaceholder")}
+                  />
+                </div>
+              ) : null}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Notlar{" "}
-                  <span className="text-gray-400 font-normal">(opsiyonel)</span>
+                <label className="block text-sm font-medium text-foreground mb-1">
+                  {tCommon("notes")}{" "}
+                  <span className="text-muted-foreground font-normal">{t("phoneOptional")}</span>
                 </label>
                 <textarea
                   value={customerForm.notes}
                   onChange={(e) => setCustomerForm({ ...customerForm, notes: e.target.value })}
-                  className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
                   rows={2}
-                  placeholder="Özel bir isteğiniz var mı?"
+                  placeholder={t("notesPlaceholder")}
                 />
               </div>
-              <div className="space-y-3 border-t border-gray-100 pt-4">
+              <div className="space-y-3 border-t border-border pt-4">
                 <label className="flex items-start gap-3 cursor-pointer">
                   <input
                     type="checkbox"
                     required
                     checked={customerForm.privacyNoticeAcknowledged}
                     onChange={(e) => setCustomerForm({ ...customerForm, privacyNoticeAcknowledged: e.target.checked })}
-                    className="mt-0.5 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                    className="mt-0.5 h-4 w-4 rounded border-border text-primary focus:ring-ring"
                   />
-                  <span className="text-sm text-gray-700">
+                  <span className="text-sm text-foreground">
                     <span className="text-red-500">*</span>{" "}
-                    KVKK Aydınlatma Metni&apos;ni okudum ve kişisel verilerimin işlenmesini kabul ediyorum.
+                    {t("kvkkConsent")}
                   </span>
                 </label>
                 <label className="flex items-start gap-3 cursor-pointer">
@@ -738,10 +839,10 @@ export default function BookingPage() {
                     type="checkbox"
                     checked={customerForm.appointmentNotificationConsent}
                     onChange={(e) => setCustomerForm({ ...customerForm, appointmentNotificationConsent: e.target.checked })}
-                    className="mt-0.5 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                    className="mt-0.5 h-4 w-4 rounded border-border text-primary focus:ring-ring"
                   />
-                  <span className="text-sm text-gray-600">
-                    Randevu hatırlatmaları (SMS, e-posta) almak istiyorum.
+                  <span className="text-sm text-muted-foreground">
+                    {t("reminderConsent")}
                   </span>
                 </label>
                 <label className="flex items-start gap-3 cursor-pointer">
@@ -749,19 +850,19 @@ export default function BookingPage() {
                     type="checkbox"
                     checked={customerForm.marketingConsent}
                     onChange={(e) => setCustomerForm({ ...customerForm, marketingConsent: e.target.checked })}
-                    className="mt-0.5 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                    className="mt-0.5 h-4 w-4 rounded border-border text-primary focus:ring-ring"
                   />
-                  <span className="text-sm text-gray-600">
-                    Kampanya ve duyuru mesajları almak istiyorum. (İYS kapsamında)
+                  <span className="text-sm text-muted-foreground">
+                    {t("marketingConsent")}
                   </span>
                 </label>
               </div>
               <button
                 type="submit"
                 disabled={submitting || !customerForm.privacyNoticeAcknowledged}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-semibold transition-colors disabled:opacity-60 text-sm"
+                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground py-3 rounded-xl font-semibold transition-colors disabled:opacity-60 text-sm"
               >
-                {submitting ? "Onaylanıyor..." : "Randevuyu Onayla"}
+                {submitting ? t("confirming") : t("confirm")}
               </button>
             </form>
           </div>
@@ -771,15 +872,15 @@ export default function BookingPage() {
       {profile?.aiChatbotEnabled && (
         <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3">
           {chatOpen && (
-            <div className="w-80 bg-white rounded-2xl shadow-2xl border border-gray-200 flex flex-col overflow-hidden">
-              <div className="bg-blue-600 px-4 py-3 flex items-center justify-between">
+            <div className="w-80 bg-card rounded-2xl shadow-2xl border border-border flex flex-col overflow-hidden">
+              <div className="bg-primary px-4 py-3 flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center">
+                  <div className="w-6 h-6 rounded-full bg-card/20 flex items-center justify-center">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
                       <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
                     </svg>
                   </div>
-                  <span className="text-white text-sm font-semibold">AI Asistan</span>
+                  <span className="text-white text-sm font-semibold">{t("aiAssistant")}</span>
                 </div>
                 <button
                   onClick={() => setChatOpen(false)}
@@ -793,8 +894,8 @@ export default function BookingPage() {
 
               <div className="flex-1 overflow-y-auto p-3 space-y-2 max-h-72 min-h-32">
                 {chatMessages.length === 0 && (
-                  <p className="text-xs text-gray-400 text-center py-4">
-                    Merhaba! Hizmetlerimiz, fiyatlarımız veya rezervasyon süreci hakkında soru sorabilirsiniz.
+                  <p className="text-xs text-muted-foreground text-center py-4">
+                    {t("aiGreeting")}
                   </p>
                 )}
                 {chatMessages.map((m, i) => (
@@ -802,8 +903,8 @@ export default function BookingPage() {
                     <div
                       className={`max-w-[85%] rounded-xl px-3 py-2 text-xs leading-relaxed ${
                         m.role === "user"
-                          ? "bg-blue-600 text-white"
-                          : "bg-gray-100 text-gray-800"
+                          ? "bg-primary text-primary-foreground"
+                          : "bg-muted text-foreground"
                       }`}
                     >
                       {m.content}
@@ -812,29 +913,29 @@ export default function BookingPage() {
                 ))}
                 {chatLoading && (
                   <div className="flex justify-start">
-                    <div className="bg-gray-100 rounded-xl px-3 py-2">
+                    <div className="bg-muted rounded-xl px-3 py-2">
                       <span className="flex gap-1">
-                        <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
-                        <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-                        <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                        <span className="w-1.5 h-1.5 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                        <span className="w-1.5 h-1.5 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                        <span className="w-1.5 h-1.5 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
                       </span>
                     </div>
                   </div>
                 )}
               </div>
 
-              <form onSubmit={sendChatMessage} className="border-t border-gray-100 p-2 flex gap-2">
+              <form onSubmit={sendChatMessage} className="border-t border-border p-2 flex gap-2">
                 <input
                   value={chatInput}
                   onChange={(e) => setChatInput(e.target.value)}
-                  placeholder="Soru sorun..."
-                  className="flex-1 text-xs border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder={t("aiPlaceholder")}
+                  className="flex-1 text-xs border border-border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring"
                   disabled={chatLoading}
                 />
                 <button
                   type="submit"
                   disabled={chatLoading || !chatInput.trim()}
-                  className="bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-3 py-2 transition-colors disabled:opacity-50"
+                  className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg px-3 py-2 transition-colors disabled:opacity-50"
                 >
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <line x1="22" y1="2" x2="11" y2="13" /><polygon points="22 2 15 22 11 13 2 9 22 2" />
@@ -846,8 +947,8 @@ export default function BookingPage() {
 
           <button
             onClick={() => setChatOpen(!chatOpen)}
-            className="w-12 h-12 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg flex items-center justify-center transition-all hover:scale-105"
-            aria-label="AI asistanı aç"
+            className="w-12 h-12 bg-primary hover:bg-primary/90 text-primary-foreground rounded-full shadow-lg flex items-center justify-center transition-all hover:scale-105"
+            aria-label={t("aiAssistant")}
           >
             {chatOpen ? (
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -864,34 +965,34 @@ export default function BookingPage() {
 
       {step === 5 && confirmation && profile && (
         <div className="text-center space-y-6">
-          <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-green-600">
+          <div className="w-16 h-16 bg-green-500/10 rounded-full flex items-center justify-center mx-auto">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-green-500">
               <polyline points="20 6 9 17 4 12" />
             </svg>
           </div>
 
           <div>
-            <h2 className="text-2xl font-bold text-gray-900">Randevu Onaylandı!</h2>
-            <p className="text-gray-500 mt-1">
-              Onay {confirmation.customer.email} adresine gönderilecektir.
+            <h2 className="text-2xl font-bold text-foreground">{t("confirmed")}</h2>
+            <p className="text-muted-foreground mt-1">
+              {confirmation.customer.email} {t("confirmationEmail")}
             </p>
           </div>
 
-          <div className="bg-gray-50 border border-gray-200 rounded-xl p-6 text-left space-y-3">
-            <h3 className="font-semibold text-gray-900">{profile.name}</h3>
+          <div className="bg-muted/40 border border-border rounded-xl p-6 text-left space-y-3">
+            <h3 className="font-semibold text-foreground">{profile.name}</h3>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
-                <span className="text-gray-500">Hizmet</span>
-                <span className="font-medium text-gray-900">{confirmation.service.name}</span>
+                <span className="text-muted-foreground">{t("serviceLabel")}</span>
+                <span className="font-medium text-foreground">{confirmation.service.name}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-500">Çalışan</span>
-                <span className="font-medium text-gray-900">{confirmation.staff.name}</span>
+                <span className="text-muted-foreground">{t("staffLabel")}</span>
+                <span className="font-medium text-foreground">{confirmation.staff.name}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-500">Tarih & Saat</span>
-                <span className="font-medium text-gray-900">
-                  {new Date(confirmation.startTime).toLocaleString("tr-TR", {
+                <span className="text-muted-foreground">{t("dateTime")}</span>
+                <span className="font-medium text-foreground">
+                  {new Date(confirmation.startTime).toLocaleString(dateLocale, {
                     weekday: "long",
                     month: "long",
                     day: "numeric",
@@ -902,19 +1003,19 @@ export default function BookingPage() {
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-500">İsim</span>
-                <span className="font-medium text-gray-900">{confirmation.customer.fullName}</span>
+                <span className="text-muted-foreground">{t("customerLabel")}</span>
+                <span className="font-medium text-foreground">{confirmation.customer.fullName}</span>
               </div>
               {profile.address && (
                 <div className="flex justify-between">
-                  <span className="text-gray-500">Adres</span>
-                  <span className="font-medium text-gray-900">{profile.address}</span>
+                  <span className="text-muted-foreground">{tCommon("address")}</span>
+                  <span className="font-medium text-foreground">{profile.address}</span>
                 </div>
               )}
               {profile.phone && (
                 <div className="flex justify-between">
-                  <span className="text-gray-500">Telefon</span>
-                  <span className="font-medium text-gray-900">{profile.phone}</span>
+                  <span className="text-muted-foreground">{tCommon("phone")}</span>
+                  <span className="font-medium text-foreground">{profile.phone}</span>
                 </div>
               )}
             </div>
@@ -922,12 +1023,13 @@ export default function BookingPage() {
 
           <button
             onClick={reset}
-            className="inline-flex items-center gap-2 border border-gray-300 hover:border-blue-400 hover:bg-blue-50 text-gray-700 px-6 py-2.5 rounded-xl text-sm font-medium transition-colors"
+            className="inline-flex items-center gap-2 border border-border hover:border-primary hover:bg-primary/10 text-foreground px-6 py-2.5 rounded-xl text-sm font-medium transition-colors"
           >
-            Yeni Randevu Al
+            {t("newBooking")}
           </button>
         </div>
       )}
     </div>
   );
 }
+

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 
 interface Location {
   id: string;
@@ -13,6 +14,9 @@ interface Location {
 }
 
 export default function LocationsPage() {
+  const t = useTranslations("locations");
+  const tCommon = useTranslations("common");
+
   const [locations, setLocations] = useState<Location[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -54,7 +58,7 @@ export default function LocationsPage() {
       setForm({ name: "", address: "", phone: "", timezone: "Europe/Istanbul", isDefault: false });
       load();
     } else {
-      setError(typeof data.error === "string" ? data.error : "Şube oluşturulamadı.");
+      setError(typeof data.error === "string" ? data.error : t("createError"));
     }
     setSaving(false);
   }
@@ -77,38 +81,38 @@ export default function LocationsPage() {
     load();
   }
 
-  if (loading) return <div className="p-6 text-muted-foreground">Yükleniyor...</div>;
+  if (loading) return <div className="p-6 text-muted-foreground">{tCommon("loading")}</div>;
 
   return (
     <div className="p-6">
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-foreground">Şubeler</h1>
+        <h1 className="text-2xl font-bold text-foreground">{t("title")}</h1>
         <button
           onClick={() => setShowForm(true)}
           className="rounded bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
         >
-          Şube Ekle
+          {t("addLocation")}
         </button>
       </div>
 
       {showForm && (
-        <form onSubmit={createLocation} className="mb-6 space-y-3 rounded-lg border border-border bg-card p-4">
-          <h2 className="font-semibold text-foreground">Yeni Şube</h2>
+        <form onSubmit={createLocation} className="mb-6 space-y-3 rounded-lg border bg-card p-4">
+          <h2 className="font-semibold text-foreground">{t("newLocation")}</h2>
           <input
             required
-            placeholder="Şube Adı"
+            placeholder={t("nameLabel")}
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
             className="w-full rounded border border-border bg-input text-foreground px-3 py-2 text-sm"
           />
           <input
-            placeholder="Adres"
+            placeholder={tCommon("address")}
             value={form.address}
             onChange={(e) => setForm({ ...form, address: e.target.value })}
             className="w-full rounded border border-border bg-input text-foreground px-3 py-2 text-sm"
           />
           <input
-            placeholder="Telefon"
+            placeholder={tCommon("phone")}
             value={form.phone}
             onChange={(e) => setForm({ ...form, phone: e.target.value })}
             className="w-full rounded border border-border bg-input text-foreground px-3 py-2 text-sm"
@@ -120,7 +124,7 @@ export default function LocationsPage() {
               checked={form.isDefault}
               onChange={(e) => setForm({ ...form, isDefault: e.target.checked })}
             />
-            Varsayılan şube olarak ayarla
+            {t("setDefault")}
           </label>
           {error && <p className="text-sm text-red-600">{error}</p>}
           <div className="flex gap-2">
@@ -129,53 +133,53 @@ export default function LocationsPage() {
               disabled={saving}
               className="rounded bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
             >
-              {saving ? "Kaydediliyor..." : "Oluştur"}
+              {saving ? tCommon("saving") : tCommon("create")}
             </button>
             <button
               type="button"
               onClick={() => setShowForm(false)}
-              className="rounded bg-muted px-4 py-2 text-sm font-medium text-foreground hover:bg-muted/80"
+              className="rounded bg-muted px-4 py-2 text-sm font-medium text-foreground/90 hover:bg-gray-200"
             >
-              İptal
+              {tCommon("cancel")}
             </button>
           </div>
         </form>
       )}
 
-      <div className="overflow-hidden rounded-lg border border-border bg-card shadow-sm">
+      <div className="overflow-hidden rounded-lg border bg-card">
         <table className="w-full text-sm">
-          <thead className="border-b border-border bg-muted/50">
+          <thead className="border-b bg-muted/40">
             <tr>
-              <th className="px-4 py-3 text-left font-medium text-muted-foreground">Ad</th>
-              <th className="px-4 py-3 text-left font-medium text-muted-foreground">Adres</th>
-              <th className="px-4 py-3 text-left font-medium text-muted-foreground">Durum</th>
-              <th className="px-4 py-3 text-left font-medium text-muted-foreground">İşlemler</th>
+              <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tCommon("name")}</th>
+              <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tCommon("address")}</th>
+              <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tCommon("status")}</th>
+              <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tCommon("actions")}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
             {locations.map((loc) => (
-              <tr key={loc.id} className="hover:bg-muted/30">
+              <tr key={loc.id} className="hover:bg-muted/40">
                 <td className="px-4 py-3">
                   <div className="font-medium text-foreground">{loc.name}</div>
-                  {loc.isDefault && <span className="text-xs font-medium text-blue-400">Varsayılan</span>}
+                  {loc.isDefault && <span className="text-xs font-medium text-blue-600">{tCommon("default")}</span>}
                 </td>
                 <td className="px-4 py-3 text-muted-foreground">{loc.address ?? "—"}</td>
                 <td className="px-4 py-3">
                   {loc.isActive ? (
-                    <span className="rounded bg-green-500/20 px-2 py-1 text-xs text-green-400">Aktif</span>
+                    <span className="rounded bg-green-100 px-2 py-1 text-xs text-green-700">{tCommon("active")}</span>
                   ) : (
-                    <span className="rounded bg-muted px-2 py-1 text-xs text-muted-foreground">Pasif</span>
+                    <span className="rounded bg-muted px-2 py-1 text-xs text-muted-foreground">{tCommon("passive")}</span>
                   )}
                 </td>
                 <td className="px-4 py-3">
                   <div className="flex gap-2">
                     {!loc.isDefault && (
-                      <button onClick={() => setDefault(loc.id)} className="text-xs text-blue-400 hover:underline">
-                        Varsayılan Yap
+                      <button onClick={() => setDefault(loc.id)} className="text-xs text-blue-600 hover:underline">
+                        {t("makeDefault")}
                       </button>
                     )}
-                    <button onClick={() => toggleActive(loc.id, loc.isActive)} className="text-xs text-muted-foreground hover:text-foreground hover:underline">
-                      {loc.isActive ? "Pasife Al" : "Aktifleştir"}
+                    <button onClick={() => toggleActive(loc.id, loc.isActive)} className="text-xs text-muted-foreground hover:underline">
+                      {loc.isActive ? t("deactivate") : t("activate")}
                     </button>
                   </div>
                 </td>
@@ -183,7 +187,7 @@ export default function LocationsPage() {
             ))}
           </tbody>
         </table>
-        {locations.length === 0 && <div className="py-8 text-center text-muted-foreground">Henüz şube yok. İlk şubenizi ekleyin.</div>}
+        {locations.length === 0 && <div className="py-8 text-center text-muted-foreground">{t("notFound")}</div>}
       </div>
     </div>
   );

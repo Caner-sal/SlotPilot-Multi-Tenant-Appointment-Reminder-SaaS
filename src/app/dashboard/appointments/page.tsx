@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useTranslations } from "next-intl";
 
 interface Appointment {
   id: string;
@@ -48,6 +49,9 @@ const STATUS_LABELS: Record<string, string> = {
 };
 
 export default function AppointmentsPage() {
+  const t = useTranslations("appointments");
+  const tCommon = useTranslations("common");
+
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [meta, setMeta] = useState<Meta | null>(null);
   const [staffList, setStaffList] = useState<Staff[]>([]);
@@ -127,18 +131,18 @@ export default function AppointmentsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">Randevular</h1>
-          <p className="text-sm text-muted-foreground mt-1">Tüm randevuları görüntüleyin ve yönetin.</p>
+          <h1 className="text-2xl font-bold text-foreground">{t("title")}</h1>
+          <p className="text-sm text-muted-foreground mt-1">{t("subtitle")}</p>
         </div>
         <button
           onClick={copyBookingLink}
-          className="inline-flex items-center gap-2 border border-border hover:border-blue-400 hover:bg-blue-50/10 text-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+          className="inline-flex items-center gap-2 border border-border hover:border-blue-400 hover:bg-blue-50 text-foreground/90 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <rect x="9" y="9" width="13" height="13" rx="2" />
             <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
           </svg>
-          {copied ? "Kopyalandı!" : "Rezervasyon Bağlantısını Kopyala"}
+          {copied ? t("copied") : t("copyBookingLink")}
         </button>
       </div>
 
@@ -148,14 +152,14 @@ export default function AppointmentsPage() {
             type="date"
             value={filters.date}
             onChange={(e) => setFilter("date", e.target.value)}
-            className="border border-border bg-input text-foreground rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <select
             value={filters.status}
             onChange={(e) => setFilter("status", e.target.value)}
-            className="border border-border bg-input text-foreground rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            <option value="">Tüm Durumlar</option>
+            <option value="">{t("allStatuses")}</option>
             {STATUSES.map((s) => (
               <option key={s} value={s}>
                 {STATUS_LABELS[s] ?? s}
@@ -165,9 +169,9 @@ export default function AppointmentsPage() {
           <select
             value={filters.staffId}
             onChange={(e) => setFilter("staffId", e.target.value)}
-            className="border border-border bg-input text-foreground rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            <option value="">Tüm Çalışanlar</option>
+            <option value="">{t("allStaff")}</option>
             {staffList.map((s) => (
               <option key={s.id} value={s.id}>
                 {s.name}
@@ -177,9 +181,9 @@ export default function AppointmentsPage() {
           <select
             value={filters.serviceId}
             onChange={(e) => setFilter("serviceId", e.target.value)}
-            className="border border-border bg-input text-foreground rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            <option value="">Tüm Hizmetler</option>
+            <option value="">{t("allServices")}</option>
             {serviceList.map((s) => (
               <option key={s.id} value={s.id}>
                 {s.name}
@@ -189,9 +193,9 @@ export default function AppointmentsPage() {
           {(filters.date || filters.status || filters.staffId || filters.serviceId) && (
             <button
               onClick={() => setFilters({ date: "", status: "", staffId: "", serviceId: "", page: 1 })}
-              className="text-sm text-muted-foreground hover:text-foreground px-3 py-2 rounded-lg hover:bg-muted transition-colors"
+              className="text-sm text-muted-foreground hover:text-foreground/90 px-3 py-2 rounded-lg hover:bg-muted transition-colors"
             >
-              Filtreleri Temizle
+              {t("clearFilters")}
             </button>
           )}
         </div>
@@ -199,35 +203,35 @@ export default function AppointmentsPage() {
 
       <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
         {loading ? (
-          <div className="p-10 text-center text-muted-foreground">Yükleniyor...</div>
+          <div className="p-10 text-center text-muted-foreground/80">{tCommon("loading")}</div>
         ) : appointments.length === 0 ? (
-          <div className="p-10 text-center text-muted-foreground">Randevu bulunamadı.</div>
+          <div className="p-10 text-center text-muted-foreground/80">{t("notFound")}</div>
         ) : (
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-border bg-muted/50">
-                <th className="px-5 py-3 text-left font-semibold text-muted-foreground">Müşteri</th>
-                <th className="px-5 py-3 text-left font-semibold text-muted-foreground">Hizmet</th>
-                <th className="px-5 py-3 text-left font-semibold text-muted-foreground">Çalışan</th>
-                <th className="px-5 py-3 text-left font-semibold text-muted-foreground">Tarih & Saat</th>
-                <th className="px-5 py-3 text-left font-semibold text-muted-foreground">Durum</th>
-                <th className="px-5 py-3 text-left font-semibold text-muted-foreground">Notlar</th>
-                <th className="px-5 py-3 text-right font-semibold text-muted-foreground">Güncelle</th>
+              <tr className="border-b border-border/70 bg-muted/40">
+                <th className="px-5 py-3 text-left font-semibold text-muted-foreground">{t("customer")}</th>
+                <th className="px-5 py-3 text-left font-semibold text-muted-foreground">{t("service")}</th>
+                <th className="px-5 py-3 text-left font-semibold text-muted-foreground">{t("staffCol")}</th>
+                <th className="px-5 py-3 text-left font-semibold text-muted-foreground">{t("dateTime")}</th>
+                <th className="px-5 py-3 text-left font-semibold text-muted-foreground">{t("statusCol")}</th>
+                <th className="px-5 py-3 text-left font-semibold text-muted-foreground">{t("notesCol")}</th>
+                <th className="px-5 py-3 text-right font-semibold text-muted-foreground">{t("update")}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
               {appointments.map((appt) => (
-                <tr key={appt.id} className="hover:bg-muted/30 transition-colors">
+                <tr key={appt.id} className="hover:bg-muted/40 transition-colors">
                   <td className="px-5 py-3.5">
                     <div className="font-medium text-foreground">{appt.customer.fullName}</div>
-                    <div className="text-xs text-muted-foreground">{appt.customer.email}</div>
+                    <div className="text-xs text-muted-foreground/80">{appt.customer.email}</div>
                   </td>
-                  <td className="px-5 py-3.5 text-foreground">
+                  <td className="px-5 py-3.5 text-foreground/90">
                     <div>{appt.service.name}</div>
-                    <div className="text-xs text-muted-foreground">{appt.service.durationMinutes} dk</div>
+                    <div className="text-xs text-muted-foreground/80">{appt.service.durationMinutes} {tCommon("min")}</div>
                   </td>
-                  <td className="px-5 py-3.5 text-foreground">{appt.staff.name}</td>
-                  <td className="px-5 py-3.5 text-foreground">
+                  <td className="px-5 py-3.5 text-foreground/90">{appt.staff.name}</td>
+                  <td className="px-5 py-3.5 text-foreground/90">
                     {new Date(appt.startTime).toLocaleDateString("tr-TR", { timeZone: "Europe/Istanbul" })}{" "}
                     <span className="text-muted-foreground">
                       {new Date(appt.startTime).toLocaleTimeString("tr-TR", {
@@ -253,7 +257,7 @@ export default function AppointmentsPage() {
                     <select
                       value={appt.status}
                       onChange={(e) => updateStatus(appt.id, e.target.value)}
-                      className="border border-border bg-input text-foreground rounded-lg px-2 py-1 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="border border-border rounded-lg px-2 py-1 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
                       {STATUSES.map((s) => (
                         <option key={s} value={s}>
@@ -272,15 +276,15 @@ export default function AppointmentsPage() {
       {meta && meta.totalPages > 1 && (
         <div className="flex items-center justify-between">
           <p className="text-sm text-muted-foreground">
-            {(meta.page - 1) * meta.limit + 1}–{Math.min(meta.page * meta.limit, meta.total)} / {meta.total} randevu
+            {(meta.page - 1) * meta.limit + 1}–{Math.min(meta.page * meta.limit, meta.total)} / {meta.total} {tCommon("appointment")}
           </p>
           <div className="flex items-center gap-2">
             <button
               disabled={meta.page <= 1}
               onClick={() => setFilters((p) => ({ ...p, page: p.page - 1 }))}
-              className="px-3 py-1.5 border border-border bg-card text-foreground rounded-lg text-sm disabled:opacity-40 hover:bg-muted transition-colors"
+              className="px-3 py-1.5 border border-border rounded-lg text-sm disabled:opacity-40 hover:bg-muted/40 transition-colors"
             >
-              Önceki
+              {tCommon("previous")}
             </button>
             <span className="text-sm text-muted-foreground">
               {meta.page} / {meta.totalPages}
@@ -288,9 +292,9 @@ export default function AppointmentsPage() {
             <button
               disabled={meta.page >= meta.totalPages}
               onClick={() => setFilters((p) => ({ ...p, page: p.page + 1 }))}
-              className="px-3 py-1.5 border border-border bg-card text-foreground rounded-lg text-sm disabled:opacity-40 hover:bg-muted transition-colors"
+              className="px-3 py-1.5 border border-border rounded-lg text-sm disabled:opacity-40 hover:bg-muted/40 transition-colors"
             >
-              Sonraki
+              {tCommon("next")}
             </button>
           </div>
         </div>
