@@ -28,6 +28,7 @@
     "db:studio": "prisma studio",
     "db:reset": "prisma migrate reset",
     "audit:districts": "node ./node_modules/tsx/dist/cli.mjs scripts/audit-turkey-districts.ts",
+    "check:turkey-locations": "node ./node_modules/tsx/dist/cli.mjs scripts/validate-turkey-location-data.ts",
     "check:translations": "node ./node_modules/tsx/dist/cli.mjs scripts/check-translations.ts",
     "i18n:check": "node ./node_modules/tsx/dist/cli.mjs scripts/check-translations.ts",
     "phase:gate": "npm run check:node && npm run env:check && npm run check:secrets && npm run check:logs && npm run check:encoding && npm run validate:skills && npm run agent:check && node ./node_modules/typescript/bin/tsc --noEmit && npm run lint && node ./node_modules/vitest/vitest.mjs run && node ./node_modules/next/dist/bin/next build && npm run prisma:validate && npm run prisma:generate && npm run prisma:migrate:status",
