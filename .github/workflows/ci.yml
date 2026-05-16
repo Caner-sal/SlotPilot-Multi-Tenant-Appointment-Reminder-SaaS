@@ -106,7 +106,6 @@ jobs:
   mobile-quality:
     name: Mobile Quality
     runs-on: ubuntu-latest
-    if: ${{ hashFiles('mobile/package.json') != '' }}
 
     steps:
       - name: Checkout
