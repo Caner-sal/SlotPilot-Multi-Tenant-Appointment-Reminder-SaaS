@@ -103,23 +103,24 @@ export default function LocationsPage() {
             placeholder={t("nameLabel")}
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
-            className="w-full rounded border px-3 py-2 text-sm"
+            className="w-full rounded border border-border bg-input text-foreground px-3 py-2 text-sm"
           />
           <input
             placeholder={tCommon("address")}
             value={form.address}
             onChange={(e) => setForm({ ...form, address: e.target.value })}
-            className="w-full rounded border px-3 py-2 text-sm"
+            className="w-full rounded border border-border bg-input text-foreground px-3 py-2 text-sm"
           />
           <input
             placeholder={tCommon("phone")}
             value={form.phone}
             onChange={(e) => setForm({ ...form, phone: e.target.value })}
-            className="w-full rounded border px-3 py-2 text-sm"
+            className="w-full rounded border border-border bg-input text-foreground px-3 py-2 text-sm"
           />
-          <label className="flex items-center gap-2 text-sm">
+          <label className="flex items-center gap-2 text-sm text-foreground">
             <input
               type="checkbox"
+              className="rounded border-border bg-background"
               checked={form.isDefault}
               onChange={(e) => setForm({ ...form, isDefault: e.target.checked })}
             />
@@ -155,7 +156,7 @@ export default function LocationsPage() {
               <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tCommon("actions")}</th>
             </tr>
           </thead>
-          <tbody className="divide-y">
+          <tbody className="divide-y divide-border">
             {locations.map((loc) => (
               <tr key={loc.id} className="hover:bg-muted/40">
                 <td className="px-4 py-3">

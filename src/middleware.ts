@@ -7,7 +7,7 @@ import {
 } from "@/i18n/request-locale";
 import { NextRequest, NextResponse } from "next/server";
 
-const protectedRoutes = ["/dashboard"];
+const protectedRoutes = ["/dashboard", "/onboarding"];
 const adminRoutes = ["/admin"];
 const staffRoutes = ["/staff/dashboard", "/staff/appointments", "/staff/availability"];
 const authRoutes = ["/login", "/register"];

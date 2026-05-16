@@ -9,7 +9,7 @@ import { z } from "zod";
 
 export async function POST(req: Request) {
   try {
-    const { user } = await requireAuth();
+    const user = await getCurrentUser();
     const body = await req.json();
     const parsed = organizationSchema.parse(body);
 

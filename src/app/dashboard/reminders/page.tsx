@@ -127,7 +127,7 @@ export default function RemindersPage() {
                 <th className="px-5 py-3 text-left font-semibold text-muted-foreground">{tCommon("failed")}</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-50">
+            <tbody className="divide-y divide-border">
               {reminders.map((reminder) => (
                 <tr key={reminder.id} className="hover:bg-muted/40 transition-colors">
                   <td className="px-5 py-3.5">

@@ -219,7 +219,7 @@ export default function AppointmentsPage() {
                 <th className="px-5 py-3 text-right font-semibold text-muted-foreground">{t("update")}</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-50">
+            <tbody className="divide-y divide-border">
               {appointments.map((appt) => (
                 <tr key={appt.id} className="hover:bg-muted/40 transition-colors">
                   <td className="px-5 py-3.5">

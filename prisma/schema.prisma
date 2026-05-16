@@ -5,7 +5,7 @@ generator client {
 datasource db {
   // Local dev: sqlite (file:./dev.db) — no Docker needed
   // Production: change to "postgresql" and set DATABASE_URL to your Postgres connection string
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -261,11 +261,11 @@ model AddressProviderLog {
 }
 
 model OrganizationMember {
-  id             String       @id @default(cuid())
+  id             String     @id @default(cuid())
   userId         String
   organizationId String
-  role           MemberRole   @default(STAFF)
-  createdAt      DateTime     @default(now())
+  role           MemberRole @default(STAFF)
+  createdAt      DateTime   @default(now())
 
   user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
@@ -289,7 +289,7 @@ model Service {
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
 
-  organization Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organization  Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   staffServices StaffService[]
   appointments  Appointment[]
 
@@ -308,8 +308,8 @@ model Staff {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
-  organization  Organization      @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  user          User?             @relation(fields: [userId], references: [id], onDelete: SetNull)
+  organization  Organization       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user          User?              @relation(fields: [userId], references: [id], onDelete: SetNull)
   staffServices StaffService[]
   availability  AvailabilityRule[]
   appointments  Appointment[]
@@ -499,11 +499,11 @@ model Customer {
 }
 
 model Appointment {
-  id             String            @id @default(cuid())
-  organizationId String
-  serviceId      String
-  staffId        String
-  customerId     String
+  id                      String            @id @default(cuid())
+  organizationId          String
+  serviceId               String
+  staffId                 String
+  customerId              String
   locationId              String?
   startTime               DateTime
   endTime                 DateTime
@@ -515,11 +515,11 @@ model Appointment {
   createdAt               DateTime          @default(now())
   updatedAt               DateTime          @updatedAt
 
-  organization Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  service      Service       @relation(fields: [serviceId], references: [id])
-  staff        Staff         @relation(fields: [staffId], references: [id])
-  customer     Customer      @relation(fields: [customerId], references: [id])
-  location     Location?     @relation(fields: [locationId], references: [id])
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  service      Service      @relation(fields: [serviceId], references: [id])
+  staff        Staff        @relation(fields: [staffId], references: [id])
+  customer     Customer     @relation(fields: [customerId], references: [id])
+  location     Location?    @relation(fields: [locationId], references: [id])
   reminders    Reminder[]
   payments     Payment[]
 
@@ -606,10 +606,10 @@ model RevenueLedger {
 }
 
 model ChatConversation {
-  id             String        @id @default(cuid())
+  id             String   @id @default(cuid())
   organizationId String
-  sessionId      String        @unique
-  createdAt      DateTime      @default(now())
+  sessionId      String   @unique
+  createdAt      DateTime @default(now())
 
   organization Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   messages     ChatMessage[]
@@ -618,11 +618,11 @@ model ChatConversation {
 }
 
 model ChatMessage {
-  id             String          @id @default(cuid())
+  id             String   @id @default(cuid())
   conversationId String
   role           String
   content        String
-  createdAt      DateTime        @default(now())
+  createdAt      DateTime @default(now())
 
   conversation ChatConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
 

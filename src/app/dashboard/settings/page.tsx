@@ -144,11 +144,11 @@ export default function SettingsPage() {
         <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
           <p className="text-xs text-blue-600 font-semibold uppercase tracking-wider mb-1">{t("bookingUrl")}</p>
           <div className="flex items-center gap-3">
-            <code className="text-sm text-blue-800 break-all flex-1">{bookingUrl}</code>
+            <code className="text-sm text-blue-300 break-all flex-1">{bookingUrl}</code>
             <button
               type="button"
               onClick={() => navigator.clipboard.writeText(bookingUrl)}
-              className="shrink-0 text-blue-600 hover:text-blue-800 text-xs font-medium px-2 py-1 rounded hover:bg-blue-100 transition-colors"
+              className="shrink-0 text-blue-400 hover:text-blue-300 text-xs font-medium px-2 py-1 rounded hover:bg-blue-500/10 transition-colors"
             >
               {t("copy")}
             </button>
@@ -348,7 +348,7 @@ export default function SettingsPage() {
               type="button"
               onClick={() => setForm({ ...form, bookingEnabled: !form.bookingEnabled })}
               className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
-                form.bookingEnabled ? "bg-blue-600" : "bg-gray-300"
+                form.bookingEnabled ? "bg-blue-600" : "bg-muted"
               }`}
             >
               <span

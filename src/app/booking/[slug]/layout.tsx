@@ -23,3 +23,4 @@ export default async function BookingLayout({ children }: { children: React.Reac
     </div>
   );
 }
+

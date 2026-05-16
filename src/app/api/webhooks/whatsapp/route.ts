@@ -1,6 +1,7 @@
 import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
 import { processInboundWebhook } from "@/services/whatsapp-webhook.service";
+import crypto from "crypto";
 
 // Meta WhatsApp Cloud API webhook verification
 export async function GET(req: Request) {
@@ -30,9 +31,25 @@ type MetaWebhookEntry = {
 
 // Handles both delivery status updates (existing) and inbound messages (new)
 export async function POST(req: Request) {
+  const signature = req.headers.get("x-hub-signature-256");
+  const appSecret = process.env.META_WHATSAPP_APP_SECRET;
+
+  const rawBody = await req.text();
+
+  if (appSecret && signature) {
+    const hmac = crypto.createHmac("sha256", appSecret);
+    hmac.update(rawBody);
+    const expectedSignature = `sha256=${hmac.digest("hex")}`;
+    if (signature !== expectedSignature) {
+      return NextResponse.json({ error: "Invalid signature" }, { status: 403 });
+    }
+  } else if (appSecret && !signature) {
+    return NextResponse.json({ error: "Missing signature" }, { status: 403 });
+  }
+
   let body: { entry?: MetaWebhookEntry[] };
   try {
-    body = (await req.json()) as { entry?: MetaWebhookEntry[] };
+    body = JSON.parse(rawBody) as { entry?: MetaWebhookEntry[] };
   } catch {
     // Unparseable body — always return 200 to Meta to avoid retries
     return NextResponse.json({ received: true });

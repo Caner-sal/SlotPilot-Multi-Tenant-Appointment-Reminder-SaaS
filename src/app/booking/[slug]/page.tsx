@@ -108,6 +108,21 @@ export default function BookingPage() {
     appointmentNotificationConsent: true,
     marketingConsent: false,
   });
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("randevo_customer");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        setCustomerForm((prev) => ({
+          ...prev,
+          name: parsed.name || "",
+          email: parsed.email || "",
+          phone: parsed.phone || "",
+        }));
+      }
+    } catch {}
+  }, []);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
@@ -247,6 +262,15 @@ export default function BookingPage() {
         return;
       }
       const json = await res.json();
+      
+      try {
+        localStorage.setItem("randevo_customer", JSON.stringify({
+          name: customerForm.name,
+          email: customerForm.email,
+          phone: customerForm.phone,
+        }));
+      } catch {}
+
       setConfirmation(json.data);
       setStep(5);
     } finally {

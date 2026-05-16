@@ -1,15 +1,14 @@
-import NextAuth from "next-auth";
+import NextAuth, { CredentialsSignin } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import { db } from "@/lib/db";
-import bcrypt from "bcryptjs";
 import { z } from "zod";
 
 const loginSchema = z.object({
   email: z.string().email(),
-  password: z.string().min(6),
+  password: z.string().min(1),
 });
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
+  secret: process.env.AUTH_SECRET,
   providers: [
     Credentials({
       async authorize(credentials) {
@@ -17,6 +16,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         if (!parsed.success) return null;
 
         const { email, password } = parsed.data;
+
+        // Dinamik import: Edge Runtime'da middleware derleme aşamasında
+        // PrismaClient yüklenmez, sadece gerçek authorize çağrısında yüklenir
+        const { db } = await import("@/lib/db");
+        const bcrypt = (await import("bcryptjs")).default;
 
         const user = await db.user.findUnique({
           where: { email },
@@ -26,6 +30,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
         const valid = await bcrypt.compare(password, user.passwordHash);
         if (!valid) return null;
+
+        if (!user.emailVerified) {
+          class UnverifiedEmailError extends CredentialsSignin {
+            code = "unverified_email";
+          }
+          throw new UnverifiedEmailError();
+        }
 
         return {
           id: user.id,

@@ -75,7 +75,7 @@ export default function AuditLogsPage() {
                 <th className="px-5 py-3 text-left font-semibold text-muted-foreground">{t("metadataCol")}</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-50">
+            <tbody className="divide-y divide-border">
               {logs.map((log) => (
                 <tr key={log.id} className="hover:bg-muted/40 transition-colors">
                   <td className="px-5 py-3.5 text-muted-foreground whitespace-nowrap">
@@ -92,7 +92,7 @@ export default function AuditLogsPage() {
                     </span>
                   </td>
                   <td className="px-5 py-3.5">
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700">
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-500/20 text-blue-400">
                       {log.entityType}
                     </span>
                   </td>

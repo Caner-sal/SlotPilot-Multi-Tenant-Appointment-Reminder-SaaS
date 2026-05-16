@@ -307,7 +307,7 @@ export default function ServicesPage() {
                   id="isActive"
                   checked={form.isActive}
                   onChange={(e) => setForm({ ...form, isActive: e.target.checked })}
-                  className="rounded"
+                  className="rounded border-border bg-background"
                 />
                 <label htmlFor="isActive" className="text-sm text-foreground/90">
                   {t("activeVisible")}

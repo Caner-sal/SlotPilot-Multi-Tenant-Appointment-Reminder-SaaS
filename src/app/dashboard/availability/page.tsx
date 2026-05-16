@@ -177,7 +177,7 @@ export default function AvailabilityPage() {
                       id={`day-${key}`}
                       checked={schedule[key].isActive}
                       onChange={(e) => updateDay(key, "isActive", e.target.checked)}
-                      className="rounded"
+                      className="rounded border-border bg-background"
                     />
                     <label
                       htmlFor={`day-${key}`}

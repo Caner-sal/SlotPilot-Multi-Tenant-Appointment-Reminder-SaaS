@@ -197,7 +197,7 @@ export default function StaffPage() {
                 <th className="px-5 py-3 text-right font-semibold text-muted-foreground">{tCommon("actions")}</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-50">
+            <tbody className="divide-y divide-border">
               {staff.map((member) => (
                 <tr key={member.id} className="hover:bg-muted/40 transition-colors">
                   <td className="px-5 py-3.5 font-medium text-foreground">{member.name}</td>
@@ -316,7 +316,7 @@ export default function StaffPage() {
                           type="checkbox"
                           checked={form.serviceIds.includes(service.id)}
                           onChange={() => toggleService(service.id)}
-                          className="rounded"
+                          className="rounded border-border bg-background"
                         />
                         <span className="text-sm text-foreground/90">{service.name}</span>
                       </label>
@@ -330,7 +330,7 @@ export default function StaffPage() {
                   id="staffActive"
                   checked={form.isActive}
                   onChange={(e) => setForm({ ...form, isActive: e.target.checked })}
-                  className="rounded"
+                  className="rounded border-border bg-background"
                 />
                 <label htmlFor="staffActive" className="text-sm text-foreground/90">
                   {tCommon("active")}
