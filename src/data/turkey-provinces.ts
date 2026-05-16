@@ -172,9 +172,17 @@ export const TURKEY_DISTRICTS: Record<string, District[]> = {
     { name: "Muratpaşa",     slug: "muratpasa" },
   ],
   kocaeli: [
+    { name: "Başiskele",     slug: "basiskele" },
+    { name: "Çayırova",      slug: "cayirova" },
     { name: "Darıca",        slug: "darica" },
+    { name: "Derince",       slug: "derince" },
+    { name: "Dilovası",      slug: "dilovasi" },
     { name: "Gebze",         slug: "gebze" },
+    { name: "Gölcük",        slug: "golcuk" },
     { name: "İzmit",         slug: "izmit" },
+    { name: "Kandıra",       slug: "kandira" },
+    { name: "Karamürsel",    slug: "karamursel" },
+    { name: "Kartepe",       slug: "kartepe" },
     { name: "Körfez",        slug: "korfez" },
   ],
   mersin: [

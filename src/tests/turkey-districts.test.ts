@@ -126,4 +126,32 @@ describe("TURKEY_DISTRICTS spot checks", () => {
     expect(slugs).toContain("halfeti");
     expect(slugs).toContain("harran");
   });
+
+  it("kocaeli has exactly 12 districts", () => {
+    expect(TURKEY_DISTRICTS.kocaeli).toHaveLength(12);
+  });
+
+  it("kocaeli contains all required districts", () => {
+    const slugs = TURKEY_DISTRICTS.kocaeli.map((d) => d.slug);
+    expect(slugs).toContain("basiskele");
+    expect(slugs).toContain("cayirova");
+    expect(slugs).toContain("darica");
+    expect(slugs).toContain("derince");
+    expect(slugs).toContain("dilovasi");
+    expect(slugs).toContain("gebze");
+    expect(slugs).toContain("golcuk");
+    expect(slugs).toContain("izmit");
+    expect(slugs).toContain("kandira");
+    expect(slugs).toContain("karamursel");
+    expect(slugs).toContain("kartepe");
+    expect(slugs).toContain("korfez");
+  });
+
+  it("kocaeli district names are readable", () => {
+    const names = TURKEY_DISTRICTS.kocaeli.map((d) => d.name);
+    expect(names).toContain("Dilovası");
+    expect(names).toContain("Çayırova");
+    expect(names).toContain("Karamürsel");
+    expect(names).toContain("Başiskele");
+  });
 });
