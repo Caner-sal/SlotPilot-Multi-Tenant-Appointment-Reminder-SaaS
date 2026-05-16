@@ -148,7 +148,7 @@ export default async function AnalyticsPage() {
             <div className="bg-card rounded-xl border border-border shadow-sm p-6">
               <h2 className="font-semibold text-foreground mb-4">{t("highlights")}</h2>
               <div className="space-y-4">
-                <div className="flex items-center gap-4 p-3 bg-blue-50 rounded-lg">
+                <div className="flex items-center gap-4 p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg">
                   <div className="text-2xl">🏆</div>
                   <div>
                     <p className="text-xs text-muted-foreground/80 font-medium uppercase tracking-wider">
@@ -159,7 +159,7 @@ export default async function AnalyticsPage() {
                     </p>
                   </div>
                 </div>
-                <div className="flex items-center gap-4 p-3 bg-indigo-50 rounded-lg">
+                <div className="flex items-center gap-4 p-3 bg-indigo-500/10 border border-indigo-500/20 rounded-lg">
                   <div className="text-2xl">⭐</div>
                   <div>
                     <p className="text-xs text-muted-foreground/80 font-medium uppercase tracking-wider">

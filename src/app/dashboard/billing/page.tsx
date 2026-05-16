@@ -20,9 +20,9 @@ interface SubscriptionData {
 
 const PLAN_BADGE_COLORS: Record<TurkeyPlanId, string> = {
   FREE: "bg-muted text-muted-foreground",
-  STARTER: "bg-blue-100 text-blue-700",
-  PRO: "bg-purple-100 text-purple-700",
-  ENTERPRISE: "bg-slate-100 text-slate-700",
+  STARTER: "bg-blue-500/15 text-blue-400",
+  PRO: "bg-purple-500/15 text-purple-400",
+  ENTERPRISE: "bg-muted text-muted-foreground",
 };
 
 function isUpgradablePlan(planId: TurkeyPlanId): planId is "STARTER" | "PRO" {
@@ -97,19 +97,19 @@ function BillingContent() {
       </div>
 
       {success && (
-        <div className="rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
+        <div className="rounded-lg border border-green-500/20 bg-green-500/10 px-4 py-3 text-sm text-green-400">
           {t("updateSuccess")}
         </div>
       )}
 
       {cancelled && (
-        <div className="rounded-lg border border-yellow-200 bg-yellow-50 px-4 py-3 text-sm text-yellow-700">
+        <div className="rounded-lg border border-yellow-500/20 bg-yellow-500/10 px-4 py-3 text-sm text-yellow-400">
           {t("paymentCancelled")}
         </div>
       )}
 
       {demoMessage && (
-        <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700">
+        <div className="rounded-lg border border-amber-500/20 bg-amber-500/10 px-4 py-3 text-sm text-amber-400">
           <strong>{t("demoMode")}</strong> {demoMessage}
         </div>
       )}
