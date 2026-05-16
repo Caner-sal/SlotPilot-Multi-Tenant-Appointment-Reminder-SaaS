@@ -1,9 +1,10 @@
 ﻿"use client";
 
 import { Suspense, useEffect, useMemo, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { TURKEY_PLANS, formatPlanPriceTR, getPlanTR, type TurkeyPlanId } from "@/config/pricing.tr";
+import { getCheckoutUrl, type UpgradablePlanId } from "@/config/billing-plans";
 
 interface PlanLimits {
   maxStaff: number;
@@ -25,17 +26,17 @@ const PLAN_BADGE_COLORS: Record<TurkeyPlanId, string> = {
   ENTERPRISE: "bg-muted text-muted-foreground",
 };
 
-function isUpgradablePlan(planId: TurkeyPlanId): planId is "STARTER" | "PRO" {
+function isUpgradablePlan(planId: TurkeyPlanId): planId is UpgradablePlanId {
   return planId === "STARTER" || planId === "PRO";
 }
 
 function BillingContent() {
   const t = useTranslations("billing");
   const tCommon = useTranslations("common");
+  const router = useRouter();
   const [data, setData] = useState<SubscriptionData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [upgrading, setUpgrading] = useState<"STARTER" | "PRO" | null>(null);
-  const [demoMessage, setDemoMessage] = useState("");
+  const [demoMessage] = useState("");
   const searchParams = useSearchParams();
 
   const success = searchParams.get("success") === "true";
@@ -48,24 +49,8 @@ function BillingContent() {
       .finally(() => setLoading(false));
   }, []);
 
-  async function handleUpgrade(plan: "STARTER" | "PRO") {
-    setUpgrading(plan);
-    setDemoMessage("");
-    try {
-      const res = await fetch("/api/billing/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ plan }),
-      });
-      const json = await res.json();
-      if (json.data?.url) {
-        window.location.href = json.data.url;
-      } else if (json.data?.mode === "test") {
-        setDemoMessage(json.data.message ?? "Demo modu: Stripe yapılandırılmamış.");
-      }
-    } finally {
-      setUpgrading(null);
-    }
+  function handleUpgrade(plan: UpgradablePlanId) {
+    router.push(getCheckoutUrl(plan));
   }
 
   const planCards = useMemo(() => {
@@ -197,14 +182,13 @@ function BillingContent() {
                   ) : paidPlan ? (
                     <button
                       onClick={() => handleUpgrade(paidPlan)}
-                      disabled={!!upgrading}
-                      className={`w-full rounded-lg py-2 text-sm font-semibold transition-colors disabled:opacity-60 ${
+                      className={`w-full rounded-lg py-2 text-sm font-semibold transition-colors ${
                         plan.highlight
                           ? "bg-blue-600 text-white hover:bg-blue-700"
                           : "border border-border text-foreground/90 hover:border-border hover:bg-muted/40"
                       }`}
                     >
-                      {upgrading === plan.id ? t("redirecting") : `${plan.label} ${t("switchTo")}`}
+                      {`${plan.label} ${t("switchTo")}`}
                     </button>
                   ) : null}
                 </div>
