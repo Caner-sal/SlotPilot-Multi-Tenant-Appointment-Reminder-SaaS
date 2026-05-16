@@ -41,6 +41,35 @@ export async function sendEmail(payload: EmailPayload): Promise<EmailResult> {
   }
 }
 
+export function buildPasswordResetEmail(data: {
+  resetUrl: string;
+  expiresInMinutes: number;
+}): { subject: string; html: string } {
+  return {
+    subject: "Randevo şifre sıfırlama isteği",
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2>Şifre Sıfırlama</h2>
+        <p>Merhaba,</p>
+        <p>Randevo hesabınız için şifre sıfırlama isteği aldık.</p>
+        <p>Yeni şifre belirlemek için aşağıdaki bağlantıyı kullanın:</p>
+        <p style="margin: 24px 0;">
+          <a href="${data.resetUrl}" style="background: #7768d4; color: #fff; padding: 12px 24px; border-radius: 8px; text-decoration: none; display: inline-block;">
+            Şifremi Sıfırla
+          </a>
+        </p>
+        <p style="color: #888; font-size: 13px;">
+          Bu bağlantı ${data.expiresInMinutes} dakika içinde geçersiz olacaktır.
+        </p>
+        <p style="color: #888; font-size: 13px;">
+          Eğer bu isteği siz yapmadıysanız bu e-postayı yok sayabilirsiniz.
+        </p>
+        <p style="color: #888; font-size: 12px;">Randevo Randevu Sistemi</p>
+      </div>
+    `,
+  };
+}
+
 export function buildReminderEmail(data: {
   customerName: string;
   businessName: string;

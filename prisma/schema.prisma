@@ -111,6 +111,7 @@ model User {
   mobileRefreshTokens MobileRefreshToken[]
   mobilePushTokens    MobilePushToken[]
   productEvents       ProductEvent[]
+  passwordResetTokens PasswordResetToken[]
 
   @@index([email])
   @@index([platformRole])
@@ -127,6 +128,11 @@ model Organization {
   province       String?
   district       String?
   postalCode     String?
+  countryCode    String   @default("TR")
+  locality       String?
+  formattedAddress String?
+  latitude       Float?
+  longitude      Float?
   timezone       String   @default("UTC")
   defaultLocale  String   @default("tr")
   bookingEnabled Boolean  @default(true)
@@ -185,6 +191,7 @@ model Organization {
 
   @@index([slug])
   @@index([status])
+  @@index([countryCode])
 }
 
 model NormalizedAddress {
@@ -391,6 +398,11 @@ model Location {
   province       String?
   district       String?
   postalCode     String?
+  countryCode    String   @default("TR")
+  locality       String?
+  formattedAddress String?
+  latitude       Float?
+  longitude      Float?
   phone          String?
   timezone       String   @default("UTC")
   isActive       Boolean  @default(true)
@@ -403,6 +415,7 @@ model Location {
 
   @@index([organizationId])
   @@index([organizationId, isActive])
+  @@index([countryCode])
 }
 
 model StaffInvite {
@@ -868,6 +881,20 @@ model WhatsAppAutoReplyLog {
   @@index([organizationId])
   @@index([inboundMessageId])
   @@index([organizationId, customerPhone])
+}
+
+model PasswordResetToken {
+  id        String    @id @default(cuid())
+  userId    String
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
 }
 
 model WhatsAppContactPreference {
