@@ -185,9 +185,10 @@ model Organization {
   whatsAppAutoReplySettings  WhatsAppAutoReplySettings?
   whatsAppInboundMessages    WhatsAppInboundMessage[]
   whatsAppAutoReplyLogs      WhatsAppAutoReplyLog[]
-  whatsAppContactPreferences WhatsAppContactPreference[]
-  normalizedAddresses        NormalizedAddress[]
-  addressProviderLogs        AddressProviderLog[]
+  whatsAppContactPreferences      WhatsAppContactPreference[]
+  normalizedAddresses             NormalizedAddress[]
+  addressProviderLogs             AddressProviderLog[]
+  subscriptionPaymentTransactions SubscriptionPaymentTransaction[]
 
   @@index([slug])
   @@index([status])
@@ -913,4 +914,33 @@ model WhatsAppContactPreference {
   @@unique([organizationId, phone])
   @@index([organizationId])
   @@index([organizationId, phone])
+}
+
+// Subscription-level payment transactions (separate from appointment deposit Payments)
+model SubscriptionPaymentTransaction {
+  id                 String    @id @default(cuid())
+  organizationId     String
+  provider           String    // STRIPE | IYZICO | FAKE
+  providerSessionId  String?
+  conversationId     String    @unique
+  planId             String    // STARTER | PRO
+  billingCycle       String    @default("MONTHLY")
+  amountCents        Int
+  currency           String    @default("TRY")
+  // INITIATED | PENDING | PAID | FAILED | CANCELLED
+  status             String    @default("INITIATED")
+  providerPaymentId  String?
+  rawProviderPayload String?
+  paidAt             DateTime?
+  failedAt           DateTime?
+  failureReason      String?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([status])
+  @@index([provider])
+  @@index([conversationId])
 }
