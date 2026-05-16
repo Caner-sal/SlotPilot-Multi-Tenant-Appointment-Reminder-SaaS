@@ -19,7 +19,7 @@ vi.mock("@/lib/db", () => ({
     reminder: { create: vi.fn(), findMany: vi.fn(), update: vi.fn() },
     subscription: { findUnique: vi.fn() },
     auditLog: { create: vi.fn() },
-    customer: { findFirst: vi.fn(), create: vi.fn() },
+    customer: { findFirst: vi.fn(), create: vi.fn(), findMany: vi.fn() },
     businessClosedDay: { findUnique: vi.fn(), findMany: vi.fn(), create: vi.fn(), deleteMany: vi.fn() },
     consentLog: { create: vi.fn() },
     dataDeletionRequest: { create: vi.fn() },
