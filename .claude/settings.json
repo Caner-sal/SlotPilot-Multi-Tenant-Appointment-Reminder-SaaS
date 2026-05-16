@@ -57,7 +57,10 @@
       "Bash(node node_modules/next/dist/bin/next dev --port 3000)",
       "Bash(tasklist /FI \"PID eq 25360\" /FO LIST)",
       "PowerShell(Get-Process -Id 25360)",
-      "PowerShell(Get-NetTCPConnection -LocalPort 3000 | Select-Object LocalPort, State, OwningProcess | ForEach-Object { $p = Get-Process -Id $_.OwningProcess -ErrorAction SilentlyContinue; [PSCustomObject]@{Port=$_.LocalPort; State=$_.State; PID=$_.OwningProcess; Name=$p.ProcessName; Path=$p.Path} })"
+      "PowerShell(Get-NetTCPConnection -LocalPort 3000 | Select-Object LocalPort, State, OwningProcess | ForEach-Object { $p = Get-Process -Id $_.OwningProcess -ErrorAction SilentlyContinue; [PSCustomObject]@{Port=$_.LocalPort; State=$_.State; PID=$_.OwningProcess; Name=$p.ProcessName; Path=$p.Path} })",
+      "Bash(node -e ' *)",
+      "Bash(Sort-Object -Version)",
+      "Bash(Select-Object -Last 10)"
     ]
   }
 }
