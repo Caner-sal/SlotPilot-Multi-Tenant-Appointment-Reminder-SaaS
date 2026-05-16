@@ -460,7 +460,7 @@ export default function BookingPage() {
                     className={`p-3 rounded-xl border text-sm font-medium transition-colors ${
                       selectedStaff?.id === staff.id
                         ? "border-primary bg-primary/10 text-primary"
-                        : "border-border hover:border-blue-300 text-foreground"
+                        : "border-border hover:border-primary/50 text-foreground"
                     }`}
                   >
                     <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-xs font-semibold text-muted-foreground mx-auto mb-1">
@@ -624,7 +624,7 @@ export default function BookingPage() {
             <h2 className="text-xl font-semibold text-foreground mb-4">{t("step4Title")}</h2>
             <form onSubmit={handleConfirm} className="space-y-4">
               {submitError && (
-                <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg px-4 py-3">
+                <div className="bg-destructive/10 border border-destructive/30 text-destructive text-sm rounded-lg px-4 py-3">
                   {submitError}
                 </div>
               )}
@@ -941,8 +941,8 @@ export default function BookingPage() {
 
       {step === 5 && confirmation && profile && (
         <div className="text-center space-y-6">
-          <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-green-600">
+          <div className="w-16 h-16 bg-green-500/10 rounded-full flex items-center justify-center mx-auto">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-green-500">
               <polyline points="20 6 9 17 4 12" />
             </svg>
           </div>

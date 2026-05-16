@@ -1,6 +1,7 @@
 import { requireAuth } from "@/lib/tenant";
 import { getAnalytics } from "@/services/analytics.service";
 import { db } from "@/lib/db";
+import OnboardingChecklistCard from "@/components/dashboard/OnboardingChecklistCard";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 
@@ -114,38 +115,40 @@ export default async function DashboardPage() {
 
       {/* Metric cards */}
       <div className="grid md:grid-cols-3 gap-3">
-        <div style={{ background: "#111120", border: "1px solid rgba(119,104,212,0.1)", borderRadius: 12, padding: "18px 20px" }}>
-          <p style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.09em", color: "#3a3a58", fontFamily: "var(--font-heading, Outfit, sans-serif)", fontWeight: 700, marginBottom: 7 }}>
+        <div className="bg-card border border-border rounded-xl p-5">
+          <p className="text-xs uppercase tracking-widest text-muted-foreground/50 font-bold mb-2" style={{ fontFamily: "var(--font-heading, Outfit, sans-serif)" }}>
             {t("estimatedRevenue")}
           </p>
-          <p style={{ fontFamily: "var(--font-heading, Outfit, sans-serif)", fontSize: 22, fontWeight: 700, color: "#2de4a4" }}>{revenue}</p>
+          <p className="text-2xl font-bold text-green-400" style={{ fontFamily: "var(--font-heading, Outfit, sans-serif)" }}>{revenue}</p>
         </div>
 
-        <div style={{ background: "#111120", border: "1px solid rgba(119,104,212,0.1)", borderRadius: 12, padding: "18px 20px" }}>
-          <p style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.09em", color: "#3a3a58", fontFamily: "var(--font-heading, Outfit, sans-serif)", fontWeight: 700, marginBottom: 7 }}>
+        <div className="bg-card border border-border rounded-xl p-5">
+          <p className="text-xs uppercase tracking-widest text-muted-foreground/50 font-bold mb-2" style={{ fontFamily: "var(--font-heading, Outfit, sans-serif)" }}>
             {t("topService")}
           </p>
-          <p style={{ fontFamily: "var(--font-heading, Outfit, sans-serif)", fontSize: 18, fontWeight: 600 }}>
+          <p className="text-lg font-semibold text-foreground" style={{ fontFamily: "var(--font-heading, Outfit, sans-serif)" }}>
             {analytics?.topServiceName ?? t("noData")}
           </p>
         </div>
 
-        <div style={{ background: "#111120", border: "1px solid rgba(119,104,212,0.1)", borderRadius: 12, padding: "18px 20px" }}>
-          <p style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.09em", color: "#3a3a58", fontFamily: "var(--font-heading, Outfit, sans-serif)", fontWeight: 700, marginBottom: 7 }}>
+        <div className="bg-card border border-border rounded-xl p-5">
+          <p className="text-xs uppercase tracking-widest text-muted-foreground/50 font-bold mb-2" style={{ fontFamily: "var(--font-heading, Outfit, sans-serif)" }}>
             {t("topStaff")}
           </p>
-          <p style={{ fontFamily: "var(--font-heading, Outfit, sans-serif)", fontSize: 18, fontWeight: 600 }}>
+          <p className="text-lg font-semibold text-foreground" style={{ fontFamily: "var(--font-heading, Outfit, sans-serif)" }}>
             {analytics?.busiestStaffName ?? t("noData")}
           </p>
         </div>
       </div>
 
+      <OnboardingChecklistCard />
+
       {/* Bottom grid */}
       <div className="grid md:grid-cols-2 gap-5">
 
         {/* Quick links */}
-        <div style={{ background: "#111120", border: "1px solid rgba(119,104,212,0.1)", borderRadius: 16, padding: "20px 22px" }}>
-          <h3 style={{ fontFamily: "var(--font-heading, Outfit, sans-serif)", fontSize: 14, fontWeight: 600, marginBottom: 14 }}>{t("quickAccess")}</h3>
+        <div className="bg-card border border-border rounded-2xl p-5">
+          <h3 className="text-sm font-semibold mb-4" style={{ fontFamily: "var(--font-heading, Outfit, sans-serif)" }}>{t("quickAccess")}</h3>
           <div className="flex flex-col gap-2">
             {quickLinks.map((ql) => (
               <Link
@@ -188,8 +191,8 @@ export default async function DashboardPage() {
         </div>
 
         {/* Audit log */}
-        <div style={{ background: "#111120", border: "1px solid rgba(119,104,212,0.1)", borderRadius: 16, padding: "20px 22px" }}>
-          <h3 style={{ fontFamily: "var(--font-heading, Outfit, sans-serif)", fontSize: 14, fontWeight: 600, marginBottom: 14 }}>{t("recentTransactions")}</h3>
+        <div className="bg-card border border-border rounded-2xl p-5">
+          <h3 className="text-sm font-semibold mb-4" style={{ fontFamily: "var(--font-heading, Outfit, sans-serif)" }}>{t("recentTransactions")}</h3>
           {auditLogs.length === 0 ? (
             <p style={{ fontSize: 13, color: "#3a3a58" }}>{t("noTransactions")}</p>
           ) : (
