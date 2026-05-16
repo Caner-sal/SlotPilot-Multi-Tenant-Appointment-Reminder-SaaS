@@ -2,6 +2,31 @@
 
 _Last updated: 2026-05-17_
 
+## 2026-05-17 BILLUI-3+4+5 — Billing Data Model & Checkout API Checkpoint
+
+Branch: `feature/global-address-locale`
+
+### Tamamlanan Phaseler
+
+- **BILLUI-3:** `SubscriptionPaymentTransaction` Prisma modeli eklendi (organizationId, provider, conversationId UNIQUE, planId, amountCents, currency, status, vb.). `src/config/billing-plans.ts` oluşturuldu (UPGRADABLE_PLANS, isUpgradablePlan, getCheckoutUrl).
+- **BILLUI-4:** `/dashboard/billing/checkout?plan=STARTER|PRO` sayfası oluşturuldu. Plan özet kartı, güvenlik notu, "Ödemeye devam et" butonu. Staff kullanıcı redirected. Billing page'deki handleUpgrade artık checkout sayfasına yönlendiriyor. 16 yeni i18n anahtarı (10 locale).
+- **BILLUI-5:** PaymentProvider interface `createSubscriptionCheckout?` method'u eklendi. FakePaymentProvider oluşturuldu (dev/test). Factory'ye FAKE provider eklendi. `/api/billing/checkout` route refactor: SubscriptionPaymentTransaction INITIATED kaydı oluşturuyor, amount/currency server-side plan config'den geliyor, STRIPE ve generic provider path desteği, production fail-fast.
+
+### Verification Snapshot (BILLUI-5 Final)
+
+- `npm run typecheck` PASS
+- `npm run lint` PASS
+- `npm test` PASS (73 dosya, 518 test)
+- `npm run check:secrets` PASS
+- `npm run prisma:validate` PASS
+- `npm run prisma:dbpush` PASS
+
+### Kalan Phaseler
+
+BILLUI-6 → BILLUI-9 (iyzico checkout, webhook/aktivasyon, success/failure/history, E2E)
+
+---
+
 ## 2026-05-17 BILLUI-0+1+2 — Billing UI Cleanup Checkpoint
 
 Branch: `feature/global-address-locale`
