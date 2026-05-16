@@ -1,7 +1,8 @@
-import { db } from "@/lib/db";
+﻿import { db } from "@/lib/db";
+import { getMarketplaceCategoryAliases } from "@/data/marketplace-categories";
 import { NextResponse } from "next/server";
 
-// Public marketplace listing — no auth required
+// Public marketplace listing - no auth required
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const category = searchParams.get("category");
@@ -19,7 +20,7 @@ export async function GET(req: Request) {
       where: {
         ownerType: "ORGANIZATION",
         ...(countryCode ? { countryCode } : {}),
-        ...(locality
+        ...(!trSelected && locality
           ? {
               OR: [
                 { locality: { contains: locality } },
@@ -34,9 +35,37 @@ export async function GET(req: Request) {
     });
 
     organizationIdFilter = [...new Set(matches.map((item) => item.ownerId as string))];
-    if (organizationIdFilter.length === 0) {
-      return NextResponse.json({ data: [] });
-    }
+  }
+
+  const andFilters: Array<Record<string, unknown>> = [];
+
+  if (category) {
+    const aliases = getMarketplaceCategoryAliases(category);
+    andFilters.push({
+      OR: aliases.map((alias) => ({ category: { contains: alias } })),
+    });
+  }
+
+  if (trSelected && province) {
+    andFilters.push({ province });
+  }
+
+  if (!trSelected && locality) {
+    andFilters.push({
+      OR: [
+        { city: { contains: locality } },
+        { locality: { contains: locality } },
+        { formattedAddress: { contains: locality } },
+      ],
+    });
+  }
+
+  if (!trSelected && city) {
+    andFilters.push({ city: { contains: city } });
+  }
+
+  if (q) {
+    andFilters.push({ name: { contains: q } });
   }
 
   const orgs = await db.organization.findMany({
@@ -44,10 +73,9 @@ export async function GET(req: Request) {
       marketplaceEnabled: true,
       bookingEnabled: true,
       suspended: false,
-      ...(organizationIdFilter ? { id: { in: organizationIdFilter } } : {}),
-      ...(category ? { category: { contains: category } } : {}),
-      ...(trSelected && province ? { province } : city ? { city: { contains: city } } : {}),
-      ...(q ? { name: { contains: q } } : {}),
+      ...(countryCode ? { countryCode } : {}),
+      ...(organizationIdFilter && organizationIdFilter.length > 0 ? { id: { in: organizationIdFilter } } : {}),
+      ...(andFilters.length > 0 ? { AND: andFilters } : {}),
     },
     select: {
       id: true,
@@ -68,3 +96,4 @@ export async function GET(req: Request) {
 
   return NextResponse.json({ data: orgs });
 }
+

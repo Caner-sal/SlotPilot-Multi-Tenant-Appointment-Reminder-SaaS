@@ -1,6 +1,7 @@
 ﻿import { db } from "@/lib/db";
 import { requireAuth, TenantError } from "@/lib/tenant";
 import { createAuditLog } from "@/services/audit.service";
+import { syncOrganizationNormalizedAddress } from "@/services/address/organization-address-sync.service";
 import { organizationSchema } from "@/lib/validators";
 import { NextResponse } from "next/server";
 import { z } from "zod";
@@ -39,9 +40,34 @@ export async function PATCH(req: Request) {
       }
     }
 
-    const updated = await db.organization.update({
-      where: { id: org.id },
-      data: parsed,
+    const updated = await db.$transaction(async (tx) => {
+      const next = await tx.organization.update({
+        where: { id: org.id },
+        data: {
+          ...parsed,
+          ...(parsed.countryCode ? { countryCode: parsed.countryCode.toUpperCase() } : {}),
+          ...(parsed.city || parsed.locality ? { locality: parsed.locality ?? parsed.city ?? null } : {}),
+          ...(parsed.formattedAddress || parsed.address
+            ? { formattedAddress: parsed.formattedAddress ?? parsed.address ?? null }
+            : {}),
+        },
+      });
+
+      await syncOrganizationNormalizedAddress(tx, {
+        organizationId: next.id,
+        countryCode: next.countryCode,
+        province: next.province,
+        city: next.city,
+        locality: next.locality,
+        postalCode: next.postalCode,
+        formattedAddress: next.formattedAddress,
+        fallbackAddress: next.address,
+        latitude: next.latitude,
+        longitude: next.longitude,
+        locale: next.defaultLocale,
+      });
+
+      return next;
     });
 
     await createAuditLog({
@@ -65,4 +91,3 @@ export async function PATCH(req: Request) {
     return NextResponse.json({ error: "Sunucu hatası" }, { status: 500 });
   }
 }
-

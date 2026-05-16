@@ -7,6 +7,24 @@ import {
 } from "@/lib/notification-templates";
 import { localeMetadata } from "@/i18n/locales";
 
+export type ReminderProcessStats = {
+  processed: number;
+  sent: number;
+  failed: number;
+  retried: number;
+  permanentFailed: number;
+  skipped: number;
+};
+
+const MAX_RETRY = 3;
+const RETRY_BACKOFF_MINUTES = [5, 15, 60] as const;
+
+function retryBackoffMinutes(retryCount: number): number {
+  if (retryCount <= 0) return RETRY_BACKOFF_MINUTES[0];
+  const index = Math.min(retryCount - 1, RETRY_BACKOFF_MINUTES.length - 1);
+  return RETRY_BACKOFF_MINUTES[index];
+}
+
 export async function scheduleReminder(appointmentId: string, organizationId: string, startTime: Date): Promise<void> {
   const scheduledAt = new Date(startTime.getTime() - 24 * 60 * 60 * 1000);
 
@@ -21,7 +39,7 @@ export async function scheduleReminder(appointmentId: string, organizationId: st
   });
 }
 
-export async function processPendingReminders(): Promise<{ processed: number; sent: number; failed: number }> {
+export async function processPendingReminders(): Promise<ReminderProcessStats> {
   const now = new Date();
 
   const pending = await db.reminder.findMany({
@@ -48,6 +66,8 @@ export async function processPendingReminders(): Promise<{ processed: number; se
 
   let sent = 0;
   let failed = 0;
+  let retried = 0;
+  let permanentFailed = 0;
 
   for (const reminder of pending) {
     const { appointment } = reminder;
@@ -58,6 +78,7 @@ export async function processPendingReminders(): Promise<{ processed: number; se
         data: { status: "FAILED", errorMessage: "No customer email", sentAt: now },
       });
       failed++;
+      permanentFailed++;
       continue;
     }
 
@@ -68,6 +89,7 @@ export async function processPendingReminders(): Promise<{ processed: number; se
         data: { status: "FAILED", errorMessage: "Email reminders not available on current plan", sentAt: now },
       });
       failed++;
+      permanentFailed++;
       continue;
     }
 
@@ -115,18 +137,55 @@ export async function processPendingReminders(): Promise<{ processed: number; se
       html,
     });
 
+    if (result.success) {
+      await db.reminder.update({
+        where: { id: reminder.id },
+        data: {
+          status: "SENT",
+          sentAt: now,
+          errorMessage: null,
+        },
+      });
+      sent++;
+      continue;
+    }
+
+    const nextRetryCount = reminder.retryCount + 1;
+    if (nextRetryCount <= MAX_RETRY) {
+      const backoffMinutes = retryBackoffMinutes(nextRetryCount);
+      await db.reminder.update({
+        where: { id: reminder.id },
+        data: {
+          status: "PENDING",
+          retryCount: nextRetryCount,
+          scheduledAt: new Date(now.getTime() + backoffMinutes * 60 * 1000),
+          sentAt: null,
+          errorMessage: result.error ?? "temporary_delivery_failure",
+        },
+      });
+      retried++;
+      continue;
+    }
+
     await db.reminder.update({
       where: { id: reminder.id },
       data: {
-        status: result.success ? "SENT" : "FAILED",
+        status: "FAILED",
+        retryCount: nextRetryCount,
         sentAt: now,
-        errorMessage: result.error,
+        errorMessage: result.error ?? "delivery_failed_retry_exhausted",
       },
     });
-
-    if (result.success) sent++;
-    else failed++;
+    failed++;
+    permanentFailed++;
   }
 
-  return { processed: pending.length, sent, failed };
+  return {
+    processed: pending.length,
+    sent,
+    failed,
+    retried,
+    permanentFailed,
+    skipped: 0,
+  };
 }

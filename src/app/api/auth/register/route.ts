@@ -1,8 +1,9 @@
-﻿import { db } from "@/lib/db";
+﻿import bcrypt from "bcryptjs";
+import { db } from "@/lib/db";
 import { registerSchema } from "@/lib/validators";
+import { trackProductEvent } from "@/services/product-event.service";
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import bcrypt from "bcryptjs";
 
 export async function POST(req: Request) {
   try {
@@ -23,6 +24,12 @@ export async function POST(req: Request) {
         passwordHash: hashedPassword,
       },
       select: { id: true, email: true, name: true },
+    });
+
+    await trackProductEvent({
+      eventName: "signup_started",
+      userId: user.id,
+      payloadSafe: { channel: "web" },
     });
 
     return NextResponse.json({ data: { user } }, { status: 201 });

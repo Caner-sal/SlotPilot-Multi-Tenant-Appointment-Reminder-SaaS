@@ -1,6 +1,7 @@
 ﻿import { db } from "@/lib/db";
 import { requireAuth, TenantError } from "@/lib/tenant";
 import { createAuditLog } from "@/services/audit.service";
+import { trackProductEvent } from "@/services/product-event.service";
 import { serviceSchema } from "@/lib/validators";
 import { NextResponse } from "next/server";
 import { z } from "zod";
@@ -45,6 +46,13 @@ export async function POST(req: Request) {
       entityType: "Service",
       entityId: service.id,
       metadata: { name: service.name },
+    });
+
+    await trackProductEvent({
+      eventName: "service_created",
+      userId: user.id,
+      organizationId: org.id,
+      payloadSafe: { serviceId: service.id, name: service.name },
     });
 
     return NextResponse.json({ data: service }, { status: 201 });
