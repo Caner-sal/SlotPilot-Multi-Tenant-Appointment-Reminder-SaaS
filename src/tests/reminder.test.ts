@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { db } from "@/lib/db";
 import { scheduleReminder, processPendingReminders } from "@/services/reminder.service";
+import { sendEmail } from "@/lib/email";
 
 vi.mock("@/lib/email", () => ({
   sendEmail: vi.fn().mockResolvedValue({ success: true, mode: "fake" }),
@@ -26,6 +27,7 @@ beforeEach(() => {
   vi.clearAllMocks();
   mockDb.reminder.create.mockResolvedValue({ id: "rem-1" });
   mockDb.reminder.update.mockResolvedValue({ id: "rem-1", status: "SENT" });
+  vi.mocked(sendEmail).mockResolvedValue({ success: true, mode: "fake" });
 });
 
 describe("scheduleReminder", () => {
@@ -57,6 +59,7 @@ describe("processPendingReminders", () => {
     mockDb.reminder.findMany.mockResolvedValue([
       {
         id: "rem-1",
+        retryCount: 0,
         appointment: {
           organizationId: "org-1",
           customer: { fullName: "Test User", email: "test@example.com" },
@@ -72,12 +75,16 @@ describe("processPendingReminders", () => {
     expect(stats.processed).toBe(1);
     expect(stats.sent).toBe(1);
     expect(stats.failed).toBe(0);
+    expect(stats.retried).toBe(0);
+    expect(stats.permanentFailed).toBe(0);
+    expect(stats.skipped).toBe(0);
   });
 
   it("marks reminder as FAILED when customer has no email", async () => {
     mockDb.reminder.findMany.mockResolvedValue([
       {
         id: "rem-2",
+        retryCount: 0,
         appointment: {
           organizationId: "org-1",
           customer: { fullName: "No Email", email: null },
@@ -92,6 +99,8 @@ describe("processPendingReminders", () => {
     const stats = await processPendingReminders();
     expect(stats.failed).toBe(1);
     expect(stats.sent).toBe(0);
+    expect(stats.permanentFailed).toBe(1);
+    expect(stats.retried).toBe(0);
   });
 
   it("returns zero counts when no pending reminders", async () => {
@@ -101,5 +110,72 @@ describe("processPendingReminders", () => {
     expect(stats.processed).toBe(0);
     expect(stats.sent).toBe(0);
     expect(stats.failed).toBe(0);
+    expect(stats.retried).toBe(0);
+    expect(stats.permanentFailed).toBe(0);
+    expect(stats.skipped).toBe(0);
+  });
+
+  it("retries temporary delivery failures with backoff", async () => {
+    vi.mocked(sendEmail).mockResolvedValueOnce({ success: false, mode: "resend", error: "smtp timeout" });
+    mockDb.reminder.findMany.mockResolvedValue([
+      {
+        id: "rem-3",
+        retryCount: 0,
+        appointment: {
+          organizationId: "org-1",
+          customer: { fullName: "Retry User", email: "retry@example.com" },
+          service: { name: "SaÃ§ Kesimi" },
+          staff: { name: "Ali", user: { preferredLocale: "tr" } },
+          organization: { name: "Berber Demo", slug: "demo-barber", defaultLocale: "tr", address: null, phone: null },
+          startTime: new Date(Date.now() + 24 * 60 * 60 * 1000),
+        },
+      },
+    ]);
+
+    const stats = await processPendingReminders();
+    expect(stats.sent).toBe(0);
+    expect(stats.failed).toBe(0);
+    expect(stats.retried).toBe(1);
+    expect(mockDb.reminder.update).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { id: "rem-3" },
+        data: expect.objectContaining({
+          status: "PENDING",
+          retryCount: 1,
+        }),
+      })
+    );
+  });
+
+  it("marks reminder FAILED when retry budget is exhausted", async () => {
+    vi.mocked(sendEmail).mockResolvedValueOnce({ success: false, mode: "resend", error: "smtp timeout" });
+    mockDb.reminder.findMany.mockResolvedValue([
+      {
+        id: "rem-4",
+        retryCount: 3,
+        appointment: {
+          organizationId: "org-1",
+          customer: { fullName: "Retry Exhausted", email: "fail@example.com" },
+          service: { name: "SaÃ§ Kesimi" },
+          staff: { name: "Ali", user: { preferredLocale: "tr" } },
+          organization: { name: "Berber Demo", slug: "demo-barber", defaultLocale: "tr", address: null, phone: null },
+          startTime: new Date(Date.now() + 24 * 60 * 60 * 1000),
+        },
+      },
+    ]);
+
+    const stats = await processPendingReminders();
+    expect(stats.failed).toBe(1);
+    expect(stats.permanentFailed).toBe(1);
+    expect(stats.retried).toBe(0);
+    expect(mockDb.reminder.update).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { id: "rem-4" },
+        data: expect.objectContaining({
+          status: "FAILED",
+          retryCount: 4,
+        }),
+      })
+    );
   });
 });
