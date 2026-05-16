@@ -2,6 +2,28 @@
 
 All notable changes to Randevo are documented here.
 
+## [1.8.0] - 2026-05-16
+
+### Türkiye İl/İlçe Datası — Tam 81 İl
+
+- Tüm 81 il için kapsamlı audit gerçekleştirildi (`docs/turkey-district-data-audit.md`)
+- Büyük illerde sadece şehir merkezi ilçelerinin mevcut olduğu kritik boşluk giderildi
+- **Ankara**: 8 → 25 ilçe (+17: Akyurt, Ayaş, Bala, Beypazarı, Çamlıdere, Çubuk, Elmadağ, Evren, Gölbaşı, Güdül, Haymana, Kahramankazan, Kalecik, Kızılcahamam, Nallıhan, Polatlı, Şereflikoçhisar)
+- **İzmir**: 9 → 30 ilçe (+21: Aliağa, Balçova, Bayındır, Bayraklı, Bergama, Beydağ, Çeşme, Dikili, Foça, Güzelbahçe, Karaburun, Kemalpaşa, Kınık, Kiraz, Menderes, Narlıdere, Ödemiş, Seferihisar, Selçuk, Tire, Urla)
+- **Bursa**: 4 → 18 ilçe (+13: Büyükorhan, Gemlik, Gürsu, Harmancık, İnegöl, İznik, Karacabey, Keles, Kestel, Mudanya, Mustafakemalpaşa, Orhaneli, Orhangazi, Yenişehir)
+- **Antalya**: 5 → 19 ilçe (+14: Akseki, Alanya, Demre, Elmalı, Finike, Gazipaşa, Gündoğmuş, İbradı, Kaş, Kemer, Korkuteli, Kumluca, Manavgat, Serik)
+- **Mersin**: 4 → 13 ilçe (+9: Anamur, Aydıncık, Bozyazı, Çamlıyayla, Erdemli, Gülnar, Mut, Silifke, Tarsus)
+- **Konya**: 27 → 31 ilçe (+4: Ahırlı, Çeltik, Tuzlukçu, Yalıhüyük)
+- **Çankırı**: 10 → 12 ilçe (+2), **Manisa**: 15 → 17 (+2), **Rize**: 11 → 12 (+1), **Aksaray**: 7 → 8 (+1), **Hakkari**: 4 → 5 (+1), **Trabzon**: 17 → 18 (+1), **Sakarya**: 16 → 17 (+1)
+- Slug hataları düzeltildi: Nevşehir `hacibiktas` → `hacibektas`, Sivas `akincolar` → `akincilar`
+- Toplam ilçe: 903 → 991
+- `scripts/validate-turkey-location-data.ts` validation script eklendi — katı threshold ve regression kontrolü
+- `npm run check:turkey-locations` scripti eklendi
+- `docs/turkey-location-data-source.md` kaynak ve güncelleme prosedürü eklendi
+- Tüm büyük iller için threshold testleri eklendi (31 test)
+
+---
+
 ## [1.7.0] - 2026-05-16
 
 ### Yeni Özellikler

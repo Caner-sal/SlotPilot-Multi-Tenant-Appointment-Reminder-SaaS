@@ -1,6 +1,36 @@
 # Randevo Compact State
 
-_Last updated: 2026-05-16_
+_Last updated: 2026-05-17_
+
+## 2026-05-17 UCF-1+UCF-2 — Nationwide Turkey District Dataset Checkpoint
+
+Branch: `feature/global-address-locale` | Tag: `v1.8.0`
+
+### Tamamlanan İşler
+
+- **UCF-1 (81-Province Audit):** `docs/turkey-district-data-audit.md` kapsamlı şekilde yeniden yazıldı. 13 ilde eksik/hatalı veri tespit edildi.
+- **UCF-2 (Dataset Fix):** `src/data/turkey-provinces.ts` güncellemeleri (903 → 991 ilçe):
+  - Ankara: +17 ilçe (Akyurt, Ayaş, Bala, Beypazarı, Çamlıdere, Çubuk, Elmadağ, Evren, Gölbaşı, Güdül, Haymana, Kahramankazan, Kalecik, Kızılcahamam, Nallıhan, Polatlı, Şereflikoçhisar)
+  - İzmir: +21 ilçe (Aliağa, Balçova, Bayındır, Bayraklı, Bergama, Beydağ, Çeşme, Dikili, Foça, Güzelbahçe, Karaburun, Kemalpaşa, Kınık, Kiraz, Menderes, Narlıdere, Ödemiş, Seferihisar, Selçuk, Tire, Urla)
+  - Bursa: +13 ilçe (Büyükorhan, Gemlik, Gürsu, Harmancık, İnegöl, İznik, Karacabey, Keles, Kestel, Mudanya, Mustafakemalpaşa, Orhaneli, Orhangazi, Yenişehir)
+  - Antalya: +14 ilçe (Akseki, Alanya, Demre, Elmalı, Finike, Gazipaşa, Gündoğmuş, İbradı, Kaş, Kemer, Korkuteli, Kumluca, Manavgat, Serik)
+  - Mersin: +9 ilçe (Anamur, Aydıncık, Bozyazı, Çamlıyayla, Erdemli, Gülnar, Mut, Silifke, Tarsus)
+  - Konya: +4 ilçe (Ahırlı, Çeltik, Tuzlukçu, Yalıhüyük)
+  - Çankırı +2, Manisa +2, Rize +1, Aksaray +1, Hakkari +1, Trabzon +1, Sakarya +1
+  - Slug düzeltme: `hacibiktas` → `hacibektas` (Nevşehir), `akincolar` → `akincilar` (Sivas)
+- **UCF-2 Yeni Script:** `scripts/validate-turkey-location-data.ts` — strict validation (exit 1 on fail)
+- **UCF-2 Yeni npm Scripti:** `check:turkey-locations` → `package.json`
+- **UCF-2 Yeni Döküman:** `docs/turkey-location-data-source.md` — kaynak, slug standardı, güncelleme prosedürü
+- **UCF-2 Test Genişletme:** `src/tests/turkey-districts.test.ts` — 31 test; büyük il threshold + slug bug regression
+
+### Verification Snapshot (UCF-2 Final)
+
+- `npm run check:turkey-locations` PASS (0 FAIL, 26 WARN)
+- `npm run typecheck` PASS
+- `npm test` PASS (73 dosya, 518 test)
+- `npm run build` PASS
+
+---
 
 ## 2026-05-16 Production Audit PH-0 → PH-9 Checkpoint
 
