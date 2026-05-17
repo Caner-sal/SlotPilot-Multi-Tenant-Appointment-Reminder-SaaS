@@ -1,5 +1,5 @@
 ﻿import { db } from "@/lib/db";
-import { requireAuth, getCurrentUser, TenantError } from "@/lib/tenant";
+import { getCurrentUser, TenantError } from "@/lib/tenant";
 import { createAuditLog } from "@/services/audit.service";
 import { trackProductEvent } from "@/services/product-event.service";
 import { syncOrganizationNormalizedAddress } from "@/services/address/organization-address-sync.service";

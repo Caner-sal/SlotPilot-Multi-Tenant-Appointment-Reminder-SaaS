@@ -5,8 +5,6 @@ import { createAuditLog } from "@/services/audit.service";
 import { createBooking } from "@/services/booking.service";
 import { trackProductEvent } from "@/services/product-event.service";
 import { scheduleReminder } from "@/services/reminder.service";
-import { sendEmail, buildBookingConfirmationEmail } from "@/lib/email";
-import { generateBookingToken, getBookingManageUrl } from "@/lib/booking-token";
 import { bookingSchema } from "@/lib/validators";
 import { NextResponse } from "next/server";
 import { z } from "zod";

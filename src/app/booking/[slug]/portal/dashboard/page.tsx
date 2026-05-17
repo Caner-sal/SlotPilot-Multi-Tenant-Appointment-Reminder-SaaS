@@ -45,8 +45,8 @@ export default function CustomerPortalDashboard() {
         }
         
         setAppointments(json.data || []);
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err: unknown) {
+        setError(err instanceof Error ? err.message : "Randevular yüklenemedi.");
       } finally {
         setLoading(false);
       }
@@ -74,7 +74,7 @@ export default function CustomerPortalDashboard() {
       setAppointments(prev => prev.map(app => 
         app.id === id ? { ...app, status: "CANCELLED" } : app
       ));
-    } catch (err) {
+    } catch (_err) {
       alert("Bir hata oluştu.");
     }
   }

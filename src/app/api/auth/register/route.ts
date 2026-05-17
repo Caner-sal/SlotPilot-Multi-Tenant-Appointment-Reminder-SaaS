@@ -1,5 +1,6 @@
 ﻿import bcrypt from "bcryptjs";
 import { db } from "@/lib/db";
+import { globalRateLimiter } from "@/lib/rate-limit";
 import { registerSchema } from "@/lib/validators";
 import { trackProductEvent } from "@/services/product-event.service";
 import { NextResponse } from "next/server";

@@ -80,3 +80,10 @@ export function rateLimitHeaders(result: RateLimitResult): HeadersInit {
 export function resetRateLimitStore(): void {
   rateLimitStore.clear();
 }
+
+// Backward-compatible facade used by older routes.
+export const globalRateLimiter = {
+  isAllowed(key: string, limit: number, windowMs: number): boolean {
+    return consumeRateLimit({ key, limit, windowMs }).allowed;
+  },
+};

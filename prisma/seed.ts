@@ -1,4 +1,4 @@
-import { DayOfWeek, PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { DEMO_WORKSPACE, validateDemoWorkspaceSafety } from "./demo-workspace";
 
@@ -280,14 +280,14 @@ async function main() {
     });
   }
 
-  const workDays: DayOfWeek[] = [
+  const workDays = [
     "MONDAY",
     "TUESDAY",
     "WEDNESDAY",
     "THURSDAY",
     "FRIDAY",
     "SATURDAY",
-  ];
+  ] as const;
 
   for (const day of workDays) {
     await prisma.availabilityRule.upsert({

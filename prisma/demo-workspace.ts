@@ -1,4 +1,19 @@
-import { SubscriptionPlan, SubscriptionStatus } from "@prisma/client";
+type SubscriptionPlan = "FREE" | "STARTER" | "PRO";
+type SubscriptionStatus = "ACTIVE" | "CANCELLED" | "PAST_DUE" | "TRIALING" | "INCOMPLETE";
+
+const SubscriptionPlan = {
+  FREE: "FREE",
+  STARTER: "STARTER",
+  PRO: "PRO",
+} as const;
+
+const SubscriptionStatus = {
+  ACTIVE: "ACTIVE",
+  CANCELLED: "CANCELLED",
+  PAST_DUE: "PAST_DUE",
+  TRIALING: "TRIALING",
+  INCOMPLETE: "INCOMPLETE",
+} as const;
 
 function resolveDemoPassword(envKey: string, fallback: string): string {
   const fromEnv = process.env[envKey]?.trim();
