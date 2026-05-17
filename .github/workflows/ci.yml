@@ -37,14 +37,8 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v6
         with:
-          node-version-file: .nvmrc
+          node-version: 24
           cache: npm
-
-      - name: Activate npm 11 (packageManager)
-        run: |
-          corepack enable
-          corepack prepare npm@11.12.1 --activate
-          npm --version
 
       - name: Install dependencies
         run: npm ci
@@ -111,14 +105,8 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v6
         with:
-          node-version-file: .nvmrc
+          node-version: 24
           cache: npm
-
-      - name: Activate npm 11 (packageManager)
-        run: |
-          corepack enable
-          corepack prepare npm@11.12.1 --activate
-          npm --version
 
       - name: Install dependencies
         run: npm ci
@@ -156,14 +144,8 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v6
         with:
-          node-version-file: .nvmrc
+          node-version: 24
           cache: npm
-
-      - name: Activate npm 11 (packageManager)
-        run: |
-          corepack enable
-          corepack prepare npm@11.12.1 --activate
-          npm --version
 
       - name: Install root dependencies
         run: npm ci
