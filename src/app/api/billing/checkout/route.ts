@@ -143,7 +143,14 @@ export async function POST(req: Request) {
     return NextResponse.json({ data: { mode: "test", message: "Checkout initiated." } });
   } catch (err) {
     if (err instanceof TenantError) {
-      return NextResponse.json({ error: err.message }, { status: 403 });
+      const msg = err.message;
+      if (msg === "Oturum doğrulanamadı") {
+        return NextResponse.json({ error: msg, code: "AUTH_REQUIRED" }, { status: 401 });
+      }
+      if (msg.startsWith("Bu kullanıcı için işletme bulunamadı")) {
+        return NextResponse.json({ error: msg, code: "ACTIVE_ORGANIZATION_REQUIRED" }, { status: 404 });
+      }
+      return NextResponse.json({ error: msg, code: "FORBIDDEN" }, { status: 403 });
     }
     if (err instanceof z.ZodError) {
       return NextResponse.json({ error: err.issues }, { status: 400 });

@@ -18,8 +18,24 @@ function CheckoutContent() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Loading state — session henüz hazır değil
+  if (sessionStatus === "loading") {
+    return (
+      <div className="max-w-lg mx-auto mt-16 flex items-center justify-center py-16">
+        <div className="h-6 w-6 animate-spin rounded-full border-2 border-border border-t-primary" />
+      </div>
+    );
+  }
+
+  // Unauthenticated — login'e yönlendir
+  if (sessionStatus === "unauthenticated") {
+    const callbackUrl = encodeURIComponent(`/dashboard/billing/checkout?plan=${planParam}`);
+    router.replace(`/login?callbackUrl=${callbackUrl}`);
+    return null;
+  }
+
   // Redirect staff users
-  if (sessionStatus === "authenticated" && session?.user?.appRole === "STAFF_MEMBER") {
+  if (session?.user?.appRole === "STAFF_MEMBER") {
     router.replace("/dashboard");
     return null;
   }
@@ -55,9 +71,23 @@ function CheckoutContent() {
       const json = await res.json() as {
         data?: { url?: string; mode?: string; message?: string; checkoutUrl?: string };
         error?: string;
+        code?: string;
       };
 
       if (!res.ok) {
+        if (res.status === 401) {
+          const callbackUrl = encodeURIComponent(`/dashboard/billing/checkout?plan=${selectedPlanId}`);
+          router.replace(`/login?callbackUrl=${callbackUrl}`);
+          return;
+        }
+        if (res.status === 403) {
+          setError(t("checkoutForbidden"));
+          return;
+        }
+        if (res.status === 404 && json.code === "ACTIVE_ORGANIZATION_REQUIRED") {
+          setError(t("checkoutOrgRequired"));
+          return;
+        }
         setError(json.error ?? t("checkoutError"));
         return;
       }

@@ -1,4 +1,4 @@
-{
+﻿{
   "common": {
     "language": "زبان",
     "save": "ذخیره",
@@ -367,6 +367,9 @@
     "total": "Total",
     "securePaymentNote": "Your payment is processed securely. The plan will be activated after payment is verified.",
     "checkoutError": "Could not start checkout. Please try again.",
+    "checkoutSessionRequired": "Please sign in to continue.",
+    "checkoutForbidden": "Subscription management requires business owner permissions.",
+    "checkoutOrgRequired": "Please create a business before starting a payment.",
     "networkError": "Connection error. Please try again.",
     "processingPayment": "Processing...",
     "proceedToPayment": "Proceed to Payment",
