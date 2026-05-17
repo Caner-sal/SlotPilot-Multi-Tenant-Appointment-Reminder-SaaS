@@ -32,6 +32,17 @@ for (const v of REQUIRED_VARS) {
   }
 }
 
+// DATABASE_URL protocol validation — must be postgresql:// or postgres://
+const dbUrl = process.env.DATABASE_URL ?? "";
+if (dbUrl && !dbUrl.startsWith("postgresql://") && !dbUrl.startsWith("postgres://")) {
+  console.error(
+    `  ❌ FAIL: DATABASE_URL geçersiz protokol. postgresql:// veya postgres:// ile başlamalı. Mevcut: ${dbUrl.slice(0, 30)}...`
+  );
+  failed = true;
+} else if (dbUrl) {
+  console.log(`  ✅ OK:   DATABASE_URL protokol doğru`);
+}
+
 for (const v of RECOMMENDED_VARS) {
   if (!process.env[v]) {
     console.warn(`  ⚠️  WARN: ${v} eksik (önerilen)`);
