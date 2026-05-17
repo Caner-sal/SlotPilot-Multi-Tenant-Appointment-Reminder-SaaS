@@ -197,8 +197,14 @@ export default function DiscoverPage() {
 
         {/* Error */}
         {error && (
-          <div className="bg-destructive/10 border border-destructive/30 text-destructive text-sm rounded-xl px-4 py-3 mb-6">
-            {error}
+          <div className="bg-destructive/10 border border-destructive/30 text-destructive text-sm rounded-xl px-4 py-3 mb-6 flex items-center justify-between gap-4">
+            <span>{error}</span>
+            <button
+              onClick={() => void handleSearch()}
+              className="shrink-0 text-xs font-medium underline underline-offset-2 hover:no-underline"
+            >
+              Tekrar Dene
+            </button>
           </div>
         )}
 

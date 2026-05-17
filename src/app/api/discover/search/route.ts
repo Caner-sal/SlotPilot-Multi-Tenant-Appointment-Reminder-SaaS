@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 
 // Public discover search — no auth required. Only returns marketplaceEnabled orgs.
 export async function GET(req: Request) {
+  try {
   const { searchParams } = new URL(req.url);
   const category = searchParams.get("category");
   const q = searchParams.get("q");
@@ -102,4 +103,11 @@ export async function GET(req: Request) {
   });
 
   return NextResponse.json({ data: orgs });
+  } catch (err) {
+    console.error("[discover/search]", err);
+    return NextResponse.json(
+      { ok: false, code: "DISCOVER_SEARCH_FAILED", message: "Arama yapılırken bir sorun oluştu." },
+      { status: 500 },
+    );
+  }
 }

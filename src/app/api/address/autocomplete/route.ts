@@ -34,18 +34,27 @@ export async function GET(request: Request) {
       locale: parsed.data.locale,
       sessionToken: parsed.data.sessionToken,
     });
-    await db.addressProviderLog.create({
-      data: {
-        provider: process.env.ADDRESS_PROVIDER ?? "manual",
-        query: parsed.data.q,
-        countryCode: parsed.data.countryCode,
-        status: "SUCCESS",
-        resultCount: data.length,
-      },
-    });
+    // Non-blocking log — DB yazma hatası arama sonucunu engellemesin
+    db.addressProviderLog
+      .create({
+        data: {
+          provider: process.env.ADDRESS_PROVIDER ?? "manual",
+          query: parsed.data.q,
+          countryCode: parsed.data.countryCode,
+          status: "SUCCESS",
+          resultCount: data.length,
+        },
+      })
+      .catch((logErr: unknown) => {
+        console.warn(
+          "[address/autocomplete] log write failed",
+          logErr instanceof Error ? logErr.message : logErr,
+        );
+      });
     return NextResponse.json({ data });
   } catch (error) {
-    await db.addressProviderLog
+    // Non-blocking error log — ikinci DB hatası olsa bile yanıt dönülür
+    db.addressProviderLog
       .create({
         data: {
           provider: process.env.ADDRESS_PROVIDER ?? "manual",
@@ -53,17 +62,19 @@ export async function GET(request: Request) {
           countryCode: parsed.data.countryCode,
           status: error instanceof Error && error.message === "RATE_LIMITED" ? "RATE_LIMITED" : "ERROR",
           resultCount: 0,
-          errorMessage: error instanceof Error ? error.message : "Autocomplete failed",
+          errorMessage: error instanceof Error ? error.message.slice(0, 500) : "Autocomplete failed",
         },
       })
-      .catch(() => undefined);
+      .catch((logErr: unknown) => {
+        console.warn(
+          "[address/autocomplete] error log write failed",
+          logErr instanceof Error ? logErr.message : logErr,
+        );
+      });
 
     if (error instanceof Error && error.message === "RATE_LIMITED") {
       return NextResponse.json({ error: "Too many requests" }, { status: 429 });
     }
-    return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Autocomplete failed" },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: "Konum önerileri şu anda alınamadı." }, { status: 500 });
   }
 }

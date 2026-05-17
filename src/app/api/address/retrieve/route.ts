@@ -24,31 +24,42 @@ export async function POST(request: Request) {
 
   try {
     const data = await retrieveAddress(parsed.data);
-    await db.addressProviderLog.create({
-      data: {
-        provider: process.env.ADDRESS_PROVIDER ?? "manual",
-        query: parsed.data.placeId,
-        countryCode: data.countryCode,
-        status: "RETRIEVE_SUCCESS",
-        resultCount: 1,
-      },
-    });
+    // Non-blocking log — DB yazma hatası adres alımını engellemesin
+    db.addressProviderLog
+      .create({
+        data: {
+          provider: process.env.ADDRESS_PROVIDER ?? "manual",
+          query: parsed.data.placeId,
+          countryCode: data.countryCode,
+          status: "RETRIEVE_SUCCESS",
+          resultCount: 1,
+        },
+      })
+      .catch((logErr: unknown) => {
+        console.warn(
+          "[address/retrieve] log write failed",
+          logErr instanceof Error ? logErr.message : logErr,
+        );
+      });
     return NextResponse.json({ data });
   } catch (error) {
-    await db.addressProviderLog
+    // Non-blocking error log
+    db.addressProviderLog
       .create({
         data: {
           provider: process.env.ADDRESS_PROVIDER ?? "manual",
           query: parsed.data.placeId,
           status: "RETRIEVE_ERROR",
           resultCount: 0,
-          errorMessage: error instanceof Error ? error.message : "Retrieve failed",
+          errorMessage: error instanceof Error ? error.message.slice(0, 500) : "Retrieve failed",
         },
       })
-      .catch(() => undefined);
-    return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Retrieve failed" },
-      { status: 500 },
-    );
+      .catch((logErr: unknown) => {
+        console.warn(
+          "[address/retrieve] error log write failed",
+          logErr instanceof Error ? logErr.message : logErr,
+        );
+      });
+    return NextResponse.json({ error: "Adres bilgisi şu anda alınamadı." }, { status: 500 });
   }
 }
