@@ -40,8 +40,8 @@ export default function CustomerPortalLoginPage() {
       }
 
       setSuccess(data.message || "Giriş bağlantısı gönderildi.");
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Bir hata oluştu.");
     } finally {
       setLoading(false);
     }

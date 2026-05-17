@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState } from "react";
 import Link from "next/link";
@@ -35,15 +35,13 @@ const labelStyle: React.CSSProperties = {
 export default function RegisterPage() {
   const t = useTranslations("auth");
   const router = useRouter();
-  const [step, setStep] = useState<1 | 2>(1);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [verificationCode, setVerificationCode] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  async function handleRegisterSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
     setLoading(true);
@@ -57,42 +55,16 @@ export default function RegisterPage() {
     const data = await res.json();
 
     if (!res.ok) {
-      const errorMsg = typeof data.error === "string" ? data.error : (data.message ?? "Kayıt başarısız. Lütfen tekrar deneyin.");
-      setError(errorMsg);
+      setError(data.message ?? "Kayıt başarısız. Lütfen tekrar deneyin.");
       setLoading(false);
       return;
     }
 
-    // Success! Move to verification step
-    setStep(2);
-    setLoading(false);
-  }
-
-  async function handleVerifySubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
-
-    const res = await fetch("/api/auth/verify-email", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, token: verificationCode }),
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      setError(data.error || "Kod doğrulanamadı.");
-      setLoading(false);
-      return;
-    }
-
-    // Login directly after successful verification
     const result = await signIn("credentials", { email, password, redirect: false });
     setLoading(false);
 
     if (result?.error) {
-      setError("Doğrulandı fakat giriş yapılamadı. Lütfen giriş sayfasına giderek manuel giriş yapın.");
+      setError("Hesap oluşturuldu fakat giriş başarısız. Lütfen giriş yapın.");
       return;
     }
 
@@ -184,6 +156,7 @@ export default function RegisterPage() {
               <div style={{ background: "rgba(244,63,94,0.08)", border: "1px solid rgba(244,63,94,0.25)", borderRadius: 10, padding: "11px 14px", fontSize: 13, color: "#f43f5e" }}>
                 {error}
               </div>
+            )}
 
             <div>
               <label style={labelStyle}>{t("fullName")}</label>
@@ -216,20 +189,13 @@ export default function RegisterPage() {
             </button>
           </form>
 
-                <button
-                  type="submit"
-                  disabled={loading}
-                  style={{
-                    width: "100%", padding: 13, borderRadius: 11, border: "none",
-                    fontFamily: "var(--font-heading, Outfit, sans-serif)", fontSize: 15, fontWeight: 700,
-                    background: loading ? "rgba(119,104,212,0.5)" : "#7768d4", color: "#fff",
-                    boxShadow: "0 0 24px rgba(119,104,212,0.28)", cursor: loading ? "default" : "pointer",
-                    marginTop: 4, transition: "all 0.2s",
-                  }}
-                >
-                  {loading ? "Hesap oluşturuluyor..." : "Ücretsiz Hesap Oluştur"}
-                </button>
-              </form>
+          <p style={{ fontSize: 12, color: "#3a3a58", textAlign: "center", marginTop: 16, lineHeight: 1.5 }}>
+            Kayıt olarak{" "}
+            <a href="#" style={{ color: "#a59cf0" }}>Kullanım Koşulları</a>
+            {" "}ve{" "}
+            <a href="#" style={{ color: "#a59cf0" }}>KVKK Aydınlatma Metni</a>
+            &apos;ni kabul etmiş olursunuz.
+          </p>
 
           <p style={{ fontSize: 13, color: "#3a3a58", textAlign: "center", marginTop: 18 }}>
             {t("alreadyHaveAccount")}{" "}

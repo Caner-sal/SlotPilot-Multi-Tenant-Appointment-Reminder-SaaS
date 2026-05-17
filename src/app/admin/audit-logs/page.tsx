@@ -1,5 +1,14 @@
 import { db } from "@/lib/db";
 
+type AuditLogRow = {
+  id: string;
+  createdAt: Date;
+  action: string;
+  entityType: string | null;
+  organization: { name: string } | null;
+  actor: { name: string | null; email: string } | null;
+};
+
 export default async function AdminAuditLogsPage({
   searchParams,
 }: {
@@ -10,7 +19,7 @@ export default async function AdminAuditLogsPage({
   const limit = 50;
   const skip = (page - 1) * limit;
 
-  const [logs, total] = await db.$transaction([
+  const [logsRaw, total] = await db.$transaction([
     db.auditLog.findMany({
       skip,
       take: limit,
@@ -22,6 +31,7 @@ export default async function AdminAuditLogsPage({
     }),
     db.auditLog.count(),
   ]);
+  const logs = logsRaw as AuditLogRow[];
 
   const totalPages = Math.ceil(total / limit);
 
