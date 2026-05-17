@@ -2,6 +2,33 @@
 
 All notable changes to Randevo are documented here.
 
+## [1.9.1] - 2026-05-17
+
+### Checkout Auth + Discover Prisma Error Fix — FIXERR-0 → FIXERR-6
+
+#### Checkout "Oturum Doğrulanamadı" Düzeltmesi
+
+- **Checkout page loading guard** eklendi: `sessionStatus === "loading"` durumunda ödeme butonu pasif, spinner gösterilir
+- **Unauthenticated redirect** eklendi: `sessionStatus === "unauthenticated"` durumunda `/login?callbackUrl=...` ile yönlendirilir
+- **Staff guard** düzeltildi: artık `sessionStatus === "authenticated"` koşuluna bağlı değil
+- **API route 401/403 ayrımı**: TenantError mesajına göre `401 AUTH_REQUIRED` / `403 FORBIDDEN` / `404 ACTIVE_ORGANIZATION_REQUIRED` döner
+- **handleProceed error branching**: 401 → login redirect, 403 → yetki mesajı, 404 → org oluştur mesajı
+- **3 yeni translation key** (10 locale): `checkoutSessionRequired`, `checkoutForbidden`, `checkoutOrgRequired`
+
+#### Marketplace/Discover Prisma Hatası Düzeltmesi
+
+- **DATABASE_URL protocol validation** eklendi: `env:check` artık `file:`, `sqlite:`, boş değer gibi geçersiz protokolleri `FAIL` olarak yakalar
+- **`.env.example`** güncellendi: SQLite URL kaldırıldı, PostgreSQL URL default yapıldı
+- **`addressProviderLog.create()` non-blocking** yapıldı: DB log yazma hatası address autocomplete/retrieve akışını artık kırmıyor
+- **Raw Prisma error UI'ya sızmıyor**: autocomplete/retrieve error response artık Türkçe kullanıcı dostu mesaj
+- **`discover/search` try-catch** eklendi: structured error shape (`DISCOVER_SEARCH_FAILED`) dönüyor
+- **Discover page retry butonu** eklendi: error state'te "Tekrar Dene" butonu ile yeniden arama yapılabilir
+
+#### Testler
+
+- 31 yeni regression testi (`src/tests/checkout-discover-error-regression.test.ts`)
+- Tüm test suite: **74 dosya, 549 test** — PASS
+
 ## [1.9.0] - 2026-05-17
 
 ### Billing Checkout & UI Cleanup — BILLUI-0 → BILLUI-9

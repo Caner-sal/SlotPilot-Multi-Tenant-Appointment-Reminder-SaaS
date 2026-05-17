@@ -33,9 +33,14 @@ Branch: `feature/global-address-locale`
 
 ### Devam Edecek Phaseler
 
-- FIXERR-4: addressProviderLog non-blocking
-- FIXERR-5: discover/search try-catch + UX
 - FIXERR-6: E2E testler, release
+
+---
+
+## 2026-05-17 FIXERR-4+5 — Address Provider Resilience + Discover Error UX
+
+- **FIXERR-4:** `autocomplete` ve `retrieve` route'larında `addressProviderLog.create()` non-blocking yapıldı. Error response artık raw Prisma mesajı değil kullanıcı dostu Türkçe mesaj.
+- **FIXERR-5:** `discover/search` try-catch eklendi, structured error shape (`code: "DISCOVER_SEARCH_FAILED"`). Discover page'e "Tekrar Dene" retry butonu eklendi.
 
 ---
 
