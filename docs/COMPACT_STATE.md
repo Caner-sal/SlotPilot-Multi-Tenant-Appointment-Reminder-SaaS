@@ -2,6 +2,43 @@
 
 _Last updated: 2026-05-17_
 
+## 2026-05-17 FIXERR-0→3 — Checkout Auth + DATABASE_URL Validation Checkpoint
+
+Branch: `feature/global-address-locale`
+
+### Tamamlanan Phaseler
+
+- **FIXERR-0:** `docs/checkout-discover-error-audit.md` oluşturuldu. Tüm hata kaynakları belgelendi.
+- **FIXERR-1:** Checkout page loading/unauthenticated guard eklendi. Staff guard düzeltildi. API route TenantError 401/403/404 ayrımı yapıldı.
+- **FIXERR-2:** handleProceed 401 → login redirect, 403 → yetki mesajı, 404 → org oluştur mesajı. 3 yeni translation key (10 locale).
+- **FIXERR-3:** `scripts/check-production-env.ts` DATABASE_URL protocol check eklendi. `.env.example` PostgreSQL URL default yapıldı.
+
+### Değiştirilen Dosyalar
+
+| Dosya | Değişiklik |
+|---|---|
+| `src/app/dashboard/billing/checkout/page.tsx` | Loading/unauthenticated guard, 401/403 handling |
+| `src/app/api/billing/checkout/route.ts` | TenantError 401/403/404 ayrımı |
+| `src/messages/tr.json` + 9 locale | checkoutSessionRequired, checkoutForbidden, checkoutOrgRequired key'leri |
+| `scripts/check-production-env.ts` | DATABASE_URL protocol validation |
+| `.env.example` | PostgreSQL URL default, SQLite not removed |
+| `docs/checkout-discover-error-audit.md` | Yeni audit belgesi |
+
+### Verification Snapshot (FIXERR-3)
+
+- `npm run typecheck` PASS
+- `npm run lint` PASS
+- `npm test` PASS (73 dosya, 518 test)
+- `npm run build` PASS
+
+### Devam Edecek Phaseler
+
+- FIXERR-4: addressProviderLog non-blocking
+- FIXERR-5: discover/search try-catch + UX
+- FIXERR-6: E2E testler, release
+
+---
+
 ## 2026-05-17 BILLUI-8+9 — Billing Success/Failure/History & Release Checkpoint (FINAL)
 
 Branch: `feature/global-address-locale` | Tag: `v1.9.0-billing-checkout-ui-fix`
