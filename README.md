@@ -1,4 +1,4 @@
-# Randevo
+﻿# Randevo
 
 **Türkiye'nin akıllı randevu platformu — yerel işletmeler için çok kiracılı (multi-tenant) SaaS.**
 
@@ -177,6 +177,11 @@ npm run dev
 
 [http://localhost:3000](http://localhost:3000) adresini aç.
 
+Not (Windows/sandbox spawn EPERM):
+
+- Gercek HMR icin host terminalde npm run dev kullanin.
+- EPERM ortamlari icin guvenli fallback: once npm run build, sonra npm run dev:safe.
+
 ---
 
 ## Ortam Değişkenleri
@@ -332,3 +337,4 @@ node .\node_modules\prisma\build\index.js generate
 - Past and known unavailable days are disabled/marked in the booking calendar.
 - Dashboard/admin/staff UI surfaces were aligned to shared theme tokens for dark/light consistency.
 - UI localization and business-entered content boundaries are now explicitly documented and tested.
+

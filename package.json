@@ -10,7 +10,8 @@
   "scripts": {
     "check:node": "node scripts/check-node.js",
     "typecheck": "node ./node_modules/typescript/bin/tsc --noEmit",
-    "dev": "node scripts/dev-runner.js",
+    "dev": "node ./node_modules/next/dist/bin/next dev",
+    "dev:safe": "node scripts/dev-runner.js",
     "build": "node ./node_modules/next/dist/bin/next build",
     "start": "node ./node_modules/next/dist/bin/next start",
     "lint": "node ./node_modules/eslint/bin/eslint.js . --max-warnings=0",

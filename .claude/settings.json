@@ -60,7 +60,17 @@
       "PowerShell(Get-NetTCPConnection -LocalPort 3000 | Select-Object LocalPort, State, OwningProcess | ForEach-Object { $p = Get-Process -Id $_.OwningProcess -ErrorAction SilentlyContinue; [PSCustomObject]@{Port=$_.LocalPort; State=$_.State; PID=$_.OwningProcess; Name=$p.ProcessName; Path=$p.Path} })",
       "Bash(node -e ' *)",
       "Bash(Sort-Object -Version)",
-      "Bash(Select-Object -Last 10)"
+      "Bash(Select-Object -Last 10)",
+      "Bash(node -e \"const p=require\\('./package.json'\\); const scripts=['check:node','check:secrets','validate:skills','agent:check','prisma:validate','prisma:generate','prisma:dbpush','lint','test','build','test:e2e']; scripts.forEach\\(s => console.log\\(s, ':', p.scripts[s] ? 'OK' : 'MISSING'\\)\\)\")",
+      "Bash(gh pr *)",
+      "PowerShell(gh pr view 1 --json title,body,state,baseRefName,headRefName,commits,mergedAt,mergeable,mergeStateStatus)",
+      "PowerShell(gh pr view 1 --json title,body,state,baseRefName,headRefName,mergedAt,mergeable,mergeStateStatus 2>&1)",
+      "PowerShell(Invoke-RestMethod -Uri \"https://api.github.com/repos/Caner-sal/Randevo/pulls/1\" -Headers @{\"User-Agent\"=\"PowerShell\"} | Select-Object title, state, @{n='head';e={$_.head.ref}}, @{n='base';e={$_.base.ref}}, merged_at, @{n='mergeable';e={$_.mergeable}})",
+      "PowerShell(Invoke-RestMethod -Uri \"https://api.github.com/repos/Caner-sal/Randevo/pulls/1/commits\" -Headers @{\"User-Agent\"=\"PowerShell\"} | Select-Object -ExpandProperty sha | ForEach-Object { $_.Substring\\(0,7\\) })",
+      "PowerShell($commits = Invoke-RestMethod -Uri \"https://api.github.com/repos/Caner-sal/Randevo/pulls/1/commits\" -Headers @{\"User-Agent\"=\"PowerShell\"}; $commits | ForEach-Object { \"$\\($_.sha.Substring\\(0,7\\)\\) $\\($_.commit.message.Split\\(\"`n\"\\)[0]\\)\" })",
+      "PowerShell(git log --oneline $\\(\"3266c67\"\\)..origin/main | Measure-Object -Line)",
+      "PowerShell(head -50)",
+      "PowerShell(Start-Sleep -Seconds 5; $pr = Invoke-RestMethod -Uri \"https://api.github.com/repos/Caner-sal/Randevo/pulls/1\" -Headers @{\"User-Agent\"=\"PowerShell\"}; \"State: $\\($pr.state\\) | Mergeable: $\\($pr.mergeable\\) | MergeStateStatus: $\\($pr.merge_state_status\\)\")"
     ]
   }
 }

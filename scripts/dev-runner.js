@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 const { spawn } = require("node:child_process");
+const fs = require("node:fs");
 const path = require("node:path");
 
 const nextCliPath = path.resolve(
@@ -13,81 +14,133 @@ const nextCliPath = path.resolve(
   "next",
 );
 
-const nextArgs = [nextCliPath, "dev", ...process.argv.slice(2)];
+const passthroughArgs = process.argv.slice(2);
 
-let sawSpawnEperm = false;
-let guidancePrinted = false;
+const isSpawnEperm = (errorOrText) => {
+  const text =
+    typeof errorOrText === "string"
+      ? errorOrText
+      : errorOrText?.stack ?? errorOrText?.message ?? String(errorOrText);
+  return text.includes("spawn EPERM") || errorOrText?.code === "EPERM";
+};
 
-const printSpawnEpermGuidance = () => {
-  if (guidancePrinted) {
-    return;
-  }
+const runWithCapturedOutput = (args) =>
+  new Promise((resolve) => {
+    let sawSpawnEperm = false;
+    let child;
 
-  guidancePrinted = true;
+    try {
+      child = spawn(process.execPath, args, {
+        stdio: ["inherit", "pipe", "pipe"],
+        windowsHide: false,
+      });
+    } catch (error) {
+      resolve({
+        code: 1,
+        signal: null,
+        sawSpawnEperm: isSpawnEperm(error),
+        error,
+      });
+      return;
+    }
+
+    child.stdout.on("data", (chunk) => {
+      process.stdout.write(chunk);
+    });
+
+    child.stderr.on("data", (chunk) => {
+      const message = chunk.toString();
+      if (isSpawnEperm(message)) {
+        sawSpawnEperm = true;
+      }
+      process.stderr.write(chunk);
+    });
+
+    child.on("error", (error) => {
+      resolve({
+        code: 1,
+        signal: null,
+        sawSpawnEperm: sawSpawnEperm || isSpawnEperm(error),
+        error,
+      });
+    });
+
+    child.on("close", (code, signal) => {
+      resolve({ code: code ?? 0, signal: signal ?? null, sawSpawnEperm });
+    });
+  });
+
+const runForeground = (args) =>
+  new Promise((resolve) => {
+    let child;
+    try {
+      child = spawn(process.execPath, args, {
+        stdio: "inherit",
+        windowsHide: false,
+      });
+    } catch (error) {
+      resolve({ code: 1, signal: null, error });
+      return;
+    }
+
+    child.on("error", (error) => resolve({ code: 1, signal: null, error }));
+    child.on("close", (code, signal) =>
+      resolve({ code: code ?? 0, signal: signal ?? null }),
+    );
+  });
+
+const printFallbackNotice = () => {
   console.error("");
-  console.error("[dev-runner] Hata: spawn EPERM algilandi.");
+  console.error("[dev-runner] Uyari: next dev asamasinda spawn EPERM algilandi.");
+  console.error("[dev-runner] Otomatik fallback baslatiliyor: next start");
   console.error(
-    "[dev-runner] Bu genellikle sandbox/izin kisitlarindan kaynaklanir; uygulama kodu hatasi olmayabilir.",
-  );
-  console.error(
-    "[dev-runner] Kod sagligini dogrulamak icin su komutlari calistirin: npm run build && npm run start",
-  );
-  console.error(
-    "[dev-runner] Gerekirse sandbox disi normal bir terminalde npm run dev komutunu deneyin.",
+    "[dev-runner] Not: Bu fallback hot-reload saglamaz, ama uygulamayi ayaga kaldirir.",
   );
 };
 
-let child;
-try {
-  child = spawn(process.execPath, nextArgs, {
-    stdio: ["inherit", "pipe", "pipe"],
-    windowsHide: false,
-  });
-} catch (error) {
-  const text = error?.stack ?? error?.message ?? String(error);
-  if (error?.code === "EPERM" || text.includes("spawn EPERM")) {
-    printSpawnEpermGuidance();
-    process.exit(1);
+const hasProductionBuild = () => {
+  const buildIdPath = path.resolve(__dirname, "..", ".next", "BUILD_ID");
+  return fs.existsSync(buildIdPath);
+};
+
+const exitWithSignalOrCode = (result) => {
+  if (result?.signal) {
+    process.kill(process.pid, result.signal);
+    return;
   }
+  process.exit(result?.code ?? 1);
+};
 
-  process.stderr.write(`${text}\n`);
-  process.exit(1);
-}
+const main = async () => {
+  const devArgs = [nextCliPath, "dev", ...passthroughArgs];
+  const devResult = await runWithCapturedOutput(devArgs);
 
-child.stdout.on("data", (chunk) => {
-  process.stdout.write(chunk);
-});
-
-child.stderr.on("data", (chunk) => {
-  const message = chunk.toString();
-  if (message.includes("spawn EPERM")) {
-    sawSpawnEperm = true;
-  }
-  process.stderr.write(chunk);
-});
-
-child.on("error", (error) => {
-  const text = error?.stack ?? error?.message ?? String(error);
-  if (error?.code === "EPERM" || text.includes("spawn EPERM")) {
-    sawSpawnEperm = true;
-    printSpawnEpermGuidance();
-    process.exit(1);
-  }
-
-  process.stderr.write(`${text}\n`);
-  process.exit(1);
-});
-
-child.on("close", (code, signal) => {
-  if (sawSpawnEperm) {
-    printSpawnEpermGuidance();
-    process.exit(1);
-  }
-
-  if (signal) {
-    process.kill(process.pid, signal);
+  if (devResult.signal || devResult.code === 0) {
+    exitWithSignalOrCode(devResult);
     return;
   }
 
-  process.exit(code ?? 0);
+  if (!devResult.sawSpawnEperm && !isSpawnEperm(devResult.error)) {
+    exitWithSignalOrCode(devResult);
+    return;
+  }
+
+  printFallbackNotice();
+
+  if (!hasProductionBuild()) {
+    console.error(
+      "[dev-runner] Uretim build'i bulunamadi (.next/BUILD_ID yok). Once 'npm run build' calistirin.",
+    );
+    process.exit(1);
+    return;
+  }
+
+  const startResult = await runForeground([nextCliPath, "start", ...passthroughArgs]);
+  exitWithSignalOrCode(startResult);
+};
+
+main().catch((error) => {
+  const text = error?.stack ?? error?.message ?? String(error);
+  process.stderr.write(`${text}\n`);
+  process.exit(1);
 });
